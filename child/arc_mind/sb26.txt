@@ -1,0 +1,238 @@
+ciall-explorer-mind 1
+runs 1
+best 0
+mask 27 20 1
+mask 27 21 1
+mask 27 22 1
+mask 27 23 1
+mask 27 24 1
+mask 27 25 1
+mask 28 20 1
+mask 28 25 1
+mask 29 20 1
+mask 29 25 1
+mask 30 20 1
+mask 30 25 1
+mask 31 20 1
+mask 31 25 1
+mask 32 20 1
+mask 32 21 1
+mask 32 22 1
+mask 32 23 1
+mask 32 24 1
+mask 32 25 1
+mask 53 0 0
+mask 53 1 0
+mask 53 2 0
+mask 53 3 0
+mask 53 4 0
+mask 53 5 0
+mask 53 6 0
+mask 53 7 0
+mask 53 8 0
+mask 53 9 0
+mask 53 10 0
+mask 53 11 0
+mask 53 12 0
+mask 53 13 0
+mask 53 14 0
+mask 53 15 0
+mask 53 16 0
+mask 53 17 0
+mask 53 18 0
+mask 53 19 0
+mask 53 20 0
+mask 53 21 0
+mask 53 22 0
+mask 53 23 0
+mask 53 24 0
+mask 53 25 0
+mask 53 26 0
+mask 53 27 0
+mask 53 28 0
+mask 53 29 0
+mask 53 30 0
+mask 53 31 0
+mask 53 32 0
+mask 53 33 0
+mask 53 34 0
+mask 53 35 0
+mask 53 36 0
+mask 53 37 0
+mask 53 38 0
+mask 53 39 0
+mask 53 40 0
+mask 53 41 0
+mask 53 42 0
+mask 53 43 0
+mask 53 44 0
+mask 53 45 0
+mask 53 46 0
+mask 53 47 0
+mask 53 48 0
+mask 53 49 0
+mask 53 50 0
+mask 53 51 0
+mask 53 52 0
+mask 53 53 0
+mask 53 54 0
+mask 53 55 0
+mask 53 56 0
+mask 53 57 0
+mask 53 58 0
+mask 53 59 0
+mask 53 60 0
+mask 53 61 0
+mask 53 62 0
+mask 53 63 0
+mask 56 33 1
+mask 56 34 1
+mask 56 35 1
+mask 56 36 1
+mask 56 37 1
+mask 56 38 1
+mask 57 33 1
+mask 57 38 1
+mask 58 33 1
+mask 58 38 1
+mask 59 33 1
+mask 59 38 1
+mask 60 33 1
+mask 60 38 1
+mask 61 33 1
+mask 61 34 1
+mask 61 35 1
+mask 61 36 1
+mask 61 37 1
+mask 61 38 1
+colour 0 0 0 0
+colour 1 0 0 0
+colour 2 106 0 0
+shift 7 2 -116 60 1
+colour 3 0 0 0
+colour 4 73 11 0
+shift 7 4 -348 180 1
+colour 5 0 1 0
+colour 6 0 0 0
+colour 7 0 0 0
+colour 8 0 2 0
+colour 9 68 1 0
+shift 7 9 -464 -80 1
+colour 10 0 0 0
+colour 11 69 1 0
+shift 7 11 464 48 1
+colour 12 0 0 0
+colour 13 0 0 0
+colour 14 86 0 0
+shift 7 14 -464 -208 1
+colour 15 87 1 0
+shift 7 15 464 80 2
+onto 11 0 7
+kind 536870917 1 1
+kind 62467 1 0
+kind 58371 1 0
+kind 54275 1 0
+kind 50179 1 0
+kind 41987 1 0
+kind 37891 1 0
+kind 33795 1 0
+kind 29699 1 0
+kind 25603 1 0
+kind 21507 1 0
+kind 17411 1 0
+kind 13315 1 0
+kind 9219 1 0
+kind 3132 1 1
+kind 3076 1 0
+kind 11268 1 0
+kind 15364 1 0
+kind 19460 1 0
+kind 23556 1 0
+kind 27652 1 0
+kind 31748 1 0
+kind 35844 1 0
+kind 39940 1 0
+kind 44036 1 0
+kind 56324 1 0
+kind 536870919 1 1
+kind 5201 1 1
+kind 63491 1 0
+kind 55299 1 0
+kind 51203 1 0
+kind 43011 1 0
+kind 38915 1 0
+kind 34819 1 0
+kind 30723 1 0
+kind 26627 1 0
+kind 22531 1 0
+kind 10243 1 0
+kind 6147 1 0
+kind 5216 1 0
+kind 4 1 0
+kind 8196 1 0
+kind 12292 1 0
+kind 27801 1 0
+kind 20484 1 0
+kind 24580 1 0
+kind 28676 1 0
+kind 32772 1 0
+kind 36868 1 0
+kind 40964 1 0
+kind 53252 1 0
+kind 57348 1 0
+kind 61444 1 0
+kind 3126 1 0
+kind 28790 1 0
+kind 2081 1 0
+kind 3136 1 1
+kind 60419 1 0
+kind 56323 1 0
+kind 52227 1 0
+kind 48131 1 0
+kind 44035 1 0
+kind 39939 1 0
+kind 35843 1 0
+kind 31747 1 0
+kind 27651 1 0
+kind 23555 1 0
+kind 19459 1 0
+kind 1028 1 0
+kind 5124 1 0
+kind 9220 1 0
+kind 13316 1 0
+kind 21508 1 0
+kind 25604 1 0
+kind 29700 1 0
+kind 33796 1 0
+kind 37892 1 0
+kind 41988 1 0
+kind 46084 1 0
+kind 50180 1 0
+kind 54276 1 0
+kind 1043 1 1
+kind 5210 1 0
+kind 5215 1 0
+kind 61443 1 0
+kind 53251 1 0
+kind 49155 1 0
+kind 45059 1 0
+kind 36867 1 0
+kind 32771 1 0
+kind 28675 1 0
+kind 24579 1 0
+kind 20483 1 0
+kind 16387 1 0
+kind 3130 1 1
+kind 3135 1 1
+kind 2052 1 0
+kind 10244 1 0
+kind 14340 1 0
+kind 18436 1 0
+kind 26628 1 0
+kind 30724 1 0
+kind 34820 1 0
+kind 38916 1 0
+kind 43012 1 0
+kind 47108 1 0
+kind 59396 1 0
+kind 5212 1 0

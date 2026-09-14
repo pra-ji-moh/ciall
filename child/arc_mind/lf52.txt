@@ -1,0 +1,150 @@
+ciall-explorer-mind 1
+runs 1
+best 1
+mask 0 0 0
+mask 0 1 0
+mask 0 2 0
+mask 0 3 0
+mask 0 4 0
+mask 0 5 0
+mask 0 6 0
+mask 0 7 0
+mask 0 8 0
+mask 0 9 0
+mask 0 10 0
+mask 0 11 0
+mask 0 12 0
+mask 0 13 0
+mask 0 14 0
+mask 0 15 0
+mask 0 16 0
+mask 0 17 0
+mask 0 18 0
+mask 0 19 0
+mask 0 20 0
+mask 0 21 0
+mask 0 22 0
+mask 0 23 0
+mask 0 24 0
+mask 0 25 0
+mask 0 26 0
+mask 0 27 0
+mask 0 28 0
+mask 0 29 0
+mask 0 30 0
+mask 0 31 0
+mask 0 32 0
+mask 0 33 0
+mask 0 34 0
+mask 0 35 0
+mask 0 36 0
+mask 0 37 0
+mask 0 38 0
+mask 0 39 0
+mask 0 40 0
+mask 0 41 0
+mask 0 42 0
+mask 0 43 0
+mask 0 44 0
+mask 0 45 0
+mask 0 46 0
+mask 0 47 0
+mask 0 48 0
+mask 0 49 0
+mask 0 50 0
+mask 0 51 0
+mask 0 52 0
+mask 0 53 0
+mask 0 54 0
+mask 0 55 0
+mask 0 56 0
+mask 0 57 0
+mask 0 58 0
+mask 0 59 0
+mask 0 60 0
+mask 0 61 0
+mask 0 62 0
+mask 0 63 0
+colour 0 1 0 0
+shift 7 0 0 96 1
+colour 1 1 0 0
+shift 7 1 0 -120 1
+colour 2 1 0 0
+shift 7 2 0 144 1
+colour 3 1 0 0
+shift 7 3 0 -120 1
+colour 4 0 0 0
+colour 5 290 278 0
+shift 1 5 -87 -15 6
+shift 2 5 87 15 6
+shift 3 5 0 -72 15
+shift 4 5 0 72 1
+shift 7 5 -87 -15 1
+colour 6 0 0 0
+colour 7 0 0 0
+colour 8 0 0 0
+colour 9 216 122 0
+shift 1 9 -78 0 4
+shift 2 9 87 -9 1
+shift 3 9 0 -78 120
+shift 4 9 0 78 79
+shift 7 9 0 -78 1
+colour 10 216 278 0
+shift 1 10 366 0 1
+shift 2 10 -390 24 1
+shift 3 10 0 366 120
+shift 4 10 0 -366 1
+shift 7 10 0 366 1
+colour 11 303 0 0
+shift 1 11 -120 0 14
+shift 2 11 120 0 29
+shift 3 11 0 -120 156
+shift 4 11 0 120 99
+shift 7 11 -120 0 1
+colour 12 303 0 0
+shift 1 12 -96 0 14
+shift 2 12 96 0 29
+shift 3 12 0 -96 156
+shift 4 12 0 96 99
+shift 7 12 -96 0 1
+colour 13 0 0 0
+colour 14 0 0 0
+colour 15 0 0 0
+onto 278 0 6
+kind 44186 1 1
+kind 3122 1 1
+kind 7360 1 1
+kind 1027 1 1
+kind 44726 1 0
+kind 5204 1 0
+kind 1042 1 1
+kind 9414 1 1
+kind 42641 1 0
+kind 536870914 1 1
+kind 2 1 1
+kind 536870919 1 1
+kind 57110 1 0
+kind 13530 1 1
+kind 1034 1 0
+kind 536870916 1 1
+kind 3126 1 1
+kind 19 1 1
+kind 54038 1 1
+kind 20154 1 0
+kind 1041 1 1
+kind 22538 1 0
+kind 536870913 1 1
+kind 42257 1 1
+kind 3123 1 0
+kind 3194 1 0
+kind 3133 1 1
+kind 3242 1 1
+kind 26 1 1
+kind 536870915 1 1
+kind 7226 1 1
+kind 3130 1 0
+kind 122 1 1
+kind 3135 1 1
+kind 11441 1 1
+kind 5212 1 1
+route 0 8 25810 25760 25822 25769 25834 26540 26729 27500

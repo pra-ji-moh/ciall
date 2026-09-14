@@ -1,0 +1,21 @@
+node_reasoner: closure-derived D(n), S(n), H(n); forced collapse isolated
+
+  derived          72
+  contradiction     0
+  groundless      198
+  undetermined    110
+
+  lt(0, 2) undetermined, S=0.00, H=1.00 bits
+  speculated at tau=0.0 (the only tau a boolean query clears) -> False
+
+  Is the forced guess weighted toward being right? Checking rather than
+  asserting -- run the same undecided pair 4000 times, seed varying only:
+    guessed True:   1999 / 4000  (0.500)
+    guessed False:  2001 / 4000  (0.500)
+  Close to 0.5. The guess carries no signal -- it is not trying to be
+  right more often than a coin flip, which is what "not predictive"
+  has to mean for a forced binary guess.
+
+  lt(0, 1) -> False, derived, H=0. The witness:
+      lt(1, 10)
+      lt(10, 0)

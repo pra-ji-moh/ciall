@@ -1,0 +1,14 @@
+{
+  "name": "ciall-substrate",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "The kernel + MCMC + human-in-loop claim-verification substrate, extracted from Ciall/Panton as a standalone, domain-agnostic engine.",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "test:coverage": "node --test --experimental-test-coverage tests/*.test.mjs",
+    "bench:ingest": "node bench/ingest.mjs",
+    "bench:baseline": "node bench/datasetBaseline.mjs",
+    "bench": "node bench/run.mjs"
+  }
+}

@@ -1,0 +1,46 @@
+LEARNING BY BEING TOLD, WITHOUT BELIEVING EVERYTHING
+
+Three sources tell it things. Nothing marks which is reliable.
+
+WHAT IT HAS BEEN TOLD
+  "the hallway light is on":
+    00  told      -> no   on the word of: physics textbook, forum post
+    01  told      -> yes  on the word of: physics textbook, forum post
+    10  told      -> yes  on the word of: physics textbook, forum post
+    11  DISPUTED 
+  "a jury of three convicts":
+    000  told      -> no   on the word of: forum post, another AI
+    001  told      -> no   on the word of: forum post, another AI
+    010  told      -> no   on the word of: forum post, another AI
+    011  DISPUTED 
+    100  told      -> no   on the word of: forum post, another AI
+    101  DISPUTED 
+    110  DISPUTED 
+    111  told      -> yes  on the word of: forum post, another AI
+  Where sources disagree it does not pick a side, and two sources
+  agreeing would not count as evidence either.
+
+IT LOOKS: both switches up, and the light is off
+  caught: "forum post" said otherwise. Everything it said is set aside.
+  "the hallway light is on":
+    00  told      -> no   on the word of: physics textbook
+    01  told      -> yes  on the word of: physics textbook
+    10  told      -> yes  on the word of: physics textbook
+    11  SEEN      -> no   seen directly
+  "a jury of three convicts":
+    000  told      -> no   on the word of: another AI
+    001  told      -> no   on the word of: another AI
+    010  told      -> no   on the word of: another AI
+    011  told      -> yes  on the word of: another AI
+    100  told      -> no   on the word of: another AI
+    101  told      -> yes  on the word of: another AI
+    110  told      -> yes  on the word of: another AI
+    111  told      -> yes  on the word of: another AI
+  The forum post was never caught about juries. It was caught about
+  lights, and that is enough: its word no longer counts anywhere.
+
+QUESTION: when does "the alarm sounds" (sensors A, B, C)?
+  same shape as "a jury of three convicts" (law), proof checked on every case
+  but that knowledge rests on the word of: another AI
+  and nothing it has seen confirms it yet. The analogy is exact; the
+  thing it points to is only as good as who said it, and it says so.

@@ -1,0 +1,855 @@
+[
+  {
+    "id": "GHSA-vh95-rmgr-6w4m",
+    "aliases": [
+      "CVE-2020-7598"
+    ],
+    "package": "minimist",
+    "ecosystem": "npm",
+    "repo": "minimistjs/minimist",
+    "cwe": [
+      "CWE-1321"
+    ],
+    "summary": "Prototype Pollution in minimist",
+    "preCommit": "f904dcc3c28f10eb11840091e9f0bab9d9519b5c",
+    "postCommit": "10bd4cdf49d9686d48214be9d579a9cdfda37c68",
+    "file": "index.js",
+    "fixtureFile": "index.js",
+    "preLines": 201,
+    "postLines": 210,
+    "fixCommitUrl": "https://github.com/minimistjs/minimist/commit/10bd4cdf49d9686d48214be9d579a9cdfda37c68",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-vh95-rmgr-6w4m"
+  },
+  {
+    "id": "GHSA-xvch-5gv4-984h",
+    "aliases": [
+      "CVE-2021-44906"
+    ],
+    "package": "minimist",
+    "ecosystem": "npm",
+    "repo": "minimistjs/minimist",
+    "cwe": [
+      "CWE-1321"
+    ],
+    "summary": "Prototype Pollution in minimist",
+    "preCommit": "c0b26618322e94adea26c68e613ef0be482c6c63",
+    "postCommit": "34e20b8461118608703d6485326abbb8e35e1703",
+    "file": "index.js",
+    "fixtureFile": "index.js",
+    "preLines": 224,
+    "postLines": 224,
+    "fixCommitUrl": "https://github.com/minimistjs/minimist/commit/34e20b8461118608703d6485326abbb8e35e1703",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-xvch-5gv4-984h"
+  },
+  {
+    "id": "GHSA-hr2v-3952-633q",
+    "aliases": [
+      "CVE-2018-3750"
+    ],
+    "package": "deep-extend",
+    "ecosystem": "npm",
+    "repo": "unclechu/node-deep-extend",
+    "cwe": [
+      "CWE-20"
+    ],
+    "summary": "Prototype Pollution in deep-extend",
+    "preCommit": "9653940a75c2ef2b1a503b24cbadd707cccffa8c",
+    "postCommit": "9423fae877e2ab6b4aecc4db79a0ed63039d4703",
+    "file": "lib/deep-extend.js",
+    "fixtureFile": "deep-extend.js",
+    "preLines": 145,
+    "postLines": 149,
+    "fixCommitUrl": "https://github.com/unclechu/node-deep-extend/commit/9423fae877e2ab6b4aecc4db79a0ed63039d4703",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-hr2v-3952-633q"
+  },
+  {
+    "id": "GHSA-3mpr-hq3p-49h9",
+    "aliases": [
+      "CVE-2018-3719"
+    ],
+    "package": "mixin-deep",
+    "ecosystem": "npm",
+    "repo": "jonschlinkert/mixin-deep",
+    "cwe": [
+      "CWE-20",
+      "CWE-471"
+    ],
+    "summary": "Prototype Pollution in mixin-deep",
+    "preCommit": "7705bdf88ff0263242c07c824d20526203876668",
+    "postCommit": "578b0bc5e74e14de9ef4975f504dc698796bdf9c",
+    "file": "index.js",
+    "fixtureFile": "index.js",
+    "preLines": 50,
+    "postLines": 54,
+    "fixCommitUrl": "https://github.com/jonschlinkert/mixin-deep/commit/578b0bc5e74e14de9ef4975f504dc698796bdf9c",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-3mpr-hq3p-49h9"
+  },
+  {
+    "id": "GHSA-fhjf-83wg-r2j9",
+    "aliases": [
+      "CVE-2019-10746"
+    ],
+    "package": "mixin-deep",
+    "ecosystem": "npm",
+    "repo": "jonschlinkert/mixin-deep",
+    "cwe": [
+      "CWE-88"
+    ],
+    "summary": "Prototype Pollution in mixin-deep",
+    "preCommit": "9925af763440a50891358d00db0e6a5accc50ee6",
+    "postCommit": "8f464c8ce9761a8c9c2b3457eaeee9d404fa7af9",
+    "file": "index.js",
+    "fixtureFile": "index.js",
+    "preLines": 35,
+    "postLines": 39,
+    "fixCommitUrl": "https://github.com/jonschlinkert/mixin-deep/commit/8f464c8ce9761a8c9c2b3457eaeee9d404fa7af9",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-fhjf-83wg-r2j9"
+  },
+  {
+    "id": "GHSA-4g88-fppr-53pp",
+    "aliases": [
+      "CVE-2019-10747"
+    ],
+    "package": "set-value",
+    "ecosystem": "npm",
+    "repo": "jonschlinkert/set-value",
+    "cwe": [
+      "CWE-1321"
+    ],
+    "summary": "Prototype Pollution in set-value",
+    "preCommit": "7bd5011d82e583305a191a9a062abfe177ec29ad",
+    "postCommit": "95e9d9923f8a8b4a01da1ea138fcc39ec7b6b15f",
+    "file": "index.js",
+    "fixtureFile": "index.js",
+    "preLines": 115,
+    "postLines": 111,
+    "fixCommitUrl": "https://github.com/jonschlinkert/set-value/commit/95e9d9923f8a8b4a01da1ea138fcc39ec7b6b15f",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-4g88-fppr-53pp"
+  },
+  {
+    "id": "GHSA-4jqc-8m5r-9rpr",
+    "aliases": [
+      "CVE-2021-23440"
+    ],
+    "package": "set-value",
+    "ecosystem": "npm",
+    "repo": "jonschlinkert/set-value",
+    "cwe": [
+      "CWE-1321",
+      "CWE-843"
+    ],
+    "summary": "Prototype Pollution in set-value",
+    "preCommit": "8353e4db5b3f4cecac2562d0594d709acf3badfe",
+    "postCommit": "09c4b108fea3c0260008590053ff13da64913245",
+    "file": "index.js",
+    "fixtureFile": "index.js",
+    "preLines": 111,
+    "postLines": 115,
+    "fixCommitUrl": "https://github.com/jonschlinkert/set-value/commit/09c4b108fea3c0260008590053ff13da64913245",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-4jqc-8m5r-9rpr"
+  },
+  {
+    "id": "GHSA-7wpw-2hjm-89gp",
+    "aliases": [
+      "CVE-2020-28499"
+    ],
+    "package": "merge",
+    "ecosystem": "npm",
+    "repo": "yeikos/js.merge",
+    "cwe": [
+      "CWE-915"
+    ],
+    "summary": "Prototype Pollution in merge",
+    "preCommit": "8686d8573694e201f3ee551568f3fefa64f974eb",
+    "postCommit": "7b0ddc2701d813f2ba289b32d6a4b9d4cc235fb4",
+    "file": "lib/src/index.js",
+    "fixtureFile": "index.js",
+    "preLines": 81,
+    "postLines": 84,
+    "fixCommitUrl": "https://github.com/yeikos/js.merge/commit/7b0ddc2701d813f2ba289b32d6a4b9d4cc235fb4",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-7wpw-2hjm-89gp"
+  },
+  {
+    "id": "GHSA-c429-5p7v-vgjp",
+    "aliases": [
+      "CVE-2020-36604"
+    ],
+    "package": "hoek",
+    "ecosystem": "npm",
+    "repo": "hapijs/hoek",
+    "cwe": [
+      "CWE-1321"
+    ],
+    "summary": "hoek subject to prototype pollution via the clone function.",
+    "preCommit": "4ae5f5355f55f600e0969cb61369b7c41b0f50e1",
+    "postCommit": "4d0804bc6135ad72afdc5e1ec002b935b2f5216a",
+    "file": "lib/clone.js",
+    "fixtureFile": "clone.js",
+    "preLines": 158,
+    "postLines": 162,
+    "fixCommitUrl": "https://github.com/hapijs/hoek/commit/4d0804bc6135ad72afdc5e1ec002b935b2f5216a",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-c429-5p7v-vgjp"
+  },
+  {
+    "id": "GHSA-jp4x-w63m-7wgm",
+    "aliases": [
+      "CVE-2018-3728"
+    ],
+    "package": "hoek",
+    "ecosystem": "npm",
+    "repo": "hapijs/hoek",
+    "cwe": [
+      "CWE-1321"
+    ],
+    "summary": "Prototype Pollution in hoek",
+    "preCommit": "dfadda70b192adbcdf9a33ccc3caecfeb3dbe528",
+    "postCommit": "32ed5c9413321fbc37da5ca81a7cbab693786dee",
+    "file": "lib/index.js",
+    "fixtureFile": "index.js",
+    "preLines": 958,
+    "postLines": 962,
+    "fixCommitUrl": "https://github.com/hapijs/hoek/commit/32ed5c9413321fbc37da5ca81a7cbab693786dee",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-jp4x-w63m-7wgm"
+  },
+  {
+    "id": "GHSA-qrmc-fj45-qfc2",
+    "aliases": [
+      "CVE-2018-16492"
+    ],
+    "package": "extend",
+    "ecosystem": "npm",
+    "repo": "justmoon/node-extend",
+    "cwe": [
+      "CWE-400"
+    ],
+    "summary": "Prototype Pollution in extend",
+    "preCommit": "a689700740b44846e76f8f1dc4bdf230a2cb5c0d",
+    "postCommit": "0e68e71d93507fcc391e398bc84abd0666b28190",
+    "file": "index.js",
+    "fixtureFile": "index.js",
+    "preLines": 87,
+    "postLines": 118,
+    "fixCommitUrl": "https://github.com/justmoon/node-extend/commit/0e68e71d93507fcc391e398bc84abd0666b28190",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-qrmc-fj45-qfc2"
+  },
+  {
+    "id": "GHSA-8v63-cqqc-6r2c",
+    "aliases": [
+      "CVE-2021-3805"
+    ],
+    "package": "object-path",
+    "ecosystem": "npm",
+    "repo": "mariocasciaro/object-path",
+    "cwe": [
+      "CWE-1321",
+      "CWE-915"
+    ],
+    "summary": "Prototype Pollution in object-path",
+    "preCommit": "43a926f5bcba44e522456b0e2b4b341de32c4a19",
+    "postCommit": "4f0903fd7c832d12ccbe0d9c3d7e25d985e9e884",
+    "file": "index.js",
+    "fixtureFile": "index.js",
+    "preLines": 307,
+    "postLines": 321,
+    "fixCommitUrl": "https://github.com/mariocasciaro/object-path/commit/4f0903fd7c832d12ccbe0d9c3d7e25d985e9e884",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-8v63-cqqc-6r2c"
+  },
+  {
+    "id": "GHSA-cwx2-736x-mf6w",
+    "aliases": [
+      "CVE-2020-15256"
+    ],
+    "package": "object-path",
+    "ecosystem": "npm",
+    "repo": "mariocasciaro/object-path",
+    "cwe": [
+      "CWE-20",
+      "CWE-471"
+    ],
+    "summary": "Prototype pollution in object-path",
+    "preCommit": "404223bc2d6c1cf4dc9cd96a7af8dd6a0e851651",
+    "postCommit": "2be3354c6c46215c7635eb1b76d80f1319403c68",
+    "file": "index.js",
+    "fixtureFile": "index.js",
+    "preLines": 300,
+    "postLines": 304,
+    "fixCommitUrl": "https://github.com/mariocasciaro/object-path/commit/2be3354c6c46215c7635eb1b76d80f1319403c68",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-cwx2-736x-mf6w"
+  },
+  {
+    "id": "GHSA-v39p-96qg-c8rf",
+    "aliases": [
+      "CVE-2021-23434"
+    ],
+    "package": "object-path",
+    "ecosystem": "npm",
+    "repo": "mariocasciaro/object-path",
+    "cwe": [
+      "CWE-1321",
+      "CWE-843"
+    ],
+    "summary": "Prototype Pollution in object-path",
+    "preCommit": "ebc5e2c7d435ce0535bc155e73952c38d30c6e20",
+    "postCommit": "7bdf4abefd102d16c163d633e8994ef154cab9eb",
+    "file": "index.js",
+    "fixtureFile": "index.js",
+    "preLines": 304,
+    "postLines": 307,
+    "fixCommitUrl": "https://github.com/mariocasciaro/object-path/commit/7bdf4abefd102d16c163d633e8994ef154cab9eb",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-v39p-96qg-c8rf"
+  },
+  {
+    "id": "GHSA-ff7x-qrg7-qggm",
+    "aliases": [
+      "CVE-2020-8116"
+    ],
+    "package": "dot-prop",
+    "ecosystem": "npm",
+    "repo": "sindresorhus/dot-prop",
+    "cwe": [
+      "CWE-1321",
+      "CWE-425",
+      "CWE-471"
+    ],
+    "summary": "dot-prop Prototype Pollution vulnerability",
+    "preCommit": "e0f8abf71164321caf1b20109000b08be506f227",
+    "postCommit": "3039c8c07f6fdaa8b595ec869ae0895686a7a0f2",
+    "file": "index.js",
+    "fixtureFile": "index.js",
+    "preLines": 124,
+    "postLines": 142,
+    "fixCommitUrl": "https://github.com/sindresorhus/dot-prop/commit/3039c8c07f6fdaa8b595ec869ae0895686a7a0f2",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-ff7x-qrg7-qggm"
+  },
+  {
+    "id": "GHSA-cqp5-m4pq-gfgp",
+    "aliases": [
+      "CVE-2018-3723"
+    ],
+    "package": "defaults-deep",
+    "ecosystem": "npm",
+    "repo": "jonschlinkert/defaults-deep",
+    "cwe": [
+      "CWE-471"
+    ],
+    "summary": "Prototype Pollution in defaults-deep",
+    "preCommit": "aef804bf3e56484a6e463e35f5f74599523aee69",
+    "postCommit": "c873f341327ad885ff4d0f23b3d3bca31b0343e5",
+    "file": "index.js",
+    "fixtureFile": "index.js",
+    "preLines": 44,
+    "postLines": 48,
+    "fixCommitUrl": "https://github.com/jonschlinkert/defaults-deep/commit/c873f341327ad885ff4d0f23b3d3bca31b0343e5",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-cqp5-m4pq-gfgp"
+  },
+  {
+    "id": "GHSA-2pqj-h3vj-pqgw",
+    "aliases": [
+      "CVE-2012-6708"
+    ],
+    "package": "jquery",
+    "ecosystem": "npm",
+    "repo": "jquery/jquery",
+    "cwe": [
+      "CWE-64",
+      "CWE-79"
+    ],
+    "summary": "Cross-Site Scripting in jquery",
+    "preCommit": "452e32769d514d835988c544492e4083df2bc1d6",
+    "postCommit": "05531fc4080ae24070930d15ae0cea7ae056457d",
+    "file": "src/core.js",
+    "fixtureFile": "core.js",
+    "preLines": 933,
+    "postLines": 934,
+    "fixCommitUrl": "https://github.com/jquery/jquery/commit/05531fc4080ae24070930d15ae0cea7ae056457d",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-2pqj-h3vj-pqgw"
+  },
+  {
+    "id": "GHSA-579v-mp3v-rrw5",
+    "aliases": [
+      "CVE-2011-4969"
+    ],
+    "package": "jquery",
+    "ecosystem": "npm",
+    "repo": "jquery/jquery",
+    "cwe": [
+      "CWE-79"
+    ],
+    "summary": "jQuery vulnerable to Cross-Site Scripting (XSS)",
+    "preCommit": "84f29084d6ac8077ce5dcb4dd94d43aaeed18fb0",
+    "postCommit": "db9e023e62c1ff5d8f21ed9868ab6878da2005e9",
+    "file": "src/core.js",
+    "fixtureFile": "core.js",
+    "preLines": 931,
+    "postLines": 931,
+    "fixCommitUrl": "https://github.com/jquery/jquery/commit/db9e023e62c1ff5d8f21ed9868ab6878da2005e9",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-579v-mp3v-rrw5"
+  },
+  {
+    "id": "GHSA-gxr4-xjj5-5px2",
+    "aliases": [
+      "BIT-drupal-2020-11022",
+      "CVE-2020-11022"
+    ],
+    "package": "jquery",
+    "ecosystem": "npm",
+    "repo": "jquery/jquery",
+    "cwe": [
+      "CWE-79"
+    ],
+    "summary": "Potential XSS vulnerability in jQuery",
+    "preCommit": "04bf577e2f961c9dde85ddadc77f71bc7bc671cc",
+    "postCommit": "1d61fd9407e6fbe82fe55cb0b938307aa0791f77",
+    "file": "src/manipulation.js",
+    "fixtureFile": "manipulation.js",
+    "preLines": 488,
+    "postLines": 481,
+    "fixCommitUrl": "https://github.com/jquery/jquery/commit/1d61fd9407e6fbe82fe55cb0b938307aa0791f77",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-gxr4-xjj5-5px2"
+  },
+  {
+    "id": "GHSA-3fjq-93xj-3f3f",
+    "aliases": [
+      "CVE-2019-16772"
+    ],
+    "package": "serialize-to-js",
+    "ecosystem": "npm",
+    "repo": "commenthol/serialize-to-js",
+    "cwe": [
+      "CWE-79"
+    ],
+    "summary": "Cross-Site Scripting in serialize-to-js",
+    "preCommit": "39f6ddf357c7d8392e2690d1d01fd9146aa08570",
+    "postCommit": "181d7d583ae5293cd47cc99b14ad13352875f3e3",
+    "file": "lib/index.js",
+    "fixtureFile": "index.js",
+    "preLines": 131,
+    "postLines": 131,
+    "fixCommitUrl": "https://github.com/commenthol/serialize-to-js/commit/181d7d583ae5293cd47cc99b14ad13352875f3e3",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-3fjq-93xj-3f3f"
+  },
+  {
+    "id": "GHSA-mm62-wxc8-cf7m",
+    "aliases": [
+      "CVE-2017-5954"
+    ],
+    "package": "serialize-to-js",
+    "ecosystem": "npm",
+    "repo": "commenthol/serialize-to-js",
+    "cwe": [
+      "CWE-502"
+    ],
+    "summary": "Code Execution Through IIFE in serialize-to-js",
+    "preCommit": "a1e8140ed1a07013f644b5b76025f4eaab7fb9d8",
+    "postCommit": "1cd433960e5b9db4c0b537afb28366198a319429",
+    "file": "lib/deserialize.js",
+    "fixtureFile": "deserialize.js",
+    "preLines": 31,
+    "postLines": 37,
+    "fixCommitUrl": "https://github.com/commenthol/serialize-to-js/commit/1cd433960e5b9db4c0b537afb28366198a319429",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-mm62-wxc8-cf7m"
+  },
+  {
+    "id": "GHSA-qh2h-chj9-jffq",
+    "aliases": [
+      "CVE-2017-16042"
+    ],
+    "package": "growl",
+    "ecosystem": "npm",
+    "repo": "tj/node-growl",
+    "cwe": [
+      "CWE-78",
+      "CWE-94"
+    ],
+    "summary": "Growl before 1.10.0 vulnerable to Command Injection",
+    "preCommit": "dc8aae046df328edd32dd69f3cd2d6b114d7018e",
+    "postCommit": "d71177d5331c9de4658aca62e0ac921f178b0669",
+    "file": "lib/growl.js",
+    "fixtureFile": "growl.js",
+    "preLines": 291,
+    "postLines": 290,
+    "fixCommitUrl": "https://github.com/tj/node-growl/commit/d71177d5331c9de4658aca62e0ac921f178b0669",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-qh2h-chj9-jffq"
+  },
+  {
+    "id": "GHSA-4rq4-32rv-6wp6",
+    "aliases": [
+      "CVE-2022-0144"
+    ],
+    "package": "shelljs",
+    "ecosystem": "npm",
+    "repo": "shelljs/shelljs",
+    "cwe": [
+      "CWE-269"
+    ],
+    "summary": "Improper Privilege Management in shelljs",
+    "preCommit": "fcf1651be9a3bb8e20ba1fd24b8a91f369829c53",
+    "postCommit": "d919d22dd6de385edaa9d90313075a77f74b338c",
+    "file": "src/exec.js",
+    "fixtureFile": "exec.js",
+    "preLines": 209,
+    "postLines": 227,
+    "fixCommitUrl": "https://github.com/shelljs/shelljs/commit/d919d22dd6de385edaa9d90313075a77f74b338c",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-4rq4-32rv-6wp6"
+  },
+  {
+    "id": "GHSA-6x77-rpqf-j6mw",
+    "aliases": [
+      "CVE-2017-1000189"
+    ],
+    "package": "ejs",
+    "ecosystem": "npm",
+    "repo": "mde/ejs",
+    "cwe": [
+      "CWE-20"
+    ],
+    "summary": "ejs vulnerable to DoS due to weak input validation",
+    "preCommit": "7eaba6ade1b11e0bb275f1eb63ba49071aca24dd",
+    "postCommit": "49264e0037e313a0a3e033450b5c184112516d8f",
+    "file": "lib/ejs.js",
+    "fixtureFile": "ejs.js",
+    "preLines": 809,
+    "postLines": 813,
+    "fixCommitUrl": "https://github.com/mde/ejs/commit/49264e0037e313a0a3e033450b5c184112516d8f",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-6x77-rpqf-j6mw"
+  },
+  {
+    "id": "GHSA-ghr5-ch3p-vcr6",
+    "aliases": [
+      "CVE-2024-33883"
+    ],
+    "package": "ejs",
+    "ecosystem": "npm",
+    "repo": "mde/ejs",
+    "cwe": [
+      "CWE-1321",
+      "CWE-693"
+    ],
+    "summary": "ejs lacks certain pollution protection",
+    "preCommit": "715e9507fa3e6122dc6430fe0f25a6e6ded300c1",
+    "postCommit": "e469741dca7df2eb400199e1cdb74621e3f89aa5",
+    "file": "lib/utils.js",
+    "fixtureFile": "utils.js",
+    "preLines": 242,
+    "postLines": 251,
+    "fixCommitUrl": "https://github.com/mde/ejs/commit/e469741dca7df2eb400199e1cdb74621e3f89aa5",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-ghr5-ch3p-vcr6"
+  },
+  {
+    "id": "GHSA-phwq-j96m-2c2q",
+    "aliases": [
+      "CVE-2022-29078"
+    ],
+    "package": "ejs",
+    "ecosystem": "npm",
+    "repo": "mde/ejs",
+    "cwe": [
+      "CWE-74"
+    ],
+    "summary": "ejs template injection vulnerability",
+    "preCommit": "c120527315e159ee48570f73936691f33113ec25",
+    "postCommit": "15ee698583c98dadc456639d6245580d17a24baf",
+    "file": "lib/ejs.js",
+    "fixtureFile": "ejs.js",
+    "preLines": 940,
+    "postLines": 950,
+    "fixCommitUrl": "https://github.com/mde/ejs/commit/15ee698583c98dadc456639d6245580d17a24baf",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-phwq-j96m-2c2q"
+  },
+  {
+    "id": "GHSA-2qvq-rjwj-gvw9",
+    "aliases": [
+      "CVE-2026-33916"
+    ],
+    "package": "handlebars",
+    "ecosystem": "npm",
+    "repo": "handlebars-lang/handlebars.js",
+    "cwe": [
+      "CWE-1321",
+      "CWE-79"
+    ],
+    "summary": "Handlebars.js has Prototype Pollution Leading to XSS through Partial Template Injection",
+    "preCommit": "b2a083136b11e1da9f0f47a11f749a9830a49328",
+    "postCommit": "68d8df5a88e0a26fe9e6084c5c6aaebe67b07da2",
+    "file": "lib/handlebars/compiler/base.js",
+    "fixtureFile": "base.js",
+    "preLines": 35,
+    "postLines": 102,
+    "fixCommitUrl": "https://github.com/handlebars-lang/handlebars.js/commit/68d8df5a88e0a26fe9e6084c5c6aaebe67b07da2",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-2qvq-rjwj-gvw9"
+  },
+  {
+    "id": "GHSA-f2jv-r9rf-7988",
+    "aliases": [
+      "CVE-2021-23369"
+    ],
+    "package": "handlebars",
+    "ecosystem": "npm",
+    "repo": "handlebars-lang/handlebars.js",
+    "cwe": [
+      "CWE-94"
+    ],
+    "summary": "Remote code execution in handlebars when compiling templates",
+    "preCommit": "f0589701698268578199be25285b2ebea1c1e427",
+    "postCommit": "b6d3de7123eebba603e321f04afdbae608e8fea8",
+    "file": "lib/handlebars/runtime.js",
+    "fixtureFile": "runtime.js",
+    "preLines": 451,
+    "postLines": 451,
+    "fixCommitUrl": "https://github.com/handlebars-lang/handlebars.js/commit/b6d3de7123eebba603e321f04afdbae608e8fea8",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-f2jv-r9rf-7988"
+  },
+  {
+    "id": "GHSA-q42p-pg8m-cqh6",
+    "aliases": [],
+    "package": "handlebars",
+    "ecosystem": "npm",
+    "repo": "handlebars-lang/handlebars.js",
+    "cwe": [
+      "CWE-471"
+    ],
+    "summary": "Prototype Pollution in handlebars",
+    "preCommit": "7cf753b186cdab258a6cb9eb1456eb2407550479",
+    "postCommit": "0d6d8c335ad81bad1b672fc56b6a44f6aa472dac",
+    "file": "lib/handlebars/base.js",
+    "fixtureFile": "base.js",
+    "preLines": 245,
+    "postLines": 251,
+    "fixCommitUrl": "https://github.com/handlebars-lang/handlebars.js/commit/0d6d8c335ad81bad1b672fc56b6a44f6aa472dac",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-q42p-pg8m-cqh6"
+  },
+  {
+    "id": "GHSA-7p7h-4mm5-852v",
+    "aliases": [
+      "CVE-2021-33623"
+    ],
+    "package": "trim-newlines",
+    "ecosystem": "npm",
+    "repo": "sindresorhus/trim-newlines",
+    "cwe": [
+      "CWE-400"
+    ],
+    "summary": "Uncontrolled Resource Consumption in trim-newlines",
+    "preCommit": "7bd2272fb55d932562aee3ef20b300a02a23377e",
+    "postCommit": "25246c6ce5eea1c82d448998733a6302a4350d91",
+    "file": "index.js",
+    "fixtureFile": "index.js",
+    "preLines": 7,
+    "postLines": 36,
+    "fixCommitUrl": "https://github.com/sindresorhus/trim-newlines/commit/25246c6ce5eea1c82d448998733a6302a4350d91",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-7p7h-4mm5-852v"
+  },
+  {
+    "id": "GHSA-cwfw-4gq5-mrqx",
+    "aliases": [
+      "CVE-2018-1109"
+    ],
+    "package": "braces",
+    "ecosystem": "npm",
+    "repo": "micromatch/braces",
+    "cwe": [
+      "CWE-400"
+    ],
+    "summary": "Regular Expression Denial of Service (ReDoS) in braces",
+    "preCommit": "37934142c1aeea48b6fb03edbdcf90e45b5cb4a1",
+    "postCommit": "abdafb0cae1e0c00f184abbadc692f4eaa98f451",
+    "file": "lib/parsers.js",
+    "fixtureFile": "parsers.js",
+    "preLines": 361,
+    "postLines": 361,
+    "fixCommitUrl": "https://github.com/micromatch/braces/commit/abdafb0cae1e0c00f184abbadc692f4eaa98f451",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-cwfw-4gq5-mrqx"
+  },
+  {
+    "id": "GHSA-grv7-fg5c-xmjg",
+    "aliases": [
+      "CVE-2024-4068"
+    ],
+    "package": "braces",
+    "ecosystem": "npm",
+    "repo": "micromatch/braces",
+    "cwe": [
+      "CWE-1050",
+      "CWE-400"
+    ],
+    "summary": "Uncontrolled resource consumption in braces",
+    "preCommit": "190510f79db1adf21d92798b0bb6fccc1f72c9d6",
+    "postCommit": "415d660c3002d1ab7e63dbf490c9851da80596ff",
+    "file": "lib/parse.js",
+    "fixtureFile": "parse.js",
+    "preLines": 354,
+    "postLines": 334,
+    "fixCommitUrl": "https://github.com/micromatch/braces/commit/415d660c3002d1ab7e63dbf490c9851da80596ff",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-grv7-fg5c-xmjg"
+  },
+  {
+    "id": "GHSA-f8q6-p94x-37v3",
+    "aliases": [
+      "CVE-2022-3517"
+    ],
+    "package": "minimatch",
+    "ecosystem": "npm",
+    "repo": "isaacs/minimatch",
+    "cwe": [
+      "CWE-1333",
+      "CWE-400"
+    ],
+    "summary": "minimatch ReDoS vulnerability",
+    "preCommit": "bafa295617d984c5863b13a33b2bb601c67e4a8b",
+    "postCommit": "a8763f4388e51956be62dc6025cec1126beeb5e6",
+    "file": "minimatch.js",
+    "fixtureFile": "minimatch.js",
+    "preLines": 924,
+    "postLines": 953,
+    "fixCommitUrl": "https://github.com/isaacs/minimatch/commit/a8763f4388e51956be62dc6025cec1126beeb5e6",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-f8q6-p94x-37v3"
+  },
+  {
+    "id": "GHSA-w9mr-4mfr-499f",
+    "aliases": [
+      "CVE-2017-20162"
+    ],
+    "package": "ms",
+    "ecosystem": "npm",
+    "repo": "vercel/ms",
+    "cwe": [
+      "CWE-1333"
+    ],
+    "summary": "Vercel ms Inefficient Regular Expression Complexity vulnerability",
+    "preCommit": "b83b36d7266fb1bd779fd19a2f98bab17a04d999",
+    "postCommit": "caae2988ba2a37765d055c4eee63d383320ee662",
+    "file": "index.js",
+    "fixtureFile": "index.js",
+    "preLines": 153,
+    "postLines": 153,
+    "fixCommitUrl": "https://github.com/vercel/ms/commit/caae2988ba2a37765d055c4eee63d383320ee662",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-w9mr-4mfr-499f"
+  },
+  {
+    "id": "GHSA-9965-vmph-33xx",
+    "aliases": [
+      "CVE-2025-56200"
+    ],
+    "package": "validator",
+    "ecosystem": "npm",
+    "repo": "validatorjs/validator.js",
+    "cwe": [
+      "CWE-79"
+    ],
+    "summary": "validator.js has a URL validation bypass vulnerability in its isURL function",
+    "preCommit": "6f436be36945e460ee624bf72a935a06daded859",
+    "postCommit": "cbef5088f02d36caf978f378bb845fe49bdc0809",
+    "file": "src/lib/isURL.js",
+    "fixtureFile": "isURL.js",
+    "preLines": 176,
+    "postLines": 249,
+    "fixCommitUrl": "https://github.com/validatorjs/validator.js/commit/cbef5088f02d36caf978f378bb845fe49bdc0809",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-9965-vmph-33xx"
+  },
+  {
+    "id": "GHSA-qgmg-gppg-76g5",
+    "aliases": [
+      "CVE-2021-3765"
+    ],
+    "package": "validator",
+    "ecosystem": "npm",
+    "repo": "validatorjs/validator.js",
+    "cwe": [
+      "CWE-1333"
+    ],
+    "summary": "Inefficient Regular Expression Complexity in validator.js",
+    "preCommit": "45901ec4f1276d192da6d0eb10a60b64722356c1",
+    "postCommit": "496fc8b2a7f5997acaaec33cc44d0b8dba5fb5e1",
+    "file": "src/lib/rtrim.js",
+    "fixtureFile": "rtrim.js",
+    "preLines": 9,
+    "postLines": 18,
+    "fixCommitUrl": "https://github.com/validatorjs/validator.js/commit/496fc8b2a7f5997acaaec33cc44d0b8dba5fb5e1",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-qgmg-gppg-76g5"
+  },
+  {
+    "id": "GHSA-vghf-hv5q-vc2g",
+    "aliases": [
+      "CVE-2025-12758"
+    ],
+    "package": "validator",
+    "ecosystem": "npm",
+    "repo": "validatorjs/validator.js",
+    "cwe": [
+      "CWE-172",
+      "CWE-792"
+    ],
+    "summary": "Validator is Vulnerable to Incomplete Filtering of One or More Instances of Special Elements",
+    "preCommit": "f2e3633f22fd3016656789d100bc451d857e7488",
+    "postCommit": "d457ecaf55b0f3d8bd379d82757425d0d13dd382",
+    "file": "src/lib/isLength.js",
+    "fixtureFile": "isLength.js",
+    "preLines": 28,
+    "postLines": 28,
+    "fixCommitUrl": "https://github.com/validatorjs/validator.js/commit/d457ecaf55b0f3d8bd379d82757425d0d13dd382",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-vghf-hv5q-vc2g"
+  },
+  {
+    "id": "GHSA-3j7m-hmh3-9jmp",
+    "aliases": [
+      "CVE-2016-1000237"
+    ],
+    "package": "sanitize-html",
+    "ecosystem": "npm",
+    "repo": "apostrophecms/sanitize-html",
+    "cwe": [
+      "CWE-79"
+    ],
+    "summary": "Cross-Site Scripting in sanitize-html",
+    "preCommit": "f5f61ddf82f29235de941340b69d964f9d0c7085",
+    "postCommit": "762fbc7bba389f3f789cc291c1eb2b64f60f2caf",
+    "file": "index.js",
+    "fixtureFile": "index.js",
+    "preLines": 283,
+    "postLines": 299,
+    "fixCommitUrl": "https://github.com/apostrophecms/sanitize-html/commit/762fbc7bba389f3f789cc291c1eb2b64f60f2caf",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-3j7m-hmh3-9jmp"
+  },
+  {
+    "id": "GHSA-cgfm-xwp7-2cvr",
+    "aliases": [
+      "CVE-2022-25887"
+    ],
+    "package": "sanitize-html",
+    "ecosystem": "npm",
+    "repo": "apostrophecms/sanitize-html",
+    "cwe": [
+      "CWE-1333"
+    ],
+    "summary": "Sanitize-html Vulnerable To REDoS Attacks",
+    "preCommit": "994f9627206f0fc0a34bcb7bac755ff5d64a3d78",
+    "postCommit": "b4682c12fd30e12e82fa2d9b766de91d7d2cd23c",
+    "file": "index.js",
+    "fixtureFile": "index.js",
+    "preLines": 823,
+    "postLines": 833,
+    "fixCommitUrl": "https://github.com/apostrophecms/sanitize-html/commit/b4682c12fd30e12e82fa2d9b766de91d7d2cd23c",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-cgfm-xwp7-2cvr"
+  },
+  {
+    "id": "GHSA-qhxp-v273-g94h",
+    "aliases": [
+      "CVE-2019-25225"
+    ],
+    "package": "sanitize-html",
+    "ecosystem": "npm",
+    "repo": "apostrophecms/sanitize-html",
+    "cwe": [
+      "CWE-79"
+    ],
+    "summary": "sanitize-html is vulnerable to XSS through incomprehensive sanitization",
+    "preCommit": "d0b658b9f269a7888c0018246f49bcf0a9532582",
+    "postCommit": "712cb6895825c8bb6ede71a16b42bade42abcaf3",
+    "file": "index.js",
+    "fixtureFile": "index.js",
+    "preLines": 700,
+    "postLines": 700,
+    "fixCommitUrl": "https://github.com/apostrophecms/sanitize-html/commit/712cb6895825c8bb6ede71a16b42bade42abcaf3",
+    "osvUrl": "https://osv.dev/vulnerability/GHSA-qhxp-v273-g94h"
+  }
+]

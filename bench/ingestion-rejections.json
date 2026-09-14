@@ -1,0 +1,463 @@
+[
+  {
+    "package": "merge",
+    "osvId": "GHSA-f9cm-qmx5-m98h",
+    "cwe": [
+      "CWE-1321",
+      "CWE-400"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "node.extend",
+    "osvId": "GHSA-r96c-57pf-9jjm",
+    "cwe": [
+      "CWE-400"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "defaults-deep",
+    "osvId": "GHSA-pjxw-22xf-6pwc",
+    "cwe": [
+      "CWE-345",
+      "CWE-400"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "lodash",
+    "osvId": "GHSA-29mw-wpgm-hmr9",
+    "cwe": [
+      "CWE-1333",
+      "CWE-400"
+    ],
+    "reason": "affected file exceeds 1000 lines (pre=17181, post=17210) -- requirement (c)"
+  },
+  {
+    "package": "lodash",
+    "osvId": "GHSA-35jh-r3h4-6jhm",
+    "cwe": [
+      "CWE-77",
+      "CWE-94"
+    ],
+    "reason": "affected file exceeds 1000 lines (pre=17162, post=17181) -- requirement (c)"
+  },
+  {
+    "package": "lodash",
+    "osvId": "GHSA-4xc9-xhrj-v574",
+    "cwe": [
+      "CWE-400"
+    ],
+    "reason": "affected file exceeds 1000 lines (pre=17106, post=17115) -- requirement (c)"
+  },
+  {
+    "package": "lodash",
+    "osvId": "GHSA-f23m-r3pf-42rh",
+    "cwe": [
+      "CWE-1321"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "lodash",
+    "osvId": "GHSA-fvqr-27wr-82fm",
+    "cwe": [
+      "CWE-1321",
+      "CWE-471"
+    ],
+    "reason": "affected file exceeds 1000 lines (pre=17085, post=17099) -- requirement (c)"
+  },
+  {
+    "package": "lodash",
+    "osvId": "GHSA-jf85-cpcp-j695",
+    "cwe": [
+      "CWE-1321",
+      "CWE-20"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "lodash",
+    "osvId": "GHSA-p6mc-m468-83gw",
+    "cwe": [
+      "CWE-1321",
+      "CWE-770"
+    ],
+    "reason": "affected file exceeds 1000 lines (pre=17158, post=17162) -- requirement (c)"
+  },
+  {
+    "package": "lodash",
+    "osvId": "GHSA-r5fr-rjxr-66jc",
+    "cwe": [
+      "CWE-94"
+    ],
+    "reason": "affected file exceeds 1000 lines (pre=17162, post=17181) -- requirement (c)"
+  },
+  {
+    "package": "lodash",
+    "osvId": "GHSA-x5rq-j2xg-h7qm",
+    "cwe": [
+      "CWE-400"
+    ],
+    "reason": "affected file exceeds 1000 lines (pre=17115, post=17115) -- requirement (c)"
+  },
+  {
+    "package": "lodash",
+    "osvId": "GHSA-xxjr-mmjv-4gpg",
+    "cwe": [
+      "CWE-1321"
+    ],
+    "reason": "affected file exceeds 1000 lines (pre=17210, post=17249) -- requirement (c)"
+  },
+  {
+    "package": "jquery",
+    "osvId": "GHSA-6c3j-c64m-qhgq",
+    "reason": "no qualifying single .js source file (modified, non-test, non-meta, non-minified) found in the fix commit"
+  },
+  {
+    "package": "jquery",
+    "osvId": "GHSA-jpcq-cgw6-v4j6",
+    "reason": "duplicate: another advisory already captured this exact fix commit + file (jquery/jquery|04bf577e2f961c9dde85ddadc77f71bc7bc671cc|1d61fd9407e6fbe82fe55cb0b938307aa0791f77|src/manipulation.js)"
+  },
+  {
+    "package": "jquery",
+    "osvId": "GHSA-mhpp-875w-9cpv",
+    "cwe": [
+      "CWE-400",
+      "CWE-674"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "jquery",
+    "osvId": "GHSA-q4m3-2j7h-f7xw",
+    "reason": "duplicate: another advisory already captured this exact fix commit + file (jquery/jquery|452e32769d514d835988c544492e4083df2bc1d6|05531fc4080ae24070930d15ae0cea7ae056457d|src/core.js)"
+  },
+  {
+    "package": "jquery",
+    "osvId": "GHSA-rmxg-73gg-4p98",
+    "reason": "package \"jquery\" already has 3 accepted entries -- capped for dataset diversity"
+  },
+  {
+    "package": "node-serialize",
+    "osvId": "GHSA-q4v7-4rhw-9hqm",
+    "cwe": [
+      "CWE-502"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "serialize-to-js",
+    "osvId": "GHSA-w5q7-3pr9-x44w",
+    "reason": "no CWE ground truth (requirement b)"
+  },
+  {
+    "package": "shelljs",
+    "osvId": "GHSA-64g7-mvw6-v9qj",
+    "cwe": [
+      "CWE-269"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "ejs",
+    "osvId": "GHSA-3w5v-p54c-f74x",
+    "cwe": [
+      "CWE-20"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "ejs",
+    "osvId": "GHSA-hwcf-pp87-7x6p",
+    "reason": "duplicate: another advisory already captured this exact fix commit + file (mde/ejs|7eaba6ade1b11e0bb275f1eb63ba49071aca24dd|49264e0037e313a0a3e033450b5c184112516d8f|lib/ejs.js)"
+  },
+  {
+    "package": "dustjs-linkedin",
+    "osvId": "GHSA-c6rp-wrp9-qr4q",
+    "cwe": [
+      "CWE-1321",
+      "CWE-74",
+      "CWE-94"
+    ],
+    "reason": "affected file exceeds 1000 lines (pre=4355, post=4441) -- requirement (c)"
+  },
+  {
+    "package": "handlebars",
+    "osvId": "GHSA-2cf5-4w76-r9qv",
+    "cwe": [
+      "CWE-94"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "handlebars",
+    "osvId": "GHSA-2w6w-674q-4c4q",
+    "reason": "duplicate: another advisory already captured this exact fix commit + file (handlebars-lang/handlebars.js|b2a083136b11e1da9f0f47a11f749a9830a49328|68d8df5a88e0a26fe9e6084c5c6aaebe67b07da2|lib/handlebars/compiler/base.js)"
+  },
+  {
+    "package": "handlebars",
+    "osvId": "GHSA-3cqr-58rm-57f8",
+    "cwe": [
+      "CWE-94"
+    ],
+    "reason": "affected file exceeds 1000 lines (pre=1074, post=1079) -- requirement (c)"
+  },
+  {
+    "package": "handlebars",
+    "osvId": "GHSA-3mfm-83xf-c92r",
+    "reason": "duplicate: another advisory already captured this exact fix commit + file (handlebars-lang/handlebars.js|b2a083136b11e1da9f0f47a11f749a9830a49328|68d8df5a88e0a26fe9e6084c5c6aaebe67b07da2|lib/handlebars/compiler/base.js)"
+  },
+  {
+    "package": "handlebars",
+    "osvId": "GHSA-442j-39wm-28r2",
+    "reason": "duplicate: another advisory already captured this exact fix commit + file (handlebars-lang/handlebars.js|b2a083136b11e1da9f0f47a11f749a9830a49328|68d8df5a88e0a26fe9e6084c5c6aaebe67b07da2|lib/handlebars/compiler/base.js)"
+  },
+  {
+    "package": "handlebars",
+    "osvId": "GHSA-62gr-4qp9-h98f",
+    "reason": "no qualifying single .js source file (modified, non-test, non-meta, non-minified) found in the fix commit"
+  },
+  {
+    "package": "handlebars",
+    "osvId": "GHSA-765h-qjxv-5f44",
+    "cwe": [
+      "CWE-1321"
+    ],
+    "reason": "affected file exceeds 1000 lines (pre=1288, post=1293) -- requirement (c)"
+  },
+  {
+    "package": "handlebars",
+    "osvId": "GHSA-7rx3-28cr-v5wh",
+    "cwe": [
+      "CWE-1321"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "handlebars",
+    "osvId": "GHSA-9cx6-37pm-9jff",
+    "reason": "duplicate: another advisory already captured this exact fix commit + file (handlebars-lang/handlebars.js|b2a083136b11e1da9f0f47a11f749a9830a49328|68d8df5a88e0a26fe9e6084c5c6aaebe67b07da2|lib/handlebars/compiler/base.js)"
+  },
+  {
+    "package": "handlebars",
+    "osvId": "GHSA-9prh-257w-9277",
+    "cwe": [
+      "CWE-79"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "handlebars",
+    "osvId": "GHSA-f52g-6jhx-586p",
+    "cwe": [
+      "CWE-400"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "handlebars",
+    "osvId": "GHSA-g9r4-xpmj-mj65",
+    "cwe": [
+      "CWE-1321"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "handlebars",
+    "osvId": "GHSA-q2c6-c6pm-g3gh",
+    "reason": "no CWE ground truth (requirement b)"
+  },
+  {
+    "package": "handlebars",
+    "osvId": "GHSA-w457-6q6x-cgp9",
+    "reason": "package \"handlebars\" already has 3 accepted entries -- capped for dataset diversity"
+  },
+  {
+    "package": "handlebars",
+    "osvId": "GHSA-xhpv-hc6g-r9c6",
+    "reason": "duplicate: another advisory already captured this exact fix commit + file (handlebars-lang/handlebars.js|b2a083136b11e1da9f0f47a11f749a9830a49328|68d8df5a88e0a26fe9e6084c5c6aaebe67b07da2|lib/handlebars/compiler/base.js)"
+  },
+  {
+    "package": "handlebars",
+    "osvId": "GHSA-xjpj-3mr7-gcpf",
+    "reason": "duplicate: another advisory already captured this exact fix commit + file (handlebars-lang/handlebars.js|b2a083136b11e1da9f0f47a11f749a9830a49328|68d8df5a88e0a26fe9e6084c5c6aaebe67b07da2|lib/handlebars/compiler/base.js)"
+  },
+  {
+    "package": "js-yaml",
+    "osvId": "GHSA-2pr6-76vf-7546",
+    "cwe": [
+      "CWE-400"
+    ],
+    "reason": "affected file exceeds 1000 lines (pre=1599, post=1611) -- requirement (c)"
+  },
+  {
+    "package": "js-yaml",
+    "osvId": "GHSA-52cp-r559-cp3m",
+    "cwe": [
+      "CWE-400",
+      "CWE-407"
+    ],
+    "reason": "affected file exceeds 1000 lines (pre=1661, post=1667) -- requirement (c)"
+  },
+  {
+    "package": "js-yaml",
+    "osvId": "GHSA-5p4m-2wfm-xmqj",
+    "cwe": [
+      "CWE-407"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "js-yaml",
+    "osvId": "GHSA-724g-mxrg-4qvm",
+    "reason": "no qualifying single .js source file (modified, non-test, non-meta, non-minified) found in the fix commit"
+  },
+  {
+    "package": "js-yaml",
+    "osvId": "GHSA-8j8c-7jfh-h6hx",
+    "cwe": [
+      "CWE-94"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "js-yaml",
+    "osvId": "GHSA-g796-fgmg-93mv",
+    "reason": "no qualifying single .js source file (modified, non-test, non-meta, non-minified) found in the fix commit"
+  },
+  {
+    "package": "js-yaml",
+    "osvId": "GHSA-h67p-54hq-rp68",
+    "cwe": [
+      "CWE-407"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "js-yaml",
+    "osvId": "GHSA-mh29-5h37-fv8m",
+    "cwe": [
+      "CWE-1321"
+    ],
+    "reason": "affected file exceeds 1000 lines (pre=1728, post=1734) -- requirement (c)"
+  },
+  {
+    "package": "js-yaml",
+    "osvId": "GHSA-pm4m-ph32-ghv5",
+    "reason": "no qualifying single .js source file (modified, non-test, non-meta, non-minified) found in the fix commit"
+  },
+  {
+    "package": "js-yaml",
+    "osvId": "GHSA-xxvw-45rp-3mj2",
+    "cwe": [
+      "CWE-20"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "minimatch",
+    "osvId": "GHSA-23c5-xmqv-rm74",
+    "reason": "no qualifying single .js source file (modified, non-test, non-meta, non-minified) found in the fix commit"
+  },
+  {
+    "package": "minimatch",
+    "osvId": "GHSA-3ppc-4f35-3m26",
+    "reason": "no qualifying single .js source file (modified, non-test, non-meta, non-minified) found in the fix commit"
+  },
+  {
+    "package": "minimatch",
+    "osvId": "GHSA-7r86-cg39-jmmj",
+    "reason": "no qualifying single .js source file (modified, non-test, non-meta, non-minified) found in the fix commit"
+  },
+  {
+    "package": "minimatch",
+    "osvId": "GHSA-hxm2-r34f-qmc5",
+    "cwe": [
+      "CWE-400"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "ms",
+    "osvId": "GHSA-3fx5-fwvr-xrjg",
+    "cwe": [
+      "CWE-1333",
+      "CWE-400"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "validator",
+    "osvId": "GHSA-552w-rqg8-gxxm",
+    "cwe": [
+      "CWE-79"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "validator",
+    "osvId": "GHSA-79mx-88w7-8f7q",
+    "cwe": [
+      "CWE-79"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "validator",
+    "osvId": "GHSA-f5w6-r7rg-mcgq",
+    "cwe": [
+      "CWE-400"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "validator",
+    "osvId": "GHSA-q4qq-fm7q-cwp5",
+    "cwe": [
+      "CWE-79"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "validator",
+    "osvId": "GHSA-qpjp-7rp2-9c3f",
+    "cwe": [
+      "CWE-79"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "validator",
+    "osvId": "GHSA-rh6c-q938-3r9q",
+    "cwe": [
+      "CWE-79"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "validator",
+    "osvId": "GHSA-xx4c-jj58-r7x6",
+    "cwe": [
+      "CWE-1333"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  },
+  {
+    "package": "sanitize-html",
+    "osvId": "GHSA-9mrh-v2v3-xpfm",
+    "cwe": [
+      "CWE-79"
+    ],
+    "reason": "affected file exceeds 1000 lines (pre=1007, post=1011) -- requirement (c)"
+  },
+  {
+    "package": "sanitize-html",
+    "osvId": "GHSA-mjxr-4v3x-q3m4",
+    "cwe": [
+      "CWE-20"
+    ],
+    "reason": "no direct github.com/.../commit/<sha> reference found"
+  }
+]

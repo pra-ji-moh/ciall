@@ -1,0 +1,34 @@
+node_modules/
+
+# Real runtime state from actually running bin/ciall.mjs — not source,
+# changes on every use, and the sandbox path/audit history are specific
+# to whatever machine ran it.
+.ciall-sandbox.json
+.ciall-execution-audit.jsonl
+
+# Built programs: rebuilt wherever the child runs.
+.build/
+
+# ARC Prize's game files and recordings: downloaded by the toolkit where it runs,
+# never redistributed from here.
+arc/environment_files/
+arc/recordings/
+
+# Local experiment output (traces, per-run logs, seed sweeps).
+arc/*_trace.txt
+arc/*_look.txt
+arc/run_*.txt
+arc/seed_*.txt
+arc/mindtest/
+arc/ls20_frames.txt
+__pycache__/
+
+# The child's full game-by-game account: large, and rewritten every hour. Its
+# summaries (journal.txt, arc_progress.txt) and its mind (mind.txt, arc_mind/) are kept.
+child/arc_journal.txt
+
+# A compiler object file once written to a file literally named "nul" (a reserved name on Windows).
+certifiable-c/nul
+arc/*.err
+arc/run*.txt
+arc/run*.err

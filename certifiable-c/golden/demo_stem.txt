@@ -1,0 +1,127 @@
+ONE ENGINE, EVERY BRANCH
+Nothing below is special-cased. Each problem is variables, constraints
+and a question; each answer comes from eliminating what cannot be.
+
+NUMBER THEORY
+  Q: (n*n + n) % 2 == 0
+     PROVED TRUE in every world
+     counted exactly: true in 1000 of 1000 worlds
+     (0 regions eliminated, 1000 certain, 999 splits)
+  Q: n*n % 7 == 3 or n*n % 7 == 5 or n*n % 7 == 6
+     PROVED FALSE in every world
+     counted exactly: true in 0 of 1000 worlds
+     (0 regions eliminated, 1000 certain, 999 splits)
+  Q: n*n % 7 == 2
+     BOTH are possible: true at (n=3), false at (n=1)
+     counted exactly: true in 286 of 1000 worlds
+     (0 regions eliminated, 1000 certain, 999 splits)
+
+COMBINATORICS: two dice
+  Q: d1 + d2 == 7
+     BOTH are possible: true at (d1=2, d2=5), false at (d1=2, d2=2)
+     counted exactly: true in 6 of 36 worlds
+     (0 regions eliminated, 18 certain, 17 splits)
+  Q: d1 + d2 >= 11
+     BOTH are possible: true at (d1=5, d2=6), false at (d1=2, d2=3)
+     counted exactly: true in 3 of 36 worlds
+     (0 regions eliminated, 8 certain, 7 splits)
+
+LOGIC: A says "B is a liar". B says "we are both honest or both liars".
+  Q: a
+     PROVED TRUE in every world
+     counted exactly: true in 1 of 1 worlds
+     (1 regions eliminated, 1 certain, 1 splits)
+  Q: b
+     PROVED FALSE in every world
+     counted exactly: true in 0 of 1 worlds
+     (1 regions eliminated, 1 certain, 1 splits)
+
+CHEMISTRY: balance  a C3H8 + b O2 -> c CO2 + d H2O  (smallest, a = 1)
+  Q: b
+     = 5 in every world
+     (0 regions eliminated, 1 certain, 0 splits)
+  Q: c
+     = 3 in every world
+     (0 regions eliminated, 1 certain, 0 splits)
+  Q: d
+     = 4 in every world
+     (0 regions eliminated, 1 certain, 0 splits)
+
+ECONOMICS: demand q = 100 - 2p, supply q = 10 + 3p
+  Q: p
+     = 18 in every world
+     (0 regions eliminated, 1 certain, 0 splits)
+  Q: q
+     = 64 in every world
+     (0 regions eliminated, 1 certain, 0 splits)
+  Q: p > 20
+     PROVED FALSE in every world
+     counted exactly: true in 0 of 1 worlds
+     (0 regions eliminated, 1 certain, 0 splits)
+
+GEOMETRY: a point anywhere in the unit square
+  Q: sqrt((x - 0.5)^2 + (y - 0.5)^2) <= 0.7072
+     PROVED TRUE in every world
+     (0 regions eliminated, 1 certain, 0 splits)
+  Q: sqrt((x - 0.5)^2 + (y - 0.5)^2) <= 0.7
+     BOTH are possible: true at (x=0.004395, y=0.007324), false at (x=0.001953, y=0.001953)
+     (0 regions eliminated, 160 certain, 243 splits)
+  Q: sqrt((x - 0.5)^2 + (y - 0.5)^2)
+     lies in [0, 0.707107]; at real worlds it goes as low as 1.57009e-16 and as high as 0.706416
+     (0 regions eliminated, 132 certain, 147 splits)
+
+GEOMETRY: a triangle with sides a, b in [1, 2] and the angle between them in [0.5, 2.5]
+  Q: sqrt(a^2 + b^2 - 2*a*b*cos(C))
+     lies in [0.49133, 3.79594]; at real worlds it goes as low as 0.495996 and as high as 3.7944
+     (0 regions eliminated, 23406 certain, 43320 splits)
+  Q: sqrt(a^2 + b^2 - 2*a*b*cos(C)) < a + b
+     PROVED TRUE in every world
+     (0 regions eliminated, 390 certain, 389 splits)
+
+PHYSICS: a projectile, speed 10 to 20 m/s, angle 0.5 to 1.0 rad
+  Q: v^2 * sin(2*t) / 9.81
+     lies in [8.57769, 40.7747]; at real worlds it goes as low as 8.58876 and as high as 40.7548
+     (0 regions eliminated, 982 certain, 2092 splits)
+  Q: v^2 * sin(2*t) / 9.81 > 40
+     BOTH are possible: true at (v=20, t=0.6909), false at (v=12.5, t=0.75)
+     (0 regions eliminated, 482 certain, 920 splits)
+  Q: v^2 * sin(2*t) / 9.81 > 45
+     PROVED FALSE in every world
+     (0 regions eliminated, 1 certain, 0 splits)
+
+PHYSICS: dropped from a height h between 1 and 10 m
+  Q: sqrt(2*9.81*h) <= 14.01
+     PROVED TRUE in every world
+     (0 regions eliminated, 1 certain, 0 splits)
+  Q: h
+     NO WORLD satisfies the constraints: they contradict each other
+     (1 regions eliminated, 0 certain, 0 splits)
+
+CALCULUS AND ALGEBRA: f(x) = x^3 - 6x^2 + 11x - 6 on [-10, 10]
+  its derivative, worked out symbolically: 3*x^2 - 12*x + 11
+  roots, each PROVED to exist and to be the only one in its interval:
+    in [0.9999999998, 1.0000000003]
+    in [1.9999999995, 2.0000000001]
+    in [2.9999999999, 3.0000000005]
+  and every other part of [-10, 10] is proved root-free
+  where it turns (roots of the derivative): 1.422650 2.577350
+  increasing on [3, 10]? PROVED
+  increasing on [1, 3]?  no: the derivative changes sign there
+  the integral of x^2 from 0 to 1 is certainly in [0.333308, 0.333358]
+  the integral of sin(x) from 0 to pi is certainly in [1.99984, 2.00016]
+
+SYSTEMS: where does the circle x^2 + y^2 = 4 meet the parabola y = x^2 - 1?
+  2 meeting points, each PROVED to be exactly one solution in its box:
+    x in [-1.517489914, -1.517489914], y in [1.302775638, 1.302775638]
+    x in [1.517489914, 1.517489914], y in [1.302775638, 1.302775638]
+  and none anywhere else in the square, proved
+
+SYSTEMS: three unknowns with x + y + z = 6, xy + yz + zx = 11, xyz = 6
+  6 solutions, each proved unique in its box: (1, 2, 3) (1, 3, 2) (2, 1, 3) (3, 1, 2) (2, 3, 1) (3, 2, 1)
+  and no others in [0, 4]^3, proved
+
+WHAT THIS DOES NOT DO YET
+  A root that touches zero without crossing is reported unresolved, and so
+  is a system whose solutions are not isolated (a whole curve of them).
+  And each problem was written as constraints by hand: reading one from
+  a description of the world is the stage built on this one.

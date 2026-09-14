@@ -1,0 +1,126 @@
+BABY -> RESEARCHER.
+
+A program that starts unable to tell any two situations apart, and grows
+by acquiring questions. Nothing here is scripted as "now it understands
+arithmetic": every capacity has to EARN its place by refining the
+partition, and a candidate that refines nothing is rejected as a
+restatement however sophisticated it looks.
+
+Runs on smarsh_reason.c, the code test_smarsh_reason.c checks.
+
+the true situation: a=3, b=1, called a cup  (situation 27 of 32)
+
+stage                 worlds  can ask  derived  bits unheld
+------------------------------------------------------------
+newborn                    1        0/6       0/6         0.00
+comparison                 3        1/6       1/6         0.00
+nearness                   5        1/6       1/6         0.00
+naming                    10        2/6       2/6         0.00
+counting                  32        6/6       3/6         3.58
+
+It starts unable to tell any two situations apart, so it can form no
+question at all, and it says so rather than producing an answer.
+
+EARNING A CAPACITY
+------------------------------------------------------------
+  after comparison, it can tell 3 kinds of situation apart
+  at_least   reject   splits nothing; it is what it already knows, said again
+  close      ACQUIRE  splits 3 worlds into 5
+  exact_a    ACQUIRE  splits 3 worlds into 10
+
+  The rejection is not a judgement about sophistication. "at_least"
+  is a perfectly good question. It is simply already definable, so
+  acquiring it would add vocabulary and no capacity.
+
+WHAT THE ORDER OF THE LADDER IS, AND IS NOT
+------------------------------------------------------------
+  most refining single capacity: sum (7 worlds in one step)
+  the one it actually takes first: more (3 worlds)
+
+  So the ladder is NOT ordered by how much a step teaches. Greedy
+  would skip straight to exact counting. What orders it is what can
+  be FORMED yet: you cannot ask how many before you can tell apart.
+  That is a constructibility order, and it is not derivable from
+  information alone. Saying otherwise would be dressing up a
+  developmental fact as a theorem.
+
+ARITHMETIC DOES NOT EXTEND STRUCTURE, IT SUBSUMES IT
+------------------------------------------------------------
+  structure alone        5 worlds
+  exact counts alone    16 worlds
+  can structure be recovered from counts?  yes
+  can counts be recovered from structure?  no
+
+  Once it can say "three", "more" was always derivable and stops
+  being a separate thing it knows. The earlier stage is not thrown
+  away, it becomes shorthand. That is checked, not asserted: the
+  projection succeeds one way and refuses the other.
+
+THE EXAMINATION, STAGE BY STAGE
+------------------------------------------------------------
+
+  newborn  (1 worlds, knows: nothing)
+    is a bigger than b      no such question  
+    how many altogether     no such question  
+    is the total four       no such question  
+    is it called a cup      no such question  
+    is a at least two       no such question  
+    is the total even       no such question  
+
+  comparison  (3 worlds, knows: more)
+    is a bigger than b      derived             = 1
+    how many altogether     no such question  
+    is the total four       no such question  
+    is it called a cup      no such question  
+    is a at least two       no such question  
+    is the total even       no such question  
+
+  nearness  (5 worlds, knows: more, close)
+    is a bigger than b      derived             = 1
+    how many altogether     no such question  
+    is the total four       no such question  
+    is it called a cup      no such question  
+    is a at least two       no such question  
+    is the total even       no such question  
+
+  naming  (10 worlds, knows: more, close, name)
+    is a bigger than b      derived             = 1
+    how many altogether     no such question  
+    is the total four       no such question  
+    is it called a cup      derived             = 1
+    is a at least two       no such question  
+    is the total even       no such question  
+
+  counting  (32 worlds, knows: more, close, name, sum, exact_a, exact_b)
+    is a bigger than b      derived             = 1
+    how many altogether     cannot say           1.58 bits unheld
+    is the total four       cannot say           1.00 bits unheld
+    is it called a cup      derived             = 1
+    is a at least two       derived             = 1
+    is the total even       cannot say           1.00 bits unheld
+
+THE RESEARCHER: AN ANSWER THAT CARRIES ITS OWN PROOF
+------------------------------------------------------------
+  claim: the total is four
+  from a glance alone: cannot say, 3 worlds still standing, 1.00 bits it does not hold
+
+  It can phrase the question now and it still will not answer it.
+  So it works out what to measure. Not by ranking the measurements
+  as interesting: by counting what each one would leave standing.
+
+    count the first pile    narrows it, but may not finish
+    count the second pile   SETTLES IT whichever way it comes back
+    count them together     SETTLES IT whichever way it comes back
+
+  it chooses: count the second pile
+  measures, and the total is four: derived, value 1, S = 0.500
+  worlds still standing: 1 of 32
+  a checker sharing none of the engine re-derives it from the witness alone: yes
+
+  At the first stage it could not form this question. In the middle
+  it could phrase it and refused to answer. At the end it worked out
+  which single measurement would settle it, took that one, answered,
+  and handed over a proof a stranger can check.
+
+  Nothing in between was a confidence rising. Every step was worlds
+  being ruled out, and the answer arrived when the survivors agreed.

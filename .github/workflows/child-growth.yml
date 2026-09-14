@@ -1,0 +1,50 @@
+# The child, growing on its own in the cloud: every hour, whether or not any
+# laptop is on. It builds itself, plays the practice worlds and every public
+# ARC-AGI-3 game (downloaded by ARC Prize's toolkit on the runner), and commits
+# what it settled (child/) back, so the next hour starts where this one stood.
+name: child growth
+
+on:
+  schedule:
+    - cron: "17 * * * *"      # every hour, at 17 minutes past
+  workflow_dispatch: {}        # and whenever started by hand
+
+permissions:
+  contents: write              # to commit the child's mind back
+
+concurrency:
+  group: child-growth          # never two stretches at once: one mind
+  cancel-in-progress: false
+
+jobs:
+  grow:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: ARC Prize toolkit
+        run: pip install arc-agi
+
+      - name: build the child
+        run: sh child/build_child.sh
+
+      - name: one stretch
+        run: PYTHON=python sh child/grow_hourly.sh
+
+      - name: keep what it settled
+        run: |
+          git config user.name "ciall-child"
+          git config user.email "ciall-child@users.noreply.github.com"
+          git add child/
+          if git diff --cached --quiet; then
+            echo "nothing new settled"
+          else
+            git commit -m "child: $(tail -n 1 child/arc_progress.txt | cut -c1-120)"
+            git pull --rebase --autostash || true
+            git push
+          fi

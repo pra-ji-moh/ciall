@@ -1,0 +1,4 @@
+self-check passed
+  train {'clean': 3679, 'ambiguous': 321, 'no_grounds': 0}
+  test  {'clean': 3233, 'ambiguous': 285, 'no_grounds': 482}
+  ambiguous label balance: 0.488  (a fair coin, by construction)

@@ -1,0 +1,29 @@
+PROOF BY INDUCTION, OVER LAWS IT FOUND ITSELF
+
+EACH LAW'S FORMULA, AND ITS PROOF
+  combine(a, b) = a + b
+    base case and inductive step both checked as exact identities
+  repeat(a, b) = a*b
+    base case and inductive step both checked as exact identities
+  stairs(n) = (n^2 + n)/2
+    base case and inductive step both checked as exact identities
+  It never saw a formula. It saw piles, groups and staircases, found
+  the laws, and the formulas are what the laws must be.
+
+CLAIMS ABOUT EVERY NUMBER
+  combine(x, y) = combine(y, x): order never matters when combining
+    PROVED for every number: both sides reduce to the same formula
+  repeat(x, y) = repeat(y, x): x groups of y is y groups of x
+    PROVED for every number: both sides reduce to the same formula
+  repeat(x, combine(y, y)) = combine(repeat(x, y), repeat(x, y)): doubling distributes
+    PROVED for every number: both sides reduce to the same formula
+  combine(stairs(x), stairs(x)) = repeat(x, x + 1): Gauss's rule
+    PROVED for every number: both sides reduce to the same formula
+  stairs(x) = repeat(x, x): a staircase is a square (a guess worth testing)
+    FALSE: at x = 2 one side is 3 and the other 4
+
+WHAT IS AND IS NOT SETTLED
+  Gauss's rule was a conjecture in demo_laws: true everywhere checked.
+  Now it is a theorem about the laws, for every number. What stays a
+  leap is whether real piles keep obeying those laws past what was seen.
+  That is a question about the world, and only looking answers it.

@@ -1,0 +1,108 @@
+ciall-explorer-mind 1
+runs 1
+best 1
+mask 37 41 0
+mask 52 10 0
+mask 53 9 0
+mask 53 10 0
+mask 53 11 0
+mask 54 10 0
+mask 63 0 0
+mask 63 1 0
+mask 63 2 0
+mask 63 3 0
+mask 63 4 0
+mask 63 5 0
+mask 63 6 0
+mask 63 7 0
+mask 63 8 0
+mask 63 9 0
+mask 63 10 0
+mask 63 11 0
+mask 63 12 0
+mask 63 13 0
+mask 63 14 0
+mask 63 15 0
+mask 63 16 0
+mask 63 17 0
+mask 63 18 0
+mask 63 19 0
+mask 63 20 0
+mask 63 21 0
+mask 63 22 0
+mask 63 23 0
+mask 63 24 0
+mask 63 25 0
+mask 63 26 0
+mask 63 27 0
+mask 63 28 0
+mask 63 29 0
+mask 63 30 0
+mask 63 31 0
+mask 63 32 0
+mask 63 33 0
+mask 63 34 0
+mask 63 35 0
+mask 63 36 0
+mask 63 37 0
+mask 63 38 0
+mask 63 39 0
+mask 63 40 0
+mask 63 41 0
+mask 63 42 0
+mask 63 43 0
+mask 63 44 0
+mask 63 45 0
+mask 63 46 0
+mask 63 47 0
+mask 63 48 0
+mask 63 49 0
+mask 63 50 0
+mask 63 51 0
+mask 63 52 0
+mask 63 53 0
+mask 63 54 0
+mask 63 55 0
+mask 63 56 0
+mask 63 57 0
+mask 63 58 0
+mask 63 59 0
+mask 63 60 0
+mask 63 61 0
+mask 63 62 0
+mask 63 63 0
+colour 0 0 0 0
+colour 1 0 0 0
+colour 2 0 0 0
+colour 3 6 0 0
+shift 7 3 -6 6 1
+colour 4 0 0 0
+colour 5 23 0 0
+shift 7 5 -4 -4 17
+colour 6 17 0 0
+shift 7 6 4 4 17
+colour 7 0 0 0
+colour 8 0 0 0
+colour 9 0 0 0
+colour 10 0 0 0
+colour 11 0 0 0
+colour 12 0 0 0
+colour 13 0 0 0
+colour 14 0 0 0
+colour 15 6 0 0
+shift 7 15 54 -54 1
+onto 0 0 1
+kind 64661 1 0
+kind 3132 1 0
+kind 1047 1 1
+kind 1052 1 0
+kind 536870919 1 1
+kind 2084 1 1
+kind 4 1 1
+kind 2081 1 1
+kind 2096 1 0
+kind 8330 1 0
+kind 1051 1 0
+kind 1056 1 0
+kind 11 1 1
+route 0 9 28104 27726 27348 27096 26718 26592 26214 26088 25836

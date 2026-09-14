@@ -1,0 +1,53 @@
+A LADDER OF CONCEPTS, BUILT FROM PILES OF THINGS
+
+It is never given + or x. It is given what a child can see: how many
+are in a pile, whether two piles match, and how many there are after
+pushing piles together. Everything else it has to find.
+
+WORLD 1: two piles of up to 15 things, all 256 ways
+--------------------------------------------------------------------------
+  is "how many after pushing together" fixed by the first pile alone?
+    no. proof: 0+0 and 0+1 look the same from pile 1 and merge to 0 and 1
+  searching everything it can observe for what fixes it:
+    found: merged = combine(count pile 1, count pile 2)
+    a rule over 256 witnessed pairs, checked on all 256 situations: holds
+    a corner of what it found:
+         0   1   2   3   4
+         1   2   3   4   5
+         2   3   4   5   6
+         3   4   5   6   7
+         4   5   6   7   8
+    order does not matter (checked on every pair): yes
+    an empty pile changes nothing: yes (e = 0)
+  It has found addition. Nobody named it; it is called "combine" here
+  because that is all the learner knows about it: what it does.
+
+WORLD 2: three piles of up to 5, all 216 ways
+--------------------------------------------------------------------------
+  it brings combine along and applies it to piles 1 and 2: every situation is covered
+  from the three counts alone, taken two at a time: not enough; it needs all three at once
+  with its own concept on the list: all merged = f(count pile 3, combine(1, 2))
+    checked on all 216 situations: holds
+    is f just combine again? yes: three piles is combine used twice
+  It needed nothing new. The old concept was a building block, and
+  what took three things at once became two steps of one idea.
+
+WORLD 3: some number of groups, each with the same number of things
+--------------------------------------------------------------------------
+  total = f(groups, each): found, checked on all 64: holds
+  is it combine? no. 0 groups of 1 is 0, combine(0, 1) is 1
+  a new concept. Call it "repeat". How does it relate to the old one?
+    one more group = combine(what it was, one group's worth):
+      holds in 41 of the 41 cases where combine is known,
+      and 15 more need combine on a pile bigger than 15, which it has
+      never seen. Those are refused, not guessed.
+  It has found multiplication, and found it to be repeated addition,
+  as far as its experience of addition reaches.
+
+WHAT IT CANNOT DO YET
+--------------------------------------------------------------------------
+  Its addition stops at 15 + 15 because that is all it has seen. A
+  child gets past that with a LAW (one more in a pile is one more in
+  the total), which covers numbers never seen. Laws over worlds too
+  many to list are the next stage, and the one that leads to summation
+  and, further up, to calculus.

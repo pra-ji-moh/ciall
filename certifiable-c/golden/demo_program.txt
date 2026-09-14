@@ -1,0 +1,64 @@
+The same kernel, on a program.
+
+No kernel change. Not one line. demo_desk.c reasons about a trading desk,
+smarsh_learner.c grows from nothing into a learner, test_smarsh_reason
+section 19 does induction with worlds as RULES, and this reasons about
+code. All four link the same smarsh_reason.c and it knows about none of them.
+
+That is the answer to "are we building on one specific thing": the kernel
+has no domain in it at all. It has worlds, questions, answers and one
+operation. A domain is what you hand it.
+
+the world count is read off the declarations
+--------------------------------------------
+  two variables over 0..3 give 16 worlds, and that number is derived,
+  not chosen: it is the common refinement of what the declarations can ask.
+  the branch condition adds nothing: already definable from x and y
+  z adds nothing either: already definable from x and y
+
+an invariant, with both inputs entirely unknown
+-----------------------------------------------
+  x                         undetermined  S= 0.00  -      witness checks
+  y                         undetermined  S= 0.00  -      witness checks
+  assert z >= 2             undetermined  S= 0.00  -      witness checks
+  invariant z >= x          derived       S= 0.50  true   witness checks
+
+  Both inputs undetermined at S = 0, and z >= x comes out DERIVED
+  true. That is a proof over all 16 executions, not a test of some
+  of them, and it needed no evidence at all.
+
+a partial precondition is enough
+--------------------------------
+  given only: x >= 2
+  y                         undetermined  S= 0.00  -      witness checks
+  assert z >= 2             derived       S= 0.50  true   witness checks
+
+  The assertion holds and y was never constrained. Four of the eight
+  surviving executions have y = 0. It did not need them to agree on
+  y, only on the assertion.
+
+when it does not hold, the witness IS the counterexample
+--------------------------------------------------------
+  assert z >= 2  (x = 1)    undetermined  S= 0.00  -      witness checks
+  still 4 executions alive, so it will not answer
+
+    learn y               SETTLES IT
+    learn which branch    narrows it, may not finish
+  it takes: learn y
+  assert z >= 2  (x = 1, y = 0)derived       S= 0.50  false  witness checks
+
+  derived FALSE, and the witness holds exactly one execution: x=1, y=0, z=1
+  A failed assertion does not come back as low confidence. It comes
+  back as the input that breaks it, and a checker confirms it.
+
+a specification that contradicts itself
+---------------------------------------
+  required x >= 2 and x <= 1
+  verdict: contradiction, 0 executions admitted
+  Not an unsatisfiable-looking low score. A distinct verdict saying
+  the requirements admit no execution, which is a fact about the
+  specification and not about the analysis.
+
+======================================================================
+Same kernel as the trading desk, the learner, and the induction over
+rules. Zero lines changed for any of them.

@@ -1,0 +1,92 @@
+
+A. what is known before anything arrives
+----------------------------------------
+  32 worlds possible, nothing eliminated
+  approve                    undetermined  S= 0.00  answer=-      witness checks
+  kyc                        undetermined  S= 0.00  answer=-      witness checks
+  sanctioned                 undetermined  S= 0.00  answer=-      witness checks
+  within limit               undetermined  S= 0.00  answer=-      witness checks
+  market open                undetermined  S= 0.00  answer=-      witness checks
+  collateral                 undetermined  S= 0.00  answer=-      witness checks
+
+B. context arrives, one piece at a time
+---------------------------------------
+  target: approve
+
+  context                      worlds gone  productive  informative   answer set
+  ----------------------------------------------------------------------------
+  market is open                        16         yes           no   {false, true}
+  counterparty IS sanctioned             8         yes          yes   {false}
+  market is open (again)                 0          no           no   {false}
+
+  rounds=3  productive=2  informative=1  settled=True  live=8
+
+C. commit
+---------
+  allowed=True   verdict=derived   answer=false
+
+  and the four inputs it never learned:
+    kyc                        undetermined  S= 0.00  answer=-      witness checks
+    within limit               undetermined  S= 0.00  answer=-      witness checks
+    collateral                 undetermined  S= 0.00  answer=-      witness checks
+
+  One fact decided it. Four of the five inputs are still entirely
+  unknown, S = 0 on each, and the answer is derived anyway. Nothing
+  had to be assumed about them, because the operator table holds one
+  value across that whole row.
+
+D. the same desk, with nothing disqualifying
+--------------------------------------------
+  applied: kyc is current
+  applied: not sanctioned
+  applied: market is open
+
+  approve                    undetermined  S= 0.00  answer=-      witness checks
+  commit allowed=False   value returned=0  (0 is "no value", not "false")
+
+  Three facts in, and it will not answer. Limit and collateral are
+  unknown, so the worlds disagree, so there is nothing to pass on.
+
+E. asked to guess anyway
+------------------------
+  tau=0.50  refused   verdict=undetermined  S=0.00 < tau, worlds untouched (4)
+  tau=0.25  refused   verdict=undetermined  S=0.00 < tau, worlds untouched (4)
+  tau=0.00  GUESSED true  debt=1.0 bit   witness still says undetermined
+           retracted -> undetermined, debt=0.0
+
+  S is 0 here because nothing about approve has been ruled out. So
+  any bar above zero refuses. At tau=0 it will guess, and the guess
+  is uniform, carries a recorded debt, and its own witness declines
+  to back it.
+
+F. structure alone, where a score cannot follow
+-----------------------------------------------
+  within limit               undetermined  S= 0.00  answer=-      witness checks
+  collateral                 undetermined  S= 0.00  answer=-      witness checks
+  both operands: undetermined, S = 0.00, answer set {false, true}
+
+  limit or not limit         derived       S= 0.50  answer=true   witness checks
+  limit and not limit        derived       S= 0.50  answer=false  witness checks
+  limit or collateral        undetermined  S= 0.00  answer=-      witness checks
+
+  Three composites. Identical operand answer sets and identical
+  operand supports. Derived true, derived false, and undetermined.
+  No function of the operands returns three values for one input,
+  so nothing that combines per-claim confidences reproduces this
+  row. The kernel gets it by composing the questions and asking
+  once.
+
+G. context that conflicts
+-------------------------
+  applied: counterparty IS sanctioned
+  applied: counterparty is NOT sanctioned
+
+  verdict=contradiction  live=0  contradicted=True  commit allowed=False
+
+  Not low confidence, and not a tie to be broken. A fourth verdict:
+  the constraints admit no world at all. The incoming claim was
+  checked against what was already held instead of overwriting it.
+
+==============================================================================
+Every answer above came from counting the worlds that survived.
+No score was combined with another score at any point.

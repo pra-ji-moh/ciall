@@ -1,0 +1,33 @@
+THE CHILD AT PLAY
+=================
+Frames of 64 by 64 coloured cells, numbered actions, and a signal
+when a level ends. Nothing else reaches it.
+
+ONE. A maze world.
+  finished every level after 70 actions
+  itself: 4 cells that moved together, first seen after 2 actions, colours 3 6
+  action 1: moves it -2 rows, +0 columns (held 13 times, blocked 2)
+  action 2: moves it +2 rows, +0 columns (held 15 times)
+  action 3: moves it +0 rows, -2 columns (held 14 times, blocked 1)
+  action 4: moves it +0 rows, +2 columns (held 22 times)
+  what blocks: colour 5  (from 1 failed moves)
+  what ends a level: covering colour 4  (over 3 endings)
+  level 1: 22 actions, shortest possible 15
+  level 2: 31 actions, shortest possible 31
+  level 3: 17 actions, shortest possible 17
+  all levels: 70 actions against a shortest possible 63
+
+TWO. The same mazes, actions shuffled, one action dead, a new ending colour.
+  finished every level after 72 actions
+  itself: 4 cells that moved together, first seen after 1 action, colours 3 6
+  action 1: moves it +0 rows, +2 columns (held 22 times)
+  action 2: moves it -2 rows, +0 columns (held 13 times, blocked 2)
+  action 3: does nothing it could see (3 tries)
+  action 4: moves it +0 rows, -2 columns (held 14 times)
+  action 5: moves it +2 rows, +0 columns (held 15 times)
+  what blocks: colour 5  (from 1 failed moves)
+  what ends a level: covering colour 11  (over 3 endings)
+  level 1: 24 actions, shortest possible 15
+  level 2: 31 actions, shortest possible 31
+  level 3: 17 actions, shortest possible 17
+  all levels: 72 actions against a shortest possible 63

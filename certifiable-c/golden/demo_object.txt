@@ -1,0 +1,85 @@
+THINGS, AND SAYING SOMETHING ABOUT ALL OF THEM
+=============================================
+Nothing below is a row of numbers. Each is a collection of things
+with joins between them, and nothing is said about what they are.
+
+ONE. Sets of numbers, and a count nobody explains.
+  6 scenes, made of things and joins, with nothing else said
+  evens is how many x with ((0 == (x.value % 2)))
+  1399 descriptions were possible, 5 survived, support 0.9964
+  another account fits just as well: how many x with ((how many joins == (x.value % 2)))
+  the longest description it got to write was 5 steps of the 9 it
+  allows, so nothing longer was searched, and nothing longer is claimed
+  it had to invent the idea of counting the things a condition
+  holds of, and the condition, before it could say that
+
+TWO. Five triangles, given as three things each carrying an angle.
+  out of 35826 things it could say about every scene, 12 stand on their own:
+    (0 == how many joins)                      rules out 13980 of 14075
+    (2 <= (how many things - how many joins))  rules out 13696 of 14075
+    (0 == (how many joins * largest angle))    rules out 13454 of 14075
+    (180 == (total angle + (how many joins % 3))) rules out 13034 of 14075
+    ((90 * how many joins) <= largest angle)   rules out 12963 of 14075
+    (180 == (total angle + (how many joins % 2))) rules out 12509 of 14075
+    (how many joins <= (180 - total angle))    rules out 11929 of 14075
+    (3 == abs((how many things - how many joins))) rules out 11745 of 14075
+    (total angle == (60 * how many things))    rules out 10947 of 14075
+    (3 == max(how many things, how many joins)) rules out 10449 of 14075
+    (largest angle <= 100)                     rules out 9812 of 14075
+    every x: (1 <= x.angle)                    rules out 9810 of 14075
+  settled against every scene of at most 3 things on a grid, and every
+  scene one step from one it saw: 14075 scenes in all, written out in full,
+  so what is dropped as saying nothing, and what is dropped as already
+  forced, are eliminations with a scene behind them, not guesses
+  the longest thing it got to say was 6 steps of the 9 it allows:
+  anything needing greater length was never written down, and so was
+  never eliminated either: nothing longer is claimed against
+  nothing was said about geometry, angles or straight lines.
+  "for every triangle the angles come to 180" is the description
+  that survived when the others did not
+
+THREE. Four rings of things joined in a loop, of different lengths.
+  out of 21643 things it could say about every scene, 6 stand on their own:
+    ((how many things % 2) <= (how many things % 3)) rules out 13828 of 14175
+    (6 <= (how many joins - largest mark))     rules out 13760 of 14175
+    (2 <= (how many things - total mark))      rules out 13453 of 14175
+    every x: (2 == x's joins)                  rules out 13388 of 14175
+    (total mark <= (4 - largest mark))         rules out 11892 of 14175
+    (largest mark <= (total mark - largest mark)) rules out 6257 of 14175
+  settled against every scene of at most 3 things on a grid, and every
+  scene one step from one it saw: 14175 scenes in all, written out in full,
+  so what is dropped as saying nothing, and what is dropped as already
+  forced, are eliminations with a scene behind them, not guesses
+  the longest thing it got to say was 5 steps of the 9 it allows:
+  anything needing greater length was never written down, and so was
+  never eliminated either: nothing longer is claimed against
+  being a ring is not a word it was given. It is what is left
+  when every other account of those joins has been eliminated
+
+FOUR. Words: things carrying a letter, joined in order.
+  out of 19497 things it could say about every scene, 12 stand on their own:
+    every joined x and y: not (y joined to x)  rules out 13252 of 14087
+    (1 == (how many things - how many joins))  rules out 13034 of 14087
+    every x: (x's joins <= 1)                  rules out 12199 of 14087
+    (how many joins <= min(how many things, largest letter)) rules out 10505 of 14087
+    every x: (1 <= x.letter)                   rules out 9811 of 14087
+    every x and y: (x's joins <= y.letter)     rules out 9696 of 14087
+    every joined x and y: (x.letter <= y.letter) rules out 9670 of 14087
+    ((how many things % 3) == (total letter % 3)) rules out 9343 of 14087
+    every x: (x's joins <= x.letter)           rules out 8979 of 14087
+    (6 <= (total letter - largest letter))     rules out 8336 of 14087
+    (0 == (total letter % 2))                  rules out 7276 of 14087
+    (how many joins <= min(4, largest letter)) rules out 7208 of 14087
+  settled against every scene of at most 3 things on a grid, and every
+  scene one step from one it saw: 14087 scenes in all, written out in full,
+  so what is dropped as saying nothing, and what is dropped as already
+  forced, are eliminations with a scene behind them, not guesses
+  the longest thing it got to say was 5 steps of the 9 it allows:
+  anything needing greater length was never written down, and so was
+  never eliminated either: nothing longer is claimed against
+  order is not built in anywhere. A word is things and joins,
+  and what holds across every join is found like anything else
+
+What this adds.
+  a set, a triangle, a ring and a word are one kind of situation,
+  and a description can now speak of all their parts at once.

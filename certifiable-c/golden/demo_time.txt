@@ -1,0 +1,33 @@
+TIME AND CHANGE: A TOY CAR ON A TRACK
+States: place 0 to 4, blue (b) or red (r). Pushes: left, right; walls at
+both ends. It learns by watching pushes with the lights on.
+
+WHAT IS REALLY DIFFERENT
+  10 states as described; 5 that pushing and touching could ever tell apart.
+  Colour never changes what a push does or what the sensor feels, so no
+  amount of acting in the dark could reveal it. Time decides what matters.
+
+IN THE DARK. It has no idea where the car is.
+  at the start, possible:            {b0 b1 b2 b3 b4 r0 r1 r2 r3 r4}
+  touch: not against a wall          {b1 b2 b3 r1 r2 r3}
+  push right                         {b2 b3 b4 r2 r3 r4}
+  touch: against a wall              {b4 r4}
+  It knows exactly where the car is, and it knows it cannot know the colour.
+
+ACTING WITHOUT KNOWING
+  get the car to place 0, starting with no idea where it is:
+    plan: left left left left   (12 sets of possibilities searched; re-checked by running it: works from every possible start)
+  get a RED car to place 0, starting with no idea:
+    NO PLAN EXISTS. All 15 sets of possibilities it could reach were tried.
+  Pushing never changes the colour, and it proved that no sequence of
+  pushes, of any length, can make sure of a red car.
+
+A PUSH IT NEVER WATCHED
+  This time it never saw what pushing LEFT does to a blue car at place 2.
+  get the car to place 0, starting with no idea:
+    NO PLAN EXISTS using only pushes it has watched. All 8 sets of possibilities it could reach were tried.
+  It will not bet a plan on a push it has never seen. Any route to place 0
+  from total ignorance passes through that case.
+  It watches that one push, and asks again:
+  get the car to place 0, starting with no idea:
+    plan: left left left left   (12 sets of possibilities searched; re-checked by running it: works from every possible start)

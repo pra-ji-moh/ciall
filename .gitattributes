@@ -1,0 +1,4 @@
+# Scripts and the workflow run on Linux: keep their line endings as LF.
+*.sh text eol=lf
+*.yml text eol=lf
+*.py text eol=lf

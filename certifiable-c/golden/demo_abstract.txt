@@ -1,0 +1,65 @@
+BUILDING ITS OWN WORLDS FROM RAW OBSERVATION
+
+A BALANCE. Seven raw yes/no attributes: a weight on each of six pegs,
+and whether the beam is painted red. It sees all 128 situations and
+which way the beam goes. Nothing says what "left" or "count" means.
+    left peg 1         matters
+    left peg 2         matters
+    left peg 3         matters
+    right peg 1        matters
+    right peg 2        matters
+    right peg 3        matters
+    beam painted red   never matters (proved)
+  interchangeable: {left peg 1, left peg 2, left peg 3}  -> invents: how many of these are on (0 to 3)
+  interchangeable: {right peg 1, right peg 2, right peg 3}  -> invents: how many of these are on (0 to 3)
+  worlds: 128 raw situations seen, 16 worlds in what it built; its questions DETERMINE the outcome
+  and then, over its own questions, the rule (rows: how many in the first
+  group, columns: how many in the second; L tips left, R tips right):
+       = R R R
+       L = R R
+       L L = R
+       L L L =
+  It found "more" as well as "how many", and the paint never mattered.
+
+SIX LAMPS, and a chime that rings when an even number are lit
+    lamp 1             matters
+    lamp 2             matters
+    lamp 3             matters
+    lamp 4             matters
+    lamp 5             matters
+    lamp 6             matters
+  interchangeable: {lamp 1, lamp 2, lamp 3, lamp 4, lamp 5, lamp 6}  -> invents: how many of these are on (0 to 6)
+  worlds: 64 raw situations seen, 7 worlds in what it built; its questions DETERMINE the outcome
+  the chime, by how many are lit: 0:rings 1:- 2:rings 3:- 4:rings 5:- 6:rings
+  64 raw situations became 7 worlds, and "even" is a fact about those 7.
+
+THE BALANCE AGAIN, but it only ever sees 90 of the 128 situations
+    left peg 1         matters
+    left peg 2         matters
+    left peg 3         matters
+    right peg 1        matters
+    right peg 2        matters
+    right peg 3        matters
+    beam painted red   never seen to matter (dropped: a conjecture)
+  interchangeable (conjectured): {left peg 1, left peg 2, left peg 3}  -> invents: how many of these are on (0 to 3)
+  interchangeable (conjectured): {right peg 1, right peg 2, right peg 3}  -> invents: how many of these are on (0 to 3)
+  worlds: 90 raw situations seen, 16 worlds in what it built; its questions DETERMINE the outcome
+  the 38 situations it never saw, through the worlds it built:
+    38 inferred; checked against what really happens: 38 right, 0 wrong
+    0 with no grounds (no seen situation in the same world): no answer
+  Each inference rests on the conjectures above and says so. It got from
+  90 cases to the ones it never saw by finding WHAT to generalise over.
+
+THREE SWITCHES, and a light that comes on when they spell a prime
+number in binary (switch 1 worth 4, switch 2 worth 2, switch 3 worth 1)
+    switch 1           matters
+    switch 2           matters
+    switch 3           matters
+  no two attributes can be swapped without changing what happens, so
+  there is nothing to count. Every raw distinction matters on its own.
+  on its own: {switch 1}
+  on its own: {switch 2}
+  on its own: {switch 3}
+  worlds: 8 raw situations seen, 8 worlds in what it built; its questions DETERMINE the outcome
+  Place value is an abstraction, but not one that comes from symmetry,
+  and this stage only finds those. It says so instead of forcing one.

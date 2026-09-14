@@ -1,0 +1,46 @@
+ONE MEDIUM: EVERYTHING IS ELIMINATION IN A DESCRIPTION
+
+A CONCEPT IT NAMES FOR ITSELF
+  it defines: filled = s1 + s2 + s3, and can now speak of it
+
+LEARNING A RULE: THE RULES THAT CONTRADICT WHAT IT SAW ARE ELIMINATED
+  a bell rings when enough slots are filled, and it does not know how many
+  k                                              = 2   (proved, standing on nothing it guessed)
+  the threshold was not fitted or guessed: every other value was ruled out
+
+A PROPERTY OF THAT RULE, PROVED IN THE SAME ENGINE
+  filled >= k => filled + 1 >= k                 true in every world   (proved, standing on nothing it guessed)
+  once the bell rings, adding a pebble never silences it: not tested, proved
+
+A GUESS, MARKED AS ONE. WHAT DOES AN ANSWER STAND ON?
+  total > 50                                     both are possible   (not proved either way)
+  it has poured nothing this big, so nothing follows yet. Now its law:
+  total                                          = 55   (resting on what it guessed: a claim of its own law;)
+  total > 50                                     true in every world   (resting on what it guessed: a claim of its own law;)
+
+SOMETHING IT IS TOLD, AND WHAT HAPPENS WHEN THE TELLER IS CAUGHT
+  the book says the pile is one bigger than the two trays together
+  total                                          NOTHING fits: what it holds cannot all be true
+  it pours them and counts 55, which the book cannot survive:
+  total                                          NOTHING fits: what it holds cannot all be true
+  so the book is caught out, and everything it said stops counting:
+  total                                          = 55   (proved, standing on nothing it guessed)
+  total > 50                                     true in every world   (proved, standing on nothing it guessed)
+
+TIME: THE SAME QUANTITIES AT t, t+1, t+2, TIED BY CONSTRAINTS
+  a car on a track of five places, walls at both ends, pushed twice
+  p2 == 4                                        both are possible   (not proved either way)
+      a world where it does, pushes and all: p0=2 p1=3 p2=4 a1=1 a2=1
+  that witness IS the plan: no separate planner, just a world that fits
+  p2 >= 1                                        both are possible   (not proved either way)
+  p2 <= 4                                        true in every world   (proved, standing on nothing it guessed)
+  abs(p2 - p0) <= 2                              true in every world   (proved, standing on nothing it guessed)
+  whatever it does, it cannot move more than two places in two pushes:
+  proved, not searched for and not tested
+
+WHY THIS IS NOT LAYERS
+  The concept, the rule it learned, the proof about that rule, the guess,
+  the book it was told, the plan and the safety property are all the same
+  kind of thing: constraints on a described world. One operation runs on
+  all of them: eliminate what cannot be. Take any piece out and the rest
+  still works, because there is no stack to fall over.

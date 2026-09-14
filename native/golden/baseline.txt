@@ -1,0 +1,20 @@
+baseline: softmax + cross-entropy, 64 hidden, 4000 steps, seed 0
+
+category         n   accuracy   mean conf     correct behaviour
+clean         4836      1.000       0.991      confident, right
+ambiguous      436      0.521       0.690        conf near 0.50
+no_grounds     728      0.995       0.952        should abstain
+
+Can one confidence number tell "no grounds" from "genuinely ambiguous"?
+  mean confidence, no_grounds : 0.952
+  mean confidence, ambiguous  : 0.690
+  AUROC separating them       : 0.946   (0.5 = cannot tell at all)
+
+  The model is confident in a region it has never seen. It has no
+  channel for "no grounds", so it extrapolates and asserts.
+  It does tell them apart, but BACKWARDS: more confident with no
+  grounds than on a coin flip. Abstaining on low confidence would
+  refuse the ambiguous cases, which it should answer, and answer
+  the no-grounds ones, which it should refuse.
+  Whatever replaces this has to abstain on no grounds and answer,
+  uncertainly, on the ambiguous class. Abstaining there is wrong.

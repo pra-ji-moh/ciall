@@ -1,0 +1,49 @@
+LAWS: REACHING PAST WHAT WAS SEEN, AND SAYING SO
+
+What it has seen: one thing added to piles of up to 30; two piles of
+up to 15 pushed together; up to 7 groups of up to 7; staircases of up
+to 10 steps. Each was already discovered as a concept, as a table.
+
+THE LAWS BEHIND THE TABLES
+    combine(a, 0) = a;  each step: one more
+    agrees with all 256 witnessed cases
+    repeat(a, 0) = 0;  each step: combine with the same amount again
+    agrees with all 64 witnessed cases (some checks leaned on an earlier law past what it saw)
+    stairs(0) = 0;  each step: combine with the next count
+    agrees with all 11 witnessed cases (some checks leaned on an earlier law past what it saw)
+  Addition is one more, again and again. Multiplication is addition,
+  again and again. A staircase is adding the next step. Found, in that
+  order, each resting on the one before.
+
+INSIDE WHAT IT HAS SEEN
+  combine(7, 8) = 15
+      seen, not inferred
+  repeat(6, 7) = 42
+      seen, not inferred
+
+PAST ANYTHING IT HAS SEEN
+  combine(40, 70) = 110
+      resting on:
+        - one more is always the next number, past 30 too
+        - combining works the same past 15
+  repeat(12, 13) = 156
+      resting on:
+        - one more is always the next number, past 30 too
+        - combining works the same past 15
+        - repeating works the same past 7 groups of 7
+  stairs(100) = 5050
+      resting on:
+        - one more is always the next number, past 30 too
+        - combining works the same past 15
+        - staircases grow the same way past 10 steps
+
+A PATTERN IN THE STAIRS
+  two staircases of n steps side by side: is that something it knows?
+    matches repeat(n, n + 1) on all 11 staircases it has seen
+    matches repeat(n + 1, n) on all 11 staircases it has seen
+    (8 candidates tried, 2 matched)
+  at 1000 steps, computed the long way: 1001000 and 1001000, equal
+  That is Gauss's rule, found. It holds everywhere it was checked, and
+  agrees at 1000. It is still NOT proved for every n: that takes proof by
+  induction over the laws themselves, the next stage. Until then it is a
+  conjecture, and called one.

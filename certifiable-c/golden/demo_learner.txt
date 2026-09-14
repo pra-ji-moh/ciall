@@ -1,0 +1,62 @@
+An autonomous learner, running on smarsh_learner.c.
+
+No curriculum. Nothing tells it what to acquire or when. It is given goals
+and an environment, and it works out the rest:
+
+    cannot even PHRASE the goal    -> acquire the smallest capacity that
+                                      would let it, and try again
+    can phrase it, cannot settle   -> work out which single measurement
+                                      would settle it, and take that one
+    settled                        -> answer, with a witness
+    the evidence contradicts       -> find what it was told that cannot be
+                                      true, drop it, carry on
+
+Every one of those decisions is counted, not scored. The only preference
+in the whole loop is which capacity to acquire when several would do, and
+it is named as a preference rather than buried.
+
+==========================================================================
+goal                      worlds  acquired  measured     outcome  proved
+==========================================================================
+is a bigger than b             3         1         1 derived = 1     yes
+      acquire more     worlds 1 -> 3
+      measure more
+are they within one            5         1         1 derived = 1     yes
+      acquire close    worlds 3 -> 5
+      measure close
+is it called a cup            10         1         1 derived = 1     yes
+      acquire name     worlds 5 -> 10
+      measure name
+is a at least two             28         1         0 derived = 1     yes
+      acquire exact_a  worlds 10 -> 28
+is the total four             32         1         1 derived = 1     yes
+      acquire sum      worlds 28 -> 32
+      measure sum
+is the total even             32         0         0 derived = 1     yes
+
+  it now holds: more, close, name, exact_a, sum
+  total acquisitions 5, total measurements 4
+
+  Nobody told it the order. Each capacity was acquired at the moment
+  a goal could not be phrased without it, and never before.
+
+THE SAME EVIDENCE, A FINER VOCABULARY
+--------------------------------------------------------------------------
+  glance recorded: [('more', 2), ('close', 0), ('name', 1)]
+  with 3 capacities (10 worlds): cannot even phrase it
+  after acquiring exact_a (28 worlds), with NO new measurement: derived = 1
+
+  It never counted the pile. It learned to ask about counts, replayed
+  the glance it already had, and the answer was sitting in it. The
+  vocabulary was the missing part, not the evidence.
+
+BEING MISLED, AND GETTING OUT OF IT
+--------------------------------------------------------------------------
+  told, after counting 3 and 1, that the first pile is the smaller one
+  state: contradiction, 0 worlds standing
+  after recovery: dropped more=0, 1 worlds standing, the total is four: derived = 1
+
+  It did not lower a confidence and carry on. The claims were jointly
+  impossible, which is a verdict of its own, and it dropped one and
+  said which. Choosing the most recent is a policy; that the set was
+  impossible is not.

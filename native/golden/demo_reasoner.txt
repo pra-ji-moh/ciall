@@ -1,0 +1,24 @@
+reasoner: transitive closure, 0 learned parameters
+  facts: 18 edges over 14 entities
+  6 entities appear in no fact at all
+
+  true             89
+  false            80
+  undetermined    280
+  groundless      151
+
+  answers carrying an explicit derivation: 169
+
+  lt(7, 13) -> undetermined : both entities known, neither order follows.
+                                   The premises permit both. Answering
+                                   "undetermined" IS the grounded answer.
+  lt(14, 13) -> groundless   : an entity no fact mentions. Nothing to
+                                   derive from. Abstention is correct.
+
+  A confidence number cannot express that difference. A derivation can,
+  because it knows what it had, not merely what it produced.
+
+  lt(1, 7) -> true, and here is why:
+      lt(1, 10)
+      lt(10, 2)
+      lt(2, 7)

@@ -1,0 +1,84 @@
+FINDING THE FORMULATION
+=======================
+Four worlds, given as bare numbers. It is told nothing else.
+
+ONE. Three trays of pebbles, and how many there are altogether.
+  it was given 3 readings and 9 situations, and told nothing else
+    t1       matters: situations 0 and 1 differ in it alone, and disagree
+    t2       matters: situations 0 and 2 differ in it alone, and disagree
+    t3       matters: situations 0 and 3 differ in it alone, and disagree
+  total is (t1 + (t2 + t3))
+  6000 descriptions were possible, 1 survived, support 0.9998
+  it ran out of room before writing every description it could,
+  so that share is over the part it searched, not over all of them
+  it was seen across the whole range it is being used on
+
+TWO. Rectangles: two sides, a colour code, and the space inside.
+  it was given 3 readings and 8 situations, and told nothing else
+    side_a   matters: situations 0 and 2 differ in it alone, and disagree
+    side_b   matters: situations 0 and 3 differ in it alone, and disagree
+    tint     silent: changed on its own and nothing followed
+  area is (side_a * side_b)
+  6000 descriptions were possible, 6 survived, support 0.9990
+  it ran out of room before writing every description it could,
+  so that share is over the part it searched, not over all of them
+  another account fits just as well: (side_a * max(side_b, tint))
+  used outside what it saw, so it is held as a guess
+
+THREE. Something moving: how fast, for how long, and how far it got.
+  it was given 2 readings and 7 situations, and told nothing else
+    pace     matters: situations 0 and 1 differ in it alone, and disagree
+    span     matters: situations 0 and 2 differ in it alone, and disagree
+  gone is (pace * span)
+  6000 descriptions were possible, 4 survived, support 0.9993
+  it ran out of room before writing every description it could,
+  so that share is over the part it searched, not over all of them
+  another account fits just as well: (pace * max(span, 2))
+  used outside what it saw, so it is held as a guess
+
+The two above have nothing to do with each other.
+  it wrote the same form for both: (side_a * side_b) and (pace * span)
+  that is the analogy, and no one built an analogy step:
+  both formulations were found by elimination and came out alike
+
+FOUR. Three slots and a bell. Nobody says what makes it ring.
+  it was given 3 readings and 6 situations, and told nothing else
+    s1       matters: situations 2 and 3 differ in it alone, and disagree
+    s2       matters: situations 1 and 3 differ in it alone, and disagree
+    s3       matters: situations 1 and 4 differ in it alone, and disagree
+  it named a quantity of its own: q1 = (s1 + (s2 + s3))
+  rang is (q1 >= 2)
+  3148 descriptions were possible, 8 survived, support 0.9975
+  it ran out of room before writing every description it could,
+  so that share is over the part it searched, not over all of them
+  another account fits just as well: ((s1 * (s2 + s3)) >= 1)
+  it was seen across the whole range it is being used on
+
+Now it is asked about the world it just described for itself.
+  the description it wrote, now the thing it thinks in
+  a case it never saw, two of the other slots filled: rang = 1 (derived)
+  told only that it stayed silent with the third slot filled,
+  it works backwards: the other two hold 0 (derived)
+
+FIVE. A pile shared out, and a count that goes round in cycles.
+  each is (pile / parts)
+  left is (n % 3)
+  nobody mentioned division or remainders. They are just short
+  descriptions, and short descriptions are what survives
+
+SIX. A table with no outcome column at all. What is always true here?
+  out of 223 statements it could make, 2 stand on their own:
+    ((a + b) == 10)
+    ((b % 2) <= 0)
+  everything true of any two numbers at all was thrown out as saying
+  nothing, and everything the others already force was thrown out too.
+  the engine proved both of those, so this is what it knows, not a list
+
+SEVEN. Numbers in a row, with no hint that order means anything.
+  1 1 2 3 5 8 13 21   next is (prev + prev2)
+  3 6 12 24 48 96     next is (prev + prev)
+  growth and recurrence are not a separate faculty either
+
+What this closes.
+  the description was the last place a person was still doing the work.
+  it is now found the same way everything else is: by elimination.

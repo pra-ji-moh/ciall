@@ -1,0 +1,82 @@
+ANALOGY BY STRUCTURE, FOUND AND PROVED
+
+It has met 9 things before, in philosophy, law, biology, physics,
+economics, logic and medicine. Nothing tells it which one is relevant.
+
+QUESTION: when does "the machine may run"?
+  all 9 things it knows: 8 ruled out by invariants alone, without a search;
+  1 searched exactly: 1 the same shape, 0 not the same shape after all
+
+  SAME SHAPE AS "the act is permissible" (philosophy)   proof re-checked on every case: yes
+    guard closed           <->  consent given           no=no  yes=yes
+    operator present       <->  harm avoided            no=no  yes=yes
+    remote override        <->  harm outweighed         no=no  yes=yes
+    what it knew there, said here, and checked here:
+      if "guard closed" is no, then "the machine may run" is no whatever else holds
+        (from: if "consent given" is no, then "the act is permissible" is no whatever else holds) holds
+      "operator present" and "remote override" play exactly the same role
+        (from: "harm avoided" and "harm outweighed" play exactly the same role) holds
+
+QUESTION: when does "the alarm sounds"?
+  all 9 things it knows: 8 ruled out by invariants alone, without a search;
+  1 searched exactly: 1 the same shape, 0 not the same shape after all
+
+  SAME SHAPE AS "a jury of three convicts" (law)   proof re-checked on every case: yes
+    sensor A tripped       <->  juror 1 convinced       no=no  yes=yes
+    sensor B tripped       <->  juror 2 convinced       no=no  yes=yes
+    sensor C tripped       <->  juror 3 convinced       no=no  yes=yes
+    what it knew there, said here, and checked here:
+      "sensor A tripped" and "sensor B tripped" play exactly the same role
+        (from: "juror 1 convinced" and "juror 2 convinced" play exactly the same role) holds
+      "sensor A tripped" and "sensor C tripped" play exactly the same role
+        (from: "juror 1 convinced" and "juror 3 convinced" play exactly the same role) holds
+      "sensor B tripped" and "sensor C tripped" play exactly the same role
+        (from: "juror 2 convinced" and "juror 3 convinced" play exactly the same role) holds
+
+QUESTION: when does "the relief valve opens"?
+  all 9 things it knows: 8 ruled out by invariants alone, without a search;
+  1 searched exactly: 1 the same shape, 0 not the same shape after all
+
+  SAME SHAPE AS "treat now" (medicine)   proof re-checked on every case: yes
+    pressure               <->  symptoms                low=low  middle=middle  high=high
+    manual release         <->  test positive           no=no  yes=yes
+    what it knew there, said here, and checked here:
+      if "pressure" is low, then "the relief valve opens" is no whatever else holds
+        (from: if "symptoms" is low, then "treat now" is no whatever else holds) holds
+      if "pressure" is high, then "the relief valve opens" is yes whatever else holds
+        (from: if "symptoms" is high, then "treat now" is yes whatever else holds) holds
+
+QUESTION: when does "the breaker stays closed"?
+  all 9 things it knows: 7 ruled out by invariants alone, without a search;
+  2 searched exactly: 2 the same shape, 0 not the same shape after all
+
+  SAME SHAPE AS "the gene is expressed" (biology)   proof re-checked on every case: yes
+    overload               <->  activator bound         no=yes  yes=no
+    manual trip            <->  repressor bound         no=no  yes=yes
+    what it knew there, said here, and checked here:
+      if "overload" is yes, then "the breaker stays closed" is no whatever else holds
+        (from: if "activator bound" is no, then "the gene is expressed" is no whatever else holds) holds
+      if "manual trip" is yes, then "the breaker stays closed" is no whatever else holds
+        (from: if "repressor bound" is yes, then "the gene is expressed" is no whatever else holds) holds
+
+  SAME SHAPE AS "the argument is sound" (logic)   proof re-checked on every case: yes
+    overload               <->  argument valid          no=yes  yes=no
+    manual trip            <->  premises true           no=yes  yes=no
+    what it knew there, said here, and checked here:
+      if "overload" is yes, then "the breaker stays closed" is no whatever else holds
+        (from: if "argument valid" is no, then "the argument is sound" is no whatever else holds) holds
+      "overload" and "manual trip" play exactly the same role
+        (from: "argument valid" and "premises true" play exactly the same role) holds
+      if "manual trip" is yes, then "the breaker stays closed" is no whatever else holds
+        (from: if "premises true" is no, then "the argument is sound" is no whatever else holds) holds
+
+QUESTION: when does "the pump runs"?
+  all 9 things it knows: 8 ruled out by invariants alone, without a search;
+  1 searched exactly: 0 the same shape, 1 not the same shape after all
+  NOTHING it has met has this shape. It says so, rather than reaching for
+  the nearest thing; a loose analogy is exactly what this refuses to make.
+
+WHAT THIS DOES NOT DO YET
+  Each problem arrives already stated as a question and its factors,
+  and each thing in the library was stated the same way. Turning a raw
+  situation into that form by itself is the stage still to come.

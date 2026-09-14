@@ -1,0 +1,93 @@
+A CHILD, LEFT ALONE WITH A SCALE AND SOME PEBBLES
+Nothing tells it what to try. It has a scale with three slots each
+side, and it can pour two trays together and count the pile.
+
+DAY ONE. It has never seen anything.
+  it chooses: it has no way yet to tell one arrangement from another
+    arrangement 0: the scale did 1, which it could not have said
+  it chooses: nothing it knows says what the scale would do
+    arrangement 1: the scale did 0, which it could not have said
+    >>> IT CAN NOW: counting: it invented "how many" and built its own worlds
+  after 12 experiments (0 guesses made: 0 held, 0 caught out)
+  WHAT IT CAN DO:
+    counting: it invented "how many" and built its own worlds
+      (after experiment 3)
+  NOT YET: telling which tray is heavier, by a rule over its own questions
+  NOT YET: saying what pouring two trays gives, where it has poured
+  NOT YET: and past that, by a law of its own
+  NOT YET: proving things about every number at once
+  WHAT RESTS ON A GUESS:
+    a symmetry it has not seen every case of
+  WHAT IT WANTS NEXT: to try arrangement 25, because nothing it knows says what the scale would do
+
+DAY TWO. It carries on, remembering everything.
+  it chooses: nothing it knows says what the scale would do
+    arrangement 25: the scale did 2, which it could not have said
+  it chooses: nothing it knows says what the scale would do
+    arrangement 27: the scale did 1, which it could not have said
+    >>> IT CAN NOW: telling which tray is heavier, by a rule over its own questions
+    >>> IT CAN NOW: saying what pouring two trays gives, where it has poured
+    >>> IT CAN NOW: and past that, by a law of its own
+    >>> IT CAN NOW: proving things about every number at once
+  after 72 experiments (34 guesses made: 34 held, 0 caught out)
+  WHAT IT CAN DO:
+    counting: it invented "how many" and built its own worlds
+      (after experiment 3)
+    telling which tray is heavier, by a rule over its own questions
+      (after experiment 16)
+    saying what pouring two trays gives, where it has poured
+      (after experiment 22)
+    and past that, by a law of its own
+      (after experiment 38)
+    proving things about every number at once
+      (after experiment 38)
+  WHAT RESTS ON A GUESS:
+    a symmetry it has not seen every case of
+    combining goes on working past what it has poured
+  WHAT IT HAS PROVED: pouring has a closed form, proved by induction, and order never matters, for every number
+  WHERE IT IS GROUNDED: 18 pours done, the largest tray 7, the largest pile 8
+  WHAT IT WANTS NEXT: to try arrangement 50, because it can only guess this through a symmetry it has not seen every case of, so the scale can prove it wrong
+
+SOMEBODY ASKS IT THINGS
+  two pebbles against one:           0   (a guess: resting on a symmetry it has not seen every case of)
+  five against two:                  REFUSES: its rule was learned on trays of at most 3, and it will not guess past that
+  pour three and four:               7   (a guess: resting on "one more is always the next number"; "combining goes on working past what it has poured";)
+  pour forty and seventy:            110   (a guess: resting on "one more is always the next number"; "combining goes on working past what it has poured";)
+
+DAY THREE. A pebble is quietly stuck to one tray, and it does not know.
+  it chooses: it can only guess this through a symmetry it has not seen every case of, so the scale can prove it wrong
+    arrangement 50: it expected 2 and saw 2, so its guess stands
+  it chooses: it can only guess this through a symmetry it has not seen every case of, so the scale can prove it wrong
+    arrangement 51: it expected 1 and saw 1, so its guess stands
+  it chooses: its law says what this should give, and pouring can prove the law wrong
+    poured 6 and 6: its law said 12 but it was 11. The law is wrong
+    >>> IT HAS LOST: and past that, by a law of its own
+    >>> IT HAS LOST: proving things about every number at once
+  it stops: nothing left worth trying: everything it could try is already settled on ground it has proved
+  after 128 experiments (81 guesses made: 80 held, 1 caught out)
+  WHAT IT CAN DO:
+    counting: it invented "how many" and built its own worlds
+      (after experiment 3)
+    telling which tray is heavier, by a rule over its own questions
+      (after experiment 16)
+    saying what pouring two trays gives, where it has poured
+      (after experiment 22)
+  LOST (what it stood on was refuted): and past that, by a law of its own
+  LOST (what it stood on was refuted): proving things about every number at once
+  WHAT RESTS ON A GUESS:
+    nothing: everything it says is from what it saw
+  WHERE IT IS GROUNDED: 64 pours done, the largest tray 7, the largest pile 14
+  WHAT IT WANTS NEXT: nothing; everything it could try is already settled on ground it has proved
+
+WHAT HAPPENED
+  It chose every experiment itself, always where it was blind or where
+  it had guessed and could be caught out. It gained counting, then a
+  rule for the scale, then pouring, then a law reaching past anything it
+  had poured, then a theorem about every number. It remembered all of it
+  from one day to the next. And when the world stopped agreeing with its
+  law, it did not explain the result away: it lost the ability that
+  rested on it and said so.
+
+  What is still missing: it cannot make up a NEW KIND of experiment,
+  only choose among the ones its world offers. Inventing the question
+  "what if I took pebbles away?" is the next thing to build.
