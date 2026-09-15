@@ -1,0 +1,1 @@
+2026-09-15 09:19	SELF_SHIFT_SURE	2u	3u	ruled-out	no better: dev 15->10 held 8->7

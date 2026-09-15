@@ -72,7 +72,9 @@ def tried():
 def write_candidate(lines, idx, name, new):
     if os.path.exists(CAND):
         shutil.rmtree(CAND)
-    shutil.copytree(SRC, CAND)
+    # only what it is made of: not build leavings, and not "nul", a name Windows keeps
+    shutil.copytree(SRC, CAND, ignore=shutil.ignore_patterns(
+        "nul", "*.exe", "*.obj", "*.o", "*.pdb", "*.ilk", "node_modules", "__pycache__"))
     m = DEFINE.match(lines[idx].strip())
     lines2 = list(lines)
     lines2[idx] = m.group(1) + new + m.group(4)
