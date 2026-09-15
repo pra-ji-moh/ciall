@@ -11,6 +11,16 @@
  *   POINT(v)  it pointed at colour v
  *   MATCH     two panels were alike
  *
+ * and the same four said of a ROLE instead of a colour, where a role is what a
+ * thing does rather than which colour it is: the thing it moves, the ground, what
+ * blocks it, what gets used up, the rare thing, what never changes, what appears,
+ * the bulk. A theory in colours is true of one game only, because colour 9 means
+ * nothing in the next game. A theory in roles -- "it ends when I step onto the
+ * rare thing once what can be taken is gone" -- can be true of a game it has
+ * never seen, and those are the ones worth carrying.
+ *
+ *   ONTO_R(r) LAST_R(r) GONE_R(r) POINT_R(r)
+ *
  * A family is a shape of theory: one atom, or two atoms both true ("ONTO+GONE":
  * the body steps onto some v once no u is left). A family's domain is every
  * choice of its colours (at most 16 x 16 = 256, one sm_possibility_t). Every act
@@ -33,15 +43,32 @@
 #include "smarsh_core.h"
 
 #define EN_COLOURS 16u
-#define EN_ATOMS 5u            /* ONTO LAST GONE POINT MATCH */
-#define EN_MAX_FAMILIES 32u
+#define EN_ROLES 8u            /* what a thing does, rather than which colour it is */
+#define EN_ATOMS 9u            /* ONTO LAST GONE POINT MATCH, and the first four by role */
+#define EN_MAX_FAMILIES 64u
 #define EN_LOG 16384u          /* acts remembered this game, to replay against a new family */
 
-typedef enum { EN_ONTO = 0, EN_LAST = 1, EN_GONE = 2, EN_POINT = 3, EN_MATCH = 4, EN_NONE = 5 } en_atom_t;
+typedef enum {
+  EN_ONTO = 0, EN_LAST = 1, EN_GONE = 2, EN_POINT = 3, EN_MATCH = 4,
+  EN_ONTO_R = 5, EN_LAST_R = 6, EN_GONE_R = 7, EN_POINT_R = 8, EN_NONE = 9
+} en_atom_t;
+
+/* the roles, in the order the child fills them in (see smarsh_explore.c) */
+typedef enum {
+  EN_R_BODY = 0,    /* what it moves */
+  EN_R_GROUND = 1,  /* what there is most of */
+  EN_R_BLOCK = 2,   /* what refused it entry */
+  EN_R_TAKEN = 3,   /* what there is less of than when the level began */
+  EN_R_RARE = 4,    /* what there was least of */
+  EN_R_STILL = 5,   /* what has not changed in number at all */
+  EN_R_NEW = 6,     /* what was not there when the level began */
+  EN_R_BULK = 7     /* what there is next-most of */
+} en_role_t;
 
 /* what was true of one act: a set of colours per atom, and whether panels matched */
 typedef struct {
-  uint16_t onto, last, gone, point;
+  uint16_t onto, last, gone, point;          /* the colours it was true of */
+  uint16_t onto_r, last_r, gone_r, point_r;  /* and the roles those colours held */
   unsigned char match;
   unsigned char ended;
 } en_obs_t;
@@ -72,9 +99,10 @@ sm_status_t en_begin(en_theory_t *t, const char *library);
 sm_status_t en_observe(en_theory_t *t, const en_obs_t *o);
 
 /* What to go towards, from the theories still possible that have earned it (an
-   ending here, or a family kept from another game): colours to step onto,
-   colours to have none of, colours to point at, and whether matching matters. */
-sm_status_t en_aim(const en_theory_t *t, uint16_t *onto, uint16_t *gone, uint16_t *point, int *match);
+   ending here, or a family kept from another game). Colours to go to, to have none of, to point at; whether matching matters; and the
+   same said in roles, for the explorer to resolve into colours in the game it is in. */
+sm_status_t en_aim(const en_theory_t *t, uint16_t *onto, uint16_t *gone, uint16_t *point, int *match,
+                   uint16_t *onto_role, uint16_t *gone_role, uint16_t *point_role);
 
 /* the name of a family, e.g. "ONTO+GONE" */
 const char *en_family_name(const en_family_t *f, char *buf, unsigned cap);

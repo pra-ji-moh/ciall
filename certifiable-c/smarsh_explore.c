@@ -409,12 +409,145 @@ static en_obs_t OBS;
 static uint16_t AIM_ONTO, AIM_GONE, AIM_POINT;
 static int AIM_MATCH;
 
+/*
+ * Which colours hold which role, here and now. A role is what a thing does, not
+ * which colour it is, so a theory said in roles can be true of a game it has
+ * never seen. Nothing here is given: the body is what it found itself to be, a
+ * blocker is what refused it entry, what is taken is what there is less of than
+ * when the level began.
+ */
+static uint16_t ROLE_OF[PL_COLOURS];
+
+static void work_out_roles(const pl_frame_t *f) {
+  static ex_sum_t now_s[PL_COLOURS], start_s[PL_COLOURS];
+  int body = body_colour();
+  unsigned v, ground = 0u, bulk = 0u, rare = 0u;
+  colour_sums(f, now_s);
+  colour_sums(&LEVEL_START, start_s);
+  memset(ROLE_OF, 0, sizeof ROLE_OF);
+  for (v = 1u; v < PL_COLOURS; v++) {
+    if (start_s[v].count > start_s[ground].count) ground = v;
+  }
+  for (v = 0u; v < PL_COLOURS; v++) {
+    if (v != ground && start_s[v].count > start_s[bulk].count) bulk = v;
+    if (start_s[v].count > 0u && (start_s[rare].count == 0u || start_s[v].count < start_s[rare].count)) rare = v;
+  }
+  for (v = 0u; v < PL_COLOURS; v++) {
+    if ((int)v == body) ROLE_OF[v] |= 1u << EN_R_BODY;
+    if (v == ground) ROLE_OF[v] |= 1u << EN_R_GROUND;
+    if (v == bulk && start_s[v].count > 0u) ROLE_OF[v] |= 1u << EN_R_BULK;
+    if (v == rare && start_s[v].count > 0u) ROLE_OF[v] |= 1u << EN_R_RARE;
+    if (BLOCKER[v]) ROLE_OF[v] |= 1u << EN_R_BLOCK;
+    if (start_s[v].count > 0u && now_s[v].count < start_s[v].count) ROLE_OF[v] |= 1u << EN_R_TAKEN;
+    if (start_s[v].count > 0u && now_s[v].count == start_s[v].count && (int)v != body) {
+      ROLE_OF[v] |= 1u << EN_R_STILL;
+    }
+    if (start_s[v].count == 0u && now_s[v].count > 0u) ROLE_OF[v] |= 1u << EN_R_NEW;
+  }
+}
+
+/* the colours that hold any of these roles, here and now */
+static unsigned colours_of_roles(uint16_t roles) {
+  unsigned v, m = 0u;
+  for (v = 0u; v < PL_COLOURS; v++) {
+    if (ROLE_OF[v] & roles) m |= 1u << v;
+  }
+  return m;
+}
+
+static unsigned theories_left(void) {
+  unsigned i, n = 0u;
+  for (i = 0u; i < THEORY.n_fam; i++) n += sm_count(&THEORY.fam[i].dom);
+  return n;
+}
+
 static void theory_aims(void) {
-  (void)en_aim(&THEORY, &AIM_ONTO, &AIM_GONE, &AIM_POINT, &AIM_MATCH);
+  uint16_t onto_r = 0u, gone_r = 0u, point_r = 0u;
+  (void)en_aim(&THEORY, &AIM_ONTO, &AIM_GONE, &AIM_POINT, &AIM_MATCH, &onto_r, &gone_r, &point_r);
+  /* what the theories say in roles becomes colours in the game it is in now */
+  AIM_ONTO |= (uint16_t)colours_of_roles(onto_r);
+  AIM_GONE |= (uint16_t)colours_of_roles(gone_r);
+  AIM_POINT |= (uint16_t)colours_of_roles(point_r);
+  {
+    /*
+     * An aim that takes in nearly everything there is rules nothing out, and
+     * says nothing about where to go: following it would only cost it the
+     * choice it would otherwise have made. So it is not an aim, and is dropped.
+     */
+    unsigned v, present = 0u, aimed = 0u;
+    static ex_sum_t seen[PL_COLOURS];
+    colour_sums(&LEVEL_START, seen);
+    for (v = 0u; v < PL_COLOURS; v++) {
+      if (seen[v].count == 0u) continue;
+      present++;
+      if (AIM_ONTO & (1u << v)) aimed++;
+    }
+    if (present > 0u && aimed * 2u > present) AIM_ONTO = 0u;
+  }
   if (!ON(M_THEORY)) {
     AIM_ONTO = AIM_GONE = AIM_POINT = 0u;
     AIM_MATCH = 0;
   }
+}
+
+/*
+ * Its ways of choosing what to do next, and whether each is getting it anywhere.
+ * Each is a hypothesis about itself: "choosing this way gets me somewhere here",
+ * over {it does, it does not}. An act chosen that way which brings nothing new --
+ * no situation it had not met, no theory ruled out, no level ended -- is evidence
+ * against it; EX_BARREN of them running rule it out, and it stops choosing that
+ * way in this level. If every way is ruled out, that is a contradiction about
+ * itself: they cannot all be hopeless, since it has to do something, so the
+ * question was wrong and all of them are opened again.
+ *
+ * This is what it does to a game, done to itself: the answer to being stuck is to
+ * give up the way of going, not to go that way harder.
+ */
+typedef enum { W_RECALL = 0, W_REPLAY = 1, W_AIM = 2, W_EXPLORE = 3, W_WAYS = 4 } ex_way_t;
+static const char *WAY_NAME[W_WAYS] = {
+  "walking the way I remember", "doing what won the last level", "going by what I think ends a level",
+  "trying what I have not tried"
+};
+#define EX_BARREN 60u   /* acts chosen that way, bringing nothing new, before it is ruled out */
+static unsigned WAY_BARREN[W_WAYS];
+static unsigned char WAY_OUT[W_WAYS];
+static ex_way_t WAY_NOW;
+
+static void ways_begin(void) {
+  memset(WAY_BARREN, 0, sizeof WAY_BARREN);
+  memset(WAY_OUT, 0, sizeof WAY_OUT);
+  WAY_NOW = W_EXPLORE;
+}
+
+/* what came of the act it just chose that way */
+static int way_judge(ex_explorer_t *ex, int something_new) {
+  if (something_new) {
+    WAY_BARREN[WAY_NOW] = 0u;
+    return 0;
+  }
+  WAY_BARREN[WAY_NOW]++;
+  if (WAY_BARREN[WAY_NOW] < EX_BARREN || WAY_OUT[WAY_NOW]) return 0;
+  WAY_OUT[WAY_NOW] = 1u;
+  ex->ways_dropped++;
+  {
+    unsigned w, left = 0u;
+    char a1[200];
+    for (w = 0u; w < W_WAYS; w++) {
+      if (!WAY_OUT[w]) left++;
+    }
+    sprintf(a1, "%s has brought me nothing for %u acts: I stop choosing that way here",
+            WAY_NAME[WAY_NOW], (unsigned)EX_BARREN);
+    think(ex, "is the way I am going getting me anywhere?", a1);
+    if (left == 0u) {
+      /* they cannot all be hopeless: it has to do something, so the question was wrong */
+      memset(WAY_OUT, 0, sizeof WAY_OUT);
+      memset(WAY_BARREN, 0, sizeof WAY_BARREN);
+      ex->ways_reopened++;
+      think(ex, "have I really no way of going at all?",
+            "no: I must do something, so that cannot be right. Every way is open again");
+    }
+  }
+  return 1;
 }
 
 /* colours worth stepping onto; 0 if none */
@@ -1392,7 +1525,11 @@ sm_status_t ex_save(const ex_explorer_t *ex, FILE *out) {
     for (f2 = 0u; f2 < THEORY.n_fam; f2++) {
       const en_family_t *fam = &THEORY.fam[f2];
       if (fam->survived_ending && sm_count(&fam->dom) > 0u) {
-        fprintf(out, "family %s 1\n", en_family_name(fam, name, sizeof name));
+        /* a theory in colours is about this game only; one in roles can be true of
+           a game it has never seen, and only those are offered to other games */
+        int carries = strstr(en_family_name(fam, name, sizeof name), "_R") != 0;
+        fprintf(out, "%s %s 1\n", carries ? "family" : "family-here",
+                en_family_name(fam, name, sizeof name));
       }
     }
     if (THEORY.widenings > 0u) fprintf(out, "widened %u\n", THEORY.widenings);
@@ -1527,7 +1664,8 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
     memset(KNOWN_LEN, 0, sizeof KNOWN_LEN);
   }
   read_off();
-  (void)en_begin(&THEORY, SELF_USE_LIVE ? getenv("CIALL_LIVE") : 0);   /* families that survived in other games */
+  (void)en_begin(&THEORY, SELF_USE_LIVE ? getenv("CIALL_LIVE") : 0);
+  ways_begin();   /* families that survived in other games */
   memset(BLOCKER, 0, sizeof BLOCKER);
   theory_aims();
   memset(RESTLESS, 0, sizeof RESTLESS);
@@ -1567,8 +1705,9 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
     }
 
     /* a way remembered from an earlier run, step by step, while the world answers as it did */
-    if (recalling) {
+    if (recalling && !WAY_OUT[W_RECALL]) {
       unsigned L = ex->levels_done;
+      WAY_NOW = W_RECALL;
       if (L < EX_MAX_LEVELS && recall_pos < KNOWN_LEN[L]) {
         idx = recall_step(cur, &now, KNOWN_ROUTE[L][recall_pos]);
         if (idx == EX_MAX_ACTS) {
@@ -1585,7 +1724,8 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       }
     }
     /* the plan that won the last level, step by step, while it fits */
-    if (replaying && !recalling) {
+    if (replaying && !recalling && !WAY_OUT[W_REPLAY]) {
+      WAY_NOW = W_REPLAY;
       if (plan_pos < ex->plan_len) {
         idx = fit_step(ex, cur, &now, plan_pos);
         if (idx == EX_MAX_ACTS) {
@@ -1607,7 +1747,8 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       int body = body_colour();
       unsigned best_d = EX_GOAL_UNKNOWN + 1u;
       static ex_sum_t cs[PL_COLOURS];
-      int aim = body >= 0 && aim_mask() != 0u && N_GOALD[cur] != EX_GOAL_UNKNOWN;
+      int aim = body >= 0 && aim_mask() != 0u && N_GOALD[cur] != EX_GOAL_UNKNOWN && !WAY_OUT[W_AIM];
+      WAY_NOW = aim ? W_AIM : W_EXPLORE;
       if (aim) colour_sums(&now, cs);
       for (i = 0u; i < N_NACT[cur]; i++) {
         if (N_NEXT[cur][i] == EX_NONE && N_FLAG[cur][i] == 0u) {
@@ -1831,12 +1972,24 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       }
       if (kind == 6u) OBS.point = (uint16_t)(1u << now.c[PY(code)][PX(code)]);
       OBS.match = (unsigned char)(MATCH_VARIES && N_MATCHD[cur] == 0u);
+      /* the same act, said in roles: this is what can carry to another game */
+      work_out_roles(&now);
+      for (v = 0u; v < PL_COLOURS; v++) {
+        if (OBS.onto & (1u << v)) OBS.onto_r |= ROLE_OF[v];
+        if (OBS.last & (1u << v)) OBS.last_r |= ROLE_OF[v];
+        if (OBS.gone & (1u << v)) OBS.gone_r |= ROLE_OF[v];
+        if (OBS.point & (1u << v)) OBS.point_r |= ROLE_OF[v];
+      }
     }
     outcome = g->act(g, kind, PX(code), PY(code), &next);
     OBS.ended = (unsigned char)(outcome == 1 || outcome == 2);
     {
       unsigned before = THEORY.widenings;
+      unsigned nodes_before = N_COUNT, theories_before = theories_left();
       (void)en_observe(&THEORY, &OBS);
+      /* something new: a situation it had not met, a theory ruled out, or an ending */
+      (void)way_judge(ex, N_COUNT > nodes_before || theories_left() < theories_before ||
+                          outcome == 1 || outcome == 2);
       theory_aims();
       if (THEORY.widenings > before) {
         think(ex, "why did that end the level, when nothing I can say explains it?",
@@ -1940,6 +2093,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       took_back = 0;
       death_retry_at = 0u;
       STOOD_OFF = 0u;
+      ways_begin();   /* a new level: every way of going is worth trying again */
       recalling = ON(M_RECALL) && ex->levels_done < EX_MAX_LEVELS && KNOWN_LEN[ex->levels_done] > 0u;
       recall_pos = 0u;
       if (recalling) replaying = 0;
@@ -2082,6 +2236,10 @@ void ex_report(FILE *out, const ex_explorer_t *ex) {
   if (ex->runs_before > 0u || ex->recalled > 0u) {
     fprintf(out, "  remembered from %u earlier run%s (best before: %u levels); walked %u steps it remembered\n",
             ex->runs_before, ex->runs_before == 1u ? "" : "s", ex->best_before, ex->recalled);
+  }
+  if (ex->ways_dropped > 0u) {
+    fprintf(out, "  gave up a way of going that was getting it nowhere %u times, and opened them all again %u times\n",
+            ex->ways_dropped, ex->ways_reopened);
   }
   if (ex->fresh_starts > 0u) {
     fprintf(out, "  drew its map of a level again %u times\n", ex->fresh_starts);

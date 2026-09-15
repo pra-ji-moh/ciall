@@ -5,10 +5,17 @@
 
 #include <string.h>
 
-static const char *ATOM_NAME[EN_ATOMS + 1u] = {"ONTO", "LAST", "GONE", "POINT", "MATCH", ""};
+static const char *ATOM_NAME[EN_ATOMS + 1u] = {
+  "ONTO", "LAST", "GONE", "POINT", "MATCH", "ONTO_R", "LAST_R", "GONE_R", "POINT_R", ""
+};
+
+static int by_role(en_atom_t a) {
+  return a >= EN_ONTO_R && a <= EN_POINT_R;
+}
 
 static unsigned atom_values(en_atom_t a) {
-  return a == EN_MATCH ? 1u : (a == EN_NONE ? 1u : EN_COLOURS);
+  if (a == EN_MATCH || a == EN_NONE) return 1u;
+  return by_role(a) ? EN_ROLES : EN_COLOURS;
 }
 
 /* is the atom, with colour v, true of this act? */
@@ -19,6 +26,10 @@ static int atom_holds(en_atom_t a, unsigned v, const en_obs_t *o) {
     case EN_GONE: return (o->gone >> v) & 1u;
     case EN_POINT: return (o->point >> v) & 1u;
     case EN_MATCH: return o->match != 0u;
+    case EN_ONTO_R: return (o->onto_r >> v) & 1u;
+    case EN_LAST_R: return (o->last_r >> v) & 1u;
+    case EN_GONE_R: return (o->gone_r >> v) & 1u;
+    case EN_POINT_R: return (o->point_r >> v) & 1u;
     default: return 1;
   }
 }
@@ -153,10 +164,15 @@ sm_status_t en_observe(en_theory_t *t, const en_obs_t *o) {
   return SM_OK;
 }
 
-sm_status_t en_aim(const en_theory_t *t, uint16_t *onto, uint16_t *gone, uint16_t *point, int *match) {
+sm_status_t en_aim(const en_theory_t *t, uint16_t *onto, uint16_t *gone, uint16_t *point, int *match,
+                   uint16_t *onto_role, uint16_t *gone_role, uint16_t *point_role) {
   unsigned i, x, y;
-  if (t == 0 || onto == 0 || gone == 0 || point == 0 || match == 0) return SM_ERR_NULL_ARGUMENT;
+  if (t == 0 || onto == 0 || gone == 0 || point == 0 || match == 0 ||
+      onto_role == 0 || gone_role == 0 || point_role == 0) {
+    return SM_ERR_NULL_ARGUMENT;
+  }
   *onto = *gone = *point = 0u;
+  *onto_role = *gone_role = *point_role = 0u;
   *match = 0;
   for (i = 0u; i < t->n_fam; i++) {
     const en_family_t *f = &t->fam[i];
@@ -176,6 +192,9 @@ sm_status_t en_aim(const en_theory_t *t, uint16_t *onto, uint16_t *gone, uint16_
           else if (at == EN_GONE) *gone |= (uint16_t)(1u << v);
           else if (at == EN_POINT) *point |= (uint16_t)(1u << v);
           else if (at == EN_MATCH) *match = 1;
+          else if (at == EN_ONTO_R || at == EN_LAST_R) *onto_role |= (uint16_t)(1u << v);
+          else if (at == EN_GONE_R) *gone_role |= (uint16_t)(1u << v);
+          else if (at == EN_POINT_R) *point_role |= (uint16_t)(1u << v);
         }
       }
     }

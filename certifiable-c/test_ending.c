@@ -36,7 +36,7 @@ static const en_family_t *family(const en_theory_t *t, const char *name) {
 
 int main(void) {
   static en_theory_t t;
-  uint16_t onto, gone, point;
+  uint16_t onto, gone, point, onto_r, gone_r, point_r;
   int match;
 
   printf("WHAT ENDS A LEVEL, AND A LANGUAGE THAT WIDENS ITSELF\n\n");
@@ -58,7 +58,7 @@ int main(void) {
     check("it finds, among pairs, 'onto the door once no key is left'",
           f != 0 && sm_is_possible(&f->dom, 11u * EN_COLOURS + 9u) && f->survived_ending);
   }
-  en_aim(&t, &onto, &gone, &point, &match);
+  en_aim(&t, &onto, &gone, &point, &match, &onto_r, &gone_r, &point_r);
   check("so it goes for the door, and for having no keys", (onto & C(11)) && (gone & C(9)));
   en_report(&t, stdout);
 
@@ -66,7 +66,7 @@ int main(void) {
   en_begin(&t, 0);
   { en_obs_t o = act(C(0), 0, 0, 0); en_observe(&t, &o); }
   { en_obs_t o = act(C(4), 0, 0, 1); en_observe(&t, &o); }
-  en_aim(&t, &onto, &gone, &point, &match);
+  en_aim(&t, &onto, &gone, &point, &match, &onto_r, &gone_r, &point_r);
   check("a plain goal is found without widening", t.depth == 1u && (onto & C(4)) && !(onto & C(0)));
 
   /* a new game, with the family another game kept: formulated from the first act */
@@ -76,12 +76,12 @@ int main(void) {
     check("a family kept from another game is there from the start", f != 0 && f->from_library);
   }
   { en_obs_t o = act(C(0), 0, 0, 0); en_observe(&t, &o); }
-  en_aim(&t, &onto, &gone, &point, &match);
+  en_aim(&t, &onto, &gone, &point, &match, &onto_r, &gone_r, &point_r);
   check("and it already aims by it, before any ending in this game", onto != 0u);
 
   check("NULL arguments are checked errors",
         en_begin(0, 0) == SM_ERR_NULL_ARGUMENT && en_observe(0, 0) == SM_ERR_NULL_ARGUMENT &&
-        en_aim(&t, 0, &gone, &point, &match) == SM_ERR_NULL_ARGUMENT);
+        en_aim(&t, 0, &gone, &point, &match, &onto_r, &gone_r, &point_r) == SM_ERR_NULL_ARGUMENT);
 
   printf("\n%u checks failed\n", FAILED);
   return FAILED == 0u ? 0 : 1;

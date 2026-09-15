@@ -123,6 +123,7 @@ typedef struct {
   unsigned fresh_starts;     /* times it drew its map of a level again */
   unsigned windows;          /* times it looked further along than the acts it held */
   unsigned runs_before, best_before, recalled;   /* carried between runs */
+  unsigned ways_dropped, ways_reopened;   /* ways of going it gave up as getting nowhere */
   unsigned unpredicted;      /* times it ran out and took those predictions back */
 
   /* where it writes its questions and answers down; NULL: it thinks silently */
