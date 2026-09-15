@@ -66,6 +66,16 @@ def main():
             if m and game:
                 levels[game] = (int(m.group(1)), int(m.group(2)))
     games = [g for group in GROUPS for g in group]
+    if not levels:
+        # nothing was played at all: the engine could not be reached, or the toolkit
+        # failed. That is not a stretch of no levels, and writing it down as one would
+        # tell the child a lie about itself.
+        stamp = started.strftime("%Y-%m-%d %H:%M")
+        with open(JOURNAL, "a", encoding="utf-8") as f:
+            f.write("%s  ARC-AGI-3: no game could be played (the engine was out of reach);"
+                    " nothing is written down as a score\n" % stamp)
+        print("no game could be played; nothing recorded")
+        return 1
     now_total = sum(levels.get(g, (0, 0))[0] for g in games)
     all_levels = sum(levels.get(g, (0, 0))[1] for g in games)
     best_total = sum(best_ever(g) for g in games)

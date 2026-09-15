@@ -1,6 +1,6 @@
 ciall-explorer-mind 1
-runs 31
-best 0
+runs 33
+best 1
 mask 0 16 0
 mask 0 17 0
 mask 0 18 0
@@ -60,6 +60,9 @@ mask 5 25 1
 mask 5 26 1
 mask 5 27 1
 mask 5 28 1
+mask 5 50 1
+mask 5 51 1
+mask 5 52 1
 mask 6 11 1
 mask 6 12 1
 mask 6 13 1
@@ -78,6 +81,9 @@ mask 6 25 1
 mask 6 26 1
 mask 6 27 1
 mask 6 28 1
+mask 6 50 1
+mask 6 51 1
+mask 6 52 1
 mask 7 11 1
 mask 7 12 1
 mask 7 13 1
@@ -96,6 +102,9 @@ mask 7 25 1
 mask 7 26 1
 mask 7 27 1
 mask 7 28 1
+mask 7 50 1
+mask 7 51 1
+mask 7 52 1
 mask 8 8 1
 mask 8 9 1
 mask 8 10 1
@@ -879,6 +888,9 @@ mask 28 52 1
 mask 28 53 1
 mask 28 54 1
 mask 28 55 1
+mask 29 8 1
+mask 29 9 1
+mask 29 10 1
 mask 29 11 1
 mask 29 12 1
 mask 29 13 1
@@ -918,6 +930,9 @@ mask 29 49 1
 mask 29 50 1
 mask 29 51 1
 mask 29 52 1
+mask 30 8 1
+mask 30 9 1
+mask 30 10 1
 mask 30 11 1
 mask 30 12 1
 mask 30 13 1
@@ -957,6 +972,9 @@ mask 30 49 1
 mask 30 50 1
 mask 30 51 1
 mask 30 52 1
+mask 31 8 1
+mask 31 9 1
+mask 31 10 1
 mask 31 11 1
 mask 31 12 1
 mask 31 13 1
@@ -1194,6 +1212,12 @@ mask 37 49 1
 mask 37 50 1
 mask 37 51 1
 mask 37 52 1
+mask 38 14 1
+mask 38 15 1
+mask 38 16 1
+mask 38 26 1
+mask 38 27 1
+mask 38 28 1
 mask 38 32 1
 mask 38 33 1
 mask 38 34 1
@@ -1221,6 +1245,12 @@ mask 38 55 1
 mask 38 56 1
 mask 38 57 1
 mask 38 58 1
+mask 39 14 1
+mask 39 15 1
+mask 39 16 1
+mask 39 26 1
+mask 39 27 1
+mask 39 28 1
 mask 39 32 1
 mask 39 33 1
 mask 39 34 1
@@ -1248,6 +1278,12 @@ mask 39 55 1
 mask 39 56 1
 mask 39 57 1
 mask 39 58 1
+mask 40 14 1
+mask 40 15 1
+mask 40 16 1
+mask 40 26 1
+mask 40 27 1
+mask 40 28 1
 mask 40 32 1
 mask 40 33 1
 mask 40 34 1
@@ -1275,6 +1311,9 @@ mask 40 55 1
 mask 40 56 1
 mask 40 57 1
 mask 40 58 1
+mask 41 20 1
+mask 41 21 1
+mask 41 22 1
 mask 41 26 1
 mask 41 27 1
 mask 41 28 1
@@ -1299,6 +1338,9 @@ mask 41 52 1
 mask 41 56 1
 mask 41 57 1
 mask 41 58 1
+mask 42 20 1
+mask 42 21 1
+mask 42 22 1
 mask 42 26 1
 mask 42 27 1
 mask 42 28 1
@@ -1323,6 +1365,9 @@ mask 42 52 1
 mask 42 56 1
 mask 42 57 1
 mask 42 58 1
+mask 43 20 1
+mask 43 21 1
+mask 43 22 1
 mask 43 26 1
 mask 43 27 1
 mask 43 28 1
@@ -1347,6 +1392,12 @@ mask 43 52 1
 mask 43 56 1
 mask 43 57 1
 mask 43 58 1
+mask 44 8 1
+mask 44 9 1
+mask 44 10 1
+mask 44 17 1
+mask 44 18 1
+mask 44 19 1
 mask 44 29 1
 mask 44 30 1
 mask 44 31 1
@@ -1368,6 +1419,12 @@ mask 44 49 1
 mask 44 53 1
 mask 44 54 1
 mask 44 55 1
+mask 45 8 1
+mask 45 9 1
+mask 45 10 1
+mask 45 17 1
+mask 45 18 1
+mask 45 19 1
 mask 45 29 1
 mask 45 30 1
 mask 45 31 1
@@ -1389,6 +1446,12 @@ mask 45 49 1
 mask 45 53 1
 mask 45 54 1
 mask 45 55 1
+mask 46 8 1
+mask 46 9 1
+mask 46 10 1
+mask 46 17 1
+mask 46 18 1
+mask 46 19 1
 mask 46 29 1
 mask 46 30 1
 mask 46 31 1
@@ -1410,9 +1473,24 @@ mask 46 49 1
 mask 46 53 1
 mask 46 54 1
 mask 46 55 1
+mask 47 17 1
+mask 47 18 1
+mask 47 19 1
+mask 47 20 1
+mask 47 21 1
+mask 47 22 1
+mask 47 23 1
+mask 47 24 1
+mask 47 25 1
+mask 47 29 1
+mask 47 30 1
+mask 47 31 1
 mask 47 32 1
 mask 47 33 1
 mask 47 34 1
+mask 47 35 1
+mask 47 36 1
+mask 47 37 1
 mask 47 38 1
 mask 47 39 1
 mask 47 40 1
@@ -1428,9 +1506,24 @@ mask 47 49 1
 mask 47 50 1
 mask 47 51 1
 mask 47 52 1
+mask 48 17 1
+mask 48 18 1
+mask 48 19 1
+mask 48 20 1
+mask 48 21 1
+mask 48 22 1
+mask 48 23 1
+mask 48 24 1
+mask 48 25 1
+mask 48 29 1
+mask 48 30 1
+mask 48 31 1
 mask 48 32 1
 mask 48 33 1
 mask 48 34 1
+mask 48 35 1
+mask 48 36 1
+mask 48 37 1
 mask 48 38 1
 mask 48 39 1
 mask 48 40 1
@@ -1446,9 +1539,24 @@ mask 48 49 1
 mask 48 50 1
 mask 48 51 1
 mask 48 52 1
+mask 49 17 1
+mask 49 18 1
+mask 49 19 1
+mask 49 20 1
+mask 49 21 1
+mask 49 22 1
+mask 49 23 1
+mask 49 24 1
+mask 49 25 1
+mask 49 29 1
+mask 49 30 1
+mask 49 31 1
 mask 49 32 1
 mask 49 33 1
 mask 49 34 1
+mask 49 35 1
+mask 49 36 1
+mask 49 37 1
 mask 49 38 1
 mask 49 39 1
 mask 49 40 1
@@ -1464,21 +1572,48 @@ mask 49 49 1
 mask 49 50 1
 mask 49 51 1
 mask 49 52 1
+mask 50 20 1
+mask 50 21 1
+mask 50 22 1
+mask 50 26 1
+mask 50 27 1
+mask 50 28 1
 mask 50 29 1
 mask 50 30 1
 mask 50 31 1
+mask 51 20 1
+mask 51 21 1
+mask 51 22 1
+mask 51 26 1
+mask 51 27 1
+mask 51 28 1
 mask 51 29 1
 mask 51 30 1
 mask 51 31 1
+mask 52 20 1
+mask 52 21 1
+mask 52 22 1
+mask 52 26 1
+mask 52 27 1
+mask 52 28 1
 mask 52 29 1
 mask 52 30 1
 mask 52 31 1
-colour 0 9215 736 0
+mask 53 26 1
+mask 53 27 1
+mask 53 28 1
+mask 54 26 1
+mask 54 27 1
+mask 54 28 1
+mask 55 26 1
+mask 55 27 1
+mask 55 28 1
+colour 0 10029 818 0
 shift 1 0 -135 0 1
-shift 2 0 27 -27 1
-shift 3 0 27 -324 1
-shift 4 0 -27 27 1
-shift 5 0 -54 54 1
+shift 2 0 135 0 2
+shift 3 0 0 -135 2
+shift 4 0 0 270 1
+shift 5 0 297 0 1
 colour 1 0 0 0
 colour 2 0 0 0
 colour 3 0 0 0
@@ -1486,43 +1621,49 @@ colour 4 0 0 0
 colour 5 0 0 0
 colour 6 0 0 0
 colour 7 0 0 0
-colour 8 11231 6 0
-shift 1 8 -27 0 1
-shift 2 8 54 0 1
-shift 3 8 0 -54 3
-shift 4 8 0 27 4
-shift 5 8 108 -27 1
-colour 9 0 0 0
-colour 10 8042 2705 0
-shift 1 10 27 -27 1
-shift 2 10 -27 27 2
-shift 3 10 -27 378 1
-shift 4 10 135 -81 1
-shift 5 10 -108 0 1
-colour 11 0 0 0
-colour 12 72 159 0
-shift 1 12 27 27 1
-shift 2 12 -27 0 1
-shift 3 12 -27 135 1
-shift 4 12 -108 -108 3
-shift 5 12 27 0 1
+colour 8 12179 6 0
+shift 1 8 -81 0 1
+shift 2 8 27 108 1
+shift 3 8 0 -54 2
+shift 4 8 0 54 5
+shift 5 8 -81 27 1
+colour 9 0 22 0
+colour 10 8373 2726 0
+shift 1 10 189 -27 1
+shift 2 10 -189 27 1
+shift 3 10 27 54 1
+shift 4 10 54 -189 1
+shift 5 10 81 -135 1
+colour 11 2 78 0
+shift 2 11 54 0 1
+shift 4 11 27 -27 1
+colour 12 456 326 0
+shift 1 12 297 -54 1
+shift 2 12 -189 0 1
+shift 3 12 0 189 1
+shift 4 12 0 -189 1
+shift 5 12 27 27 2
 colour 13 0 0 0
-colour 14 84 195 0
-shift 1 14 27 27 1
-shift 2 14 -108 0 1
+colour 14 89 206 0
+shift 1 14 108 0 1
+shift 2 14 -108 0 2
 shift 3 14 -27 54 6
-shift 4 14 0 -27 4
-shift 5 14 54 -54 1
-colour 15 0 0 0
-onto 3171 0 3
+shift 4 14 0 -27 5
+shift 5 14 27 27 1
+colour 15 0 1 0
+onto 3361 0 2
+widened 1
 kind 11309 1 1
 kind 536870917 1 1
 kind 2143 1 1
 kind 14573 1 1
 kind 8273 1 1
 kind 14479 1 1
+kind 2191 1 1
 kind 8321 1 1
+kind 2092 1 1
 kind 536870914 1 1
+kind 2140 1 1
 kind 5153 1 1
 kind 8237 1 1
 kind 5201 1 1
@@ -1535,6 +1676,7 @@ kind 8239 1 1
 kind 2081 1 1
 kind 14369 1 1
 kind 5165 1 1
+kind 8282 1 1
 kind 2129 1 1
 kind 14417 1 1
 kind 5213 1 1
@@ -1543,6 +1685,7 @@ kind 8335 1 1
 kind 20623 1 1
 kind 14465 1 1
 kind 5261 1 1
+kind 11500 1 1
 kind 5167 1 1
 kind 11297 1 1
 kind 2093 1 1
@@ -1553,8 +1696,11 @@ kind 536870915 1 1
 kind 14429 1 1
 kind 2141 1 1
 kind 5263 1 1
+kind 8380 1 1
+kind 5164 1 1
 kind 14477 1 1
 kind 8527 1 1
 kind 2095 1 1
 kind 14525 1 1
 kind 8225 1 1
+route 0 14 8192 20480 20480 8192 12288 8192 16384 16384 20480 16384 8192 8192 16384 20480

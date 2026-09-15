@@ -1,0 +1,421 @@
+
+2026-09-15 22:56  ARC-AGI-3 game tr87-cd924810 (keyboard)  (3004 actions carried)
+  frame 64 by 64, actions offered: 1 2 3 4
+    Q: what can I do here?
+    A: 4 actions, and 0 things I could point at
+    Q: what does action 4 do?
+    A: it changed 28 cells
+    Q: what does action 1 do?
+    A: it changed 12 cells
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (64 cells so far); I stop counting it as a difference
+    Q: what does action 2 do?
+    A: it changed 15 cells
+    Q: what does action 3 do?
+    A: it changed 28 cells
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+  not won; 3004 sent to the engine, games over 4
+  levels ended: 0; actions 3000; not won
+    in the level it stopped in: 1392 situations met
+  died 4 times; began a level again itself 55 times
+  what ends a level, by elimination: 0 endings seen; language of single facts
+  played with parts of itself switched off: curious
+  gave up a way of going that was getting it nowhere 1 times, and opened them all again 0 times
+  found what it moves (colour 0); held back 1384 steps back to where it had stood
+  did not spend 1384 pointings it predicted would do nothing; took that back 0 times
+  found 64 cells that tick by themselves, and left them out
+  what never did anything:
+  against a person: no level ended; a person needed 54 for the first
+  levels finished: 0 of 6
+
+
+2026-09-15 22:56  ARC-AGI-3 game wa30-ee6fef47 (keyboard)  (3014 actions carried)
+  frame 64 by 64, actions offered: 1 2 3 4 5
+    Q: what can I do here?
+    A: 5 actions, and 0 things I could point at
+    Q: what does action 1 do?
+    A: it changed 32 cells
+    Q: what does action 2 do?
+    A: it changed 44 cells
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (64 cells so far); I stop counting it as a difference
+    Q: what does action 5 do?
+    A: nothing I can see, here
+    Q: what does action 4 do?
+    A: it changed 24 cells
+    Q: what does action 3 do?
+    A: it changed 32 cells
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (80 cells so far); I stop counting it as a difference
+  not won; 3014 sent to the engine, games over 14
+  levels ended: 0; actions 3000; not won
+    in the level it stopped in: 947 situations met
+  died 14 times; began a level again itself 3 times
+  what ends a level, by elimination: 0 endings seen; language of single facts
+  played with parts of itself switched off: curious
+  gave up a way of going that was getting it nowhere 1 times, and opened them all again 0 times
+  found what it moves (colour 14); held back 312 steps back to where it had stood
+  did not spend 312 pointings it predicted would do nothing; took that back 0 times
+  found 80 cells that tick by themselves, and left them out
+  what never did anything:
+  against a person: no level ended; a person needed 71 for the first
+  levels finished: 0 of 9
+
+
+2026-09-15 22:56  ARC-AGI-3 game sk48-d8078629 (keyboard_click)  (3008 actions carried)
+  frame 64 by 64, actions offered: 1 2 3 4 6 7
+    Q: what can I do here?
+    A: 5 actions, and 45 things I could point at
+    Q: what happens when I point at something?
+    A: nothing I can see, here
+    Q: what does action 2 do?
+    A: nothing I can see, here
+    Q: what does action 4 do?
+    A: it changed 12 cells
+    Q: what does action 1 do?
+    A: it changed 120 cells
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (64 cells so far); I stop counting it as a difference
+    Q: what does action 3 do?
+    A: it changed 12 cells
+    Q: what does action 7 do?
+    A: it changed 12 cells
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (68 cells so far); I stop counting it as a difference
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (76 cells so far); I stop counting it as a difference
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (84 cells so far); I stop counting it as a difference
+  not won; 3008 sent to the engine, games over 8
+  levels ended: 0; actions 3000; not won
+    in the level it stopped in: 326 situations met
+  died 8 times; began a level again itself 2 times
+  what ends a level, by elimination: 0 endings seen; language of single facts
+  played with parts of itself switched off: curious
+  gave up a way of going that was getting it nowhere 1 times, and opened them all again 0 times
+  found what it moves (colour 0); held back 358 steps back to where it had stood
+  did not spend 23046 pointings it predicted would do nothing; took that back 0 times
+  found 84 cells that tick by themselves, and left them out
+  what never did anything: action 6; pointing at colour 0; pointing at colour 1; pointing at colour 2; pointing at colour 3; pointing at colour 4; pointing at colour 6; pointing at colour 8; pointing at colour 9; pointing at colour 14;
+  against a person: no level ended; a person needed 61 for the first
+  levels finished: 0 of 8
+
+
+2026-09-15 22:57  ARC-AGI-3 game tu93-0768757b (keyboard_click)  (3162 actions carried)
+  frame 64 by 64, actions offered: 1 2 3 4
+    Q: what can I do here?
+    A: 4 actions, and 0 things I could point at
+    Q: what does action 4 do?
+    A: it changed 19 cells
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (64 cells so far); I stop counting it as a difference
+    Q: what does action 3 do?
+    A: it changed 18 cells
+    Q: what does action 2 do?
+    A: it changed 18 cells
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+    Q: have I really tried everything?
+    A: no: some places I only predicted would do nothing. I try them now
+    Q: was it really that step that killed me?
+    A: perhaps time ran out instead. I try those steps again
+    Q: why did that end the level, when nothing I can say explains it?
+    A: every single fact I have was ruled out, so my language was too poor: I now think in pairs of facts
+    Q: what did winning change?
+    A: colour 0 became 9 in 8 cells; 9 became 0 in 8; 0 became 4 in 1
+    Q: what is the least I needed to win?
+    A: in 18 steps, by the shortest way I know; I keep that as a plan
+    -- level 2 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 18 steps that won last time first, matched to what is here
+    Q: did doing what won last time end this level?
+    A: no. What I saw on the way is kept; I go back to exploring
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 2 steps away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 3 steps away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 4 steps away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 3 steps away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 3 steps away, 100% like what winning changed; I go there first
+    -- level 3 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 10 steps that won last time first, matched to what is here
+    Q: did doing what won last time end this level?
+    A: no. What I saw on the way is kept; I go back to exploring
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 94% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 2 steps away, 94% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 2 steps away, 94% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 2 steps away, 94% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 94% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 94% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 2 steps away, 94% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 94% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 94% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 3 steps away, 94% like what winning changed; I go there first
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+    Q: which untried situation is most like winning?
+    A: one 2 steps away, 94% like what winning changed; I go there first
+    -- level 4 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 23 steps that won last time first, matched to what is here
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 52% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 2 steps away, 52% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 2 steps away, 52% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 52% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 3 steps away, 52% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 2 steps away, 52% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 52% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 4 steps away, 52% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 52% like what winning changed; I go there first
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+    Q: which untried situation is most like winning?
+    A: one 5 steps away, 52% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 5 steps away, 52% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 52% like what winning changed; I go there first
+    -- level 5 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 17 steps that won last time first, matched to what is here
+  not won; 3162 sent to the engine, games over 162
+  levels ended: 4; actions 3000; not won
+    level 1: 507 actions, 63 situations met
+    level 2: 85 actions, 16 situations met
+    level 3: 601 actions, 82 situations met
+    level 4: 1800 actions, 70 situations met
+    in the level it stopped in: 5 situations met
+  died 162 times; began a level again itself 7 times
+  what ends a level, by elimination: 4 endings seen; language widened by itself to pairs of facts (every single fact had been ruled out)
+  played with parts of itself switched off: curious
+  gave up a way of going that was getting it nowhere 4 times, and opened them all again 0 times
+  doubted 14 times that a death was the last step's doing
+  found what it moves (colour 4); held back 15 steps back to where it had stood
+  did not spend 15 pointings it predicted would do nothing; took that back 7 times
+  began 4 levels by doing what won the last one; that won 0 of them
+  found 82 cells that tick by themselves, and left them out
+  what never did anything:
+  against a person: level 1 took it 507, a person 19; level 2 took it 85, a person 16; level 3 took it 601, a person 34; level 4 took it 1800, a person 42;
+  levels finished: 4 of 9; on those, 2993 actions against a person's 111
+
+
+2026-09-15 22:57  ARC-AGI-3 game su15-1944f8ab (click)  (3082 actions carried)
+  frame 64 by 64, actions offered: 6 7
+    Q: what can I do here?
+    A: 1 action, and 27 things I could point at
+    Q: what happens when I point at something?
+    A: nothing I can see, here
+    Q: what does action 7 do?
+    A: nothing I can see, here
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (64 cells so far); I stop counting it as a difference
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (69 cells so far); I stop counting it as a difference
+    Q: does pointing at a place do the same thing every time?
+    A: not here: one I had taken to do nothing has just done something. I stop leaving places unspent
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+    Q: why did that end the level, when nothing I can say explains it?
+    A: every single fact I have was ruled out, so my language was too poor: I now think in pairs of facts
+    Q: what did winning change?
+    A: colour 15 became 5 in 9 cells; 5 became 15 in 8; 3 became 15 in 1
+    Q: what is the least I needed to win?
+    A: in 8 steps, by the shortest way I know; I keep that as a plan
+    -- level 2 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 8 steps that won last time first, matched to what is here
+    Q: does what won last time fit here?
+    A: not at this step: there is nothing like it to do. I go back to exploring
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+  not won; 3082 sent to the engine, games over 82
+  levels ended: 1; actions 3000; not won
+    level 1: 356 actions, 18 situations met
+    in the level it stopped in: 2010 situations met
+  died 82 times; began a level again itself 0 times
+  what ends a level, by elimination: 1 ending seen; language widened by itself to pairs of facts (every single fact had been ruled out)
+  played with parts of itself switched off: curious
+  where a thing it holds may be sent: 26 ways it found it goes, 0 it found it does not
+  gave up a way of going that was getting it nowhere 2 times, and opened them all again 0 times
+  found what it moves (colour 6); held back 1655 steps back to where it had stood
+  did not spend 15429 pointings it predicted would do nothing; took that back 0 times
+  began 1 level by doing what won the last one; that won 0 of them
+  found 69 cells that tick by themselves, and left them out
+  what never did anything: pointing at colour 4; pointing at colour 11;
+  against a person: level 1 took it 356, a person 22;
+  levels finished: 1 of 9; on those, 356 actions against a person's 22
+
+
+2026-09-15 22:58  ARC-AGI-3 game tn36-ef4dde99 (click)  (3048 actions carried)
+  frame 64 by 64, actions offered: 6
+    Q: what can I do here?
+    A: 0 actions, and 47 things I could point at
+    Q: what happens when I point at something?
+    A: it changed 4 cells
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (61 cells so far); I stop counting it as a difference
+    Q: why did that end the level, when nothing I can say explains it?
+    A: every single fact I have was ruled out, so my language was too poor: I now think in pairs of facts
+    Q: what did winning change?
+    A: colour 1 became 5 in 18 cells
+    Q: what is the least I needed to win?
+    A: in 9 steps, by the shortest way I know; I keep that as a plan
+    -- level 2 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 9 steps that won last time first, matched to what is here
+    Q: did doing what won last time end this level?
+    A: no. What I saw on the way is kept; I go back to exploring
+    Q: does pointing at a place do the same thing every time?
+    A: not here: one I had taken to do nothing has just done something. I stop leaving places unspent
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+  not won; 3048 sent to the engine, games over 48
+  levels ended: 1; actions 3000; not won
+    level 1: 35 actions, 11 situations met
+    in the level it stopped in: 1090 situations met
+  died 48 times; began a level again itself 0 times
+  what ends a level, by elimination: 1 ending seen; language widened by itself to pairs of facts (every single fact had been ruled out)
+    GONE+POINT: 1 of 256 theories remain; GONE(1)&POINT(9)
+    POINT+GONE_R: 2 of 128 theories remain; POINT(9)&GONE_R(3) POINT(9)&GONE_R(4)
+  played with parts of itself switched off: curious
+  where a thing it holds may be sent: 40 ways it found it goes, 19 it found it does not
+  gave up a way of going that was getting it nowhere 1 times, and opened them all again 0 times
+  did not spend 69 pointings it predicted would do nothing; took that back 0 times
+  began 1 level by doing what won the last one; that won 0 of them
+  found 61 cells that tick by themselves, and left them out
+  what never did anything: pointing at colour 4;
+  against a person: level 1 took it 35, a person 32;
+  levels finished: 1 of 7; on those, 35 actions against a person's 32
+
+
+2026-09-15 22:59  ARC-AGI-3 game vc33-5430563c (click)  (3042 actions carried)
+  frame 64 by 64, actions offered: 6
+    Q: what can I do here?
+    A: 0 actions, and 10 things I could point at
+    Q: what happens when I point at something?
+    A: it changed 1 cell
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (64 cells so far); I stop counting it as a difference
+    Q: why did that end the level, when nothing I can say explains it?
+    A: every single fact I have was ruled out, so my language was too poor: I now think in pairs of facts
+    Q: what did winning change?
+    A: colour 3 became 0 in 228 cells; 0 became 3 in 216; 3 became 4 in 16
+    Q: what is the least I needed to win?
+    A: in 3 steps, by the shortest way I know; I keep that as a plan
+    -- level 2 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 3 steps that won last time first, matched to what is here
+    Q: did doing what won last time end this level?
+    A: no. What I saw on the way is kept; I go back to exploring
+    Q: does pointing at a place do the same thing every time?
+    A: not here: one I had taken to do nothing has just done something. I stop leaving places unspent
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 99% like what winning changed; I go there first
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 99% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 99% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 99% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 99% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 95% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 98% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 98% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 96% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 2 steps away, 99% like what winning changed; I go there first
+    -- level 3 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 7 steps that won last time first, matched to what is here
+    Q: did doing what won last time end this level?
+    A: no. What I saw on the way is kept; I go back to exploring
+    Q: does pointing at a place do the same thing every time?
+    A: not here: one I had taken to do nothing has just done something. I stop leaving places unspent
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (88 cells so far); I stop counting it as a difference
+    Q: which untried situation is most like winning?
+    A: one 2 steps away, 92% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 2 steps away, 92% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 92% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 92% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 92% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 89% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 3 steps away, 90% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 90% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 3 steps away, 93% like what winning changed; I go there first
+  not won; 3042 sent to the engine, games over 42
+  levels ended: 2; actions 3000; not won
+    level 1: 46 actions, 6 situations met
+    level 2: 469 actions, 46 situations met
+    in the level it stopped in: 423 situations met
+  died 42 times; began a level again itself 0 times
+  what ends a level, by elimination: 2 endings seen; language widened by itself to pairs of facts (every single fact had been ruled out)
+  played with parts of itself switched off: curious
+  where a thing it holds may be sent: 2 ways it found it goes, 15 it found it does not
+  gave up a way of going that was getting it nowhere 2 times, and opened them all again 0 times
+  did not spend 8 pointings it predicted would do nothing; took that back 0 times
+  began 2 levels by doing what won the last one; that won 0 of them
+  found 88 cells that tick by themselves, and left them out
+  what never did anything:
+  against a person: level 1 took it 46, a person 7; level 2 took it 469, a person 18;
+  levels finished: 2 of 7; on those, 515 actions against a person's 25
+

@@ -1,0 +1,643 @@
+
+2026-09-15 23:34  ARC-AGI-3 game tr87-cd924810 (keyboard)  (3004 actions carried)
+  frame 64 by 64, actions offered: 1 2 3 4
+    Q: what can I do here?
+    A: 4 actions, and 0 things I could point at
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+    Q: what does action 4 do?
+    A: it changed 28 cells
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+  not won; 3004 sent to the engine, games over 4
+  levels ended: 0; actions 3000; not won
+    in the level it stopped in: 1356 situations met
+  died 4 times; began a level again itself 57 times
+  what ends a level, by elimination: 0 endings seen; language of single facts
+  played with parts of itself switched off: theory
+  how I ask about what I cannot explain: doing something that changes nothing, and watching: did not answer; doing again what I did before: did not answer; pointing straight at it: did not answer; acting far away from it: did not answer;
+  I said where a thing would be and was wrong 241 times, and took the explaining back
+  things that moved when I had not moved them: 10; I watched them and can say what 244 of them do; 5 I could not
+  gave up a way of going that was getting it nowhere 1 times, and opened them all again 0 times
+  found what it moves (colour 0); held back 1289 steps back to where it had stood
+  did not spend 1289 pointings it predicted would do nothing; took that back 0 times
+  found 64 cells that tick by themselves, and left them out
+  what never did anything:
+  against a person: no level ended; a person needed 54 for the first
+  levels finished: 0 of 6
+
+2026-09-15 23:34:27 | ERROR | Request error while fetching metadata for game wa30: HTTPSConnectionPool(host='three.arcprize.org', port=443): Max retries exceeded with url: /api/games/wa30 (Caused by NameResolutionError("HTTPSConnection(host='three.arcprize.org', port=443): Failed to resolve 'three.arcprize.org' ([Errno 11001] getaddrinfo failed)"))
+Traceback (most recent call last):
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python314\Lib\site-packages\urllib3\connection.py", line 204, in _new_conn
+    sock = connection.create_connection(
+        (self._dns_host, self.port),
+    ...<2 lines>...
+        socket_options=self.socket_options,
+    )
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python314\Lib\site-packages\urllib3\util\connection.py", line 60, in create_connection
+    for res in socket.getaddrinfo(host, port, family, socket.SOCK_STREAM):
+               ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python314\Lib\socket.py", line 987, in getaddrinfo
+    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):
+               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+socket.gaierror: [Errno 11001] getaddrinfo failed
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python314\Lib\site-packages\urllib3\connectionpool.py", line 788, in urlopen
+    response = self._make_request(
+        conn,
+    ...<10 lines>...
+        **response_kw,
+    )
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python314\Lib\site-packages\urllib3\connectionpool.py", line 488, in _make_request
+    raise new_e
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python314\Lib\site-packages\urllib3\connectionpool.py", line 464, in _make_request
+    self._validate_conn(conn)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python314\Lib\site-packages\urllib3\connectionpool.py", line 1106, in _validate_conn
+    conn.connect()
+    ~~~~~~~~~~~~^^
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python314\Lib\site-packages\urllib3\connection.py", line 759, in connect
+    self.sock = sock = self._new_conn()
+                       ~~~~~~~~~~~~~~^^
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python314\Lib\site-packages\urllib3\connection.py", line 211, in _new_conn
+    raise NameResolutionError(self.host, self, e) from e
+urllib3.exceptions.NameResolutionError: HTTPSConnection(host='three.arcprize.org', port=443): Failed to resolve 'three.arcprize.org' ([Errno 11001] getaddrinfo failed)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python314\Lib\site-packages\requests\adapters.py", line 696, in send
+    resp = conn.urlopen(
+        method=request.method,
+    ...<9 lines>...
+        chunked=chunked,
+    )
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python314\Lib\site-packages\urllib3\connectionpool.py", line 842, in urlopen
+    retries = retries.increment(
+        method, url, error=new_e, _pool=self, _stacktrace=sys.exc_info()[2]
+    )
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python314\Lib\site-packages\urllib3\util\retry.py", line 543, in increment
+    raise MaxRetryError(_pool, url, reason) from reason  # type: ignore[arg-type]
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+urllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='three.arcprize.org', port=443): Max retries exceeded with url: /api/games/wa30 (Caused by NameResolutionError("HTTPSConnection(host='three.arcprize.org', port=443): Failed to resolve 'three.arcprize.org' ([Errno 11001] getaddrinfo failed)"))
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python314\Lib\site-packages\arc_agi\base.py", line 820, in _fetch_metadata
+    response = requests.get(metadata_url, headers=headers, timeout=10)
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python314\Lib\site-packages\requests\api.py", line 87, in get
+    return request("get", url, params=params, **kwargs)
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python314\Lib\site-packages\requests\api.py", line 71, in request
+    return session.request(method=method, url=url, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python314\Lib\site-packages\requests\sessions.py", line 651, in request
+    resp = self.send(prep, **send_kwargs)
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python314\Lib\site-packages\requests\sessions.py", line 784, in send
+    r = adapter.send(request, **kwargs)
+  File "C:\Users\USER\AppData\Local\Programs\Python\Python314\Lib\site-packages\requests\adapters.py", line 729, in send
+    raise ConnectionError(e, request=request)
+requests.exceptions.ConnectionError: HTTPSConnectionPool(host='three.arcprize.org', port=443): Max retries exceeded with url: /api/games/wa30 (Caused by NameResolutionError("HTTPSConnection(host='three.arcprize.org', port=443): Failed to resolve 'three.arcprize.org' ([Errno 11001] getaddrinfo failed)"))
+
+2026-09-15 23:35  ARC-AGI-3 game wa30-ee6fef47 (keyboard)  (3014 actions carried)
+  frame 64 by 64, actions offered: 1 2 3 4 5
+    Q: what can I do here?
+    A: 5 actions, and 0 things I could point at
+    Q: what does action 5 do?
+    A: nothing I can see, here
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by pointing straight at it
+    Q: what does action 1 do?
+    A: it changed 33 cells
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing something that changes nothing, and watching
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by pointing straight at it
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (64 cells so far); I stop counting it as a difference
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing something that changes nothing, and watching
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by acting far away from it
+    Q: what does action 2 do?
+    A: it changed 44 cells
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by acting far away from it
+    Q: what does action 3 do?
+    A: it changed 44 cells
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+  not won; 3014 sent to the engine, games over 14
+  levels ended: 0; actions 3000; not won
+    in the level it stopped in: 566 situations met
+  died 14 times; began a level again itself 2 times
+  what ends a level, by elimination: 0 endings seen; language of single facts
+  played with parts of itself switched off: theory
+  how I ask about what I cannot explain: doing something that changes nothing, and watching: did not answer; doing again what I did before: did not answer; pointing straight at it: did not answer; acting far away from it: did not answer;
+  I said where a thing would be and was wrong 90 times, and took the explaining back
+  things that moved when I had not moved them: 165; I watched them and can say what 92 of them do; 6 I could not
+  gave up a way of going that was getting it nowhere 1 times, and opened them all again 0 times
+  found what it moves (colour 14); held back 331 steps back to where it had stood
+  did not spend 331 pointings it predicted would do nothing; took that back 0 times
+  found 72 cells that tick by themselves, and left them out
+  what never did anything:
+  against a person: no level ended; a person needed 71 for the first
+  levels finished: 0 of 9
+
+
+2026-09-15 23:36  ARC-AGI-3 game sk48-d8078629 (keyboard_click)  (3000 actions carried)
+  frame 64 by 64, actions offered: 1 2 3 4 6 7
+    Q: what can I do here?
+    A: 5 actions, and 45 things I could point at
+    Q: what happens when I point at something?
+    A: nothing I can see, here
+    Q: what does action 7 do?
+    A: nothing I can see, here
+    Q: what does action 2 do?
+    A: nothing I can see, here
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by acting far away from it
+    Q: what does action 3 do?
+    A: it changed 12 cells
+    Q: what is that thing doing?
+    A: I can say it: the next row is row and the next column is col
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+    Q: what does action 1 do?
+    A: it changed 72 cells
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (64 cells so far); I stop counting it as a difference
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    -- level 2 --
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by pointing straight at it
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing something that changes nothing, and watching
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by pointing straight at it
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing something that changes nothing, and watching
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+  not won; 3000 sent to the engine, games over 0
+  levels ended: 1; actions 3000; not won
+    level 1: 1535 actions, 8 situations met
+    in the level it stopped in: 122 situations met
+  died 0 times; began a level again itself 8 times
+  what ends a level, by elimination: 1 ending seen; language widened by itself to pairs of facts (every single fact had been ruled out)
+  played with parts of itself switched off: theory
+  how I ask about what I cannot explain: doing something that changes nothing, and watching: did not answer; doing again what I did before: did not answer; pointing straight at it: did not answer; acting far away from it: did not answer;
+  I said where a thing would be and was wrong 245 times, and took the explaining back
+  things that moved when I had not moved them: 18; I watched them and can say what 252 of them do; 8 I could not
+  gave up a way of going that was getting it nowhere 2 times, and opened them all again 0 times
+  found what it moves (colour 0); held back 141 steps back to where it had stood
+  did not spend 8227 pointings it predicted would do nothing; took that back 0 times
+  found 72 cells that tick by themselves, and left them out
+  what never did anything: action 6; pointing at colour 0; pointing at colour 1; pointing at colour 2; pointing at colour 3; pointing at colour 4; pointing at colour 5; pointing at colour 6; pointing at colour 8; pointing at colour 9; pointing at colour 12; pointing at colour 14;
+  against a person: level 1 took it 1535, a person 61;
+  levels finished: 1 of 8; on those, 1535 actions against a person's 61
+
+
+2026-09-15 23:38  ARC-AGI-3 game tu93-0768757b (keyboard_click)  (3149 actions carried)
+  frame 64 by 64, actions offered: 1 2 3 4
+    Q: what can I do here?
+    A: 4 actions, and 0 things I could point at
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+    Q: what does action 4 do?
+    A: it changed 19 cells
+    Q: what is that thing doing?
+    A: I can say it: the next row is row and the next column is row
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (64 cells so far); I stop counting it as a difference
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by acting far away from it
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what does action 3 do?
+    A: it changed 18 cells
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    -- level 2 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 18 steps that won last time first, matched to what is here
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by acting far away from it
+    Q: did doing what won last time end this level?
+    A: no. What I saw on the way is kept; I go back to exploring
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 2 steps away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 2 steps away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 3 steps away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 2 steps away, 100% like what winning changed; I go there first
+    Q: what is that thing doing?
+    A: it keeps to a rhythm of 4 steps and then does the same again: now I can say where it will be
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 100% like what winning changed; I go there first
+    -- level 3 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 10 steps that won last time first, matched to what is here
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+    Q: did doing what won last time end this level?
+    A: no. What I saw on the way is kept; I go back to exploring
+    Q: what is that thing doing?
+    A: it keeps to a rhythm of 3 steps and then does the same again: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 94% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 2 steps away, 94% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 94% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 94% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 94% like what winning changed; I go there first
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    -- level 4 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 19 steps that won last time first, matched to what is here
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing something that changes nothing, and watching
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by acting far away from it
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: did doing what won last time end this level?
+    A: no. What I saw on the way is kept; I go back to exploring
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 40% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 2 steps away, 40% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 40% like what winning changed; I go there first
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: which untried situation is most like winning?
+    A: one 3 steps away, 40% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 3 steps away, 40% like what winning changed; I go there first
+  not won; 3149 sent to the engine, games over 149
+  levels ended: 3; actions 3000; not won
+    level 1: 732 actions, 59 situations met
+    level 2: 196 actions, 35 situations met
+    level 3: 389 actions, 78 situations met
+    in the level it stopped in: 33 situations met
+  died 149 times; began a level again itself 7 times
+  what ends a level, by elimination: 3 endings seen; language widened by itself to pairs of facts (every single fact had been ruled out)
+  played with parts of itself switched off: theory
+  how I ask about what I cannot explain: doing something that changes nothing, and watching: did not answer; doing again what I did before: did not answer; pointing straight at it: did not answer; acting far away from it: did not answer;
+  I said where a thing would be and was wrong 46 times, and took the explaining back
+  things that moved when I had not moved them: 102; I watched them and can say what 50 of them do; 93 I could not
+  gave up a way of going that was getting it nowhere 4 times, and opened them all again 0 times
+  drew its map of a level again 1 times
+  doubted 12 times that a death was the last step's doing
+  found what it moves (colour 4); held back 40 steps back to where it had stood
+  did not spend 40 pointings it predicted would do nothing; took that back 4 times
+  began 3 levels by doing what won the last one; that won 0 of them
+  found 91 cells that tick by themselves, and left them out
+  what never did anything:
+  against a person: level 1 took it 732, a person 19; level 2 took it 196, a person 16; level 3 took it 389, a person 34;
+  levels finished: 3 of 9; on those, 1317 actions against a person's 69
+
+
+2026-09-15 23:38  ARC-AGI-3 game su15-1944f8ab (click)  (3087 actions carried)
+  frame 64 by 64, actions offered: 6 7
+    Q: what can I do here?
+    A: 1 action, and 27 things I could point at
+    Q: what happens when I point at something?
+    A: nothing I can see, here
+    Q: what does action 7 do?
+    A: nothing I can see, here
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (64 cells so far); I stop counting it as a difference
+    Q: what is that thing doing?
+    A: I can say it: the next row is row and the next column is col
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (69 cells so far); I stop counting it as a difference
+    Q: does pointing at a place do the same thing every time?
+    A: not here: one I had taken to do nothing has just done something. I stop leaving places unspent
+    Q: have I really tried everything?
+    A: no: some places I only predicted would do nothing. I try them now
+    Q: why did that end the level, when nothing I can say explains it?
+    A: every single fact I have was ruled out, so my language was too poor: I now think in pairs of facts
+    Q: what did winning change?
+    A: colour 15 became 5 in 9 cells; 5 became 15 in 8; 3 became 15 in 1
+    Q: what is the least I needed to win?
+    A: in 9 steps, by the shortest way I know; I keep that as a plan
+    -- level 2 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 9 steps that won last time first, matched to what is here
+    Q: does what won last time fit here?
+    A: not at this step: there is nothing like it to do. I go back to exploring
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (70 cells so far); I stop counting it as a difference
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+    Q: what is that thing doing?
+    A: I can say it: the next row is row and the next column is col
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (71 cells so far); I stop counting it as a difference
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by acting far away from it
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing something that changes nothing, and watching
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+  not won; 3087 sent to the engine, games over 87
+  levels ended: 1; actions 3000; not won
+    level 1: 348 actions, 18 situations met
+    in the level it stopped in: 1936 situations met
+  died 87 times; began a level again itself 1 times
+  what ends a level, by elimination: 1 ending seen; language widened by itself to pairs of facts (every single fact had been ruled out)
+  played with parts of itself switched off: theory
+  how I ask about what I cannot explain: doing something that changes nothing, and watching: did not answer; doing again what I did before: did not answer; pointing straight at it: did not answer; acting far away from it: did not answer;
+  I said where a thing would be and was wrong 77 times, and took the explaining back
+  things that moved when I had not moved them: 6; I watched them and can say what 81 of them do; 2 I could not
+  where a thing it holds may be sent: 20 ways it found it goes, 1 it found it does not
+  gave up a way of going that was getting it nowhere 2 times, and opened them all again 0 times
+  found what it moves (colour 5); held back 1840 steps back to where it had stood
+  did not spend 14623 pointings it predicted would do nothing; took that back 1 times
+  began 1 level by doing what won the last one; that won 0 of them
+  found 71 cells that tick by themselves, and left them out
+  what never did anything: pointing at colour 4; pointing at colour 11;
+  against a person: level 1 took it 348, a person 22;
+  levels finished: 1 of 9; on those, 348 actions against a person's 22
+
+
+2026-09-15 23:41  ARC-AGI-3 game tn36-ef4dde99 (click)  (3048 actions carried)
+  frame 64 by 64, actions offered: 6
+    Q: what can I do here?
+    A: 0 actions, and 47 things I could point at
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+    Q: what happens when I point at something?
+    A: it changed 4 cells
+    Q: what is that thing doing?
+    A: it keeps to a rhythm of 2 steps and then does the same again: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it keeps to a rhythm of 2 steps and then does the same again: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it keeps to a rhythm of 2 steps and then does the same again: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it keeps to a rhythm of 2 steps and then does the same again: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it keeps to a rhythm of 2 steps and then does the same again: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it keeps to a rhythm of 2 steps and then does the same again: now I can say where it will be
+    -- level 2 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 7 steps that won last time first, matched to what is here
+    Q: does what won last time fit here?
+    A: not at this step: there is nothing like it to do. I go back to exploring
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing something that changes nothing, and watching
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+    Q: does pointing at a place do the same thing every time?
+    A: not here: one I had taken to do nothing has just done something. I stop leaving places unspent
+    Q: what is that thing doing?
+    A: it keeps to a rhythm of 4 steps and then does the same again: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+  not won; 3048 sent to the engine, games over 48
+  levels ended: 1; actions 3000; not won
+    level 1: 88 actions, 9 situations met
+    in the level it stopped in: 1199 situations met
+  died 48 times; began a level again itself 0 times
+  what ends a level, by elimination: 1 ending seen; language widened by itself to pairs of facts (every single fact had been ruled out)
+    GONE+POINT: 1 of 256 theories remain; GONE(1)&POINT(9)
+    POINT+GONE_R: 2 of 128 theories remain; POINT(9)&GONE_R(3) POINT(9)&GONE_R(4)
+  played with parts of itself switched off: theory
+  how I ask about what I cannot explain: doing something that changes nothing, and watching: did not answer; doing again what I did before: did not answer; pointing straight at it: did not answer; acting far away from it: did not answer;
+  I said where a thing would be and was wrong 201 times, and took the explaining back
+  things that moved when I had not moved them: 13; I watched them and can say what 202 of them do; 10 I could not
+  where a thing it holds may be sent: 37 ways it found it goes, 12 it found it does not
+  gave up a way of going that was getting it nowhere 2 times, and opened them all again 0 times
+  did not spend 970 pointings it predicted would do nothing; took that back 0 times
+  began 1 level by doing what won the last one; that won 0 of them
+  found 61 cells that tick by themselves, and left them out
+  what never did anything:
+  against a person: level 1 took it 88, a person 32;
+  levels finished: 1 of 7; on those, 88 actions against a person's 32
+
+
+2026-09-15 23:41  ARC-AGI-3 game vc33-5430563c (click)  (3040 actions carried)
+  frame 64 by 64, actions offered: 6
+    Q: what can I do here?
+    A: 0 actions, and 10 things I could point at
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+    Q: what happens when I point at something?
+    A: it changed 265 cells
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (64 cells so far); I stop counting it as a difference
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+    Q: why did that end the level, when nothing I can say explains it?
+    A: every single fact I have was ruled out, so my language was too poor: I now think in pairs of facts
+    Q: what did winning change?
+    A: colour 3 became 0 in 228 cells; 0 became 3 in 216; 3 became 4 in 16
+    -- level 2 --
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by pointing straight at it
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 99% like what winning changed; I go there first
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 99% like what winning changed; I go there first
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    -- level 3 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 7 steps that won last time first, matched to what is here
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by acting far away from it
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+    Q: did doing what won last time end this level?
+    A: no. What I saw on the way is kept; I go back to exploring
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by pointing straight at it
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+  not won; 3040 sent to the engine, games over 40
+  levels ended: 2; actions 3000; not won
+    level 1: 5 actions, 3 situations met
+    level 2: 113 actions, 27 situations met
+    in the level it stopped in: 448 situations met
+  died 40 times; began a level again itself 0 times
+  what ends a level, by elimination: 2 endings seen; language widened by itself to pairs of facts (every single fact had been ruled out)
+  played with parts of itself switched off: theory
+  how I ask about what I cannot explain: doing something that changes nothing, and watching: did not answer; doing again what I did before: did not answer; pointing straight at it: did not answer; acting far away from it: did not answer;
+  I said where a thing would be and was wrong 466 times, and took the explaining back
+  things that moved when I had not moved them: 26; I watched them and can say what 467 of them do; 19 I could not
+  where a thing it holds may be sent: 3 ways it found it goes, 9 it found it does not
+  gave up a way of going that was getting it nowhere 2 times, and opened them all again 0 times
+  began 1 level by doing what won the last one; that won 0 of them
+  found 88 cells that tick by themselves, and left them out
+  what never did anything: pointing at colour 11; pointing at colour 14;
+  against a person: level 1 took it 5, a person 7; level 2 took it 113, a person 18;
+  levels finished: 2 of 7; on those, 118 actions against a person's 25
+

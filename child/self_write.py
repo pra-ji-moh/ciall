@@ -172,7 +172,10 @@ def levels(child, games, seed, budget):
     r = subprocess.run([sys.executable, os.path.join(ROOT, "arc", "arc_bridge.py")] + list(games) +
                        ["--budget", budget], cwd=ROOT, env=env, stdout=subprocess.PIPE,
                        stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace")
-    return sum(int(m.group(1)) for m in re.finditer(r"levels finished: (\d+) of", r.stdout))
+    got = [int(m.group(1)) for m in re.finditer(r"levels finished: (\d+) of", r.stdout)]
+    if not got:
+        return None   # no game answered: a run that did not happen, not a score of nothing
+    return sum(got)
 
 
 # ---- writing it down -----------------------------------------------------------
@@ -247,6 +250,11 @@ def main():
     if trial_games:
         base_t = levels(child0, trial_games, seed, TRIAL_BUDGET)
         cand_t = levels(child, trial_games, seed, TRIAL_BUDGET)
+        if base_t is None or cand_t is None:
+            told.append("I could not play the games just now, so I decide nothing about myself")
+            write_up(told)
+            print("no games could be played; deciding nothing")
+            return 1
         told.append("on the %d game%s that showed it: %d levels as I am, %d as I would be"
                     % (len(trial_games), "" if len(trial_games) == 1 else "s", base_t, cand_t))
         if cand_t < base_t:
@@ -261,6 +269,11 @@ def main():
     base_held = levels(child0, HELD, seed, FULL_BUDGET)
     dev = levels(child, DEV, seed, FULL_BUDGET)
     held = levels(child, HELD, seed, FULL_BUDGET)
+    if None in (base_dev, base_held, dev, held):
+        told.append("I could not play the games just now, so I decide nothing about myself")
+        write_up(told)
+        print("no games could be played; deciding nothing")
+        return 1
     detail = "dev %d->%d held %d->%d" % (base_dev, dev, base_held, held)
     told.append("everywhere: %s" % detail)
     if (dev > base_dev and held >= base_held) or (dev == base_dev and held > base_held):

@@ -1,5 +1,5 @@
 ciall-explorer-mind 1
-runs 31
+runs 33
 best 0
 mask 0 0 1
 mask 0 3 1
@@ -96,6 +96,7 @@ mask 10 24 0
 mask 10 25 0
 mask 12 0 1
 mask 12 3 1
+mask 12 6 1
 mask 12 9 1
 mask 12 12 1
 mask 12 15 1
@@ -175,6 +176,7 @@ mask 21 36 1
 mask 21 39 1
 mask 21 42 1
 mask 21 45 1
+mask 21 48 1
 mask 21 57 1
 mask 21 60 1
 mask 23 39 0
@@ -200,6 +202,7 @@ mask 24 39 0
 mask 24 41 0
 mask 24 42 1
 mask 24 45 1
+mask 24 48 1
 mask 24 52 0
 mask 24 54 0
 mask 24 57 1
@@ -316,6 +319,7 @@ mask 42 3 1
 mask 42 6 1
 mask 42 9 1
 mask 42 12 1
+mask 42 15 1
 mask 42 18 1
 mask 42 21 1
 mask 42 24 1
@@ -402,9 +406,11 @@ mask 51 45 1
 mask 51 48 1
 mask 51 51 1
 mask 51 54 1
+mask 51 57 1
 mask 54 12 1
 mask 54 15 1
 mask 54 18 1
+mask 54 21 1
 mask 54 24 1
 mask 54 27 1
 mask 54 30 0
@@ -416,6 +422,7 @@ mask 54 45 1
 mask 54 48 1
 mask 54 51 1
 mask 54 54 1
+mask 54 57 1
 mask 57 6 1
 mask 57 15 1
 mask 57 18 1
@@ -429,7 +436,9 @@ mask 57 42 1
 mask 57 45 0
 mask 57 48 1
 mask 57 51 0
+mask 57 53 1
 mask 57 54 0
+mask 57 55 1
 mask 57 57 1
 mask 57 60 1
 mask 60 6 1
@@ -511,36 +520,36 @@ mask 63 60 0
 mask 63 61 0
 mask 63 62 0
 mask 63 63 0
-colour 0 11997 0 0
-shift 1 0 -3 0 4436
-shift 2 0 3 0 3006
-shift 3 0 0 -3 1748
-shift 4 0 0 3 1628
+colour 0 12098 0 0
+shift 1 0 -3 0 4462
+shift 2 0 3 0 3030
+shift 3 0 0 -3 1771
+shift 4 0 0 3 1656
 shift 5 0 -18 -21 1
 colour 1 0 0 0
 colour 2 0 0 0
 colour 3 0 0 0
 colour 4 1 4 0
 shift 1 4 25 18 1
-colour 5 25463 361 0
-shift 1 5 96 0 1
-shift 2 5 -96 0 8
-shift 3 5 0 108 1
-shift 4 5 0 -96 2
+colour 5 27852 361 0
+shift 1 5 69 0 1
+shift 2 5 -96 0 1
+shift 3 5 0 87 1
+shift 4 5 0 -87 1
 colour 6 0 0 0
 colour 7 0 0 0
 colour 8 0 0 0
-colour 9 10426 5011 0
-shift 1 9 -95 -12 1
-shift 2 9 108 0 10
-shift 3 9 0 -108 1
-shift 4 9 0 93 3
+colour 9 11449 5011 0
+shift 1 9 -108 0 3
+shift 2 9 108 0 9
+shift 3 9 0 -87 1
+shift 4 9 0 87 1
 colour 10 0 0 0
-colour 11 16496 4284 0
-shift 1 11 -96 0 6
-shift 2 11 96 0 7
-shift 3 11 0 -96 1
-shift 4 11 0 96 4
+colour 11 17963 4284 0
+shift 1 11 -69 0 1
+shift 2 11 96 0 1
+shift 3 11 0 -96 2
+shift 4 11 0 96 3
 colour 12 0 0 0
 colour 13 0 0 0
 colour 14 0 0 0

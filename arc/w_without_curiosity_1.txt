@@ -1,0 +1,276 @@
+
+2026-09-15 22:55  ARC-AGI-3 game ar25-0c556536 (keyboard_click)  (3021 actions carried)
+  frame 64 by 64, actions offered: 1 2 3 4 5 6 7
+    Q: what can I do here?
+    A: 6 actions, and 11 things I could point at
+    Q: what happens when I point at something?
+    A: nothing I can see, here
+    Q: what does action 1 do?
+    A: it changed 109 cells
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (64 cells so far); I stop counting it as a difference
+    Q: what does action 2 do?
+    A: it changed 108 cells
+    Q: what does action 4 do?
+    A: it changed 108 cells
+    Q: what does action 3 do?
+    A: it changed 108 cells
+    Q: what does action 7 do?
+    A: it changed 108 cells
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (91 cells so far); I stop counting it as a difference
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (118 cells so far); I stop counting it as a difference
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (145 cells so far); I stop counting it as a difference
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (163 cells so far); I stop counting it as a difference
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (181 cells so far); I stop counting it as a difference
+    -- level 2 --
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+  not won; 3021 sent to the engine, games over 21
+  levels ended: 1; actions 3000; not won
+    level 1: 2892 actions, 9 situations met
+    in the level it stopped in: 42 situations met
+  died 21 times; began a level again itself 13 times
+  what ends a level, by elimination: 1 ending seen; language widened by itself to pairs of facts (every single fact had been ruled out)
+  played with parts of itself switched off: curious
+  gave up a way of going that was getting it nowhere 2 times, and opened them all again 0 times
+  found what it moves (colour 5); held back 899 steps back to where it had stood
+  did not spend 3604 pointings it predicted would do nothing; took that back 0 times
+  found 261 cells that tick by themselves, and left them out
+  what never did anything: pointing at colour 0; pointing at colour 4; pointing at colour 11;
+  against a person: level 1 took it 2892, a person 32;
+  levels finished: 1 of 8; on those, 2892 actions against a person's 32
+
+
+2026-09-15 22:57  ARC-AGI-3 game bp35-0a0ad940 (keyboard_click)  (3087 actions carried)
+  frame 64 by 64, actions offered: 3 4 6 7
+    Q: what can I do here?
+    A: 3 actions, and 61 things I could point at
+    Q: what happens when I point at something?
+    A: it changed 1 cell
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (64 cells so far); I stop counting it as a difference
+    Q: what does action 4 do?
+    A: it changed 46 cells
+    Q: what does action 7 do?
+    A: nothing I can see, here
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (69 cells so far); I stop counting it as a difference
+    Q: why did that end the level, when nothing I can say explains it?
+    A: every single fact I have was ruled out, so my language was too poor: I now think in pairs of facts
+    Q: what did winning change?
+    A: colour 10 became 5 in 255 cells; 14 became 5 in 126; 10 became 3 in 81
+    Q: what is the least I needed to win?
+    A: in 43 steps, by the shortest way I know; I keep that as a plan
+    -- level 2 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 43 steps that won last time first, matched to what is here
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+  not won; 3087 sent to the engine, games over 87
+  levels ended: 1; actions 3000; not won
+    level 1: 1504 actions, 86 situations met
+    in the level it stopped in: 949 situations met
+  died 87 times; began a level again itself 1 times
+  what ends a level, by elimination: 1 ending seen; language widened by itself to pairs of facts (every single fact had been ruled out)
+  played with parts of itself switched off: curious
+  where a thing it holds may be sent: 38 ways it found it goes, 18 it found it does not
+  gave up a way of going that was getting it nowhere 2 times, and opened them all again 0 times
+  found what it moves (colour 9); held back 275 steps back to where it had stood
+  did not spend 45380 pointings it predicted would do nothing; took that back 0 times
+  began 1 level by doing what won the last one; that won 0 of them
+  found 69 cells that tick by themselves, and left them out
+  what never did anything: action 7; pointing at colour 5; pointing at colour 9; pointing at colour 10;
+  against a person: level 1 took it 1504, a person 21;
+  levels finished: 1 of 9; on those, 1504 actions against a person's 21
+
+
+2026-09-15 22:57  ARC-AGI-3 game cd82-fb555c5d (keyboard_click)  (3029 actions carried)
+  frame 64 by 64, actions offered: 1 2 3 4 5 6
+    Q: what can I do here?
+    A: 5 actions, and 13 things I could point at
+    Q: what happens when I point at something?
+    A: it changed 1 cell
+    Q: what does action 1 do?
+    A: nothing I can see, here
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (64 cells so far); I stop counting it as a difference
+    Q: what does action 3 do?
+    A: it changed 200 cells
+    Q: what does action 4 do?
+    A: it changed 200 cells
+    Q: what does action 5 do?
+    A: nothing I can see, here
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (69 cells so far); I stop counting it as a difference
+    Q: does pointing at a place do the same thing every time?
+    A: not here: one I had taken to do nothing has just done something. I stop leaving places unspent
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (74 cells so far); I stop counting it as a difference
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+    Q: why did that end the level, when nothing I can say explains it?
+    A: every single fact I have was ruled out, so my language was too poor: I now think in pairs of facts
+    Q: what did winning change?
+    A: colour 5 became 15 in 84 cells; 15 became 5 in 84; 2 became 5 in 30
+    Q: what is the least I needed to win?
+    A: in 5 steps, by the shortest way I know; I keep that as a plan
+    -- level 2 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 5 steps that won last time first, matched to what is here
+    Q: did doing what won last time end this level?
+    A: no. What I saw on the way is kept; I go back to exploring
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (75 cells so far); I stop counting it as a difference
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (78 cells so far); I stop counting it as a difference
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (81 cells so far); I stop counting it as a difference
+    Q: does pointing at a place do the same thing every time?
+    A: not here: one I had taken to do nothing has just done something. I stop leaving places unspent
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+  not won; 3029 sent to the engine, games over 29
+  levels ended: 1; actions 3000; not won
+    level 1: 267 actions, 39 situations met
+    in the level it stopped in: 840 situations met
+  died 29 times; began a level again itself 0 times
+  what ends a level, by elimination: 1 ending seen; language widened by itself to pairs of facts (every single fact had been ruled out)
+  played with parts of itself switched off: curious
+  where a thing it holds may be sent: 9 ways it found it goes, 7 it found it does not
+  gave up a way of going that was getting it nowhere 2 times, and opened them all again 0 times
+  did not spend 7 pointings it predicted would do nothing; took that back 0 times
+  began 1 level by doing what won the last one; that won 0 of them
+  found 81 cells that tick by themselves, and left them out
+  what never did anything:
+  against a person: level 1 took it 267, a person 55;
+  levels finished: 1 of 6; on those, 267 actions against a person's 55
+
+
+2026-09-15 22:58  ARC-AGI-3 game cn04-2fe56bfb (keyboard_click)  (3040 actions carried)
+  frame 64 by 64, actions offered: 1 2 3 4 5 6
+    Q: what can I do here?
+    A: 5 actions, and 7 things I could point at
+    Q: what happens when I point at something?
+    A: it changed 135 cells
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (32 cells so far); I stop counting it as a difference
+    Q: what does action 1 do?
+    A: it changed 108 cells
+    Q: what does action 3 do?
+    A: it changed 234 cells
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+    Q: what does action 2 do?
+    A: it changed 144 cells
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (41 cells so far); I stop counting it as a difference
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (50 cells so far); I stop counting it as a difference
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (68 cells so far); I stop counting it as a difference
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (95 cells so far); I stop counting it as a difference
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (113 cells so far); I stop counting it as a difference
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (122 cells so far); I stop counting it as a difference
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (131 cells so far); I stop counting it as a difference
+  not won; 3040 sent to the engine, games over 40
+  levels ended: 0; actions 3000; not won
+    in the level it stopped in: 64 situations met
+  died 40 times; began a level again itself 0 times
+  what ends a level, by elimination: 0 endings seen; language of single facts
+  played with parts of itself switched off: curious
+  where a thing it holds may be sent: 107 ways it found it goes, 0 it found it does not
+  gave up a way of going that was getting it nowhere 1 times, and opened them all again 0 times
+  found what it moves (colour 8); held back 344 steps back to where it had stood
+  did not spend 344 pointings it predicted would do nothing; took that back 0 times
+  found 230 cells that tick by themselves, and left them out
+  what never did anything:
+  against a person: no level ended; a person needed 29 for the first
+  levels finished: 0 of 6
+
+
+2026-09-15 22:58  ARC-AGI-3 game dc22-fdcac232 (keyboard_click)  (3024 actions carried)
+  frame 64 by 64, actions offered: 1 2 3 4 6
+    Q: what can I do here?
+    A: 4 actions, and 35 things I could point at
+    Q: what happens when I point at something?
+    A: it changed 1 cell
+    Q: what does action 1 do?
+    A: it changed 8 cells
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (64 cells so far); I stop counting it as a difference
+    Q: what does action 4 do?
+    A: it changed 8 cells
+    Q: what does action 2 do?
+    A: it changed 8 cells
+    Q: what does action 3 do?
+    A: it changed 8 cells
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+    Q: does pointing at a place do the same thing every time?
+    A: not here: one I had taken to do nothing has just done something. I stop leaving places unspent
+  not won; 3024 sent to the engine, games over 24
+  levels ended: 0; actions 3000; not won
+    in the level it stopped in: 107 situations met
+  died 24 times; began a level again itself 11 times
+  what ends a level, by elimination: 0 endings seen; language of single facts
+  played with parts of itself switched off: curious
+  gave up a way of going that was getting it nowhere 1 times, and opened them all again 0 times
+  found what it moves (colour 14); held back 127 steps back to where it had stood
+  did not spend 720 pointings it predicted would do nothing; took that back 0 times
+  found 64 cells that tick by themselves, and left them out
+  what never did anything: pointing at colour 5; pointing at colour 11; pointing at colour 13;
+  against a person: no level ended; a person needed 59 for the first
+  levels finished: 0 of 6
+
+
+2026-09-15 22:59  ARC-AGI-3 game ft09-0d8bbf25 (untagged)  (3079 actions carried)
+  frame 64 by 64, actions offered: 6
+    Q: what can I do here?
+    A: 0 actions, and 64 things I could point at
+    Q: what happens when I point at something?
+    A: nothing I can see, here
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (64 cells so far); I stop counting it as a difference
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+    Q: why did that end the level, when nothing I can say explains it?
+    A: every single fact I have was ruled out, so my language was too poor: I now think in pairs of facts
+    Q: what did winning change?
+    A: colour 9 became 8 in 108 cells
+    Q: what is the least I needed to win?
+    A: in 4 steps, by the shortest way I know; I keep that as a plan
+    -- level 2 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 4 steps that won last time first, matched to what is here
+    Q: did doing what won last time end this level?
+    A: no. What I saw on the way is kept; I go back to exploring
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+  not won; 3079 sent to the engine, games over 79
+  levels ended: 1; actions 3000; not won
+    level 1: 955 actions, 214 situations met
+    in the level it stopped in: 1153 situations met
+  died 79 times; began a level again itself 0 times
+  what ends a level, by elimination: 1 ending seen; language widened by itself to pairs of facts (every single fact had been ruled out)
+  played with parts of itself switched off: curious
+  gave up a way of going that was getting it nowhere 2 times, and opened them all again 0 times
+  did not spend 23230 pointings it predicted would do nothing; took that back 0 times
+  began 1 level by doing what won the last one; that won 0 of them
+  found 64 cells that tick by themselves, and left them out
+  what never did anything: pointing at colour 0; pointing at colour 2;
+  against a person: level 1 took it 955, a person 43;
+  levels finished: 1 of 6; on those, 955 actions against a person's 43
+
