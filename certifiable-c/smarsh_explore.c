@@ -18,11 +18,11 @@
  */
 typedef enum {
   M_RESTLESS, M_CLOCK, M_STOOD, M_PANELS, M_NEAR, M_THEORY, M_SKIP,
-  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_COUNT
+  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_CURIOUS, M_COUNT
 } ex_mech_t;
 static const char *MECH_NAME[M_COUNT] = {
   "restless", "clock", "stood", "panels", "near", "theory", "skip",
-  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach"
+  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach", "curious"
 };
 static unsigned OFF_MASK;
 #define ON(m) ((OFF_MASK & (1u << (m))) == 0u)
@@ -33,7 +33,7 @@ static void read_off(void) {
   static const unsigned by_self[M_COUNT] = {
     SELF_OFF_RESTLESS, SELF_OFF_CLOCK, SELF_OFF_STOOD, SELF_OFF_PANELS, SELF_OFF_NEAR, SELF_OFF_THEORY,
     SELF_OFF_SKIP, SELF_OFF_DEATHS, SELF_OFF_UNMASK, SELF_OFF_WINDOW, SELF_OFF_REDRAW, SELF_OFF_RECALL,
-    SELF_OFF_REPLAY, SELF_OFF_REACH
+    SELF_OFF_REPLAY, SELF_OFF_REACH, SELF_OFF_CURIOUS
   };
   OFF_MASK = 0u;
   for (m = 0u; m < M_COUNT; m++) {
@@ -168,6 +168,7 @@ static unsigned kind_slot(uint32_t key) {
 static int TBL[EX_TBL];
 
 static unsigned char MASK[PL_SIZE][PL_SIZE];   /* cells that tick by themselves */
+static unsigned WATCHING;   /* it is confused, and watching rather than getting on */
 static pl_frame_t LEVEL_START;
 
 /* the small changes seen, to tell a clock from a switch */
@@ -939,6 +940,9 @@ static unsigned build_actions(const ex_explorer_t *ex, const ex_game_t *g, const
       /* what opens new situations first: each new situation is a new domain of unknowns */
       cand[i].score = KIND_DID[k] ? 0.0 : (!KIND_DONE[k] ? 1.0 : 2.0);
       if (!cand[i].simple && (AIM_POINT & (1u << f->c[PY(cand[i].code)][PX(cand[i].code)]))) cand[i].score = -1.0;
+      if (WATCHING && KIND_DONE[k] && !KIND_DID[k]) {
+        cand[i].score = -3.0;   /* confused: do what changes nothing, and see what moves anyway */
+      }
       if (!cand[i].simple && HOLDING && ON(M_REACH)) {
         /* holding something: a distance it has never asked about is where the bit
            is, one it knows the thing goes is worth using, one ruled out is not
@@ -1327,6 +1331,172 @@ static unsigned notice_ticks(ex_explorer_t *ex, const pl_frame_t *a, const pl_fr
   return added;
 }
 
+/* a change far from what it did: the first sign that something else is moving */
+static int moved_by_itself(const pl_frame_t *a, const pl_frame_t *b, unsigned code,
+                           unsigned *pr, unsigned *pc) {
+  unsigned r, c;
+  for (r = 0u; r < b->h; r++) {
+    for (c = 0u; c < b->w; c++) {
+      if (MASK[r][c] || a->c[r][c] == b->c[r][c]) continue;
+      if (KIND(code) == 6u) {
+        int dy = (int)r - (int)PY(code), dx = (int)c - (int)PX(code);
+        if (dy > -6 && dy < 6 && dx > -6 && dx < 6) continue;   /* where it pointed: its doing */
+      }
+      if (body_colour() >= 0 && ((int)a->c[r][c] == body_colour() || (int)b->c[r][c] == body_colour())) {
+        continue;   /* itself moving is not a puzzle */
+      }
+      *pr = r;
+      *pc = c;
+      return 1;
+    }
+  }
+  return 0;
+}
+
+/*
+ * Being confused, and being curious about it.
+ *
+ * When something changes that it cannot lay at the door of its own act, it does
+ * not rub it out: it is confused, and says so. A thing that moves whatever it
+ * does is the world acting back, and the world acting back is most of what it
+ * fails at -- what kills it, what runs down, what plays against it.
+ *
+ * While confused it does the one experiment that tells "I did that" from "it
+ * does that anyway": act in a way it has settled does nothing, and watch. If the
+ * thing moves regardless, the thing moves itself, and then there is a second
+ * question worth asking -- by how much, each time? A step that repeats is the
+ * answer; once it can say where the thing will be next, the puzzle is explained,
+ * and only then may it stop watching it. Leaving something out is earned by
+ * understanding it, never a way of avoiding it.
+ */
+#define EX_PUZZLES 16u
+#define EX_WATCH SELF_WATCH   /* acts it will spend on one puzzle before letting it be */
+#define EX_STEP_SURE 2u     /* the same step seen this often: it can say where the thing goes */
+typedef struct {
+  unsigned char alive, explained, colour;
+  unsigned char r, c;       /* where the moving patch was last seen */
+  int dr, dc;               /* the step it takes, once it repeats */
+  unsigned same, watched;
+} ex_puzzle_t;
+static ex_puzzle_t PUZZLE[EX_PUZZLES];
+
+
+static void puzzles_begin(void) {
+  memset(PUZZLE, 0, sizeof PUZZLE);
+  WATCHING = 0u;
+}
+
+/* something changed that it did not do: a puzzle, unless it is one already */
+static void be_confused(ex_explorer_t *ex, unsigned colour, unsigned r, unsigned c) {
+  unsigned i;
+  for (i = 0u; i < EX_PUZZLES; i++) {
+    if (PUZZLE[i].alive && PUZZLE[i].colour == colour) return;
+  }
+  for (i = 0u; i < EX_PUZZLES; i++) {
+    if (PUZZLE[i].alive) continue;
+    memset(&PUZZLE[i], 0, sizeof PUZZLE[i]);
+    PUZZLE[i].alive = 1u;
+    PUZZLE[i].colour = (unsigned char)colour;
+    PUZZLE[i].r = (unsigned char)r;
+    PUZZLE[i].c = (unsigned char)c;
+    ex->puzzles++;
+    WATCHING = 1u;
+    think(ex, "what made that happen, if I did not?",
+          "something moves whether I act or not. I do something that changes nothing, and watch it");
+    return;
+  }
+}
+
+/* where the patch of that colour nearest to where it was has got to */
+static int find_patch(const pl_frame_t *f, unsigned colour, unsigned r0, unsigned c0,
+                      unsigned *rr, unsigned *cc) {
+  unsigned r, c, best = 0xFFFFu;
+  int found = 0;
+  for (r = 0u; r < f->h; r++) {
+    for (c = 0u; c < f->w; c++) {
+      unsigned d;
+      if (f->c[r][c] != colour) continue;
+      d = (unsigned)(abs((int)r - (int)r0) + abs((int)c - (int)c0));
+      if (d < best) {
+        best = d;
+        *rr = r;
+        *cc = c;
+        found = 1;
+      }
+    }
+  }
+  return found;
+}
+
+/* one more look at what it cannot explain: has it a step that repeats? */
+static void watch_puzzles(ex_explorer_t *ex, const pl_frame_t *f) {
+  unsigned i;
+  WATCHING = 0u;
+  for (i = 0u; i < EX_PUZZLES; i++) {
+    unsigned r = 0u, c = 0u;
+    int dr, dc;
+    ex_puzzle_t *p = &PUZZLE[i];
+    if (!p->alive || p->explained) continue;
+    p->watched++;
+    if (!find_patch(f, p->colour, p->r, p->c, &r, &c)) {
+      p->alive = 0u;
+      continue;
+    }
+    dr = (int)r - (int)p->r;
+    dc = (int)c - (int)p->c;
+    if ((dr != 0 || dc != 0) && dr == p->dr && dc == p->dc) {
+      p->same++;
+      if (p->same >= EX_STEP_SURE) {
+        char a1[160];
+        p->explained = 1u;
+        ex->puzzles_explained++;
+        sprintf(a1, "it goes %d down and %d across every time: now I can say where it will be",
+                p->dr, p->dc);
+        think(ex, "what is that thing doing?", a1);
+      }
+    } else {
+      p->dr = dr;
+      p->dc = dc;
+      p->same = 1u;
+    }
+    p->r = (unsigned char)r;
+    p->c = (unsigned char)c;
+    if (p->watched >= EX_WATCH && !p->explained) {
+      p->alive = 0u;   /* watched long enough and still no step it can name */
+      ex->puzzles_given_up++;
+      think(ex, "can I say what that thing does?",
+            "no: I have watched it and found no step it keeps to. I leave it be, and get on");
+    }
+    if (p->alive && !p->explained) WATCHING = 1u;
+  }
+}
+
+/* where an explained thing will be after one more step */
+static int mover_next(unsigned i, unsigned *r, unsigned *c) {
+  if (i >= EX_PUZZLES || !PUZZLE[i].alive || !PUZZLE[i].explained) return 0;
+  *r = (unsigned)((int)PUZZLE[i].r + PUZZLE[i].dr);
+  *c = (unsigned)((int)PUZZLE[i].c + PUZZLE[i].dc);
+  return 1;
+}
+
+/*
+ * Where an act would put it, set against where the things it has explained will
+ * be. Having been killed at least once, it will not walk into a thing whose step
+ * it can say: that is what understanding the thing was for.
+ */
+static int would_meet_mover(const ex_sum_t *sum, int body, unsigned kind) {
+  unsigned i, mr, mc;
+  double br, bc;
+  if (body < 0 || sum[body].count == 0u || SHIFT_SEEN[kind][body] < EX_SHIFT_SURE) return 0;
+  br = (double)(sum[body].rows + SHIFT_R[kind][body]) / (double)sum[body].count;
+  bc = (double)(sum[body].cols + SHIFT_C[kind][body]) / (double)sum[body].count;
+  for (i = 0u; i < EX_PUZZLES; i++) {
+    if (!mover_next(i, &mr, &mc)) continue;
+    if (fabs(br - (double)mr) + fabs(bc - (double)mc) <= 1.5) return 1;
+  }
+  return 0;
+}
+
 /* ---- finding the nearest thing untried -------------------------------------------- */
 
 static int BFS_PREV[EX_MAX_NODES];
@@ -1696,6 +1866,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
   read_off();
   (void)en_begin(&THEORY, SELF_USE_LIVE ? getenv("CIALL_LIVE") : 0);
   ways_begin();
+  puzzles_begin();
   memset(SENT_LAW, 0, sizeof SENT_LAW);   /* a new world: how far a thing goes here is unknown */
   HOLDING = 0;
   memset(BLOCKER, 0, sizeof BLOCKER);
@@ -1792,6 +1963,10 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
           /* with a goal in sight: the untried step that brings it nearest */
           if (k2 < 8u && k2 != 6u && SHIFT_SEEN[k2][body] >= EX_SHIFT_SURE) {
             d = goal_distance(&now, cs, body, SHIFT_R[k2][body], SHIFT_C[k2][body]);
+            if (ex->deaths > 0u && would_meet_mover(cs, body, k2)) {
+              d = EX_GOAL_UNKNOWN;   /* it knows where that thing will be, and it kills */
+              ex->stepped_clear++;
+            }
           }
           if (d < best_d) {
             best_d = d;
@@ -2126,6 +2301,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       death_retry_at = 0u;
       STOOD_OFF = 0u;
       ways_begin();   /* a new level: every way of going is worth trying again */
+      puzzles_begin();
       recalling = ON(M_RECALL) && ex->levels_done < EX_MAX_LEVELS && KNOWN_LEN[ex->levels_done] > 0u;
       recall_pos = 0u;
       if (recalling) replaying = 0;
@@ -2181,6 +2357,14 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       continue;
     }
     /* an ordinary step: what ticks by itself is left out, then the step is remembered */
+    {
+      /* whatever moved without it having done so is a puzzle before it is a nuisance */
+      unsigned pr, pc;
+      if (ON(M_CURIOUS) && moved_by_itself(&now, &next, code, &pr, &pc)) {
+        be_confused(ex, next.c[pr][pc], pr, pc);
+      }
+      watch_puzzles(ex, &next);
+    }
     if (notice_ticks(ex, &now, &next, code) > 0u) {
       char a1[160];
       sprintf(a1, "it ticks by itself (%u cells so far); I stop counting it as a difference",
@@ -2297,6 +2481,10 @@ void ex_report(FILE *out, const ex_explorer_t *ex) {
   if (ex->runs_before > 0u || ex->recalled > 0u) {
     fprintf(out, "  remembered from %u earlier run%s (best before: %u levels); walked %u steps it remembered\n",
             ex->runs_before, ex->runs_before == 1u ? "" : "s", ex->best_before, ex->recalled);
+  }
+  if (ex->puzzles > 0u) {
+    fprintf(out, "  things that moved when I had not moved them: %u; I watched them and can say what %u of them do; %u I could not\n",
+            ex->puzzles, ex->puzzles_explained, ex->puzzles_given_up);
   }
   if (ex->sent_learned > 0u) {
     unsigned v, goes = 0u, cannot = 0u, dy, dx;

@@ -40,6 +40,8 @@
 #define SELF_DEATH_RETRIES 10u   /* self: 0u 3u 10u 20u */
 /* how a tie is made uniform: 0 plain acts only, 1 every act, 2 kinds then acts */
 #define SELF_TIE_MODE 2u   /* self: 0u 1u 2u */
+/* acts it will spend on one thing it cannot explain before letting it be */
+#define SELF_WATCH 48u   /* self: 0u 16u 48u 96u */
 /* whether families kept by other games are formulated from the first act */
 #define SELF_USE_LIVE 1   /* self: 0 1 */
 
@@ -58,5 +60,6 @@
 #define SELF_OFF_RECALL 0   /* self: 0 1 */
 #define SELF_OFF_REPLAY 0   /* self: 0 1 */
 #define SELF_OFF_REACH 0   /* self: 0 1 */
+#define SELF_OFF_CURIOUS 0   /* self: 0 1 */
 
 #endif
