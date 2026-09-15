@@ -113,6 +113,8 @@ typedef struct {
 
   /* what blocks */
   unsigned failures;
+  unsigned gave_up;     /* times it gave up what it had concluded blocks it, and worked it out again */
+  unsigned left_stuck;  /* times it left a world it could get nowhere in, rather than spend the rest */
   int wall_alive[PL_COLOURS];     /* has been in the way when a move failed */
   int wall_ruled_out[PL_COLOURS]; /* has been moved onto, so it does not block */
 

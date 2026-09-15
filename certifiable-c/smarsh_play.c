@@ -689,10 +689,11 @@ static unsigned choose(pl_child_t *ch, const pl_frame_t *f, unsigned n_actions, 
 }
 
 #define PL_STRANDED 6u   /* cornered this many times running after changing the world */
+#define PL_GIVE_UP 40u   /* cornered this many times running with nothing left to give up */
 
 static sm_status_t play(pl_child_t *ch, pl_game_t *g, unsigned budget, const pl_frame_t *first) {
   static pl_frame_t now, next;
-  unsigned level_start = 0u, cornered_run = 0u, changed_here = 0u;
+  unsigned level_start = 0u, cornered_run = 0u, changed_here = 0u, gave_up_here = 0u;
   int have_start = 0, start_r = 0, start_c = 0;   /* where it stood when this level began */
 
   if (g->n_actions == 0u || g->n_actions > PL_MAX_ACTIONS || g->levels == 0u ||
@@ -728,9 +729,34 @@ static sm_status_t play(pl_child_t *ch, pl_game_t *g, unsigned budget, const pl_
       cornered_run = 0u;
       changed_here = 0u;
       have_start = 0;
+      gave_up_here = 0u;
       memset(FAILED, 0, sizeof FAILED);
       memset(VISITED, 0, sizeof VISITED);
       continue;
+    }
+    /*
+     * Cornered again and again, having changed nothing: starting the level over
+     * would give it back exactly what it has. So the fault is in what it
+     * concluded, and the weakest of those is what blocks it: that was never
+     * seen, only inferred from moves that failed. It gives that conclusion up
+     * and works it out again from here. Once, per level: if it is still cornered
+     * after that, it has nothing left to take back, and it leaves this world
+     * rather than spend the rest of its actions going nowhere.
+     */
+    if (cornered_run >= PL_STRANDED && gave_up_here == 0u) {
+      memset(ch->wall_alive, 0, sizeof ch->wall_alive);
+      memset(ch->wall_ruled_out, 0, sizeof ch->wall_ruled_out);
+      ch->failures = 0u;
+      memset(FAILED, 0, sizeof FAILED);
+      memset(VISITED, 0, sizeof VISITED);
+      gave_up_here = 1u;
+      ch->gave_up++;
+      cornered_run = 0u;
+      continue;
+    }
+    if (cornered_run >= PL_GIVE_UP) {
+      ch->left_stuck++;
+      return SM_OK;
     }
 
     if (have_pos) VISITED[r0][c0] = 1;
@@ -899,6 +925,7 @@ static sm_status_t play(pl_child_t *ch, pl_game_t *g, unsigned budget, const pl_
     now = next;
     changed_here = 0u;
     cornered_run = 0u;
+    gave_up_here = 0u;
     have_start = 0;
     memset(FAILED, 0, sizeof FAILED);
     memset(VISITED, 0, sizeof VISITED);
