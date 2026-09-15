@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "smarsh_ending.h"
+#include "smarsh_guess.h"
 #include "smarsh_self.h"   /* the part of its source the child rewrites */
 
 /*
@@ -1433,6 +1434,14 @@ static unsigned find_rhythm(const ex_puzzle_t *p) {
 }
 static ex_puzzle_t PUZZLE[EX_PUZZLES];
 /*
+ * The one thing it is attending to now, and what it has worked out about it. The
+ * kind of law is not chosen here: smarsh_guess formulates over the looks by
+ * elimination, so a walk, a stillness or something with no name are all just
+ * whatever description survives.
+ */
+static gs_guess_t GUESS;
+static int GUESS_OF = -1;   /* which puzzle the guess is about */
+/*
  * How long it may spend on one thing it cannot explain is not fixed: what it
  * explains earns it more looking, and what it gives up on costs it. So looking
  * grows where looking pays, and shrinks where it does not, at the rate it is
@@ -1587,6 +1596,11 @@ static void watch_puzzles(ex_explorer_t *ex, const pl_frame_t *f) {
       continue;
     }
     p->watched++;
+    /* it attends to one question at a time, and works out the law of that one */
+    if (GUESS_OF != (int)i) {
+      gs_begin(&GUESS);
+      GUESS_OF = (int)i;
+    }
     ASK_NOW = (ex_ask_t)p->ask;
     ASK_R = p->r;
     ASK_C = p->c;
@@ -1607,6 +1621,33 @@ static void watch_puzzles(ex_explorer_t *ex, const pl_frame_t *f) {
     p->hr[p->n_steps] = dr;
     p->hc[p->n_steps] = dc;
     p->n_steps++;
+    if (GUESS_OF == (int)i) {
+      /* the law of the thing, whatever shape it turns out to have */
+      double nr = 0.0, nc = 0.0;
+      (void)gs_saw(&GUESS, (double)p->watched, (double)r, (double)c);
+      if (GUESS.n >= 5u && (p->watched % 4u) == 0u) {
+        (void)gs_formulate(&GUESS);
+        if (GUESS.found && gs_predict(&GUESS, (double)p->watched, (double)r, (double)c, &nr, &nc)) {
+          char a1[220];
+          p->explained = 1u;
+          p->period = 1u;
+          p->hr[0] = (int)nr - (int)r;
+          p->hc[0] = (int)nc - (int)c;
+          p->n_steps = 1u;
+          ex->laws_found++;
+          ex->puzzles_explained++;
+          if (ASK_STATE[p->ask] == 0u) {
+            ASK_STATE[p->ask] = 1u;
+            ex->asks_that_answer++;
+          }
+          if (WATCH_ALLOWED < EX_WATCH * 4u) WATCH_ALLOWED += EX_WATCH;
+          sprintf(a1, "I can say it: the next row is %s and the next column is %s",
+                  GUESS.law_r, GUESS.law_c);
+          think(ex, "what is that thing doing?", a1);
+          continue;
+        }
+      }
+    }
     {
       unsigned period = find_rhythm(p);
       if (period > 0u && p->n_steps >= period * 2u) {

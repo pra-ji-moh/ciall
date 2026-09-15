@@ -124,6 +124,7 @@ typedef struct {
   unsigned windows;          /* times it looked further along than the acts it held */
   unsigned runs_before, best_before, recalled;   /* carried between runs */
   unsigned ways_dropped, ways_reopened;   /* ways of going it gave up as getting nowhere */
+  unsigned laws_found;   /* laws it formulated for a thing, of no kind given in advance */
   unsigned asks_that_answer, asks_ruled_out, predictions_broken;   /* learning how to answer itself */
   unsigned puzzles, puzzles_explained, puzzles_given_up;   /* what it could not lay at its own door */
   unsigned waited;   /* times it let a thing it had explained pass, instead of walking into it */

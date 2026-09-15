@@ -7,6 +7,6 @@ CC=${CC:-cc}
 FLAGS="-std=c99 -Wall -Wextra -pedantic -O2"
 mkdir -p .build
 (cd certifiable-c && $CC $FLAGS smarsh_core.c smarsh_play.c arc_worldgen.c smarsh_grow.c grow.c -o ../.build/grow.exe -lm)
-(cd certifiable-c && $CC $FLAGS smarsh_core.c smarsh_ending.c smarsh_explore.c play_arc.c -o ../.build/play_arc.exe -lm)
+(cd certifiable-c && $CC $FLAGS smarsh_core.c smarsh_interval.c smarsh_space.c smarsh_frame.c smarsh_guess.c smarsh_ending.c smarsh_explore.c play_arc.c -o ../.build/play_arc.exe -lm)
 (cd certifiable-c && $CC $FLAGS self_map.c -o ../.build/self_map.exe -lm)
 echo "built .build/grow.exe, .build/play_arc.exe and .build/self_map.exe"
