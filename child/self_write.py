@@ -85,6 +85,8 @@ def build(src_rel, out_dir):
     env = dict(os.environ)
     env["CIALL_SRC"] = src_rel
     env["CIALL_OUT"] = out_dir
+    for k in ("CIALL_SEED", "CIALL_TIE", "CIALL_OFF", "CIALL_LIVE", "CIALL_MIND"):
+        env.pop(k, None)   # the checks run as the child normally is, not under this attempt
     r = subprocess.run(["bash", "build_c.sh"], cwd=ROOT, env=env, stdout=subprocess.PIPE,
                        stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace")
     ok = r.stdout.strip().splitlines()[-1] if r.stdout else ""
