@@ -19,7 +19,9 @@
 set -u
 cd "$(dirname "$0")"
 ROOT=$(pwd)
-OUT="$ROOT/.build"
+# CIALL_SRC / CIALL_OUT: check a candidate copy of the source (the child's own rewrite)
+# in another folder, without touching the real build.
+OUT="${CIALL_OUT:-$ROOT/.build}"
 mkdir -p "$OUT"
 
 if [ -n "${CC:-}" ]; then :;
@@ -69,7 +71,7 @@ run_golden() {
 echo "compiler: $CC"
 echo
 echo "certifiable-c/"
-C=certifiable-c
+C="${CIALL_SRC:-certifiable-c}"
 build test_smarsh_core   $C smarsh_core.c test_smarsh_core.c                  && run_test test_smarsh_core $C
 build test_smarsh_reason $C smarsh_core.c smarsh_reason.c test_smarsh_reason.c && run_test test_smarsh_reason $C
 build test_learner       $C smarsh_core.c smarsh_reason.c smarsh_learner.c test_learner.c && run_test test_learner $C
@@ -107,6 +109,7 @@ build demo_play $C smarsh_core.c smarsh_play.c arc_standin.c demo_play.c && run_
 build test_grow $C smarsh_core.c smarsh_play.c arc_worldgen.c smarsh_grow.c test_grow.c && run_test test_grow $C
 build grow $C smarsh_core.c smarsh_play.c arc_worldgen.c smarsh_grow.c grow.c
 build test_ending $C smarsh_core.c smarsh_ending.c test_ending.c && run_test test_ending $C
+build self_map $C self_map.c
 build test_explore $C smarsh_core.c smarsh_ending.c smarsh_explore.c test_explore.c && run_test test_explore $C
 build play_arc $C smarsh_core.c smarsh_ending.c smarsh_explore.c play_arc.c
 if command -v node >/dev/null 2>&1; then

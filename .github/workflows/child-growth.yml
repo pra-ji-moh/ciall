@@ -19,7 +19,7 @@ concurrency:
 jobs:
   grow:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 110
     steps:
       - uses: actions/checkout@v4
 
@@ -33,14 +33,14 @@ jobs:
       - name: build the child
         run: sh child/build_child.sh
 
-      - name: one stretch
+      - name: one stretch, and one attempt to rewrite itself
         run: PYTHON=python sh child/grow_hourly.sh
 
       - name: keep what it settled
         run: |
           git config user.name "ciall-child"
           git config user.email "ciall-child@users.noreply.github.com"
-          git add child/
+          git add child/ certifiable-c/smarsh_self.h
           if git diff --cached --quiet; then
             echo "nothing new settled"
           else

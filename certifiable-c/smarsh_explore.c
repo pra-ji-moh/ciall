@@ -4,14 +4,60 @@
  */
 
 #include "smarsh_explore.h"
+#include <stdlib.h>
+#include <string.h>
 #include "smarsh_ending.h"
+#include "smarsh_self.h"   /* the part of its source the child rewrites */
+
+/*
+ * Its own parts, by name, so it can study itself. Each mechanism below can be
+ * switched off for a run (CIALL_OFF="panels,stood"): the child's self-study plays
+ * a game with one part off and the same game with everything on, and rules out
+ * what that part could be for there (needed, not needed, in the way). What is
+ * proved in the way for a game is switched off for that game from then on.
+ */
+typedef enum {
+  M_RESTLESS, M_CLOCK, M_STOOD, M_PANELS, M_NEAR, M_THEORY, M_SKIP,
+  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_COUNT
+} ex_mech_t;
+static const char *MECH_NAME[M_COUNT] = {
+  "restless", "clock", "stood", "panels", "near", "theory", "skip",
+  "deaths", "unmask", "window", "redraw", "recall", "replay"
+};
+static unsigned OFF_MASK;
+#define ON(m) ((OFF_MASK & (1u << (m))) == 0u)
+
+static void read_off(void) {
+  const char *off = getenv("CIALL_OFF");
+  unsigned m;
+  static const unsigned by_self[M_COUNT] = {
+    SELF_OFF_RESTLESS, SELF_OFF_CLOCK, SELF_OFF_STOOD, SELF_OFF_PANELS, SELF_OFF_NEAR, SELF_OFF_THEORY,
+    SELF_OFF_SKIP, SELF_OFF_DEATHS, SELF_OFF_UNMASK, SELF_OFF_WINDOW, SELF_OFF_REDRAW, SELF_OFF_RECALL,
+    SELF_OFF_REPLAY
+  };
+  OFF_MASK = 0u;
+  for (m = 0u; m < M_COUNT; m++) {
+    if (by_self[m]) OFF_MASK |= 1u << m;   /* parts it has switched off in its own source */
+  }
+  if (off == 0) return;
+  for (m = 0u; m < M_COUNT; m++) {
+    const char *hit;
+    size_t len = strlen(MECH_NAME[m]);
+    for (hit = strstr(off, MECH_NAME[m]); hit != 0; hit = strstr(hit + 1, MECH_NAME[m])) {
+      if ((hit == off || hit[-1] == ',') && (hit[len] == '\0' || hit[len] == ',')) {
+        OFF_MASK |= 1u << m;
+        break;
+      }
+    }
+  }
+}
 
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
 
 #define EX_TBL (1u << 17)
-#define EX_TICK_MAX 8u          /* a change this small may be something ticking by itself */
+#define EX_TICK_MAX SELF_TICK_MAX          /* a change this small may be something ticking by itself */
 #define EX_NONE (-1)
 #define EX_THOUGHTS 14u         /* questions written down per level, at most */
 #define EX_RESEMBLE 24.0        /* how many steps further it will go for a situation that
@@ -52,7 +98,7 @@ static unsigned char N_PRANK[EX_MAX_NODES][EX_MAX_ACTS];
  * out) at or above EX_SKIP_TAU. That is a policy, named, not a count.
  */
 #define EX_PLACE_BITS 4u
-#define EX_SKIP_TAU 0.75
+#define EX_SKIP_TAU SELF_SKIP_TAU
 static sm_possibility_t PLACE_LAW[EX_PLACES];
 static unsigned char PLACE_SEEN[EX_PLACES];     /* situations in which it did nothing, as coordinates */
 static unsigned char PLACE_DOES[EX_PLACES];     /* it has changed something: never skipped */
@@ -181,8 +227,8 @@ typedef struct {
 static unsigned MOVED_VOTES[PL_COLOURS];
 static long SHIFT_R[8][PL_COLOURS], SHIFT_C[8][PL_COLOURS];
 static unsigned SHIFT_SEEN[8][PL_COLOURS];   /* times running this shift was seen */
-#define EX_BODY_VOTES 3u
-#define EX_SHIFT_SURE 2u
+#define EX_BODY_VOTES SELF_BODY_VOTES
+#define EX_SHIFT_SURE SELF_SHIFT_SURE
 #define EX_STOOD 8192u
 static uint64_t STOOD[EX_STOOD];   /* places stood in, with the rest of the picture as it was */
 static unsigned STOOD_OFF;   /* this level, where it stood no longer holds it back */
@@ -365,6 +411,10 @@ static int AIM_MATCH;
 
 static void theory_aims(void) {
   (void)en_aim(&THEORY, &AIM_ONTO, &AIM_GONE, &AIM_POINT, &AIM_MATCH);
+  if (!ON(M_THEORY)) {
+    AIM_ONTO = AIM_GONE = AIM_POINT = 0u;
+    AIM_MATCH = 0;
+  }
 }
 
 /* colours worth stepping onto; 0 if none */
@@ -413,7 +463,7 @@ static unsigned goal_distance(const pl_frame_t *f, const ex_sum_t *sum, int body
 #define EX_PANELS 32u
 #define EX_PAT 8u
 #define EX_MATCH_NONE 255u
-#define EX_MATCH_WEIGHT 8.0
+#define EX_MATCH_WEIGHT SELF_MATCH_WEIGHT
 typedef struct {
   unsigned h, w;
   unsigned char bits[EX_PAT][EX_PAT];
@@ -629,7 +679,7 @@ typedef struct {
 
 /* how likely this is to do nothing, from what it has seen: tried last when likely */
 static uint32_t BUILT_KEY[EX_MAX_ACTS];
-#define EX_KEEP_ACTS 24u
+#define EX_KEEP_ACTS SELF_KEEP_ACTS
 static unsigned ACT_WINDOW;       /* how far along the window of further acts is, this level */
 static unsigned BUILT_OVERFLOW;   /* some situation had more acts than it held */
 static unsigned build_actions(const ex_explorer_t *ex, const ex_game_t *g, const pl_frame_t *f,
@@ -842,9 +892,9 @@ static int node_of(ex_explorer_t *ex, const ex_game_t *g, const pl_frame_t *f) {
   N_NACT[id] = (unsigned char)build_actions(ex, g, f, N_ACT[id]);
   N_UNTRIED[id] = N_NACT[id];
   N_MATCHD[id] = (unsigned char)match_distance(f);
-  if (id > 0u && N_MATCHD[id] != N_MATCHD[0]) MATCH_VARIES = 1u;
+  if (ON(M_PANELS) && id > 0u && N_MATCHD[id] != N_MATCHD[0]) MATCH_VARIES = 1u;
   N_NEARD[id] = (unsigned short)near_distance(f);
-  if (id > 0u && N_NEARD[id] != N_NEARD[0]) NEAR_VARIES = 1u;
+  if (ON(M_NEAR) && id > 0u && N_NEARD[id] != N_NEARD[0]) NEAR_VARIES = 1u;
   for (i = 0u; i < EX_MAX_ACTS; i++) {
     N_NEXT[id][i] = EX_NONE;
     N_FLAG[id][i] = 0u;
@@ -866,7 +916,7 @@ static int node_of(ex_explorer_t *ex, const ex_game_t *g, const pl_frame_t *f) {
       colour_sums(f, sum);
       N_GOALD[id] = (unsigned short)goal_distance(f, sum, body, 0, 0);
       stood_add(stood_key(sum, body, 0, 0), (int)id);
-      for (i = 0u; i < N_NACT[id] && !STOOD_OFF; i++) {
+      for (i = 0u; i < N_NACT[id] && !STOOD_OFF && ON(M_STOOD); i++) {
         unsigned kind = KIND(N_ACT[id][i]);
         if (kind >= 8u || kind == 6u || N_FLAG[id][i] != 0u) continue;
         if (SHIFT_SEEN[kind][body] < EX_SHIFT_SURE) continue;
@@ -889,7 +939,7 @@ static int node_of(ex_explorer_t *ex, const ex_game_t *g, const pl_frame_t *f) {
     unsigned code = N_ACT[id][i], pl;
     if (KIND(code) != 6u || N_FLAG[id][i] != 0u || PLACES_OPEN) continue;
     pl = place_of(code, f);
-    if (place_skip(pl)) {
+    if (ON(M_SKIP) && place_skip(pl)) {
       N_NEXT[id][i] = (int)id;
       N_FLAG[id][i] = EX_FLAG_PREDICTED;
       if (N_UNTRIED[id] > 0u) N_UNTRIED[id]--;
@@ -970,9 +1020,9 @@ static unsigned popcount8(unsigned v) {
   return n;
 }
 static unsigned NO_MASKING;   /* this level, nothing is left out */
-#define EX_FEW_SITUATIONS 64u
-#define EX_FRESH_STARTS 3u
-#define EX_DEATH_RETRIES 10u   /* what kills can depend on when: doubted this often anyway */
+#define EX_FEW_SITUATIONS SELF_FEW_SITUATIONS
+#define EX_FRESH_STARTS SELF_FRESH_STARTS
+#define EX_DEATH_RETRIES SELF_DEATH_RETRIES   /* what kills can depend on when: doubted this often anyway */
 static unsigned any_restless(void) {
   unsigned r, c;
   for (r = 0u; r < PL_SIZE; r++) {
@@ -983,7 +1033,7 @@ static unsigned any_restless(void) {
   return 0u;
 }
 static unsigned char MASK_KEPT[PL_SIZE][PL_SIZE];
-#define EX_RESTLESS_WINDOW 12u
+#define EX_RESTLESS_WINDOW SELF_RESTLESS_WINDOW
 static unsigned char PATCH_R[EX_TICK_MAX], PATCH_C[EX_TICK_MAX];
 
 static unsigned notice_ticks(ex_explorer_t *ex, const pl_frame_t *a, const pl_frame_t *b,
@@ -1007,7 +1057,7 @@ static unsigned notice_ticks(ex_explorer_t *ex, const pl_frame_t *a, const pl_fr
       }
     }
   }
-  if (RESTLESS_STEPS >= EX_RESTLESS_WINDOW) {
+  if (ON(M_RESTLESS) && RESTLESS_STEPS >= EX_RESTLESS_WINDOW) {
     for (r = 0u; r < b->h; r++) {
       for (c = 0u; c < b->w; c++) {
         /* nearly every step, and under every kind of action tried: a body going
@@ -1103,7 +1153,7 @@ static unsigned notice_ticks(ex_explorer_t *ex, const pl_frame_t *a, const pl_fr
       }
       for (j = 0u; j < tail; j++) {
         unsigned rr = PATCH_R[j], cc = PATCH_C[j], from = a->c[rr][cc], to = b->c[rr][cc];
-        if (PAIR_CLOCK[from][to] && !MASK[rr][cc]) added += mask_patch(rr, cc, from);
+        if (ON(M_CLOCK) && PAIR_CLOCK[from][to] && !MASK[rr][cc]) added += mask_patch(rr, cc, from);
       }
       if (added > 0u) {
         ex->clock_cells += added;
@@ -1459,7 +1509,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
     const char *seed = getenv("CIALL_SEED");
     TIE_SEED = seed != 0 ? (uint64_t)strtoull(seed, 0, 10) : 0u;
     seed = getenv("CIALL_TIE");
-    TIE_MODE = seed != 0 ? (unsigned)atoi(seed) : 2u;   /* uniform over kinds: best over seeds */
+    TIE_MODE = seed != 0 ? (unsigned)atoi(seed) : SELF_TIE_MODE;   /* uniform over kinds: best over seeds */
   }
   if (!CARRIED) {   /* a new game with nothing brought from before */
     memset(KIND_KEY, 0, sizeof KIND_KEY);
@@ -1476,7 +1526,8 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
     memset(SHIFT_SEEN, 0, sizeof SHIFT_SEEN);
     memset(KNOWN_LEN, 0, sizeof KNOWN_LEN);
   }
-  (void)en_begin(&THEORY, getenv("CIALL_LIVE"));   /* families that survived in other games */
+  read_off();
+  (void)en_begin(&THEORY, SELF_USE_LIVE ? getenv("CIALL_LIVE") : 0);   /* families that survived in other games */
   memset(BLOCKER, 0, sizeof BLOCKER);
   theory_aims();
   memset(RESTLESS, 0, sizeof RESTLESS);
@@ -1489,7 +1540,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
   new_level(ex, &now);
   start = node_of(ex, g, &now);
   cur = start;
-  if (KNOWN_LEN[0] > 0u) {
+  if (ON(M_RECALL) && KNOWN_LEN[0] > 0u) {
     recalling = 1;
     recall_pos = 0u;
     think(ex, "have I been here before?", "yes: I remember a way through this level, and walk it");
@@ -1666,7 +1717,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
               "no: some places I only predicted would do nothing. I try them now");
         continue;
       }
-      if (N_COUNT > death_retry_at || death_retries_here < EX_DEATH_RETRIES) {
+      if (ON(M_DEATHS) && (N_COUNT > death_retry_at || death_retries_here < EX_DEATH_RETRIES)) {
         /* a death is pinned on the last step taken, but running out of time kills
            whatever step came last. Before giving up, those steps are tried again */
         unsigned n, i2, freed = 0u;
@@ -1689,7 +1740,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
           continue;
         }
       }
-      if (!unmasked && N_COUNT < EX_FEW_SITUATIONS && any_restless()) {
+      if (ON(M_UNMASK) && !unmasked && N_COUNT < EX_FEW_SITUATIONS && any_restless()) {
         /* hardly anywhere to go, yet much of the picture was left out as moving by
            itself: perhaps what was left out was the very thing it moves. Everything
            counts again, for the rest of this level */
@@ -1714,7 +1765,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
               "perhaps what I stopped watching was what I move. I watch everything again");
         continue;
       }
-      if (BUILT_OVERFLOW && ACT_WINDOW < 32u * (EX_MAX_ACTS - EX_KEEP_ACTS)) {
+      if (ON(M_WINDOW) && BUILT_OVERFLOW && ACT_WINDOW < 32u * (EX_MAX_ACTS - EX_KEEP_ACTS)) {
         /* it has not tried everything: there were more things than it held */
         ACT_WINDOW += EX_MAX_ACTS - EX_KEEP_ACTS;
         BUILT_OVERFLOW = 0u;
@@ -1729,7 +1780,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
               "no: there were more things than I held. I look further along");
         continue;
       }
-      if (fresh_starts < EX_FRESH_STARTS) {
+      if (ON(M_REDRAW) && fresh_starts < EX_FRESH_STARTS) {
         /* its map says everything is tried, but a map drawn with parts of the picture
            left out can join situations that differ. The map is drawn again */
         fresh_starts++;
@@ -1889,7 +1940,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       took_back = 0;
       death_retry_at = 0u;
       STOOD_OFF = 0u;
-      recalling = ex->levels_done < EX_MAX_LEVELS && KNOWN_LEN[ex->levels_done] > 0u;
+      recalling = ON(M_RECALL) && ex->levels_done < EX_MAX_LEVELS && KNOWN_LEN[ex->levels_done] > 0u;
       recall_pos = 0u;
       if (recalling) replaying = 0;
       fresh_starts = 0u;
@@ -1902,7 +1953,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       ACT_WINDOW = 0u;
       BUILT_OVERFLOW = 0u;
       if (ex->thinking != 0) fprintf(ex->thinking, "    -- level %u --\n", ex->levels_done + 1u);
-      if (ex->plan_len > 0u) {
+      if (ON(M_REPLAY) && ex->plan_len > 0u) {
         char a1[160];
         replaying = 1;
         plan_pos = 0u;
@@ -2020,6 +2071,14 @@ void ex_report(FILE *out, const ex_explorer_t *ex) {
   }
   fprintf(out, "  died %u times; began a level again itself %u times\n", ex->deaths, ex->resets);
   (void)en_report(&THEORY, out);
+  if (OFF_MASK != 0u) {
+    unsigned m;
+    fprintf(out, "  played with parts of itself switched off:");
+    for (m = 0u; m < M_COUNT; m++) {
+      if (!ON(m)) fprintf(out, " %s", MECH_NAME[m]);
+    }
+    fprintf(out, "\n");
+  }
   if (ex->runs_before > 0u || ex->recalled > 0u) {
     fprintf(out, "  remembered from %u earlier run%s (best before: %u levels); walked %u steps it remembered\n",
             ex->runs_before, ex->runs_before == 1u ? "" : "s", ex->best_before, ex->recalled);
