@@ -1,0 +1,169 @@
+
+2026-09-15 20:36  ARC-AGI-3 game tu93-0768757b (keyboard_click)  (4176 actions carried)
+  frame 64 by 64, actions offered: 1 2 3 4
+    Q: what can I do here?
+    A: 4 actions, and 0 things I could point at
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+    Q: what does action 1 do?
+    A: it changed 1 cell
+    Q: what is that thing doing?
+    A: it keeps to a rhythm of 3 steps and then does the same again: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it keeps to a rhythm of 3 steps and then does the same again: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it keeps to a rhythm of 3 steps and then does the same again: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it keeps to a rhythm of 3 steps and then does the same again: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it keeps to a rhythm of 2 steps and then does the same again: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (64 cells so far); I stop counting it as a difference
+    -- level 2 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 20 steps that won last time first, matched to what is here
+    Q: did doing what won last time end this level?
+    A: no. What I saw on the way is kept; I go back to exploring
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 100% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 3 steps away, 100% like what winning changed; I go there first
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by pointing straight at it
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing something that changes nothing, and watching
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 82% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 3 steps away, 100% like what winning changed; I go there first
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    -- level 3 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 10 steps that won last time first, matched to what is here
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by acting far away from it
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by acting far away from it
+    Q: did doing what won last time end this level?
+    A: no. What I saw on the way is kept; I go back to exploring
+    Q: what is that thing doing?
+    A: it keeps to a rhythm of 3 steps and then does the same again: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 94% like what winning changed; I go there first
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: which untried situation is most like winning?
+    A: one 2 steps away, 94% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 94% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 3 steps away, 94% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 3 steps away, 94% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 94% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 3 steps away, 94% like what winning changed; I go there first
+    -- level 4 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 19 steps that won last time first, matched to what is here
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by pointing straight at it
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: did doing what won last time end this level?
+    A: no. What I saw on the way is kept; I go back to exploring
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 52% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 2 steps away, 52% like what winning changed; I go there first
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: which untried situation is most like winning?
+    A: one 3 steps away, 52% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 52% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 72% like what winning changed; I go there first
+    -- level 5 --
+    Q: this level is new. Can I do what won the last one?
+    A: maybe: I try the 17 steps that won last time first, matched to what is here
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by pointing straight at it
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing again what I did before
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by acting far away from it
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 23% like what winning changed; I go there first
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 0 down and 0 across every time: now I can say where it will be
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 23% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 59% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 2 steps away, 1% like what winning changed; I go there first
+    Q: which untried situation is most like winning?
+    A: one 1 step away, 21% like what winning changed; I go there first
+  not won; 4176 sent to the engine, games over 176
+  levels ended: 4; actions 4000; not won
+    level 1: 137 actions, 28 situations met
+    level 2: 113 actions, 30 situations met
+    level 3: 1636 actions, 75 situations met
+    level 4: 1365 actions, 68 situations met
+    in the level it stopped in: 80 situations met
+  died 176 times; began a level again itself 22 times
+  what ends a level, by elimination: 4 endings seen; language widened by itself to pairs of facts (every single fact had been ruled out)
+  how I ask about what I cannot explain: doing something that changes nothing, and watching: did not answer; doing again what I did before: did not answer; pointing straight at it: did not answer; acting far away from it: did not answer;
+  I said where a thing would be and was wrong 115 times, and took the explaining back
+  things that moved when I had not moved them: 108; I watched them and can say what 119 of them do; 97 I could not
+  gave up a way of going that was getting it nowhere 5 times, and opened them all again 0 times
+  doubted 12 times that a death was the last step's doing
+  found what it moves (colour 4); held back 79 steps back to where it had stood
+  did not spend 79 pointings it predicted would do nothing; took that back 3 times
+  began 4 levels by doing what won the last one; that won 0 of them
+  found 118 cells that tick by themselves, and left them out
+  what never did anything:
+  against a person: level 1 took it 137, a person 19; level 2 took it 113, a person 16; level 3 took it 1636, a person 34; level 4 took it 1365, a person 42;
+  levels finished: 4 of 9; on those, 3251 actions against a person's 111
+

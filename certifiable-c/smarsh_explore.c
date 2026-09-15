@@ -169,6 +169,10 @@ static int TBL[EX_TBL];
 
 static unsigned char MASK[PL_SIZE][PL_SIZE];   /* cells that tick by themselves */
 static unsigned WATCHING;   /* it is confused, and watching rather than getting on */
+static unsigned short LAST_CODE;   /* what it did last, so it can do it again */
+typedef enum { Q_STILL = 0, Q_AGAIN = 1, Q_AT = 2, Q_AWAY = 3, Q_WAYS = 4 } ex_ask_t;
+static ex_ask_t ASK_NOW;          /* the way it is asking about what it cannot explain */
+static unsigned ASK_R, ASK_C;     /* where the thing it is asking about is */
 static pl_frame_t LEVEL_START;
 
 /* the small changes seen, to tell a clock from a switch */
@@ -940,8 +944,14 @@ static unsigned build_actions(const ex_explorer_t *ex, const ex_game_t *g, const
       /* what opens new situations first: each new situation is a new domain of unknowns */
       cand[i].score = KIND_DID[k] ? 0.0 : (!KIND_DONE[k] ? 1.0 : 2.0);
       if (!cand[i].simple && (AIM_POINT & (1u << f->c[PY(cand[i].code)][PX(cand[i].code)]))) cand[i].score = -1.0;
-      if (WATCHING && KIND_DONE[k] && !KIND_DID[k]) {
-        cand[i].score = -3.0;   /* confused: do what changes nothing, and see what moves anyway */
+      if (WATCHING) {
+        /* confused: it acts the way it has chosen to ask */
+        int near_it = !cand[i].simple &&
+                      abs((int)PY(cand[i].code) - (int)ASK_R) + abs((int)PX(cand[i].code) - (int)ASK_C) <= 6;
+        if (ASK_NOW == Q_STILL && KIND_DONE[k] && !KIND_DID[k]) cand[i].score = -3.0;
+        else if (ASK_NOW == Q_AGAIN && cand[i].code == LAST_CODE) cand[i].score = -3.0;
+        else if (ASK_NOW == Q_AT && near_it) cand[i].score = -3.0;
+        else if (ASK_NOW == Q_AWAY && !cand[i].simple && !near_it) cand[i].score = -3.0;
       }
       if (!cand[i].simple && HOLDING && ON(M_REACH)) {
         /* holding something: a distance it has never asked about is where the bit
@@ -1372,12 +1382,55 @@ static int moved_by_itself(const pl_frame_t *a, const pl_frame_t *b, unsigned co
 #define EX_PUZZLES 16u
 #define EX_WATCH SELF_WATCH   /* acts it will spend on one puzzle before letting it be */
 #define EX_STEP_SURE 2u     /* the same step seen this often: it can say where the thing goes */
+/*
+ * How to answer a question is itself a question.
+ *
+ * It has ways of asking: do something it knows changes nothing and watch; do
+ * again what it did before; point straight at the thing; act far away from it.
+ * Which way answers which puzzle is not given. A way that leaves it able to say
+ * what the thing does has shown it can answer; a way that runs out of looking
+ * with nothing to show has shown it does not always answer, and is asked for
+ * last. It tries the ways it has never tried first, since that is where the
+ * bits are.
+ *
+ * And saying it understands is not enough: to understand a thing is to say
+ * where it will be. Every look tests the last claim, and a claim that fails
+ * takes the explanation back and counts against the way of asking that made it.
+ */
+static const char *ASK_NAME[Q_WAYS] = {
+  "doing something that changes nothing, and watching",
+  "doing again what I did before",
+  "pointing straight at it",
+  "acting far away from it"
+};
+static unsigned char ASK_STATE[Q_WAYS];   /* 0 never tried, 1 it has answered, 2 it has failed */
+
+#define EX_RHYTHM 8u   /* steps of a thing's rhythm it will keep */
 typedef struct {
-  unsigned char alive, explained, colour;
+  unsigned char alive, explained, colour, ask;
   unsigned char r, c;       /* where the moving patch was last seen */
-  int dr, dc;               /* the step it takes, once it repeats */
-  unsigned same, watched;
+  int hr[EX_RHYTHM], hc[EX_RHYTHM];   /* the steps it has taken, latest last */
+  unsigned n_steps, period;  /* the rhythm it keeps to, once one repeats */
+  unsigned watched;
 } ex_puzzle_t;
+
+/*
+ * A thing that goes up and comes back has no one step: it has a rhythm. So the
+ * question "by how much, each time?" is too poor to answer with, and when it
+ * cannot be answered the question is widened -- not one step, but a run of steps
+ * that repeats. The shortest run that repeats twice is what it keeps.
+ */
+static unsigned find_rhythm(const ex_puzzle_t *p) {
+  unsigned period, i;
+  for (period = 1u; period <= p->n_steps / 2u; period++) {
+    int same = 1;
+    for (i = 0u; i + period < p->n_steps && same; i++) {
+      if (p->hr[i] != p->hr[i + period] || p->hc[i] != p->hc[i + period]) same = 0;
+    }
+    if (same) return period;
+  }
+  return 0u;
+}
 static ex_puzzle_t PUZZLE[EX_PUZZLES];
 /*
  * How long it may spend on one thing it cannot explain is not fixed: what it
@@ -1388,8 +1441,27 @@ static ex_puzzle_t PUZZLE[EX_PUZZLES];
 static unsigned WATCH_ALLOWED = EX_WATCH;
 
 
+/* the way of asking to try now: one never tried, else one that has answered */
+static ex_ask_t choose_ask(unsigned seed) {
+  unsigned w, n = 0u, pick[Q_WAYS];
+  for (w = 0u; w < Q_WAYS; w++) {
+    if (ASK_STATE[w] == 0u) pick[n++] = w;
+  }
+  if (n == 0u) {
+    for (w = 0u; w < Q_WAYS; w++) {
+      if (ASK_STATE[w] == 1u) pick[n++] = w;
+    }
+  }
+  if (n == 0u) {
+    for (w = 0u; w < Q_WAYS; w++) pick[n++] = w;
+  }
+  return (ex_ask_t)pick[seed % n];
+}
+
 static void puzzles_begin(void) {
   memset(PUZZLE, 0, sizeof PUZZLE);
+  memset(ASK_STATE, 0, sizeof ASK_STATE);
+  ASK_NOW = Q_STILL;
   WATCHING = 0u;
   WATCH_ALLOWED = EX_WATCH;
 }
@@ -1407,10 +1479,17 @@ static void be_confused(ex_explorer_t *ex, unsigned colour, unsigned r, unsigned
     PUZZLE[i].colour = (unsigned char)colour;
     PUZZLE[i].r = (unsigned char)r;
     PUZZLE[i].c = (unsigned char)c;
+    PUZZLE[i].ask = (unsigned char)choose_ask(ex->actions + i);
     ex->puzzles++;
     WATCHING = 1u;
-    think(ex, "what made that happen, if I did not?",
-          "something moves whether I act or not. I do something that changes nothing, and watch it");
+    ASK_NOW = (ex_ask_t)PUZZLE[i].ask;
+    ASK_R = r;
+    ASK_C = c;
+    {
+      char a1[200];
+      sprintf(a1, "something moved that I did not move. I ask by %s", ASK_NAME[PUZZLE[i].ask]);
+      think(ex, "what made that happen, if I did not?", a1);
+    }
     return;
   }
 }
@@ -1479,35 +1558,88 @@ static void watch_puzzles(ex_explorer_t *ex, const pl_frame_t *f) {
     unsigned r = 0u, c = 0u;
     int dr, dc;
     ex_puzzle_t *p = &PUZZLE[i];
-    if (!p->alive || p->explained) continue;
+    if (!p->alive) continue;
+    if (p->explained) {
+      /* to understand it is to say where it will be: so say, and see */
+      unsigned at = p->period > 0u ? (p->n_steps % p->period) : 0u;
+      unsigned want_r = (unsigned)((int)p->r + p->hr[at]), want_c = (unsigned)((int)p->c + p->hc[at]);
+      if (!find_patch(f, p->colour, want_r, want_c, &r, &c)) {
+        p->alive = 0u;
+        continue;
+      }
+      if (r != want_r || c != want_c) {
+        p->explained = 0u;
+        p->period = 0u;
+        ex->predictions_broken++;
+        if (ASK_STATE[p->ask] != 2u) ASK_STATE[p->ask] = 2u;
+        think(ex, "was I right about where that thing would be?",
+              "no. So I did not understand it, and the way I asked did not answer");
+        WATCHING = 1u;
+      }
+      else {
+        unsigned k = p->n_steps < EX_RHYTHM ? p->n_steps : EX_RHYTHM - 1u;
+        p->hr[k] = (int)r - (int)p->r;
+        p->hc[k] = (int)c - (int)p->c;
+        if (p->n_steps < EX_RHYTHM) p->n_steps++;
+      }
+      p->r = (unsigned char)r;
+      p->c = (unsigned char)c;
+      continue;
+    }
     p->watched++;
+    ASK_NOW = (ex_ask_t)p->ask;
+    ASK_R = p->r;
+    ASK_C = p->c;
     if (!find_patch(f, p->colour, p->r, p->c, &r, &c)) {
       p->alive = 0u;
       continue;
     }
     dr = (int)r - (int)p->r;
     dc = (int)c - (int)p->c;
-    if ((dr != 0 || dc != 0) && dr == p->dr && dc == p->dc) {
-      p->same++;
-      if (p->same >= EX_STEP_SURE) {
-        char a1[160];
+    if (p->n_steps >= EX_RHYTHM) {
+      unsigned k;
+      for (k = 1u; k < EX_RHYTHM; k++) {
+        p->hr[k - 1u] = p->hr[k];
+        p->hc[k - 1u] = p->hc[k];
+      }
+      p->n_steps = EX_RHYTHM - 1u;
+    }
+    p->hr[p->n_steps] = dr;
+    p->hc[p->n_steps] = dc;
+    p->n_steps++;
+    {
+      unsigned period = find_rhythm(p);
+      if (period > 0u && p->n_steps >= period * 2u) {
+        char a1[200];
+        p->period = period;
         p->explained = 1u;
         ex->puzzles_explained++;
+        if (ASK_STATE[p->ask] == 0u) {
+          ASK_STATE[p->ask] = 1u;   /* that way of asking has answered something */
+          ex->asks_that_answer++;
+        }
         if (WATCH_ALLOWED < EX_WATCH * 4u) WATCH_ALLOWED += EX_WATCH;   /* it paid: look longer */
-        sprintf(a1, "it goes %d down and %d across every time: now I can say where it will be",
-                p->dr, p->dc);
+        if (period == 1u) {
+          sprintf(a1, "it goes %d down and %d across every time: now I can say where it will be",
+                  p->hr[0], p->hc[0]);
+        } else {
+          sprintf(a1, "it keeps to a rhythm of %u steps and then does the same again: now I can say where it will be",
+                  period);
+        }
         think(ex, "what is that thing doing?", a1);
       }
-    } else {
-      p->dr = dr;
-      p->dc = dc;
-      p->same = 1u;
     }
     p->r = (unsigned char)r;
     p->c = (unsigned char)c;
     if (p->watched >= WATCH_ALLOWED && !p->explained) {
       p->alive = 0u;   /* looked long enough and still no step it can name */
       ex->puzzles_given_up++;
+      if (ASK_STATE[p->ask] == 0u) {
+        ASK_STATE[p->ask] = 2u;   /* it does not always answer: asked for last from now on */
+        ex->asks_ruled_out++;
+        think(ex, "did asking that way answer?",
+              "no: I looked as long as I could and it told me nothing. I ask another way next time");
+      }
       WATCH_ALLOWED = WATCH_ALLOWED / 2u > EX_WATCH / 4u ? WATCH_ALLOWED / 2u : EX_WATCH / 4u + 1u;
       think(ex, "can I say what that thing does?",
             "no: I have watched it and found no step it keeps to. I leave it be, and get on");
@@ -1518,9 +1650,11 @@ static void watch_puzzles(ex_explorer_t *ex, const pl_frame_t *f) {
 
 /* where an explained thing will be after one more step */
 static int mover_next(unsigned i, unsigned *r, unsigned *c) {
-  if (i >= EX_PUZZLES || !PUZZLE[i].alive || !PUZZLE[i].explained) return 0;
-  *r = (unsigned)((int)PUZZLE[i].r + PUZZLE[i].dr);
-  *c = (unsigned)((int)PUZZLE[i].c + PUZZLE[i].dc);
+  unsigned at;
+  if (i >= EX_PUZZLES || !PUZZLE[i].alive || !PUZZLE[i].explained || PUZZLE[i].period == 0u) return 0;
+  at = PUZZLE[i].n_steps % PUZZLE[i].period;
+  *r = (unsigned)((int)PUZZLE[i].r + PUZZLE[i].hr[at]);
+  *c = (unsigned)((int)PUZZLE[i].c + PUZZLE[i].hc[at]);
   return 1;
 }
 
@@ -2251,6 +2385,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
         if (OBS.point & (1u << v)) OBS.point_r |= ROLE_OF[v];
       }
     }
+    LAST_CODE = (unsigned short)code;
     outcome = g->act(g, kind, PX(code), PY(code), &next);
     OBS.ended = (unsigned char)(outcome == 1 || outcome == 2);
     {
@@ -2544,6 +2679,16 @@ void ex_report(FILE *out, const ex_explorer_t *ex) {
   if (ex->runs_before > 0u || ex->recalled > 0u) {
     fprintf(out, "  remembered from %u earlier run%s (best before: %u levels); walked %u steps it remembered\n",
             ex->runs_before, ex->runs_before == 1u ? "" : "s", ex->best_before, ex->recalled);
+  }
+  if (ex->puzzles > 0u) {
+    unsigned w;
+    fprintf(out, "  how I ask about what I cannot explain:");
+    for (w = 0u; w < Q_WAYS; w++) {
+      fprintf(out, " %s: %s;", ASK_NAME[w],
+              ASK_STATE[w] == 0u ? "never tried" : (ASK_STATE[w] == 1u ? "has answered" : "did not answer"));
+    }
+    fprintf(out, "\n  I said where a thing would be and was wrong %u times, and took the explaining back\n",
+            ex->predictions_broken);
   }
   if (ex->puzzles > 0u) {
     fprintf(out, "  things that moved when I had not moved them: %u; I watched them and can say what %u of them do; %u I could not\n",

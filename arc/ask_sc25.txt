@@ -1,0 +1,51 @@
+
+2026-09-15 20:29  ARC-AGI-3 game sc25-635fd71a (keyboard_click)  (3433 actions carried)
+  frame 64 by 64, actions offered: 1 2 3 4 6
+    Q: what can I do here?
+    A: 4 actions, and 22 things I could point at
+    Q: what does action 1 do?
+    A: nothing I can see, here
+    Q: what happens when I point at something?
+    A: nothing I can see, here
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing something that changes nothing, and watching
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (128 cells so far); I stop counting it as a difference
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by doing something that changes nothing, and watching
+    Q: what is that thing doing?
+    A: it goes 1 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what is that thing doing?
+    A: it goes 1 down and 0 across every time: now I can say where it will be
+    Q: what made that happen, if I did not?
+    A: something moved that I did not move. I ask by acting far away from it
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+    Q: what does action 2 do?
+    A: it changed 16 cells
+    Q: what is that thing doing?
+    A: it goes 1 down and 0 across every time: now I can say where it will be
+    Q: was I right about where that thing would be?
+    A: no. So I did not understand it, and the way I asked did not answer
+  not won; 3433 sent to the engine, games over 64
+  levels ended: 0; actions 3369; not won
+    in the level it stopped in: 578 situations met
+  it ran out of anything untried it could reach, from the beginning too
+  died 64 times; began a level again itself 0 times
+  what ends a level, by elimination: 0 endings seen; language of single facts
+  how I ask about what I cannot explain: doing something that changes nothing, and watching: did not answer; doing again what I did before: did not answer; pointing straight at it: did not answer; acting far away from it: did not answer;
+  I said where a thing would be and was wrong 48 times, and took the explaining back
+  things that moved when I had not moved them: 154; I watched them and can say what 48 of them do; 152 I could not
+  where a thing it holds may be sent: 53 ways it found it goes, 1 it found it does not
+  gave up a way of going that was getting it nowhere 1 times, and opened them all again 0 times
+  drew its map of a level again 3 times
+  doubted 4 times that a death was the last step's doing
+  found what it moves (colour 9); held back 141 steps back to where it had stood
+  did not spend 2868 pointings it predicted would do nothing; took that back 4 times
+  found 128 cells that tick by themselves, and left them out
+  what never did anything: pointing at colour 9; pointing at colour 10; pointing at colour 15;
+  against a person: no level ended; a person needed 36 for the first
+  levels finished: 0 of 6
+
