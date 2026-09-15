@@ -186,6 +186,27 @@ def public_games(arcade):
 
 # ---- carrying one game ----------------------------------------------------------
 
+def families_elsewhere(mind_dir, game):
+    """Family names that survived an ending in any other game's mind: read, not judged."""
+    names = set()
+    try:
+        files = os.listdir(mind_dir)
+    except OSError:
+        return []
+    for name in files:
+        if not name.endswith(".txt") or name[:-4] == game:
+            continue
+        try:
+            with open(os.path.join(mind_dir, name), encoding="utf-8") as f:
+                for line in f:
+                    part = line.split()
+                    if len(part) == 3 and part[0] == "family" and part[2] == "1":
+                        names.add(part[1])
+        except OSError:
+            pass
+    return sorted(names)
+
+
 def carry(game, label, budget, journal, mind_dir=None):
     # the child's account goes to a file as it is written, not a pipe read at the end:
     # a pipe that nobody reads fills up, and then the child waits to write while this
@@ -196,6 +217,8 @@ def carry(game, label, budget, journal, mind_dir=None):
     if mind_dir:   # what the child settled about this game is kept here between runs
         os.makedirs(mind_dir, exist_ok=True)
         env["CIALL_MIND"] = os.path.join(mind_dir, getattr(game, "game_id", "standin").split("-")[0] + ".txt")
+        if "CIALL_LIVE" not in env:   # the kinds of world other games turned out to be
+            env["CIALL_LIVE"] = ",".join(families_elsewhere(mind_dir, getattr(game, "game_id", "standin").split("-")[0]))
     child = subprocess.Popen([CHILD, str(budget)], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                              stderr=account, text=True, cwd=ROOT, env=env)
     obs = game.reset()

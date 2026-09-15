@@ -32,3 +32,5 @@ certifiable-c/nul
 arc/*.err
 arc/run*.txt
 arc/run*.err
+arc/transfer_*.txt
+arc/transfer_mind/

@@ -4,6 +4,7 @@
  */
 
 #include "smarsh_explore.h"
+#include "smarsh_ending.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -259,8 +260,11 @@ static unsigned stepped_onto(const pl_frame_t *f, const ex_sum_t *sum, int body,
                              unsigned *onto);
 static unsigned MOVE_ONTO[16];
 static unsigned MOVES_ONTO;
+static unsigned STEPPED_MASK;               /* colours the last stepped_onto saw ahead of the body */
+static unsigned STEPPED_CELLS[PL_COLOURS];  /* and how many cells of each */
 static unsigned BODY_STEP = 1u;
 /* one step seen: which colours moved, and by how much under this action */
+static unsigned char BLOCKER[PL_COLOURS];
 static void learn_moving(unsigned kind, const pl_frame_t *a, const pl_frame_t *b) {
   static ex_sum_t sa[PL_COLOURS], sb[PL_COLOURS];
   unsigned v;
@@ -272,6 +276,15 @@ static void learn_moving(unsigned kind, const pl_frame_t *a, const pl_frame_t *b
     if (body >= 0 && sa[body].count == sb[body].count &&
         (sa[body].rows != sb[body].rows || sa[body].cols != sb[body].cols)) {
       if (stepped_onto(a, sa, body, kind, MOVE_ONTO)) MOVES_ONTO++;
+    } else if (body >= 0 && sa[body].count == sb[body].count && SHIFT_SEEN[kind][body] >= EX_SHIFT_SURE) {
+      static unsigned refused[PL_COLOURS];
+      if (stepped_onto(a, sa, body, kind, refused)) {
+        unsigned v2, n2 = 0u, who = 0u;
+        for (v2 = 0u; v2 < PL_COLOURS; v2++) {
+          if (STEPPED_MASK & (1u << v2)) { n2++; who = v2; }
+        }
+        if (n2 == 1u) BLOCKER[who] = 1u;   /* only that lay ahead, and it would not be entered */
+      }
     }
   }
   for (v = 0u; v < PL_COLOURS; v++) {
@@ -302,6 +315,7 @@ static void learn_moving(unsigned kind, const pl_frame_t *a, const pl_frame_t *b
 static unsigned WIN_ONTO[PL_COLOURS];
 static unsigned WINS_ONTO;
 static unsigned short N_GOALD[EX_MAX_NODES];
+static unsigned short N_GONEC[EX_MAX_NODES];   /* cells still there of colours an ending wants gone */
 #define EX_GOAL_UNKNOWN 0xFFFFu
 #define EX_GOAL_LIFT 2.0
 
@@ -322,48 +336,62 @@ static unsigned stepped_onto(const pl_frame_t *f, const ex_sum_t *sum, int body,
       if (tr < 0 || tc < 0 || tr >= (long)f->h || tc >= (long)f->w) continue;
       v = f->c[tr][tc];
       if ((int)v == body || MASK[tr][tc]) continue;
+      if (!seen[v]) STEPPED_CELLS[v] = 0u;
       seen[v] = 1u;
+      STEPPED_CELLS[v]++;
     }
   }
+  STEPPED_MASK = 0u;
   for (v = 0u; v < PL_COLOURS; v++) {
     if (seen[v]) {
       onto[v]++;
       any = 1u;
+      STEPPED_MASK |= 1u << v;
     }
   }
   return any;
 }
 
-static int goal_colour(void) {
-  unsigned v;
-  int who = -1;
-  double best = EX_GOAL_LIFT;
-  if (WINS_ONTO == 0u) return -1;
+/*
+ * What to go towards comes from the theories of what ends a level
+ * (smarsh_ending): formulated by elimination over every act, in a language the
+ * child widens itself when every theory it can say is ruled out. Colours the body
+ * was refused entry to are not places to go.
+ */
+static en_theory_t THEORY;
+static en_obs_t OBS;
+static uint16_t AIM_ONTO, AIM_GONE, AIM_POINT;
+static int AIM_MATCH;
+
+static void theory_aims(void) {
+  (void)en_aim(&THEORY, &AIM_ONTO, &AIM_GONE, &AIM_POINT, &AIM_MATCH);
+}
+
+/* colours worth stepping onto; 0 if none */
+static unsigned aim_mask(void) {
+  int body = body_colour();
+  unsigned m = AIM_ONTO, v;
+  if (body < 0) return 0u;
+  m &= ~(1u << body);
   for (v = 0u; v < PL_COLOURS; v++) {
-    double at_win = (double)WIN_ONTO[v] / (double)WINS_ONTO;
-    double on_move = ((double)MOVE_ONTO[v] + 1.0) / ((double)MOVES_ONTO + 1.0);
-    if (WIN_ONTO[v] == 0u) continue;
-    if (at_win / on_move > best) {
-      best = at_win / on_move;
-      who = (int)v;
-    }
+    if (BLOCKER[v]) m &= ~(1u << v);
   }
-  return who;
+  return m;
 }
 
 /* how many body steps from the body, moved by (dr, dc) in sums, to the nearest goal cell */
 static unsigned goal_distance(const pl_frame_t *f, const ex_sum_t *sum, int body, long dr, long dc) {
-  int goal = goal_colour();
+  unsigned aim = aim_mask();
   unsigned r, c, best = EX_GOAL_UNKNOWN;
   double cr, cc;
-  if (goal < 0 || body < 0 || sum[body].count == 0u) return EX_GOAL_UNKNOWN;
+  if (aim == 0u || body < 0 || sum[body].count == 0u) return EX_GOAL_UNKNOWN;
   cr = (double)(sum[body].rows + dr) / (double)sum[body].count;
   cc = (double)(sum[body].cols + dc) / (double)sum[body].count;
   for (r = 0u; r < f->h; r++) {
     for (c = 0u; c < f->w; c++) {
       double d;
       unsigned steps;
-      if (MASK[r][c] || (int)f->c[r][c] != goal) continue;
+      if (MASK[r][c] || !(aim & (1u << f->c[r][c]))) continue;
       d = fabs((double)r - cr) + fabs((double)c - cc);
       steps = (unsigned)(d / (double)BODY_STEP + 0.5);
       if (steps < best) best = steps;
@@ -705,6 +733,7 @@ static unsigned build_actions(const ex_explorer_t *ex, const ex_game_t *g, const
       unsigned k = kind_slot(cand[i].key);
       /* what opens new situations first: each new situation is a new domain of unknowns */
       cand[i].score = KIND_DID[k] ? 0.0 : (!KIND_DONE[k] ? 1.0 : 2.0);
+      if (!cand[i].simple && (AIM_POINT & (1u << f->c[PY(cand[i].code)][PX(cand[i].code)]))) cand[i].score = -1.0;
     }
   }
   for (i = 1u; i < n; i++) {
@@ -821,6 +850,15 @@ static int node_of(ex_explorer_t *ex, const ex_game_t *g, const pl_frame_t *f) {
     N_FLAG[id][i] = 0u;
   }
   N_GOALD[id] = (unsigned short)EX_GOAL_UNKNOWN;
+  N_GONEC[id] = 0u;
+  if (AIM_GONE != 0u) {
+    unsigned r2, c2;
+    for (r2 = 0u; r2 < f->h; r2++) {
+      for (c2 = 0u; c2 < f->w; c2++) {
+        if (!MASK[r2][c2] && (AIM_GONE & (1u << f->c[r2][c2])) && N_GONEC[id] < 60000u) N_GONEC[id]++;
+      }
+    }
+  }
   {
     int body = body_colour();
     if (body >= 0) {
@@ -1119,7 +1157,7 @@ static unsigned plan_to_untried(ex_explorer_t *ex, int cur, double *how_like, un
   while (head < tail) {
     int n = BFS_Q[head++];
     unsigned i;
-    if (best != EX_NONE && ((goal_colour() < 0 && !MATCH_VARIES && !NEAR_VARIES) || seen_untried >= 128u)) break;   /* nearest is enough */
+    if (best != EX_NONE && ((aim_mask() == 0u && AIM_GONE == 0u && !MATCH_VARIES && !NEAR_VARIES) || seen_untried >= 128u)) break;   /* nearest is enough */
     if (ex->wins_seen > 0u && seen_untried >= 256u) break;
     for (i = 0u; i < N_NACT[n]; i++) {
       int m = N_NEXT[n][i];
@@ -1131,19 +1169,25 @@ static unsigned plan_to_untried(ex_explorer_t *ex, int cur, double *how_like, un
       BFS_Q[tail++] = m;
       if (N_UNTRIED[m] > 0u) {
         double like = resemblance(ex, m), score = like * EX_RESEMBLE - (double)BFS_DIST[m];
-        if (goal_colour() >= 0 && N_GOALD[m] != EX_GOAL_UNKNOWN) {
+        if (aim_mask() != 0u && N_GOALD[m] != EX_GOAL_UNKNOWN) {
           score = -(double)BFS_DIST[m] - (double)N_GOALD[m];   /* nearer the goal, by way and by sight */
+          like = 0.0;
+        }
+        if (AIM_GONE != 0u) {
+          /* each cell still to be cleared takes at least one act: a bound, not a guess */
+          if (!(aim_mask() != 0u && N_GOALD[m] != EX_GOAL_UNKNOWN)) score = -(double)BFS_DIST[m];
+          score -= (double)N_GONEC[m];
           like = 0.0;
         }
         if (MATCH_VARIES && N_MATCHD[m] != EX_MATCH_NONE) {
           /* nearer to making two pictures alike */
-          if (!(goal_colour() >= 0 && N_GOALD[m] != EX_GOAL_UNKNOWN)) score = -(double)BFS_DIST[m];
+          if (!(aim_mask() != 0u && N_GOALD[m] != EX_GOAL_UNKNOWN)) score = -(double)BFS_DIST[m];
           score -= EX_MATCH_WEIGHT * (double)N_MATCHD[m];
           like = 0.0;
         }
-        if (NEAR_VARIES && !MATCH_VARIES && goal_colour() < 0 && N_NEARD[m] != EX_NEAR_NONE) {
+        if (NEAR_VARIES && !MATCH_VARIES && aim_mask() == 0u && N_NEARD[m] != EX_NEAR_NONE) {
           /* like nearer to like */
-          if (!(goal_colour() >= 0 && N_GOALD[m] != EX_GOAL_UNKNOWN) &&
+          if (!(aim_mask() != 0u && N_GOALD[m] != EX_GOAL_UNKNOWN) &&
               !(MATCH_VARIES && N_MATCHD[m] != EX_MATCH_NONE)) {
             score = -(double)BFS_DIST[m];
           }
@@ -1292,6 +1336,17 @@ sm_status_t ex_save(const ex_explorer_t *ex, FILE *out) {
     }
   }
   fprintf(out, "onto %u %u %u\n", MOVES_ONTO, WINS_ONTO, BODY_STEP);
+  {
+    unsigned f2;
+    char name[32];
+    for (f2 = 0u; f2 < THEORY.n_fam; f2++) {
+      const en_family_t *fam = &THEORY.fam[f2];
+      if (fam->survived_ending && sm_count(&fam->dom) > 0u) {
+        fprintf(out, "family %s 1\n", en_family_name(fam, name, sizeof name));
+      }
+    }
+    if (THEORY.widenings > 0u) fprintf(out, "widened %u\n", THEORY.widenings);
+  }
   for (i = 0u; i < EX_KINDS; i++) {
     if (KIND_KEY[i] != 0u && KIND_DONE[i]) fprintf(out, "kind %lu %u %u\n", (unsigned long)KIND_KEY[i], (unsigned)KIND_DONE[i], (unsigned)KIND_DID[i]);
   }
@@ -1421,6 +1476,9 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
     memset(SHIFT_SEEN, 0, sizeof SHIFT_SEEN);
     memset(KNOWN_LEN, 0, sizeof KNOWN_LEN);
   }
+  (void)en_begin(&THEORY, getenv("CIALL_LIVE"));   /* families that survived in other games */
+  memset(BLOCKER, 0, sizeof BLOCKER);
+  theory_aims();
   memset(RESTLESS, 0, sizeof RESTLESS);
   RESTLESS_STEPS = 0u;
   memset(RESTLESS_KINDS, 0, sizeof RESTLESS_KINDS);
@@ -1498,7 +1556,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       int body = body_colour();
       unsigned best_d = EX_GOAL_UNKNOWN + 1u;
       static ex_sum_t cs[PL_COLOURS];
-      int aim = body >= 0 && goal_colour() >= 0 && N_GOALD[cur] != EX_GOAL_UNKNOWN;
+      int aim = body >= 0 && aim_mask() != 0u && N_GOALD[cur] != EX_GOAL_UNKNOWN;
       if (aim) colour_sums(&now, cs);
       for (i = 0u; i < N_NACT[cur]; i++) {
         if (N_NEXT[cur][i] == EX_NONE && N_FLAG[cur][i] == 0u) {
@@ -1700,7 +1758,40 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       N_PCOL[cur][idx] = now.c[PY(code)][PX(code)];
       N_PRANK[cur][idx] = (unsigned char)thing_rank(&now, PX(code), PY(code));
     }
+    {
+      /* what was true of this act, before it: the facts the theories are made of */
+      static ex_sum_t os[PL_COLOURS], ls[PL_COLOURS];
+      int body = body_colour();
+      unsigned v;
+      memset(&OBS, 0, sizeof OBS);
+      colour_sums(&now, os);
+      colour_sums(&LEVEL_START, ls);
+      for (v = 0u; v < PL_COLOURS; v++) {
+        if (os[v].count == 0u && ls[v].count > 0u) OBS.gone |= (uint16_t)(1u << v);
+      }
+      if (body >= 0 && kind != 6u) {
+        static unsigned tmp[PL_COLOURS];
+        if (stepped_onto(&now, os, body, kind, tmp)) {
+          OBS.onto = (uint16_t)STEPPED_MASK;
+          for (v = 0u; v < PL_COLOURS; v++) {
+            if ((STEPPED_MASK & (1u << v)) && STEPPED_CELLS[v] >= os[v].count) OBS.last |= (uint16_t)(1u << v);
+          }
+        }
+      }
+      if (kind == 6u) OBS.point = (uint16_t)(1u << now.c[PY(code)][PX(code)]);
+      OBS.match = (unsigned char)(MATCH_VARIES && N_MATCHD[cur] == 0u);
+    }
     outcome = g->act(g, kind, PX(code), PY(code), &next);
+    OBS.ended = (unsigned char)(outcome == 1 || outcome == 2);
+    {
+      unsigned before = THEORY.widenings;
+      (void)en_observe(&THEORY, &OBS);
+      theory_aims();
+      if (THEORY.widenings > before) {
+        think(ex, "why did that end the level, when nothing I can say explains it?",
+              "every single fact I have was ruled out, so my language was too poor: I now think in pairs of facts");
+      }
+    }
     ex->actions++;
     if (kind < 8u) ex->kind_tried[kind]++;
     if (kind == 6u) ex->point_tried[now.c[PY(code)][PX(code)]]++;
@@ -1928,9 +2019,7 @@ void ex_report(FILE *out, const ex_explorer_t *ex) {
     fprintf(out, "  it ran out of anything untried it could reach, from the beginning too\n");
   }
   fprintf(out, "  died %u times; began a level again itself %u times\n", ex->deaths, ex->resets);
-  if (goal_colour() >= 0) {
-    fprintf(out, "  found what it goes to: colour %d, stepped onto at %u endings\n", goal_colour(), WINS_ONTO);
-  }
+  (void)en_report(&THEORY, out);
   if (ex->runs_before > 0u || ex->recalled > 0u) {
     fprintf(out, "  remembered from %u earlier run%s (best before: %u levels); walked %u steps it remembered\n",
             ex->runs_before, ex->runs_before == 1u ? "" : "s", ex->best_before, ex->recalled);

@@ -1,8 +1,312 @@
 ciall-explorer-mind 1
-runs 1
+runs 19
 best 0
-mask 25 19 1
-mask 34 19 1
+mask 21 9 0
+mask 21 10 0
+mask 21 11 0
+mask 21 12 0
+mask 21 13 0
+mask 21 14 0
+mask 21 15 0
+mask 21 16 0
+mask 21 17 0
+mask 21 18 0
+mask 21 19 0
+mask 21 20 0
+mask 21 21 0
+mask 21 22 0
+mask 21 23 0
+mask 22 9 0
+mask 22 10 0
+mask 22 11 0
+mask 22 12 0
+mask 22 13 0
+mask 22 14 0
+mask 22 15 0
+mask 22 16 0
+mask 22 17 0
+mask 22 18 0
+mask 22 19 0
+mask 22 20 0
+mask 22 21 0
+mask 22 22 0
+mask 22 23 0
+mask 22 43 0
+mask 22 46 0
+mask 23 9 0
+mask 23 10 0
+mask 23 11 0
+mask 23 12 0
+mask 23 13 0
+mask 23 14 0
+mask 23 15 0
+mask 23 16 0
+mask 23 17 0
+mask 23 18 0
+mask 23 19 0
+mask 23 20 0
+mask 23 21 0
+mask 23 22 0
+mask 23 23 0
+mask 24 9 0
+mask 24 10 0
+mask 24 11 0
+mask 24 12 0
+mask 24 13 0
+mask 24 14 0
+mask 24 15 0
+mask 24 16 0
+mask 24 17 0
+mask 24 18 0
+mask 24 19 0
+mask 24 20 0
+mask 24 21 0
+mask 24 22 0
+mask 24 23 0
+mask 25 9 0
+mask 25 10 0
+mask 25 11 0
+mask 25 12 0
+mask 25 13 0
+mask 25 14 0
+mask 25 15 0
+mask 25 16 0
+mask 25 17 0
+mask 25 18 0
+mask 25 20 0
+mask 25 21 0
+mask 25 22 0
+mask 25 23 0
+mask 25 40 0
+mask 26 9 0
+mask 26 10 0
+mask 26 11 0
+mask 26 12 0
+mask 26 13 0
+mask 26 14 0
+mask 26 15 0
+mask 26 16 0
+mask 26 17 0
+mask 26 18 0
+mask 26 19 0
+mask 26 20 0
+mask 26 21 0
+mask 26 22 0
+mask 26 23 0
+mask 27 9 0
+mask 27 10 0
+mask 27 11 0
+mask 27 12 0
+mask 27 13 0
+mask 27 14 0
+mask 27 15 0
+mask 27 16 0
+mask 27 17 0
+mask 27 18 0
+mask 27 19 0
+mask 27 20 0
+mask 27 21 0
+mask 27 22 0
+mask 27 23 0
+mask 28 9 0
+mask 28 10 0
+mask 28 11 0
+mask 28 12 0
+mask 28 13 0
+mask 28 14 0
+mask 28 15 0
+mask 28 16 0
+mask 28 17 0
+mask 28 18 0
+mask 28 19 0
+mask 28 20 0
+mask 28 21 0
+mask 28 22 0
+mask 28 23 0
+mask 29 9 0
+mask 29 10 0
+mask 29 11 0
+mask 29 12 0
+mask 29 13 0
+mask 29 14 0
+mask 29 15 0
+mask 29 16 0
+mask 29 17 0
+mask 29 18 0
+mask 29 19 0
+mask 29 20 0
+mask 29 21 0
+mask 29 22 0
+mask 29 23 0
+mask 30 9 0
+mask 30 10 0
+mask 30 11 0
+mask 30 12 0
+mask 30 13 0
+mask 30 14 0
+mask 30 15 0
+mask 30 16 0
+mask 30 17 0
+mask 30 18 0
+mask 30 19 0
+mask 30 20 0
+mask 30 21 0
+mask 30 22 0
+mask 30 23 0
+mask 30 24 0
+mask 30 25 0
+mask 30 26 0
+mask 31 9 0
+mask 31 10 0
+mask 31 11 0
+mask 31 12 0
+mask 31 13 0
+mask 31 14 0
+mask 31 15 0
+mask 31 16 0
+mask 31 17 0
+mask 31 18 0
+mask 31 19 0
+mask 31 20 0
+mask 31 21 0
+mask 31 22 0
+mask 31 23 0
+mask 31 24 0
+mask 31 25 0
+mask 31 26 0
+mask 31 28 0
+mask 31 31 0
+mask 31 43 0
+mask 31 52 0
+mask 32 9 0
+mask 32 10 0
+mask 32 16 0
+mask 32 17 0
+mask 32 18 0
+mask 32 19 0
+mask 32 20 0
+mask 32 21 0
+mask 32 22 0
+mask 32 23 0
+mask 32 24 0
+mask 32 25 0
+mask 32 26 0
+mask 33 9 0
+mask 33 10 0
+mask 33 16 0
+mask 33 17 0
+mask 33 18 0
+mask 33 19 0
+mask 33 20 0
+mask 33 21 0
+mask 33 22 0
+mask 33 23 0
+mask 34 9 0
+mask 34 10 0
+mask 34 16 0
+mask 34 17 0
+mask 34 18 0
+mask 34 20 0
+mask 34 21 0
+mask 34 22 0
+mask 34 23 0
+mask 34 49 0
+mask 35 9 0
+mask 35 10 0
+mask 35 16 0
+mask 35 17 0
+mask 35 18 0
+mask 35 19 0
+mask 35 20 0
+mask 35 21 0
+mask 35 22 0
+mask 35 23 0
+mask 36 9 0
+mask 36 10 0
+mask 36 16 0
+mask 36 17 0
+mask 36 18 0
+mask 36 19 0
+mask 36 20 0
+mask 36 21 0
+mask 36 22 0
+mask 36 23 0
+mask 37 9 0
+mask 37 10 0
+mask 37 11 0
+mask 37 12 0
+mask 37 13 0
+mask 37 14 0
+mask 37 15 0
+mask 37 16 0
+mask 37 17 0
+mask 37 18 0
+mask 37 19 0
+mask 37 20 0
+mask 37 21 0
+mask 37 22 0
+mask 37 23 0
+mask 37 46 0
+mask 38 9 0
+mask 38 10 0
+mask 38 11 0
+mask 38 12 0
+mask 38 13 0
+mask 38 14 0
+mask 38 15 0
+mask 38 16 0
+mask 38 17 0
+mask 38 18 0
+mask 38 19 0
+mask 38 20 0
+mask 38 21 0
+mask 38 22 0
+mask 38 23 0
+mask 39 9 0
+mask 39 10 0
+mask 39 11 0
+mask 39 12 0
+mask 39 13 0
+mask 39 14 0
+mask 39 15 0
+mask 39 16 0
+mask 39 17 0
+mask 39 18 0
+mask 39 19 0
+mask 39 20 0
+mask 39 21 0
+mask 39 22 0
+mask 39 23 0
+mask 40 9 0
+mask 40 10 0
+mask 40 11 0
+mask 40 12 0
+mask 40 13 0
+mask 40 14 0
+mask 40 15 0
+mask 40 16 0
+mask 40 17 0
+mask 40 18 0
+mask 40 19 0
+mask 40 20 0
+mask 40 21 0
+mask 40 22 0
+mask 40 23 0
+mask 41 9 0
+mask 41 10 0
+mask 41 11 0
+mask 41 12 0
+mask 41 13 0
+mask 41 14 0
+mask 41 15 0
+mask 41 16 0
+mask 41 17 0
+mask 41 18 0
+mask 41 19 0
+mask 41 20 0
+mask 41 21 0
+mask 41 22 0
+mask 41 23 0
 mask 63 0 0
 mask 63 1 0
 mask 63 2 0
@@ -67,16 +371,16 @@ mask 63 60 0
 mask 63 61 0
 mask 63 62 0
 mask 63 63 0
-colour 0 1155 0 0
-shift 1 0 -3 0 324
-shift 2 0 3 0 258
-shift 3 0 0 -3 336
-shift 4 0 0 3 237
-colour 1 802 0 0
-shift 1 1 27 0 220
-shift 2 1 -27 0 39
-shift 3 1 0 27 51
-shift 4 1 0 -27 188
+colour 0 2432 0 0
+shift 1 0 -3 0 684
+shift 2 0 3 0 587
+shift 3 0 0 -3 627
+shift 4 0 0 3 534
+colour 1 1994 20 0
+shift 1 1 24 0 10
+shift 2 1 -24 0 16
+shift 3 1 0 24 7
+shift 4 1 0 -24 28
 colour 2 0 0 0
 colour 3 0 0 0
 colour 4 4 0 0
@@ -92,17 +396,19 @@ colour 10 0 0 0
 colour 11 0 0 0
 colour 12 0 0 0
 colour 13 0 0 0
-colour 14 1328 0 0
-shift 1 14 -24 0 358
-shift 2 14 24 0 334
-shift 3 14 0 -24 369
-shift 4 14 0 24 267
+colour 14 4310 0 0
+shift 1 14 -24 0 1141
+shift 2 14 24 0 1091
+shift 3 14 0 -24 1074
+shift 4 14 0 24 1004
 colour 15 0 0 0
-onto 0 0 1
+onto 20 0 3
 kind 5 1 1
 kind 20802 1 0
+kind 15 1 0
 kind 2082 1 0
 kind 536870914 1 1
+kind 2 1 0
 kind 1057 1 0
 kind 17730 1 0
 kind 536870916 1 1
@@ -113,7 +419,9 @@ kind 1 1 0
 kind 6 1 1
 kind 1071 1 0
 kind 5456 1 0
+kind 23874 1 0
 kind 4165 1 0
 kind 536870915 1 1
 kind 5154 1 0
 kind 2095 1 1
+kind 33 1 0

@@ -1,5 +1,5 @@
 ciall-explorer-mind 1
-runs 1
+runs 19
 best 1
 mask 0 0 0
 mask 1 0 0
@@ -38,9 +38,13 @@ mask 18 35 0
 mask 18 36 0
 mask 19 0 0
 mask 20 0 0
+mask 20 23 0
+mask 20 24 0
 mask 20 35 0
 mask 20 36 0
 mask 21 0 0
+mask 21 23 0
+mask 21 24 0
 mask 21 35 0
 mask 21 36 0
 mask 22 0 0
@@ -56,6 +60,8 @@ mask 24 35 0
 mask 24 36 0
 mask 25 0 0
 mask 26 0 0
+mask 26 17 0
+mask 26 18 0
 mask 26 20 0
 mask 26 21 0
 mask 26 23 0
@@ -75,6 +81,8 @@ mask 26 42 0
 mask 26 44 0
 mask 26 45 0
 mask 27 0 0
+mask 27 17 0
+mask 27 18 0
 mask 27 20 0
 mask 27 21 0
 mask 27 23 0
@@ -95,29 +103,69 @@ mask 27 44 0
 mask 27 45 0
 mask 28 0 0
 mask 29 0 0
+mask 29 23 0
+mask 29 24 0
 mask 29 35 0
 mask 29 36 0
 mask 30 0 0
+mask 30 23 0
+mask 30 24 0
 mask 30 35 0
 mask 30 36 0
 mask 31 0 0
 mask 32 0 0
+mask 32 23 0
+mask 32 24 0
 mask 32 35 0
 mask 32 36 0
 mask 33 0 0
+mask 33 23 0
+mask 33 24 0
 mask 33 35 0
 mask 33 36 0
 mask 34 0 0
 mask 35 0 0
+mask 35 17 0
+mask 35 18 0
+mask 35 20 0
+mask 35 21 0
 mask 35 23 0
 mask 35 24 0
+mask 35 26 0
+mask 35 27 0
+mask 35 29 0
+mask 35 30 0
+mask 35 32 0
+mask 35 33 0
 mask 35 35 0
 mask 35 36 0
+mask 35 38 0
+mask 35 39 0
+mask 35 41 0
+mask 35 42 0
+mask 35 44 0
+mask 35 45 0
 mask 36 0 0
+mask 36 17 0
+mask 36 18 0
+mask 36 20 0
+mask 36 21 0
 mask 36 23 0
 mask 36 24 0
+mask 36 26 0
+mask 36 27 0
+mask 36 29 0
+mask 36 30 0
+mask 36 32 0
+mask 36 33 0
 mask 36 35 0
 mask 36 36 0
+mask 36 38 0
+mask 36 39 0
+mask 36 41 0
+mask 36 42 0
+mask 36 44 0
+mask 36 45 0
 mask 37 0 0
 mask 38 0 0
 mask 38 23 0
@@ -198,6 +246,7 @@ colour 13 0 0 0
 colour 14 0 0 0
 colour 15 0 0 0
 onto 0 0 1
+widened 1
 kind 2105 1 1
 kind 3122 1 0
 kind 3132 1 0
