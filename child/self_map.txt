@@ -4,9 +4,9 @@ file certifiable-c\smarsh_core.c lines 377
 file certifiable-c\smarsh_core.h lines 287
 file certifiable-c\smarsh_ending.c lines 239
 file certifiable-c\smarsh_ending.h lines 113
-file certifiable-c\smarsh_explore.c lines 2339
-file certifiable-c\smarsh_explore.h lines 146
-file certifiable-c\smarsh_self.h lines 62
+file certifiable-c\smarsh_explore.c lines 2540
+file certifiable-c\smarsh_explore.h lines 149
+file certifiable-c\smarsh_self.h lines 65
 open certifiable-c\smarsh_self.h SELF_TICK_MAX now 8u may be  4u 8u 16u */
 open certifiable-c\smarsh_self.h SELF_RESTLESS_WINDOW now 12u may be  8u 12u 16u 24u */
 open certifiable-c\smarsh_self.h SELF_BODY_VOTES now 3u may be  2u 3u 5u */
@@ -18,6 +18,7 @@ open certifiable-c\smarsh_self.h SELF_FEW_SITUATIONS now 64u may be  16u 32u 64u
 open certifiable-c\smarsh_self.h SELF_FRESH_STARTS now 3u may be  0u 1u 3u 6u */
 open certifiable-c\smarsh_self.h SELF_DEATH_RETRIES now 10u may be  0u 3u 10u 20u */
 open certifiable-c\smarsh_self.h SELF_TIE_MODE now 2u may be  0u 1u 2u */
+open certifiable-c\smarsh_self.h SELF_WATCH now 48u may be  0u 16u 48u 96u */
 open certifiable-c\smarsh_self.h SELF_USE_LIVE now 1 may be  0 1 */
 open certifiable-c\smarsh_self.h SELF_OFF_RESTLESS now 0 may be  0 1 */
 open certifiable-c\smarsh_self.h SELF_OFF_CLOCK now 0 may be  0 1 */
@@ -33,12 +34,13 @@ open certifiable-c\smarsh_self.h SELF_OFF_REDRAW now 0 may be  0 1 */
 open certifiable-c\smarsh_self.h SELF_OFF_RECALL now 0 may be  0 1 */
 open certifiable-c\smarsh_self.h SELF_OFF_REPLAY now 0 may be  0 1 */
 open certifiable-c\smarsh_self.h SELF_OFF_REACH now 0 may be  0 1 */
+open certifiable-c\smarsh_self.h SELF_OFF_CURIOUS now 0 may be  0 1 */
 file certifiable-c\smarsh_play.c lines 1019
 file certifiable-c\smarsh_grow.c lines 465
 file certifiable-c\play_arc.c lines 186
 file certifiable-c\self_map.c lines 137
 
-functions 116 in 11 files
+functions 121 in 11 files
 
 function popcount64 in certifiable-c\smarsh_core.c at line 16 calls
 function splitmix64 in certifiable-c\smarsh_core.c at line 26 calls
@@ -74,44 +76,49 @@ function place_skip in certifiable-c\smarsh_explore.c at line 122 calls sm_suppo
 function forget_places in certifiable-c\smarsh_explore.c at line 127 calls kind_slot
 function act_rank in certifiable-c\smarsh_explore.c at line 151 calls kind_slot
 function kind_slot in certifiable-c\smarsh_explore.c at line 156 calls
-function think in certifiable-c\smarsh_explore.c at line 191 calls
-function ex_init in certifiable-c\smarsh_explore.c at line 197 calls
-function hash_frame in certifiable-c\smarsh_explore.c at line 202 calls
-function colour_sums in certifiable-c\smarsh_explore.c at line 236 calls
-function body_colour in certifiable-c\smarsh_explore.c at line 251 calls
-function stood_key in certifiable-c\smarsh_explore.c at line 264 calls
-function stood_has in certifiable-c\smarsh_explore.c at line 282 calls
-function stood_add in certifiable-c\smarsh_explore.c at line 292 calls
-function learn_moving in certifiable-c\smarsh_explore.c at line 314 calls colour_sums body_colour
-function work_out_roles in certifiable-c\smarsh_explore.c at line 421 calls colour_sums body_colour
-function colours_of_roles in certifiable-c\smarsh_explore.c at line 450 calls
-function theories_left in certifiable-c\smarsh_explore.c at line 458 calls sm_count
-function theory_aims in certifiable-c\smarsh_explore.c at line 464 calls colour_sums colours_of_roles
-function ways_begin in certifiable-c\smarsh_explore.c at line 516 calls
-function way_judge in certifiable-c\smarsh_explore.c at line 523 calls think
-function sent_law in certifiable-c\smarsh_explore.c at line 570 calls
-function aim_mask in certifiable-c\smarsh_explore.c at line 576 calls body_colour
-function goal_distance in certifiable-c\smarsh_explore.c at line 588 calls aim_mask
-function read_panels in certifiable-c\smarsh_explore.c at line 630 calls
-function match_distance in certifiable-c\smarsh_explore.c at line 714 calls read_panels
-function near_distance in certifiable-c\smarsh_explore.c at line 742 calls
-function forget_level in certifiable-c\smarsh_explore.c at line 814 calls kind_slot sent_law
-function thing_rank in certifiable-c\smarsh_explore.c at line 996 calls
-function node_of in certifiable-c\smarsh_explore.c at line 1031 calls place_of place_skip hash_frame colour_sums body_colour stood_key stood_has stood_add goal_distance match_distance near_distance
-function forget_changes in certifiable-c\smarsh_explore.c at line 1117 calls
-function mask_patch in certifiable-c\smarsh_explore.c at line 1133 calls
-function popcount8 in certifiable-c\smarsh_explore.c at line 1180 calls
-function any_restless in certifiable-c\smarsh_explore.c at line 1189 calls mask_patch popcount8
-function resemblance in certifiable-c\smarsh_explore.c at line 1342 calls
-function plan_to_untried in certifiable-c\smarsh_explore.c at line 1361 calls aim_mask resemblance
-function route in certifiable-c\smarsh_explore.c at line 1444 calls
-function fit_step in certifiable-c\smarsh_explore.c at line 1490 calls thing_rank
-function new_level in certifiable-c\smarsh_explore.c at line 1514 calls forget_level
-function ex_save in certifiable-c\smarsh_explore.c at line 1534 calls sm_count en_family_name
-function ex_load in certifiable-c\smarsh_explore.c at line 1579 calls kind_slot
-function recall_step in certifiable-c\smarsh_explore.c at line 1644 calls
-function ex_play in certifiable-c\smarsh_explore.c at line 1660 calls en_begin en_observe read_off place_of place_nothing forget_places act_rank kind_slot think colour_sums body_colour learn_moving work_out_roles theories_left theory_aims ways_begin way_judge sent_law aim_mask goal_distance forget_level thing_rank node_of forget_changes any_restless plan_to_untried route fit_step new_level recall_step
-function ex_report in certifiable-c\smarsh_explore.c at line 2258 calls en_report ex_init body_colour ex_save ex_load ex_play
+function think in certifiable-c\smarsh_explore.c at line 192 calls
+function ex_init in certifiable-c\smarsh_explore.c at line 198 calls
+function hash_frame in certifiable-c\smarsh_explore.c at line 203 calls
+function colour_sums in certifiable-c\smarsh_explore.c at line 237 calls
+function body_colour in certifiable-c\smarsh_explore.c at line 252 calls
+function stood_key in certifiable-c\smarsh_explore.c at line 265 calls
+function stood_has in certifiable-c\smarsh_explore.c at line 283 calls
+function stood_add in certifiable-c\smarsh_explore.c at line 293 calls
+function learn_moving in certifiable-c\smarsh_explore.c at line 315 calls colour_sums body_colour
+function work_out_roles in certifiable-c\smarsh_explore.c at line 422 calls colour_sums body_colour
+function colours_of_roles in certifiable-c\smarsh_explore.c at line 451 calls
+function theories_left in certifiable-c\smarsh_explore.c at line 459 calls sm_count
+function theory_aims in certifiable-c\smarsh_explore.c at line 465 calls colour_sums colours_of_roles
+function ways_begin in certifiable-c\smarsh_explore.c at line 517 calls
+function way_judge in certifiable-c\smarsh_explore.c at line 524 calls think
+function sent_law in certifiable-c\smarsh_explore.c at line 571 calls
+function aim_mask in certifiable-c\smarsh_explore.c at line 577 calls body_colour
+function goal_distance in certifiable-c\smarsh_explore.c at line 589 calls aim_mask
+function read_panels in certifiable-c\smarsh_explore.c at line 631 calls
+function match_distance in certifiable-c\smarsh_explore.c at line 715 calls read_panels
+function near_distance in certifiable-c\smarsh_explore.c at line 743 calls
+function forget_level in certifiable-c\smarsh_explore.c at line 815 calls kind_slot sent_law
+function thing_rank in certifiable-c\smarsh_explore.c at line 1000 calls
+function node_of in certifiable-c\smarsh_explore.c at line 1035 calls place_of place_skip hash_frame colour_sums body_colour stood_key stood_has stood_add goal_distance match_distance near_distance
+function forget_changes in certifiable-c\smarsh_explore.c at line 1121 calls
+function mask_patch in certifiable-c\smarsh_explore.c at line 1137 calls
+function popcount8 in certifiable-c\smarsh_explore.c at line 1184 calls
+function any_restless in certifiable-c\smarsh_explore.c at line 1193 calls body_colour mask_patch popcount8
+function puzzles_begin in certifiable-c\smarsh_explore.c at line 1384 calls
+function be_confused in certifiable-c\smarsh_explore.c at line 1390 calls think
+function watch_puzzles in certifiable-c\smarsh_explore.c at line 1432 calls think
+function mover_next in certifiable-c\smarsh_explore.c at line 1475 calls
+function would_meet_mover in certifiable-c\smarsh_explore.c at line 1487 calls mover_next
+function resemblance in certifiable-c\smarsh_explore.c at line 1512 calls
+function plan_to_untried in certifiable-c\smarsh_explore.c at line 1531 calls aim_mask resemblance
+function route in certifiable-c\smarsh_explore.c at line 1614 calls
+function fit_step in certifiable-c\smarsh_explore.c at line 1660 calls thing_rank
+function new_level in certifiable-c\smarsh_explore.c at line 1684 calls forget_level
+function ex_save in certifiable-c\smarsh_explore.c at line 1704 calls sm_count en_family_name
+function ex_load in certifiable-c\smarsh_explore.c at line 1749 calls kind_slot
+function recall_step in certifiable-c\smarsh_explore.c at line 1814 calls
+function ex_play in certifiable-c\smarsh_explore.c at line 1830 calls en_begin en_observe read_off place_of place_nothing forget_places act_rank kind_slot think colour_sums body_colour learn_moving work_out_roles theories_left theory_aims ways_begin way_judge sent_law aim_mask goal_distance forget_level thing_rank node_of forget_changes any_restless puzzles_begin be_confused watch_puzzles would_meet_mover plan_to_untried route fit_step new_level recall_step
+function ex_report in certifiable-c\smarsh_explore.c at line 2455 calls en_report ex_init body_colour ex_save ex_load ex_play
 function changed in certifiable-c\smarsh_play.c at line 19 calls
 function inside in certifiable-c\smarsh_play.c at line 23 calls
 function shares_fate in certifiable-c\smarsh_play.c at line 28 calls changed inside

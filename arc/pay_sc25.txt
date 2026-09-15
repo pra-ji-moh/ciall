@@ -1,0 +1,49 @@
+
+2026-09-15 20:09  ARC-AGI-3 game sc25-635fd71a (keyboard_click)  (3219 actions carried)
+  frame 64 by 64, actions offered: 1 2 3 4 6
+    Q: what can I do here?
+    A: 4 actions, and 22 things I could point at
+    Q: what does action 1 do?
+    A: nothing I can see, here
+    Q: what happens when I point at something?
+    A: nothing I can see, here
+    Q: what made that happen, if I did not?
+    A: something moves whether I act or not. I do something that changes nothing, and watch it
+    Q: why does part of the picture change whatever I do?
+    A: it ticks by itself (128 cells so far); I stop counting it as a difference
+    Q: what made that happen, if I did not?
+    A: something moves whether I act or not. I do something that changes nothing, and watch it
+    Q: what made that happen, if I did not?
+    A: something moves whether I act or not. I do something that changes nothing, and watch it
+    Q: what does action 2 do?
+    A: it changed 16 cells
+    Q: can I say what that thing does?
+    A: no: I have watched it and found no step it keeps to. I leave it be, and get on
+    Q: can I say what that thing does?
+    A: no: I have watched it and found no step it keeps to. I leave it be, and get on
+    Q: can I say what that thing does?
+    A: no: I have watched it and found no step it keeps to. I leave it be, and get on
+    Q: is the way I am going getting me anywhere?
+    A: trying what I have not tried has brought me nothing for 60 acts: I stop choosing that way here
+    Q: what made that happen, if I did not?
+    A: something moves whether I act or not. I do something that changes nothing, and watch it
+    Q: what made that happen, if I did not?
+    A: something moves whether I act or not. I do something that changes nothing, and watch it
+  not won; 3219 sent to the engine, games over 60
+  levels ended: 0; actions 3159; not won
+    in the level it stopped in: 481 situations met
+  it ran out of anything untried it could reach, from the beginning too
+  died 60 times; began a level again itself 0 times
+  what ends a level, by elimination: 0 endings seen; language of single facts
+  things that moved when I had not moved them: 107; I watched them and can say what 1 of them do; 105 I could not
+  where a thing it holds may be sent: 54 ways it found it goes, 0 it found it does not
+  gave up a way of going that was getting it nowhere 1 times, and opened them all again 0 times
+  drew its map of a level again 3 times
+  doubted 4 times that a death was the last step's doing
+  found what it moves (colour 9); held back 185 steps back to where it had stood
+  did not spend 706 pointings it predicted would do nothing; took that back 4 times
+  found 128 cells that tick by themselves, and left them out
+  what never did anything: pointing at colour 9; pointing at colour 10; pointing at colour 15;
+  against a person: no level ended; a person needed 36 for the first
+  levels finished: 0 of 6
+

@@ -1379,11 +1379,19 @@ typedef struct {
   unsigned same, watched;
 } ex_puzzle_t;
 static ex_puzzle_t PUZZLE[EX_PUZZLES];
+/*
+ * How long it may spend on one thing it cannot explain is not fixed: what it
+ * explains earns it more looking, and what it gives up on costs it. So looking
+ * grows where looking pays, and shrinks where it does not, at the rate it is
+ * actually learning rather than at a rate I chose.
+ */
+static unsigned WATCH_ALLOWED = EX_WATCH;
 
 
 static void puzzles_begin(void) {
   memset(PUZZLE, 0, sizeof PUZZLE);
   WATCHING = 0u;
+  WATCH_ALLOWED = EX_WATCH;
 }
 
 /* something changed that it did not do: a puzzle, unless it is one already */
@@ -1407,23 +1415,58 @@ static void be_confused(ex_explorer_t *ex, unsigned colour, unsigned r, unsigned
   }
 }
 
-/* where the patch of that colour nearest to where it was has got to */
+/*
+ * Where the thing has got to: not the nearest cell of its colour, which on a busy
+ * board jumps about, but the middle of the patch it belongs to. A thing is a patch,
+ * and following the thing means following the patch.
+ */
+static unsigned char PATCH_SEEN[PL_SIZE][PL_SIZE];
+
 static int find_patch(const pl_frame_t *f, unsigned colour, unsigned r0, unsigned c0,
                       unsigned *rr, unsigned *cc) {
-  unsigned r, c, best = 0xFFFFu;
+  unsigned r, c, best = 0xFFFFu, sr = 0u, sc = 0u;
   int found = 0;
+  static const int dr[4] = {-1, 1, 0, 0}, dc[4] = {0, 0, -1, 1};
+  memset(PATCH_SEEN, 0, sizeof PATCH_SEEN);
   for (r = 0u; r < f->h; r++) {
     for (c = 0u; c < f->w; c++) {
-      unsigned d;
-      if (f->c[r][c] != colour) continue;
-      d = (unsigned)(abs((int)r - (int)r0) + abs((int)c - (int)c0));
+      unsigned head = 0u, tail = 0u, n = 0u, mid_r, mid_c, d;
+      long sum_r = 0, sum_c = 0;
+      if (PATCH_SEEN[r][c] || f->c[r][c] != colour) continue;
+      PATCH_SEEN[r][c] = 1u;
+      QR[tail] = (int)r;
+      QC[tail] = (int)c;
+      tail++;
+      while (head < tail) {
+        int y = QR[head], x = QC[head], k;
+        head++;
+        n++;
+        sum_r += y;
+        sum_c += x;
+        for (k = 0; k < 4; k++) {
+          int ny = y + dr[k], nx = x + dc[k];
+          if (ny < 0 || nx < 0 || ny >= (int)f->h || nx >= (int)f->w) continue;
+          if (PATCH_SEEN[ny][nx] || f->c[ny][nx] != colour) continue;
+          PATCH_SEEN[ny][nx] = 1u;
+          QR[tail] = ny;
+          QC[tail] = nx;
+          tail++;
+        }
+      }
+      mid_r = (unsigned)(sum_r / (long)n);
+      mid_c = (unsigned)(sum_c / (long)n);
+      d = (unsigned)(abs((int)mid_r - (int)r0) + abs((int)mid_c - (int)c0));
       if (d < best) {
         best = d;
-        *rr = r;
-        *cc = c;
+        sr = mid_r;
+        sc = mid_c;
         found = 1;
       }
     }
+  }
+  if (found) {
+    *rr = sr;
+    *cc = sc;
   }
   return found;
 }
@@ -1450,6 +1493,7 @@ static void watch_puzzles(ex_explorer_t *ex, const pl_frame_t *f) {
         char a1[160];
         p->explained = 1u;
         ex->puzzles_explained++;
+        if (WATCH_ALLOWED < EX_WATCH * 4u) WATCH_ALLOWED += EX_WATCH;   /* it paid: look longer */
         sprintf(a1, "it goes %d down and %d across every time: now I can say where it will be",
                 p->dr, p->dc);
         think(ex, "what is that thing doing?", a1);
@@ -1461,9 +1505,10 @@ static void watch_puzzles(ex_explorer_t *ex, const pl_frame_t *f) {
     }
     p->r = (unsigned char)r;
     p->c = (unsigned char)c;
-    if (p->watched >= EX_WATCH && !p->explained) {
-      p->alive = 0u;   /* watched long enough and still no step it can name */
+    if (p->watched >= WATCH_ALLOWED && !p->explained) {
+      p->alive = 0u;   /* looked long enough and still no step it can name */
       ex->puzzles_given_up++;
+      WATCH_ALLOWED = WATCH_ALLOWED / 2u > EX_WATCH / 4u ? WATCH_ALLOWED / 2u : EX_WATCH / 4u + 1u;
       think(ex, "can I say what that thing does?",
             "no: I have watched it and found no step it keeps to. I leave it be, and get on");
     }
@@ -1972,6 +2017,24 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
             best_d = d;
             idx = i;
           }
+        }
+      }
+      if (aim && idx != EX_MAX_ACTS && best_d == EX_GOAL_UNKNOWN && ex->deaths > 0u) {
+        /*
+         * Every way on from here walks into something whose step it can say. It
+         * does not have to walk into it: a thing that moves will move on. So it
+         * does something it knows changes nothing, and lets the thing pass. That
+         * is what explaining the thing was for.
+         */
+        unsigned w;
+        for (w = 0u; w < N_NACT[cur]; w++) {
+          unsigned k3 = kind_slot(N_AKEY[cur][w]);
+          if (N_FLAG[cur][w] != 0u || KIND_DID[k3] || !KIND_DONE[k3]) continue;
+          idx = w;
+          ex->waited++;
+          think(ex, "must I walk into that thing?",
+                "no: it moves, so it will move on. I do something that changes nothing and let it pass");
+          break;
         }
       }
       if (!aim && idx != EX_MAX_ACTS) {
