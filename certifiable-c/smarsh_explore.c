@@ -18,11 +18,11 @@
  */
 typedef enum {
   M_RESTLESS, M_CLOCK, M_STOOD, M_PANELS, M_NEAR, M_THEORY, M_SKIP,
-  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_COUNT
+  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_COUNT
 } ex_mech_t;
 static const char *MECH_NAME[M_COUNT] = {
   "restless", "clock", "stood", "panels", "near", "theory", "skip",
-  "deaths", "unmask", "window", "redraw", "recall", "replay"
+  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach"
 };
 static unsigned OFF_MASK;
 #define ON(m) ((OFF_MASK & (1u << (m))) == 0u)
@@ -33,7 +33,7 @@ static void read_off(void) {
   static const unsigned by_self[M_COUNT] = {
     SELF_OFF_RESTLESS, SELF_OFF_CLOCK, SELF_OFF_STOOD, SELF_OFF_PANELS, SELF_OFF_NEAR, SELF_OFF_THEORY,
     SELF_OFF_SKIP, SELF_OFF_DEATHS, SELF_OFF_UNMASK, SELF_OFF_WINDOW, SELF_OFF_REDRAW, SELF_OFF_RECALL,
-    SELF_OFF_REPLAY
+    SELF_OFF_REPLAY, SELF_OFF_REACH
   };
   OFF_MASK = 0u;
   for (m = 0u; m < M_COUNT; m++) {
@@ -550,7 +550,29 @@ static int way_judge(ex_explorer_t *ex, int something_new) {
   return 1;
 }
 
-/* colours worth stepping onto; 0 if none */
+/*
+ * Where a thing may be sent. In some worlds pointing at a thing takes hold of it
+ * and pointing again says where it goes -- a piece on a board, an end of a line
+ * to be dragged. Whether it goes depends on what kind of thing it is: each kind
+ * has its own reach, and nothing here says what that reach is.
+ *
+ * So for each colour and each distance, one question: can a thing of that colour
+ * be sent that far? A pointing that moved it rules out "no"; a pointing that did
+ * nothing rules out "yes". Distances never asked about are where the bits are, so
+ * they are asked first; distances ruled out are not spent again.
+ */
+#define EX_REACH 15u          /* -7..7 in each direction */
+#define EX_REACH_MID 7u
+static unsigned char SENT_LAW[PL_COLOURS][EX_REACH][EX_REACH];   /* 0 unknown, 1 it goes, 2 it does not */
+static unsigned HOLD_X, HOLD_Y, HOLD_COLOUR;
+static int HOLDING;           /* the last act was a pointing that changed something */
+
+static unsigned char *sent_law(unsigned colour, int dy, int dx) {
+  if (dy < -7 || dy > 7 || dx < -7 || dx > 7 || colour >= PL_COLOURS) return 0;
+  return &SENT_LAW[colour][(unsigned)(dy + 7)][(unsigned)(dx + 7)];
+}
+
+
 static unsigned aim_mask(void) {
   int body = body_colour();
   unsigned m = AIM_ONTO, v;
@@ -917,6 +939,14 @@ static unsigned build_actions(const ex_explorer_t *ex, const ex_game_t *g, const
       /* what opens new situations first: each new situation is a new domain of unknowns */
       cand[i].score = KIND_DID[k] ? 0.0 : (!KIND_DONE[k] ? 1.0 : 2.0);
       if (!cand[i].simple && (AIM_POINT & (1u << f->c[PY(cand[i].code)][PX(cand[i].code)]))) cand[i].score = -1.0;
+      if (!cand[i].simple && HOLDING && ON(M_REACH)) {
+        /* holding something: a distance it has never asked about is where the bit
+           is, one it knows the thing goes is worth using, one ruled out is not
+           spent again */
+        const unsigned char *law = sent_law(HOLD_COLOUR, (int)PY(cand[i].code) - (int)HOLD_Y,
+                                            (int)PX(cand[i].code) - (int)HOLD_X);
+        if (law != 0) cand[i].score = *law == 0u ? -2.0 : (*law == 1u ? -1.5 : 4.0);
+      }
     }
   }
   for (i = 1u; i < n; i++) {
@@ -1665,7 +1695,9 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
   }
   read_off();
   (void)en_begin(&THEORY, SELF_USE_LIVE ? getenv("CIALL_LIVE") : 0);
-  ways_begin();   /* families that survived in other games */
+  ways_begin();
+  memset(SENT_LAW, 0, sizeof SENT_LAW);   /* a new world: how far a thing goes here is unknown */
+  HOLDING = 0;
   memset(BLOCKER, 0, sizeof BLOCKER);
   theory_aims();
   memset(RESTLESS, 0, sizeof RESTLESS);
@@ -2188,10 +2220,39 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       if (nb != cur) KIND_DID[k] = 1u;
     }
     if (kind == 6u) {
+      /* it had hold of something and has just said where: that settles the reach */
+      if (HOLDING) {
+        unsigned char *law = sent_law(HOLD_COLOUR, (int)PY(code) - (int)HOLD_Y,
+                                      (int)PX(code) - (int)HOLD_X);
+        if (law != 0 && (PX(code) != HOLD_X || PY(code) != HOLD_Y)) {
+          *law = (unsigned char)(nb != cur ? 1u : 2u);
+          if (nb != cur) ex->sent_learned++;
+        }
+      }
+      /* a pointing that changed something, where nothing moved far, is taking hold */
+      HOLDING = (nb != cur);
+      HOLD_X = PX(code);
+      HOLD_Y = PY(code);
+      HOLD_COLOUR = now.c[PY(code)][PX(code)];
+    }
+    if (kind == 6u) {
       unsigned pl = place_of(code, &now);
       if (nb == cur) {
         place_nothing(pl);
       } else {
+        /*
+         * It had judged this place to do nothing, having seen it do nothing more
+         * than once, and here it has done something. So the question behind that
+         * judgement -- does pointing here do the same thing every time? -- is
+         * answered no for this world: what a place does can depend on how things
+         * stand. It stops speaking for places it has not tried, this level.
+         */
+        if (PLACE_SEEN[pl] >= 2u && !PLACES_OPEN) {
+          PLACES_OPEN = 1u;
+          ex->places_reopened++;
+          think(ex, "does pointing at a place do the same thing every time?",
+                "not here: one I had taken to do nothing has just done something. I stop leaving places unspent");
+        }
         PLACE_DOES[pl] = 1u;
       }
     }
@@ -2236,6 +2297,19 @@ void ex_report(FILE *out, const ex_explorer_t *ex) {
   if (ex->runs_before > 0u || ex->recalled > 0u) {
     fprintf(out, "  remembered from %u earlier run%s (best before: %u levels); walked %u steps it remembered\n",
             ex->runs_before, ex->runs_before == 1u ? "" : "s", ex->best_before, ex->recalled);
+  }
+  if (ex->sent_learned > 0u) {
+    unsigned v, goes = 0u, cannot = 0u, dy, dx;
+    for (v = 0u; v < PL_COLOURS; v++) {
+      for (dy = 0u; dy < EX_REACH; dy++) {
+        for (dx = 0u; dx < EX_REACH; dx++) {
+          if (SENT_LAW[v][dy][dx] == 1u) goes++;
+          else if (SENT_LAW[v][dy][dx] == 2u) cannot++;
+        }
+      }
+    }
+    fprintf(out, "  where a thing it holds may be sent: %u ways it found it goes, %u it found it does not\n",
+            goes, cannot);
   }
   if (ex->ways_dropped > 0u) {
     fprintf(out, "  gave up a way of going that was getting it nowhere %u times, and opened them all again %u times\n",

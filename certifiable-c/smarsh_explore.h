@@ -124,6 +124,8 @@ typedef struct {
   unsigned windows;          /* times it looked further along than the acts it held */
   unsigned runs_before, best_before, recalled;   /* carried between runs */
   unsigned ways_dropped, ways_reopened;   /* ways of going it gave up as getting nowhere */
+  unsigned places_reopened;   /* times a place it had written off did something */
+  unsigned sent_learned;   /* distances it found a held thing can be sent */
   unsigned unpredicted;      /* times it ran out and took those predictions back */
 
   /* where it writes its questions and answers down; NULL: it thinks silently */
