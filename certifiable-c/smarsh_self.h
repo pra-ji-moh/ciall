@@ -61,5 +61,8 @@
 #define SELF_OFF_REPLAY 0   /* self: 0 1 */
 #define SELF_OFF_REACH 0   /* self: 0 1 */
 #define SELF_OFF_CURIOUS 0   /* self: 0 1 */
+#define SELF_OFF_PLAN 0   /* self: 0 1 */
+/* act on the best theory it has, before an ending has proved it */
+#define SELF_BOLD 1   /* self: 0 1 */
 
 #endif

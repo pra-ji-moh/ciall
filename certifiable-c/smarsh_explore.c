@@ -19,11 +19,11 @@
  */
 typedef enum {
   M_RESTLESS, M_CLOCK, M_STOOD, M_PANELS, M_NEAR, M_THEORY, M_SKIP,
-  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_CURIOUS, M_COUNT
+  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_CURIOUS, M_PLAN, M_COUNT
 } ex_mech_t;
 static const char *MECH_NAME[M_COUNT] = {
   "restless", "clock", "stood", "panels", "near", "theory", "skip",
-  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach", "curious"
+  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach", "curious", "plan"
 };
 static unsigned OFF_MASK;
 #define ON(m) ((OFF_MASK & (1u << (m))) == 0u)
@@ -34,7 +34,7 @@ static void read_off(void) {
   static const unsigned by_self[M_COUNT] = {
     SELF_OFF_RESTLESS, SELF_OFF_CLOCK, SELF_OFF_STOOD, SELF_OFF_PANELS, SELF_OFF_NEAR, SELF_OFF_THEORY,
     SELF_OFF_SKIP, SELF_OFF_DEATHS, SELF_OFF_UNMASK, SELF_OFF_WINDOW, SELF_OFF_REDRAW, SELF_OFF_RECALL,
-    SELF_OFF_REPLAY, SELF_OFF_REACH, SELF_OFF_CURIOUS
+    SELF_OFF_REPLAY, SELF_OFF_REACH, SELF_OFF_CURIOUS, SELF_OFF_PLAN
   };
   OFF_MASK = 0u;
   for (m = 0u; m < M_COUNT; m++) {
@@ -509,10 +509,10 @@ static void theory_aims(void) {
  * This is what it does to a game, done to itself: the answer to being stuck is to
  * give up the way of going, not to go that way harder.
  */
-typedef enum { W_RECALL = 0, W_REPLAY = 1, W_AIM = 2, W_EXPLORE = 3, W_WAYS = 4 } ex_way_t;
+typedef enum { W_RECALL = 0, W_REPLAY = 1, W_AIM = 2, W_EXPLORE = 3, W_PLAN = 4, W_WAYS = 5 } ex_way_t;
 static const char *WAY_NAME[W_WAYS] = {
   "walking the way I remember", "doing what won the last level", "going by what I think ends a level",
-  "trying what I have not tried"
+  "trying what I have not tried", "going by the way I reckoned over the board"
 };
 #define EX_BARREN 60u   /* acts chosen that way, bringing nothing new, before it is ruled out */
 static unsigned WAY_BARREN[W_WAYS];
@@ -1412,7 +1412,7 @@ typedef struct {
   unsigned char r, c;       /* where the moving patch was last seen */
   int hr[EX_RHYTHM], hc[EX_RHYTHM];   /* the steps it has taken, latest last */
   unsigned n_steps, period;  /* the rhythm it keeps to, once one repeats */
-  unsigned watched;
+  unsigned watched, barren, rhythms_before;   /* looks that ruled nothing out */
 } ex_puzzle_t;
 
 /*
@@ -1421,6 +1421,19 @@ typedef struct {
  * cannot be answered the question is widened -- not one step, but a run of steps
  * that repeats. The shortest run that repeats twice is what it keeps.
  */
+/* how many rhythms are still possible for it: what looking has not yet ruled out */
+static unsigned rhythms_left(const ex_puzzle_t *p) {
+  unsigned period, i, n = 0u;
+  for (period = 1u; period <= p->n_steps / 2u; period++) {
+    int same = 1;
+    for (i = 0u; i + period < p->n_steps && same; i++) {
+      if (p->hr[i] != p->hr[i + period] || p->hc[i] != p->hc[i + period]) same = 0;
+    }
+    if (same) n++;
+  }
+  return n;
+}
+
 static unsigned find_rhythm(const ex_puzzle_t *p) {
   unsigned period, i;
   for (period = 1u; period <= p->n_steps / 2u; period++) {
@@ -1447,7 +1460,13 @@ static int GUESS_OF = -1;   /* which puzzle the guess is about */
  * grows where looking pays, and shrinks where it does not, at the rate it is
  * actually learning rather than at a rate I chose.
  */
-static unsigned WATCH_ALLOWED = EX_WATCH;
+/*
+ * How long it looks at one thing is not a rate of success and not a number I
+ * chose: it looks while looking still rules something out. When several looks
+ * running have ruled nothing out, staring longer will not help. SELF_WATCH is
+ * only the ceiling, never the reason.
+ */
+#define EX_BARREN_LOOKS 6u
 
 
 /* the way of asking to try now: one never tried, else one that has answered */
@@ -1472,7 +1491,6 @@ static void puzzles_begin(void) {
   memset(ASK_STATE, 0, sizeof ASK_STATE);
   ASK_NOW = Q_STILL;
   WATCHING = 0u;
-  WATCH_ALLOWED = EX_WATCH;
 }
 
 /* something changed that it did not do: a puzzle, unless it is one already */
@@ -1621,6 +1639,15 @@ static void watch_puzzles(ex_explorer_t *ex, const pl_frame_t *f) {
     p->hr[p->n_steps] = dr;
     p->hc[p->n_steps] = dc;
     p->n_steps++;
+    {
+      /* did this look rule anything out? If not, looking again will not either */
+      unsigned left = rhythms_left(p);
+      if (p->n_steps >= 4u) {
+        if (p->rhythms_before != 0u && left >= p->rhythms_before) p->barren++;
+        else p->barren = 0u;
+      }
+      p->rhythms_before = left;
+    }
     if (GUESS_OF == (int)i) {
       /* the law of the thing, whatever shape it turns out to have */
       double nr = 0.0, nc = 0.0;
@@ -1640,7 +1667,6 @@ static void watch_puzzles(ex_explorer_t *ex, const pl_frame_t *f) {
             ASK_STATE[p->ask] = 1u;
             ex->asks_that_answer++;
           }
-          if (WATCH_ALLOWED < EX_WATCH * 4u) WATCH_ALLOWED += EX_WATCH;
           sprintf(a1, "I can say it: the next row is %s and the next column is %s",
                   GUESS.law_r, GUESS.law_c);
           think(ex, "what is that thing doing?", a1);
@@ -1659,7 +1685,6 @@ static void watch_puzzles(ex_explorer_t *ex, const pl_frame_t *f) {
           ASK_STATE[p->ask] = 1u;   /* that way of asking has answered something */
           ex->asks_that_answer++;
         }
-        if (WATCH_ALLOWED < EX_WATCH * 4u) WATCH_ALLOWED += EX_WATCH;   /* it paid: look longer */
         if (period == 1u) {
           sprintf(a1, "it goes %d down and %d across every time: now I can say where it will be",
                   p->hr[0], p->hc[0]);
@@ -1672,7 +1697,7 @@ static void watch_puzzles(ex_explorer_t *ex, const pl_frame_t *f) {
     }
     p->r = (unsigned char)r;
     p->c = (unsigned char)c;
-    if (p->watched >= WATCH_ALLOWED && !p->explained) {
+    if ((p->barren >= EX_BARREN_LOOKS || p->watched >= EX_WATCH) && !p->explained) {
       p->alive = 0u;   /* looked long enough and still no step it can name */
       ex->puzzles_given_up++;
       if (ASK_STATE[p->ask] == 0u) {
@@ -1681,7 +1706,6 @@ static void watch_puzzles(ex_explorer_t *ex, const pl_frame_t *f) {
         think(ex, "did asking that way answer?",
               "no: I looked as long as I could and it told me nothing. I ask another way next time");
       }
-      WATCH_ALLOWED = WATCH_ALLOWED / 2u > EX_WATCH / 4u ? WATCH_ALLOWED / 2u : EX_WATCH / 4u + 1u;
       think(ex, "can I say what that thing does?",
             "no: I have watched it and found no step it keeps to. I leave it be, and get on");
     }
@@ -1717,6 +1741,133 @@ static int would_meet_mover(const ex_sum_t *sum, int body, unsigned kind) {
   return 0;
 }
 
+/*
+ * Going by what it has worked out.
+ *
+ * It can say what ends a level -- step onto this, once there is none of that --
+ * and until now it still chose its acts by searching the situations it happened
+ * to have met. That is looking for the answer among things it has already seen.
+ *
+ * Here it goes at the world instead. It knows where its body is, what each act
+ * does to it (SHIFT, worked out), and what has refused it entry (BLOCKER, worked
+ * out). That is enough to lay a way from where it stands to the nearest thing its
+ * theories say it needs, over the board itself rather than over its memory: what
+ * must be true first (have none of this) before what must be true last (be on
+ * that).
+ *
+ * Every step of the way is a claim -- the body will be there next -- so every step
+ * is checked. A body that does not arrive where its own law said says the way was
+ * wrong, and the way is dropped rather than pushed on with.
+ */
+#define EX_PLAN_MAX 64u
+static unsigned char PLAN_ACT[EX_PLAN_MAX];
+static unsigned PLAN_LEN, PLAN_POS;
+static unsigned PLAN_WANT_R, PLAN_WANT_C;   /* where the body should be after the next step */
+
+/* the middle cell of the body */
+static int body_cell(const pl_frame_t *f, unsigned *br, unsigned *bc) {
+  static ex_sum_t sum[PL_COLOURS];
+  int body = body_colour();
+  if (body < 0) return 0;
+  colour_sums(f, sum);
+  if (sum[body].count == 0u) return 0;
+  *br = (unsigned)(sum[body].rows / (long)sum[body].count);
+  *bc = (unsigned)(sum[body].cols / (long)sum[body].count);
+  return 1;
+}
+
+/* what one act does to the body, in cells; 0 if it cannot say */
+static int act_step(unsigned kind, int *dr, int *dc) {
+  static ex_sum_t sum[PL_COLOURS];
+  int body = body_colour();
+  unsigned n;
+  if (body < 0 || kind >= 8u || kind == 6u || SHIFT_SEEN[kind][body] < EX_SHIFT_SURE) return 0;
+  colour_sums(&LEVEL_START, sum);
+  n = sum[body].count;
+  if (n == 0u || SHIFT_R[kind][body] % (long)n != 0 || SHIFT_C[kind][body] % (long)n != 0) return 0;
+  *dr = (int)(SHIFT_R[kind][body] / (long)n);
+  *dc = (int)(SHIFT_C[kind][body] / (long)n);
+  return (*dr != 0 || *dc != 0);
+}
+
+/*
+ * A way to the nearest cell of any colour in `want`, over the board: each act it
+ * can say the effect of is a move, a colour that has refused it entry is a wall.
+ * Length of the way, or 0.
+ */
+static unsigned plan_over_world(ex_explorer_t *ex, const pl_frame_t *f, unsigned want) {
+  static unsigned char seen[PL_SIZE][PL_SIZE];
+  static unsigned char came_act[PL_SIZE][PL_SIZE];
+  static int came_r[PL_SIZE][PL_SIZE], came_c[PL_SIZE][PL_SIZE];
+  static int qr[PL_SIZE * PL_SIZE], qc[PL_SIZE * PL_SIZE];
+  unsigned head = 0u, tail = 0u, br, bc, k;
+  int found_r = -1, found_c = -1;
+
+  if (want == 0u || !body_cell(f, &br, &bc)) return 0u;
+  memset(seen, 0, sizeof seen);
+  seen[br][bc] = 1u;
+  qr[tail] = (int)br;
+  qc[tail] = (int)bc;
+  tail++;
+  while (head < tail && found_r < 0) {
+    int r = qr[head], c = qc[head];
+    head++;
+    for (k = 1u; k < 8u; k++) {
+      int dr, dc, nr, nc;
+      if (!act_step(k, &dr, &dc)) continue;
+      nr = r + dr;
+      nc = c + dc;
+      if (nr < 0 || nc < 0 || nr >= (int)f->h || nc >= (int)f->w) continue;
+      if (seen[nr][nc] || BLOCKER[f->c[nr][nc]]) continue;
+      seen[nr][nc] = 1u;
+      came_act[nr][nc] = (unsigned char)k;
+      came_r[nr][nc] = r;
+      came_c[nr][nc] = c;
+      if (want & (1u << f->c[nr][nc])) {
+        found_r = nr;
+        found_c = nc;
+        break;
+      }
+      qr[tail] = nr;
+      qc[tail] = nc;
+      tail++;
+    }
+  }
+  if (found_r < 0) return 0u;
+  {
+    unsigned n = 0u, i;
+    int r = found_r, c = found_c;
+    while (!(r == (int)br && c == (int)bc) && n < EX_PLAN_MAX) {
+      int pr = came_r[r][c], pc = came_c[r][c];
+      PLAN_ACT[n++] = came_act[r][c];
+      r = pr;
+      c = pc;
+    }
+    for (i = 0u; i < n / 2u; i++) {   /* the way back, turned round */
+      unsigned char t = PLAN_ACT[i];
+      PLAN_ACT[i] = PLAN_ACT[n - 1u - i];
+      PLAN_ACT[n - 1u - i] = t;
+    }
+    PLAN_LEN = n;
+    PLAN_POS = 0u;
+    ex->plans_laid++;
+    return n;
+  }
+}
+
+/* what its theories say to make true, nearest first: have none of this, then be on that */
+static unsigned plan_from_theory(ex_explorer_t *ex, const pl_frame_t *f) {
+  unsigned want = 0u, v;
+  static ex_sum_t sum[PL_COLOURS];
+  if (!ON(M_PLAN)) return 0u;
+  colour_sums(f, sum);
+  for (v = 0u; v < PL_COLOURS; v++) {   /* first, what must be gone but is still here */
+    if ((AIM_GONE & (1u << v)) && sum[v].count > 0u) want |= 1u << v;
+  }
+  if (want == 0u) want = aim_mask();    /* then, what it must be standing on */
+  return plan_over_world(ex, f, want);
+}
+
 /* ---- finding the nearest thing untried -------------------------------------------- */
 
 static int BFS_PREV[EX_MAX_NODES];
@@ -1728,20 +1879,13 @@ static unsigned BFS_DIST[EX_MAX_NODES];
 static unsigned char PATH[EX_MAX_NODES];
 static int PATH_NODE[EX_MAX_NODES];
 
-/* How much a situation changes things the way winning did: 0 not at all, 1 exactly. */
-static double resemblance(const ex_explorer_t *ex, int n) {
-  double dot = 0.0, nn = 0.0, ww = 0.0;
-  unsigned k;
-  if (ex->wins_seen == 0u) return 0.0;
-  for (k = 0u; k < 256u; k++) {
-    double v = (double)N_CHG[n][k];
-    dot += v * ex->win_change[k];
-    nn += v * v;
-    ww += ex->win_change[k] * ex->win_change[k];
-  }
-  if (nn <= 0.0 || ww <= 0.0 || dot <= 0.0) return 0.0;
-  return dot / (sqrt(nn) * sqrt(ww));
-}
+/*
+ * What used to be here: how much a situation resembled the ones it had won from,
+ * as a cosine between two tallies of changes, worth EX_RESEMBLE steps of walking.
+ * That is a likeness, and a likeness is a guess about what is probable. It is out.
+ * What a situation is worth is now counted in acts still to be done (see below),
+ * which is a fact about the work, not a bet on the answer.
+ */
 
 /*
  * The way to the untried situation most worth going to. With no win seen yet,
@@ -1771,38 +1915,29 @@ static unsigned plan_to_untried(ex_explorer_t *ex, int cur, double *how_like, un
       BFS_DIST[m] = BFS_DIST[n] + 1u;
       BFS_Q[tail++] = m;
       if (N_UNTRIED[m] > 0u) {
-        double like = resemblance(ex, m), score = like * EX_RESEMBLE - (double)BFS_DIST[m];
-        if (aim_mask() != 0u && N_GOALD[m] != EX_GOAL_UNKNOWN) {
-          score = -(double)BFS_DIST[m] - (double)N_GOALD[m];   /* nearer the goal, by way and by sight */
-          like = 0.0;
-        }
-        if (AIM_GONE != 0u) {
-          /* each cell still to be cleared takes at least one act: a bound, not a guess */
-          if (!(aim_mask() != 0u && N_GOALD[m] != EX_GOAL_UNKNOWN)) score = -(double)BFS_DIST[m];
-          score -= (double)N_GONEC[m];
-          like = 0.0;
-        }
-        if (MATCH_VARIES && N_MATCHD[m] != EX_MATCH_NONE) {
-          /* nearer to making two pictures alike */
-          if (!(aim_mask() != 0u && N_GOALD[m] != EX_GOAL_UNKNOWN)) score = -(double)BFS_DIST[m];
-          score -= EX_MATCH_WEIGHT * (double)N_MATCHD[m];
-          like = 0.0;
-        }
-        if (NEAR_VARIES && !MATCH_VARIES && aim_mask() == 0u && N_NEARD[m] != EX_NEAR_NONE) {
-          /* like nearer to like */
-          if (!(aim_mask() != 0u && N_GOALD[m] != EX_GOAL_UNKNOWN) &&
-              !(MATCH_VARIES && N_MATCHD[m] != EX_MATCH_NONE)) {
-            score = -(double)BFS_DIST[m];
+        /*
+         * How far off a situation is, counted in acts that must still be done:
+         * the steps to reach it, plus the steps its own reckoning says remain
+         * from there -- cells of a colour that must be gone, places still to
+         * cross, cells of a picture still unlike its twin. Every term is a count
+         * of work, never a weight and never a likeness: nothing here says one
+         * situation is more probable than another, only that one demands fewer
+         * acts before what it has settled can hold.
+         */
+        double like = 0.0, left = (double)BFS_DIST[m];
+        if (aim_mask() != 0u && N_GOALD[m] != EX_GOAL_UNKNOWN) left += (double)N_GOALD[m];
+        if (AIM_GONE != 0u) left += (double)N_GONEC[m];
+        if (MATCH_VARIES && N_MATCHD[m] != EX_MATCH_NONE) left += (double)N_MATCHD[m];
+        if (NEAR_VARIES && N_NEARD[m] != EX_NEAR_NONE) left += (double)N_NEARD[m];
+        {
+          double score = -left;
+          seen_untried++;
+          if (best == EX_NONE || score > best_score) {
+            best = m;
+            best_score = score;
+            *how_like = like;
+            *how_far = BFS_DIST[m];
           }
-          score -= EX_NEAR_WEIGHT * (double)N_NEARD[m];
-          like = 0.0;
-        }
-        seen_untried++;
-        if (best == EX_NONE || score > best_score) {
-          best = m;
-          best_score = score;
-          *how_like = like;
-          *how_far = BFS_DIST[m];
         }
         break;
       }
@@ -2087,6 +2222,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
   (void)en_begin(&THEORY, SELF_USE_LIVE ? getenv("CIALL_LIVE") : 0);
   ways_begin();
   puzzles_begin();
+  PLAN_LEN = 0u;
   memset(SENT_LAW, 0, sizeof SENT_LAW);   /* a new world: how far a thing goes here is unknown */
   HOLDING = 0;
   memset(BLOCKER, 0, sizeof BLOCKER);
@@ -2127,6 +2263,41 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       break;
     }
 
+    /*
+     * The way it has laid from what it worked out. Every step says where the body
+     * will be; a body that is not there says the way was wrong.
+     */
+    if (PLAN_LEN > 0u && idx == EX_MAX_ACTS) {
+      unsigned br, bc;
+      if (PLAN_POS >= PLAN_LEN || !body_cell(&now, &br, &bc) ||
+          (PLAN_POS > 0u && (br != PLAN_WANT_R || bc != PLAN_WANT_C))) {
+        if (PLAN_POS > 0u && PLAN_POS < PLAN_LEN) {
+          ex->plans_broke++;
+          think(ex, "did I get where my own reckoning said I would?",
+                "no, so the way I laid was wrong. I lay it again from where I am");
+        }
+        PLAN_LEN = 0u;
+      } else {
+        unsigned k = PLAN_ACT[PLAN_POS], w;
+        int dr = 0, dc = 0;
+        for (w = 0u; w < N_NACT[cur]; w++) {
+          if (KIND(N_ACT[cur][w]) == k && N_FLAG[cur][w] != 1u) {
+            idx = w;
+            break;
+          }
+        }
+        if (idx == EX_MAX_ACTS) {
+          PLAN_LEN = 0u;
+        } else if (act_step(k, &dr, &dc)) {
+          PLAN_WANT_R = (unsigned)((int)br + dr);
+          PLAN_WANT_C = (unsigned)((int)bc + dc);
+          PLAN_POS++;
+          WAY_NOW = W_PLAN;
+          ex->plan_steps++;
+          path_len = 0u;
+        }
+      }
+    }
     /* a way remembered from an earlier run, step by step, while the world answers as it did */
     if (recalling && !WAY_OUT[W_RECALL]) {
       unsigned L = ex->levels_done;
@@ -2163,6 +2334,17 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
         replaying = 0;
         think(ex, "did doing what won last time end this level?",
               "no. What I saw on the way is kept; I go back to exploring");
+      }
+    }
+    /* nothing else in hand: if its theories say where to be, lay a way there */
+    if (idx == EX_MAX_ACTS && PLAN_LEN == 0u && !WATCHING && !WAY_OUT[W_PLAN] &&
+        (aim_mask() != 0u || AIM_GONE != 0u)) {
+      if (plan_from_theory(ex, &now) > 0u) {
+        char a1[160];
+        sprintf(a1, "%u steps, over the board, by what each act does to me and what will not let me in",
+                PLAN_LEN);
+        think(ex, "my theories say where I must be: how do I get there?", a1);
+        continue;   /* take the first step of it on the next turn round */
       }
     }
     /* something untried right here */
@@ -2540,6 +2722,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       death_retry_at = 0u;
       STOOD_OFF = 0u;
       ways_begin();   /* a new level: every way of going is worth trying again */
+      PLAN_LEN = 0u;
       puzzles_begin();
       recalling = ON(M_RECALL) && ex->levels_done < EX_MAX_LEVELS && KNOWN_LEN[ex->levels_done] > 0u;
       recall_pos = 0u;
@@ -2720,6 +2903,10 @@ void ex_report(FILE *out, const ex_explorer_t *ex) {
   if (ex->runs_before > 0u || ex->recalled > 0u) {
     fprintf(out, "  remembered from %u earlier run%s (best before: %u levels); walked %u steps it remembered\n",
             ex->runs_before, ex->runs_before == 1u ? "" : "s", ex->best_before, ex->recalled);
+  }
+  if (ex->plans_laid > 0u) {
+    fprintf(out, "  ways it reckoned over the board from what it worked out: %u laid, %u steps walked, %u dropped when it was not where it said\n",
+            ex->plans_laid, ex->plan_steps, ex->plans_broke);
   }
   if (ex->puzzles > 0u) {
     unsigned w;
