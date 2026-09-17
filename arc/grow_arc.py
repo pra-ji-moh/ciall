@@ -23,6 +23,7 @@ MIND = os.path.join(ROOT, "child", "arc_mind")
 PROGRESS = os.path.join(ROOT, "child", "arc_progress.txt")
 JOURNAL = os.path.join(ROOT, "child", "journal.txt")
 BUDGET = "4000"
+GROUP_MINUTES = 25   # longest a group of games may take before it is stopped
 
 # four at a time, on four cores; each group about as long as the others
 GROUPS = [
@@ -56,7 +57,15 @@ def main():
                                       text=True, encoding="utf-8", errors="replace"))
     levels = {}
     for p in procs:
-        out, _ = p.communicate()
+        # a stretch is an hour's work, not forever: a game that will not finish must
+        # not cost the whole stretch its record. What did finish is still what happened.
+        try:
+            out, _ = p.communicate(timeout=GROUP_MINUTES * 60)
+        except subprocess.TimeoutExpired:
+            p.kill()
+            out, _ = p.communicate()
+            print("a group ran past %d minutes and was stopped; what it finished still counts"
+                  % GROUP_MINUTES)
         game = None
         for line in out.splitlines():
             m = re.search(r"ARC-AGI-3 game ([a-z0-9]+)-", line)

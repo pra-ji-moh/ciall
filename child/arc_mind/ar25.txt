@@ -1,5 +1,5 @@
 ciall-explorer-mind 1
-runs 42
+runs 57
 best 2
 mask 0 0 0
 mask 0 1 0
@@ -709,6 +709,9 @@ mask 12 29 0
 mask 12 30 0
 mask 12 31 0
 mask 12 32 0
+mask 12 33 1
+mask 12 34 1
+mask 12 35 1
 mask 12 36 0
 mask 12 37 0
 mask 12 38 0
@@ -758,6 +761,9 @@ mask 13 29 0
 mask 13 30 0
 mask 13 31 0
 mask 13 32 0
+mask 13 33 1
+mask 13 34 1
+mask 13 35 1
 mask 13 36 0
 mask 13 37 0
 mask 13 38 0
@@ -806,6 +812,9 @@ mask 14 29 0
 mask 14 30 0
 mask 14 31 0
 mask 14 32 0
+mask 14 33 1
+mask 14 34 1
+mask 14 35 1
 mask 14 36 0
 mask 14 37 0
 mask 14 38 0
@@ -864,9 +873,15 @@ mask 15 26 0
 mask 15 27 0
 mask 15 28 0
 mask 15 29 0
+mask 15 30 0
+mask 15 31 0
+mask 15 32 0
 mask 15 33 0
 mask 15 34 0
 mask 15 35 0
+mask 15 36 1
+mask 15 37 1
+mask 15 38 1
 mask 15 39 0
 mask 15 40 0
 mask 15 41 0
@@ -922,10 +937,15 @@ mask 16 26 0
 mask 16 27 0
 mask 16 28 0
 mask 16 29 0
+mask 16 30 0
 mask 16 31 0
+mask 16 32 0
 mask 16 33 0
 mask 16 34 0
 mask 16 35 0
+mask 16 36 1
+mask 16 37 1
+mask 16 38 1
 mask 16 39 0
 mask 16 40 0
 mask 16 41 0
@@ -980,9 +1000,15 @@ mask 17 26 0
 mask 17 27 0
 mask 17 28 0
 mask 17 29 0
+mask 17 30 0
+mask 17 31 0
+mask 17 32 0
 mask 17 33 0
 mask 17 34 0
 mask 17 35 0
+mask 17 36 1
+mask 17 37 1
+mask 17 38 1
 mask 17 39 0
 mask 17 40 0
 mask 17 41 0
@@ -1103,6 +1129,7 @@ mask 19 27 0
 mask 19 28 0
 mask 19 29 0
 mask 19 30 0
+mask 19 31 0
 mask 19 32 0
 mask 19 33 0
 mask 19 34 0
@@ -1405,6 +1432,9 @@ mask 24 26 0
 mask 24 27 0
 mask 24 28 0
 mask 24 29 0
+mask 24 30 0
+mask 24 31 0
+mask 24 32 0
 mask 24 33 0
 mask 24 34 0
 mask 24 35 0
@@ -1460,6 +1490,9 @@ mask 25 26 0
 mask 25 27 0
 mask 25 28 0
 mask 25 29 0
+mask 25 30 0
+mask 25 31 0
+mask 25 32 0
 mask 25 33 0
 mask 25 34 0
 mask 25 35 0
@@ -1514,6 +1547,9 @@ mask 26 26 0
 mask 26 27 0
 mask 26 28 0
 mask 26 29 0
+mask 26 30 0
+mask 26 31 0
+mask 26 32 0
 mask 26 33 0
 mask 26 34 0
 mask 26 35 0
@@ -1920,6 +1956,7 @@ mask 34 27 0
 mask 34 28 0
 mask 34 29 0
 mask 34 30 0
+mask 34 31 0
 mask 34 32 0
 mask 34 33 0
 mask 34 34 0
@@ -2769,18 +2806,27 @@ mask 47 63 0
 mask 48 9 0
 mask 48 10 0
 mask 48 11 0
+mask 48 30 0
+mask 48 31 0
+mask 48 32 0
 mask 48 45 0
 mask 48 46 0
 mask 48 47 0
 mask 48 63 0
 mask 49 9 0
 mask 49 11 0
+mask 49 30 0
+mask 49 31 0
+mask 49 32 0
 mask 49 45 0
 mask 49 47 0
 mask 49 63 0
 mask 50 9 0
 mask 50 10 0
 mask 50 11 0
+mask 50 30 0
+mask 50 31 0
+mask 50 32 0
 mask 50 45 0
 mask 50 46 0
 mask 50 47 0
@@ -3517,44 +3563,44 @@ mask 62 61 0
 mask 62 62 0
 mask 62 63 0
 mask 63 63 0
-colour 0 18608 1 0
-shift 1 0 -6 0 1
+colour 0 23189 1 0
+shift 1 0 -6 6 1
 shift 2 0 3 0 2
-shift 3 0 0 -6 1
-shift 4 0 0 3 1
+shift 3 0 0 -3 2
+shift 4 0 0 3 6
 shift 5 0 -18 -42 1
 shift 7 0 0 -3 1
 colour 1 0 0 0
 colour 2 0 0 0
 colour 3 0 0 0
-colour 4 17315 244 0
-shift 1 4 -81 54 5
-shift 2 4 27 0 2
-shift 3 4 27 27 1
-shift 4 4 0 -27 1
-shift 7 4 -27 -27 1
-colour 5 17635 644 0
-shift 1 5 -48 0 1
+colour 4 22147 244 0
+shift 1 4 -3 0 1
+shift 2 4 9 0 1
+shift 3 4 0 54 1
+shift 4 4 0 -54 1
+shift 7 4 -6 9 1
+colour 5 20925 1223 0
+shift 1 5 -48 48 1
 shift 2 5 24 0 2
-shift 3 5 0 -48 1
-shift 4 5 0 24 1
+shift 3 5 0 -24 2
+shift 4 5 0 24 6
 shift 7 5 0 -24 1
 colour 6 0 0 0
 colour 7 0 0 0
 colour 8 0 0 0
-colour 9 14523 5633 8
-shift 1 9 81 -54 5
-shift 2 9 -27 243 1
-shift 3 9 -27 -27 1
-shift 4 9 0 27 1
+colour 9 18482 7168 8
+shift 1 9 81 -216 1
+shift 2 9 -27 0 1
+shift 3 9 6 72 1
+shift 4 9 27 -270 1
 shift 5 9 18 42 1
-shift 7 9 27 27 1
-colour 10 3193 18 0
-shift 1 10 72 0 117
-shift 2 10 -72 0 110
+shift 7 9 6 72 1
+colour 10 3214 18 0
+shift 1 10 72 0 121
+shift 2 10 -72 0 125
 shift 3 10 0 -24 3
 shift 4 10 0 24 7
-shift 7 10 72 0 5
+shift 7 10 72 0 7
 colour 11 116 7 0
 shift 1 11 48 0 1
 shift 2 11 -24 -48 1
@@ -3565,7 +3611,7 @@ colour 12 0 0 0
 colour 13 0 0 0
 colour 14 0 0 0
 colour 15 0 0 0
-onto 6113 8 2
+onto 8155 8 2
 kind 8230 1 1
 kind 536870917 1 1
 kind 5 1 0

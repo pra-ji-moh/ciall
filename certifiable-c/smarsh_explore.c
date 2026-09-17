@@ -413,6 +413,7 @@ static unsigned stepped_onto(const pl_frame_t *f, const ex_sum_t *sum, int body,
 static en_theory_t THEORY;
 static en_obs_t OBS;
 static uint16_t AIM_ONTO, AIM_GONE, AIM_POINT;
+static uint16_t AIM_ONTO_WIDE;   /* before the test above: what the theories point at at all */
 static int AIM_MATCH;
 
 /*
@@ -488,6 +489,13 @@ static void theory_aims(void) {
       present++;
       if (AIM_ONTO & (1u << v)) aimed++;
     }
+    /*
+     * An aim that takes in nearly everything rules nothing out, so it is no use
+     * for steering: following it would only cost it the choice it would have made.
+     * But it is still worth walking to the nearest of them, since a way there is
+     * short and costs nothing to have. So steering loses it and the planner keeps it.
+     */
+    AIM_ONTO_WIDE = AIM_ONTO;
     if (present > 0u && aimed * 2u > present) AIM_ONTO = 0u;
   }
   if (!ON(M_THEORY)) {
@@ -1760,8 +1768,11 @@ static int would_meet_mover(const ex_sum_t *sum, int body, unsigned kind) {
  * wrong, and the way is dropped rather than pushed on with.
  */
 #define EX_PLAN_MAX 64u
+#define EX_IDLE_MAX 32u   /* turns it may take without acting before it is going round in circles */
+static pl_frame_t ACT_STEP_FRAME;   /* the picture the step is reckoned over */
 static unsigned char PLAN_ACT[EX_PLAN_MAX];
 static unsigned PLAN_LEN, PLAN_POS;
+static unsigned PLAN_BLOCKED;   /* a way was dropped here: do not lay another until it acts */
 static unsigned PLAN_WANT_R, PLAN_WANT_C;   /* where the body should be after the next step */
 
 /* the middle cell of the body */
@@ -1782,7 +1793,9 @@ static int act_step(unsigned kind, int *dr, int *dc) {
   int body = body_colour();
   unsigned n;
   if (body < 0 || kind >= 8u || kind == 6u || SHIFT_SEEN[kind][body] < EX_SHIFT_SURE) return 0;
-  colour_sums(&LEVEL_START, sum);
+  /* how far one cell of it goes: the whole shift over however many cells there are
+     NOW, not however many there were when the level began -- things get taken */
+  colour_sums(&ACT_STEP_FRAME, sum);
   n = sum[body].count;
   if (n == 0u || SHIFT_R[kind][body] % (long)n != 0 || SHIFT_C[kind][body] % (long)n != 0) return 0;
   *dr = (int)(SHIFT_R[kind][body] / (long)n);
@@ -1803,6 +1816,7 @@ static unsigned plan_over_world(ex_explorer_t *ex, const pl_frame_t *f, unsigned
   unsigned head = 0u, tail = 0u, br, bc, k;
   int found_r = -1, found_c = -1;
 
+  ACT_STEP_FRAME = *f;
   if (want == 0u || !body_cell(f, &br, &bc)) return 0u;
   memset(seen, 0, sizeof seen);
   seen[br][bc] = 1u;
@@ -1864,7 +1878,25 @@ static unsigned plan_from_theory(ex_explorer_t *ex, const pl_frame_t *f) {
   for (v = 0u; v < PL_COLOURS; v++) {   /* first, what must be gone but is still here */
     if ((AIM_GONE & (1u << v)) && sum[v].count > 0u) want |= 1u << v;
   }
-  if (want == 0u) want = aim_mask();    /* then, what it must be standing on */
+  if (want == 0u) want = aim_mask();   /* then what it must be standing on, if that is settled */
+  if (want == 0u) {
+    /*
+     * Not settled yet. A way is only worth laying to something its theories
+     * actually single out: if they still point at more than a few things, the
+     * nearest of them is a step, not a destination, and walking to it says
+     * nothing. Three or fewer is a destination; more is no aim at all.
+     */
+    int body = body_colour();
+    unsigned m = AIM_ONTO_WIDE, w, n = 0u;
+    if (body >= 0) m &= ~(1u << body);
+    for (w = 0u; w < PL_COLOURS; w++) {
+      if (BLOCKER[w]) m &= ~(1u << w);
+    }
+    for (w = 0u; w < PL_COLOURS; w++) {
+      if (m & (1u << w)) n++;
+    }
+    want = n > 0u && n <= 3u ? m : 0u;
+  }
   return plan_over_world(ex, f, want);
 }
 
@@ -2188,6 +2220,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
   int replaying = 0, took_back = 0, unmasked = 0, recalling = 0;
   unsigned recall_pos = 0u;
   unsigned took_back_at = 0u, death_retry_at = 0u, fresh_starts = 0u, death_retries_here = 0u;
+  unsigned idle_turns = 0u, spent_last_turn = 0xFFFFFFFFu;
   int start, cur;
 
   if (ex == 0 || g == 0 || first == 0) return SM_ERR_NULL_ARGUMENT;
@@ -2257,6 +2290,23 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
     unsigned idx = EX_MAX_ACTS, code, kind, i;
     int outcome, nb;
 
+    /* whatever it decides, a turn that spends nothing must not come round for ever */
+    if (ex->actions == spent_last_turn) {
+      idle_turns++;
+      if (idle_turns > EX_IDLE_MAX) {
+        ex->idle_breaks++;
+        PLAN_LEN = 0u;
+        PLAN_BLOCKED = 1u;
+        WATCHING = 0u;
+        think(ex, "am I getting anywhere at all?",
+              "no: turn after turn I have done nothing. I drop what I was about and act");
+        idle_turns = 0u;
+      }
+    } else {
+      idle_turns = 0u;
+      spent_last_turn = ex->actions;
+    }
+
     if (cur < 0) {
       /* memory for this level is full: what it has cannot hold more situations */
       ex->exhausted = 1;
@@ -2280,6 +2330,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       } else {
         unsigned k = PLAN_ACT[PLAN_POS], w;
         int dr = 0, dc = 0;
+        ACT_STEP_FRAME = now;
         for (w = 0u; w < N_NACT[cur]; w++) {
           if (KIND(N_ACT[cur][w]) == k && N_FLAG[cur][w] != 1u) {
             idx = w;
@@ -2287,7 +2338,10 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
           }
         }
         if (idx == EX_MAX_ACTS) {
+          /* the way wants an act this situation does not offer: drop it, and do not
+             lay the same way again this turn -- that way lies going round for ever */
           PLAN_LEN = 0u;
+          PLAN_BLOCKED = 1u;
         } else if (act_step(k, &dr, &dc)) {
           PLAN_WANT_R = (unsigned)((int)br + dr);
           PLAN_WANT_C = (unsigned)((int)bc + dc);
@@ -2337,14 +2391,41 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       }
     }
     /* nothing else in hand: if its theories say where to be, lay a way there */
-    if (idx == EX_MAX_ACTS && PLAN_LEN == 0u && !WATCHING && !WAY_OUT[W_PLAN] &&
-        (aim_mask() != 0u || AIM_GONE != 0u)) {
+    /*
+     * Being puzzled is no reason not to go where it already knows it must be:
+     * a way it can lay is worth more than a thing it is staring at, and the
+     * staring will still be there on the way.
+     */
+    if (idx == EX_MAX_ACTS && PLAN_LEN == 0u && !PLAN_BLOCKED && !WAY_OUT[W_PLAN] &&
+        (AIM_ONTO_WIDE != 0u || AIM_GONE != 0u)) {
       if (plan_from_theory(ex, &now) > 0u) {
         char a1[160];
         sprintf(a1, "%u steps, over the board, by what each act does to me and what will not let me in",
                 PLAN_LEN);
         think(ex, "my theories say where I must be: how do I get there?", a1);
-        continue;   /* take the first step of it on the next turn round */
+      }
+    }
+    /* and if a way is in hand, its next step is what it does now */
+    if (idx == EX_MAX_ACTS && PLAN_LEN > 0u && PLAN_POS < PLAN_LEN) {
+      unsigned k = PLAN_ACT[PLAN_POS], w, br2, bc2;
+      int dr = 0, dc = 0;
+      for (w = 0u; w < N_NACT[cur]; w++) {
+        if (KIND(N_ACT[cur][w]) == k && N_FLAG[cur][w] != 1u) {
+          idx = w;
+          break;
+        }
+      }
+      if (idx == EX_MAX_ACTS) {
+        PLAN_LEN = 0u;
+        PLAN_BLOCKED = 1u;
+      } else if (body_cell(&now, &br2, &bc2) && act_step(k, &dr, &dc)) {
+        ACT_STEP_FRAME = now;
+        PLAN_WANT_R = (unsigned)((int)br2 + dr);
+        PLAN_WANT_C = (unsigned)((int)bc2 + dc);
+        PLAN_POS++;
+        WAY_NOW = W_PLAN;
+        ex->plan_steps++;
+        path_len = 0u;
       }
     }
     /* something untried right here */
@@ -2609,6 +2690,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       }
     }
     LAST_CODE = (unsigned short)code;
+    PLAN_BLOCKED = 0u;
     outcome = g->act(g, kind, PX(code), PY(code), &next);
     OBS.ended = (unsigned char)(outcome == 1 || outcome == 2);
     {
