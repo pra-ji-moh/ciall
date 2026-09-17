@@ -202,6 +202,10 @@ def families_elsewhere(mind_dir, game):
                     part = line.split()
                     if len(part) == 3 and part[0] == "family" and part[2] == "1":
                         names.add(part[1])
+                    # a theory of three facts that names no colour: it is about the way
+                    # worlds can be, not about this game, so another game may hold it
+                    if len(part) == 7 and part[0] == "deep":
+                        names.add("DEEP:" + ":".join(part[1:]))
         except OSError:
             pass
     return sorted(names)

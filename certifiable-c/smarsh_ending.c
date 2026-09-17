@@ -226,6 +226,31 @@ sm_status_t en_begin(en_theory_t *t, const char *library) {
         }
       }
     }
+    /*
+     * Theories of three facts that other games settled on and that name no colour.
+     * Carried in as "DEEP:a:v:a:v:a:v". The child holds them from its first act in
+     * a game it has never seen, so that it has something to say before its first
+     * win there rather than only after it. They are ruled out here exactly as any
+     * other theory is: the first act of this game that they are true of, and that
+     * ends nothing, is the end of them.
+     */
+    {
+      const char *hit;
+      for (hit = strstr(library, "DEEP:"); hit != 0 && t->n_deep < EN_DEEP_MAX;
+           hit = strstr(hit + 1, "DEEP:")) {
+        unsigned a0, v0, a1, v1, a2, v2;
+        if (sscanf(hit, "DEEP:%u:%u:%u:%u:%u:%u", &a0, &v0, &a1, &v1, &a2, &v2) == 6 &&
+            a0 < EN_ATOMS && a1 < EN_ATOMS && a2 < EN_ATOMS) {
+          en_conj_t *c = &t->deep[t->n_deep++];
+          c->atom[0] = (unsigned char)a0;
+          c->val[0] = (unsigned char)v0;
+          c->atom[1] = (unsigned char)a1;
+          c->val[1] = (unsigned char)v1;
+          c->atom[2] = (unsigned char)a2;
+          c->val[2] = (unsigned char)v2;
+        }
+      }
+    }
     for (x = 0u; x < t->n_fam; x++) {   /* singles named in the library are marked as kept */
       char name[32];
       const char *hit;

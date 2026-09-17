@@ -2202,6 +2202,28 @@ sm_status_t ex_save(const ex_explorer_t *ex, FILE *out) {
       }
     }
     if (THEORY.widenings > 0u) fprintf(out, "widened %u\n", THEORY.widenings);
+    /*
+     * The theories of three facts it settled on. One that names a colour is about
+     * this game and is kept here only; one said wholly in roles, sizes, keys and
+     * places is about the way worlds can be, and is offered to games it has never
+     * seen, so that it can have something to say before its first win there rather
+     * than only after it.
+     */
+    for (f2 = 0u; f2 < THEORY.n_deep; f2++) {
+      const en_conj_t *c = &THEORY.deep[f2];
+      unsigned j;
+      int carries = 1;
+      for (j = 0u; j < EN_DEEP_FACTS; j++) {
+        unsigned a = c->atom[j];
+        if (a == EN_ONTO || a == EN_LAST || a == EN_GONE || a == EN_POINT ||
+            a == EN_TOUCH || a == EN_ALIGN) {
+          carries = 0;
+        }
+      }
+      fprintf(out, "%s", carries ? "deep" : "deep-here");
+      for (j = 0u; j < EN_DEEP_FACTS; j++) fprintf(out, " %u %u", c->atom[j], c->val[j]);
+      fprintf(out, "\n");
+    }
   }
   for (i = 0u; i < EX_KINDS; i++) {
     if (KIND_KEY[i] != 0u && KIND_DONE[i]) fprintf(out, "kind %lu %u %u\n", (unsigned long)KIND_KEY[i], (unsigned)KIND_DONE[i], (unsigned)KIND_DID[i]);
