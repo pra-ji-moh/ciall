@@ -425,6 +425,9 @@ static int AIM_MATCH;
  */
 static uint16_t ROLE_OF[PL_COLOURS];
 
+/* could this pointing be the one a surviving three-fact theory speaks of? */
+static int deep_allows(const pl_frame_t *f, unsigned code);
+
 static void work_out_roles(const pl_frame_t *f) {
   static ex_sum_t now_s[PL_COLOURS], start_s[PL_COLOURS];
   int body = body_colour();
@@ -943,6 +946,7 @@ static unsigned build_actions(const ex_explorer_t *ex, const ex_game_t *g, const
    * the size of something one could press (not a speck of detail, and not a
    * great field that is more ground than thing), then the rest.
    */
+  /* could this pointing be the one a theory of three facts speaks of? (defined below) */
   for (i = 0u; i < n; i++) {
     if (!cand[i].simple) {
       unsigned sz = cand[i].size, area = f->h * f->w;
@@ -953,6 +957,14 @@ static unsigned build_actions(const ex_explorer_t *ex, const ex_game_t *g, const
       /* what opens new situations first: each new situation is a new domain of unknowns */
       cand[i].score = KIND_DID[k] ? 0.0 : (!KIND_DONE[k] ? 1.0 : 2.0);
       if (!cand[i].simple && (AIM_POINT & (1u << f->c[PY(cand[i].code)][PX(cand[i].code)]))) cand[i].score = -1.0;
+      /*
+       * A theory of three facts says more than a colour to go for: this thing, of
+       * this size, in this part of the board. Where it has such a theory left, an
+       * act that could not be the one the theory speaks of is ruled out of the
+       * choosing, and the acts that could be are chosen between uniformly. Nothing
+       * here says which is likelier; it says which are still possible.
+       */
+      if (!cand[i].simple && THEORY.n_deep > 0u && deep_allows(f, cand[i].code)) cand[i].score = -5.0;
       if (WATCHING) {
         /* confused: it acts the way it has chosen to ask */
         int near_it = !cand[i].simple &&
@@ -1048,6 +1060,76 @@ static unsigned thing_rank(const pl_frame_t *f, unsigned x, unsigned y) {
     }
   }
   return 255u;
+}
+
+/*
+ * How big the thing at (x, y) is: the cells of its own colour joined to it. Said
+ * in classes rather than an exact count, because "one cell", "a pair", "a handful"
+ * is the difference that tells two things of the same colour apart, and an exact
+ * count would make every thing its own kind.
+ */
+static unsigned thing_size_class(const pl_frame_t *f, unsigned x, unsigned y) {
+  unsigned colour = f->c[y][x], head = 0u, tail = 0u, n = 0u;
+  static const int dr[4] = {-1, 1, 0, 0}, dc[4] = {0, 0, -1, 1};
+  memset(RANK_LABEL, 0, sizeof RANK_LABEL);
+  RANK_LABEL[y][x] = 1u;
+  QR[tail] = (int)y;
+  QC[tail] = (int)x;
+  tail++;
+  while (head < tail) {
+    int rr = QR[head], cc = QC[head], k;
+    head++;
+    n++;
+    for (k = 0; k < 4; k++) {
+      int nr = rr + dr[k], nc = cc + dc[k];
+      if (nr < 0 || nc < 0 || nr >= (int)f->h || nc >= (int)f->w) continue;
+      if (RANK_LABEL[nr][nc] || f->c[nr][nc] != colour) continue;
+      RANK_LABEL[nr][nc] = 1u;
+      QR[tail] = nr;
+      QC[tail] = nc;
+      tail++;
+    }
+  }
+  if (n <= 1u) return 0u;
+  if (n == 2u) return 1u;
+  if (n == 3u) return 2u;
+  if (n == 4u) return 3u;
+  if (n <= 6u) return 4u;
+  if (n <= 9u) return 5u;
+  if (n <= 16u) return 6u;
+  return 7u;
+}
+
+/*
+ * A theory of three facts says more than "point at colour 9": it says which thing,
+ * how big, and where on the board. Before spending an act, the child can say of
+ * each pointing it could make whether it is one the theory speaks of, because all
+ * three facts are true of the board as it stands. Where any pointing could be, the
+ * ones that could not are ruled out of the choosing.
+ */
+static int deep_allows(const pl_frame_t *f, unsigned code) {
+  unsigned x = PX(code), y = PY(code), colour, size, where, rr, cc, i, k;
+  if (THEORY.n_deep == 0u || y >= f->h || x >= f->w) return 0;
+  colour = f->c[y][x];
+  size = thing_size_class(f, x, y);
+  rr = y * 3u / (f->h ? f->h : 1u);
+  cc = x * 3u / (f->w ? f->w : 1u);
+  if (rr > 2u) rr = 2u;
+  if (cc > 2u) cc = 2u;
+  where = rr * 3u + cc;
+  for (i = 0u; i < THEORY.n_deep; i++) {
+    int holds = 1;
+    for (k = 0u; k < EN_DEEP_FACTS && holds; k++) {
+      unsigned a = THEORY.deep[i].atom[k], v = THEORY.deep[i].val[k];
+      if (a == EN_POINT) holds = (colour == v);
+      else if (a == EN_POINT_R) holds = ((ROLE_OF[colour] >> v) & 1u) != 0u;
+      else if (a == EN_PSIZE) holds = (size == v);
+      else if (a == EN_PAT) holds = (where == v);
+      /* a fact about the board rather than about this act cannot rule the act out */
+    }
+    if (holds) return 1;
+  }
+  return 0;
 }
 
 /* The situation this frame is, remembered if it is new. -1 when memory is full. */
@@ -2678,7 +2760,71 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
           }
         }
       }
-      if (kind == 6u) OBS.point = (uint16_t)(1u << now.c[PY(code)][PX(code)]);
+      if (kind < 8u) OBS.act = (uint16_t)(1u << kind);
+      if (body >= 0) {
+        /* what the body was up against when it acted: the situation, not the act */
+        unsigned r, c;
+        for (r = 0u; r < now.h; r++) {
+          for (c = 0u; c < now.w; c++) {
+            if (now.c[r][c] != (unsigned)body) continue;
+            if (r > 0u) OBS.touch |= (uint16_t)(1u << now.c[r - 1u][c]);
+            if (c > 0u) OBS.touch |= (uint16_t)(1u << now.c[r][c - 1u]);
+            if (r + 1u < now.h) OBS.touch |= (uint16_t)(1u << now.c[r + 1u][c]);
+            if (c + 1u < now.w) OBS.touch |= (uint16_t)(1u << now.c[r][c + 1u]);
+          }
+        }
+        OBS.touch &= (uint16_t)~(1u << body);   /* its own cells are not something it is up against */
+      }
+      if (body >= 0) {
+        /* where it was standing, not only what was around it */
+        unsigned r, c, br = 0u, bc = 0u, n = 0u;
+        for (r = 0u; r < now.h; r++) {
+          for (c = 0u; c < now.w; c++) {
+            if (now.c[r][c] != (unsigned)body) continue;
+            br += r; bc += c; n++;
+          }
+        }
+        if (n > 0u) {
+          unsigned rr = (br / n) * 3u / (now.h ? now.h : 1u), cc = (bc / n) * 3u / (now.w ? now.w : 1u);
+          if (rr > 2u) rr = 2u;
+          if (cc > 2u) cc = 2u;
+          OBS.bodyat = (uint16_t)(1u << (rr * 3u + cc));
+          if (br / n == 0u || bc / n == 0u || br / n + 1u == now.h || bc / n + 1u == now.w) OBS.edge = 1u;
+          for (r = 0u; r < now.h; r++) {
+            for (c = 0u; c < now.w; c++) {
+              if (r == br / n || c == bc / n) OBS.align |= (uint16_t)(1u << now.c[r][c]);
+            }
+          }
+        }
+      }
+      if (kind == 6u) {
+        unsigned rr = PY(code) * 3u / (now.h ? now.h : 1u), cc = PX(code) * 3u / (now.w ? now.w : 1u);
+        if (rr > 2u) rr = 2u;
+        if (cc > 2u) cc = 2u;
+        OBS.pat = (uint16_t)(1u << (rr * 3u + cc));
+      }
+      {
+        /* how many there are, not only whether there are any: one left is not none */
+        unsigned most_n = 0u;
+        for (v = 0u; v < PL_COLOURS; v++) {
+          if (os[v].count == 1u) OBS.one |= (uint16_t)(1u << v);
+          if (os[v].count >= 2u && os[v].count <= 3u) OBS.few |= (uint16_t)(1u << v);
+          if (os[v].count > most_n) most_n = os[v].count;
+          if (os[v].count > ls[v].count) OBS.grew |= (uint16_t)(1u << v);
+          if (os[v].count < ls[v].count) OBS.shrank |= (uint16_t)(1u << v);
+        }
+        for (v = 0u; v < PL_COLOURS; v++) {
+          if (os[v].count == most_n && most_n > 0u) OBS.most |= (uint16_t)(1u << v);
+        }
+      }
+      if (kind == 6u) {
+        unsigned px = PX(code), py = PY(code);
+        OBS.point = (uint16_t)(1u << now.c[py][px]);
+        /* which thing, not only which colour: the same colour twice is not the same act */
+        OBS.psize = (uint16_t)(1u << thing_size_class(&now, px, py));
+        OBS.pnew = (unsigned char)(py < LEVEL_START.h && px < LEVEL_START.w &&
+                                   LEVEL_START.c[py][px] != now.c[py][px]);
+      }
       OBS.match = (unsigned char)(MATCH_VARIES && N_MATCHD[cur] == 0u);
       /* the same act, said in roles: this is what can carry to another game */
       work_out_roles(&now);
@@ -2687,12 +2833,35 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
         if (OBS.last & (1u << v)) OBS.last_r |= ROLE_OF[v];
         if (OBS.gone & (1u << v)) OBS.gone_r |= ROLE_OF[v];
         if (OBS.point & (1u << v)) OBS.point_r |= ROLE_OF[v];
+        if (OBS.touch & (1u << v)) OBS.touch_r |= ROLE_OF[v];
       }
     }
     LAST_CODE = (unsigned short)code;
     PLAN_BLOCKED = 0u;
     outcome = g->act(g, kind, PX(code), PY(code), &next);
     OBS.ended = (unsigned char)(outcome == 1 || outcome == 2);
+    {
+      /*
+       * What the act left behind, as against what it was done in. A level ends
+       * because of what has become true, not because of what was true before: the
+       * act that takes the last red away is done while the red is still there, so
+       * "no red left" is never true of it if only the board before is looked at.
+       */
+      static ex_sum_t ns[PL_COLOURS], ls2[PL_COLOURS];
+      unsigned v, most_n = 0u;
+      colour_sums(&next, ns);
+      colour_sums(&LEVEL_START, ls2);
+      OBS.a_gone = OBS.a_one = OBS.a_few = OBS.a_most = 0u;
+      for (v = 0u; v < PL_COLOURS; v++) {
+        if (ns[v].count == 0u && ls2[v].count > 0u) OBS.a_gone |= (uint16_t)(1u << v);
+        if (ns[v].count == 1u) OBS.a_one |= (uint16_t)(1u << v);
+        if (ns[v].count >= 2u && ns[v].count <= 3u) OBS.a_few |= (uint16_t)(1u << v);
+        if (ns[v].count > most_n) most_n = ns[v].count;
+      }
+      for (v = 0u; v < PL_COLOURS; v++) {
+        if (ns[v].count == most_n && most_n > 0u) OBS.a_most |= (uint16_t)(1u << v);
+      }
+    }
     {
       unsigned before = THEORY.widenings;
       unsigned nodes_before = N_COUNT, theories_before = theories_left();
