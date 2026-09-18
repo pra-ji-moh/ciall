@@ -481,10 +481,16 @@ static int survey(int argc, char **argv) {
 /* ==== the curious child ======================================================
 
    Nobody hands it task 1 and then task 2. Each moment it chooses what to read
-   next, by what it is most curious about -- a kind of story it has never met, or
-   one that has just surprised it; then one it is still unsure of; and only when
-   nothing else is left, one it has already understood. The choice is uniform
-   among those it is most curious about: never weighed.
+   next, by where it can still be wrong -- a kind of story it has never met, or
+   one it was just wrong about; then one it is unsure of, or cannot make sense of
+   yet; and last, one it has not been wrong about for a while. The choice is
+   uniform among those it is most drawn to: never weighed.
+
+   It is never allowed to be sure it understands. Being wrong is the only thing
+   that rules anything out, so a kind of story it has not been wrong about for a
+   while is one it goes hunting in: it reads the story least like any it has read
+   there -- the one holding most words it has never met in that kind of story --
+   because that is where it is likeliest to be shown wrong.
 
    Before it is told any answer it answers for itself. Where every rule it still
    holds gives the same answer, it is sure. Sure and wrong is a surprise, and a
@@ -499,16 +505,18 @@ static int survey(int argc, char **argv) {
    reads on, so each hour it knows what it knew and a little more.
 */
 
-#define MASTERED 20u   /* sure and right this many times running: it understands these */
+#define MASTERED 20u   /* not wrong this many times running: it stops trusting itself and hunts */
 
 typedef struct {
   rule_t *alive;
   unsigned long long *still;
   unsigned n, cap_a, n_still, cap_s;
   unsigned depth, qmax, touched, stuck, surprised_last, streak, mastered;
-  unsigned read, sure_right, sure_wrong, unsure;
+  unsigned read, sure_right, sure_wrong, unsure, wrong_last, wrong, taught, hunts;
   story_t **story;
   unsigned n_story;
+  unsigned char *done;               /* stories of this kind already read */
+  unsigned long long met[WB];        /* words met in this kind of story */
 } kind_t;
 
 static kind_t K[21];
@@ -569,9 +577,45 @@ static void rule_down(const story_t *s) {
   N_ALIVE = N_STILL = w;
 }
 
-static void read_one(unsigned t) {
+static unsigned unmet_words(const kind_t *k, const story_t *s) {
+  unsigned n = 0u, i, j;
+  for (i = 0u; i < s->n_sent; i++) {
+    for (j = 0u; j < s->sent[i].n; j++) {
+      unsigned w = s->sent[i].t[j];
+      if (w < WB * 64u && !((k->met[w >> 6] >> (w & 63u)) & 1ull)) n++;
+    }
+  }
+  return n;
+}
+
+/* the story it reads next: the next in order, or, hunting, the one least like what it has read */
+static unsigned next_story(unsigned t) {
   kind_t *k = &K[t];
-  story_t *s = k->story[k->read];
+  unsigned i, best = 0u, n = 0u;
+  static unsigned tie[1000];
+  if (k->streak < MASTERED) {
+    for (i = 0u; i < k->n_story; i++) {
+      if (!k->done[i]) return i;
+    }
+    return 0u;
+  }
+  for (i = 0u; i < k->n_story; i++) {
+    unsigned u;
+    if (k->done[i]) continue;
+    u = unmet_words(k, k->story[i]);
+    if (n == 0u || u > best) {
+      best = u;
+      n = 0u;
+    }
+    if (u == best) tie[n++] = i;
+  }
+  return n ? tie[pick(n)] : 0u;
+}
+
+static void read_one(unsigned t, unsigned which) {
+  kind_t *k = &K[t];
+  story_t *s = k->story[which];
+  unsigned before_rules, hunting = (k->streak >= MASTERED);
   char line[600];
   int sure;
   unsigned mine;
@@ -585,41 +629,72 @@ static void read_one(unsigned t) {
     sprintf(line, "task %u: a kind of story I have never met; I could answer it %u ways", t, N_ALIVE);
     note(line);
   }
-  mine = own_answer(s, &sure);
+  if (hunting) k->hunts++;
+  mine = own_answer(s, &sure);   /* it always answers, sure or not, so that it can be wrong */
+  before_rules = N_ALIVE;
   if (sure && mine == s->answer) {
     k->sure_right++;
     k->streak++;
+    k->wrong_last = 0u;
     k->surprised_last = 0u;
-    if (k->streak == MASTERED && !k->mastered) {
+    if (k->streak == MASTERED) {
       char said[400];
       k->mastered = 1u;
       say(&ALIVE[0], said);
-      sprintf(line, "task %u: sure and right %u times running. I understand these: \"%s\"", t, MASTERED, said);
-      note(line);
-    }
-  } else if (sure) {
-    k->sure_wrong++;
-    k->streak = 0u;
-    k->surprised_last = 1u;
-    k->mastered = 0u;
-    if (k->sure_wrong <= 3u) {
-      sprintf(line, "task %u, story %u: I was sure it was \"%s\", and it was \"%s\". I did not understand it after all",
-              t, k->read + 1u, mine == NONE ? "?" : WORD[mine], WORD[s->answer]);
+      sprintf(line, "task %u: I have not been wrong for %u stories (\"%s\"). I do not trust that. "
+              "I go looking for the story that proves me wrong", t, MASTERED, said);
       note(line);
     }
   } else {
-    k->unsure++;
+    unsigned was_streak = k->streak;
+    if (mine != s->answer) {
+      k->wrong++;
+      k->wrong_last = 1u;
+    } else {
+      k->wrong_last = 0u;
+    }
+    if (sure) {
+      k->sure_wrong++;
+      k->surprised_last = 1u;
+    } else {
+      k->unsure++;
+      k->surprised_last = 0u;
+    }
     k->streak = 0u;
-    k->surprised_last = 0u;
+    k->mastered = 0u;
+    if (sure && (k->sure_wrong <= 3u || was_streak >= MASTERED)) {
+      sprintf(line, "task %u, story %u%s: I was sure it was \"%s\", and it was \"%s\". Good: I was wrong",
+              t, which + 1u, hunting ? " (hunting for it)" : "", mine == NONE ? "?" : WORD[mine], WORD[s->answer]);
+      note(line);
+    }
   }
   rule_down(s);
+  if (N_ALIVE < before_rules) {
+    k->taught += before_rules - N_ALIVE;
+    if (k->wrong_last && k->sure_wrong <= 3u && before_rules - N_ALIVE > 0u && sure) {
+      sprintf(line, "task %u: being wrong ruled out %u of the %u ways I had", t, before_rules - N_ALIVE, before_rules);
+      note(line);
+    }
+  }
+  k->done[which] = 1u;
+  {
+    unsigned i, j;
+    for (i = 0u; i < s->n_sent; i++) {
+      for (j = 0u; j < s->sent[i].n; j++) {
+        unsigned w = s->sent[i].t[j];
+        if (w < WB * 64u) k->met[w >> 6] |= 1ull << (w & 63u);
+      }
+    }
+  }
   k->read++;
   if (N_ALIVE == 0u && k->depth == 1u) {
     /* nothing it can say is left: its language was too poor, and it widens it */
     unsigned i;
     k->depth = 2u;
     N_LESSON = 0u;
-    for (i = 0u; i < k->read; i++) LESSON[N_LESSON++] = k->story[i];
+    for (i = 0u; i < k->n_story; i++) {
+      if (k->done[i]) LESSON[N_LESSON++] = k->story[i];
+    }
     N_ALIVE = N_STILL = 0u;
     (void)formulate(2, k->qmax);
     sprintf(line, "task %u: nothing I could say was left after %u stories, so now I think in two steps (%u ways)",
@@ -635,14 +710,14 @@ static void read_one(unsigned t) {
   swap_out(t);
 }
 
-/* what it is most curious about now: 3 new or surprising, 2 unsure, 1 understood, 0 stuck */
+/* where it can still be wrong: 3 never met, or just wrong; 2 unsure, or cannot make sense of yet;
+   1 not wrong for a while (it still goes there, hunting) */
 static int curiosity(unsigned t) {
   const kind_t *k = &K[t];
   if (k->read >= k->n_story) return -1;
-  if (!k->touched || k->surprised_last) return 3;
-  if (k->stuck) return 0;
-  if (k->mastered) return 1;
-  return 2;
+  if (!k->touched || (k->wrong_last && !k->stuck)) return 3;
+  if (k->stuck || !k->mastered) return 2;
+  return 1;
 }
 
 static unsigned choose(void) {
@@ -660,7 +735,7 @@ static unsigned choose(void) {
   return n ? best[pick(n)] : 0u;
 }
 
-static char ORDER[200000];
+static char ORDER[400000];
 
 static int curious(unsigned budget, const char *mind, const char *diary_path, story_t *tr, unsigned n_tr,
                    story_t *te, unsigned n_te) {
@@ -669,6 +744,7 @@ static int curious(unsigned budget, const char *mind, const char *diary_path, st
   FILE *f;
   for (t = 1u; t <= 20u; t++) {
     K[t].story = (story_t **)malloc(sizeof(story_t *) * 1000u);
+    K[t].done = (unsigned char *)calloc(1000u, 1u);
     for (i = 0u; i < n_tr; i++) {
       if (tr[i].task == (int)t && K[t].n_story < 1000u) {
         K[t].story[K[t].n_story++] = &tr[i];
@@ -683,16 +759,20 @@ static int curious(unsigned budget, const char *mind, const char *diary_path, st
     int c;
     unsigned v = 0u;
     QUIET = 1;
+    unsigned which = 0u, *cur = &v;
     while ((c = fgetc(f)) != EOF) {
       if (c >= '0' && c <= '9') {
-        v = v * 10u + (unsigned)(c - '0');
+        *cur = *cur * 10u + (unsigned)(c - '0');
+      } else if (c == '.') {
+        cur = &which;
       } else {
-        if (v >= 1u && v <= 20u && K[v].read < K[v].n_story && n_order + 8u < sizeof ORDER) {
-          read_one(v);
-          n_order += (size_t)sprintf(ORDER + n_order, "%u,", v);
+        if (v >= 1u && v <= 20u && which < K[v].n_story && !K[v].done[which] && n_order + 16u < sizeof ORDER) {
+          read_one(v, which);
+          n_order += (size_t)sprintf(ORDER + n_order, "%u.%u,", v, which);
           before++;
         }
-        v = 0u;
+        v = which = 0u;
+        cur = &v;
       }
     }
     fclose(f);
@@ -702,10 +782,11 @@ static int curious(unsigned budget, const char *mind, const char *diary_path, st
   printf("it remembers %u stories it has read; it reads %u more, choosing what it is curious about\n\n", before, budget);
   if (DIARY) fprintf(DIARY, "-- it remembers %u stories, and reads %u more --\n", before, budget);
   for (i = 0u; i < budget; i++) {
-    unsigned c = choose();
+    unsigned c = choose(), which;
     if (c == 0u) break;
-    read_one(c);
-    if (n_order + 8u < sizeof ORDER) n_order += (size_t)sprintf(ORDER + n_order, "%u,", c);
+    which = next_story(c);
+    read_one(c, which);
+    if (n_order + 16u < sizeof ORDER) n_order += (size_t)sprintf(ORDER + n_order, "%u.%u,", c, which);
   }
   f = fopen(mind, "w");
   if (f != 0) {
@@ -713,24 +794,28 @@ static int curious(unsigned budget, const char *mind, const char *diary_path, st
     fclose(f);
   }
   {
-    unsigned all_right = 0u, all = 0u, understood = 0u;
-    printf("\n  task  read   it holds   tests itself: sure-right / sure-wrong / unsure   now            never-seen\n");
+    unsigned all_right = 0u, all = 0u, understood = 0u, wrong = 0u, hunts = 0u;
+    printf("\n  task  read  times wrong  what being wrong ruled out   rules left   hunting   now              never-seen\n");
     for (t = 1u; t <= 20u; t++) {
       unsigned right, total, sure;
-      const char *state = !K[t].touched ? "not met yet" : K[t].stuck ? "cannot yet" : K[t].mastered ? "understands" : "unsure";
+      const char *state = !K[t].touched ? "not met yet" : K[t].stuck ? "cannot make sense yet"
+                          : K[t].mastered ? "not wrong lately" : "being wrong";
       swap_in(t);
       test(te, n_te, (int)t, &right, &total, &sure);
-      printf("  %4u  %4u  %7u rules          %4u / %3u / %4u              %-13s  %5.1f%%\n", t, K[t].read, N_ALIVE,
-             K[t].sure_right, K[t].sure_wrong, K[t].unsure, state, total ? 100.0 * right / total : 0.0);
+      printf("  %4u  %4u  %11u  %26u  %11u  %8u   %-21s  %5.1f%%\n", t, K[t].read, K[t].wrong, K[t].taught,
+             N_ALIVE, K[t].hunts, state, total ? 100.0 * right / total : 0.0);
+      wrong += K[t].wrong;
+      hunts += K[t].hunts;
       all_right += right;
       all += total;
       if (K[t].mastered) understood++;
     }
-    printf("\n  all twenty, on stories never seen: %.1f%%; kinds of story it understands: %u of 20\n",
+    printf("\n  wrong %u times in all, %u stories read hunting for its own mistakes\n", wrong, hunts);
+    printf("  all twenty, on stories never seen: %.1f%%; kinds it has not been wrong about lately: %u of 20\n",
            100.0 * all_right / all, understood);
     if (DIARY) {
-      fprintf(DIARY, "   now: %.1f%% right on stories never seen; it understands %u kinds of story of 20\n",
-              100.0 * all_right / all, understood);
+      fprintf(DIARY, "   now: wrong %u times in all; %.1f%% right on stories never seen; not wrong lately about %u kinds of 20\n",
+              wrong, 100.0 * all_right / all, understood);
       fclose(DIARY);
     }
   }
