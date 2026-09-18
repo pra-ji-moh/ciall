@@ -1,0 +1,479 @@
+/*
+ * grasp_books.c -- the child learning to understand stories, by elimination.
+ *
+ *     grasp_books books/babi_train.txt books/babi_test.txt
+ *
+ * The stories are Facebook's twenty bAbI tasks (from Hugging Face): a few short
+ * sentences, then a question. "Mary moved to the bathroom. John went to the
+ * hallway. Where is Mary?" -- "bathroom".
+ *
+ * It is told no word's meaning and no rule. It holds every rule for answering
+ * that its language can say:
+ *
+ *   one step:  find the most recent (or the first) sentence holding the question's
+ *              k-th word (and, if the rule says so, its j-th word too), and answer
+ *              with that sentence's word at place p;
+ *   two steps: the same, and then take that answer as the word to look for, and
+ *              do it again;
+ *   and either: say the word found, or say "yes" if it is the question's i-th
+ *              word and "no" if it is not.
+ *
+ * Each story it is shown the answer to rules out every rule that would have
+ * answered it differently, or not at all. What is left is what it has understood.
+ * It starts with one-step rules only; when every one of those has been ruled out,
+ * its language was too poor, and it widens it itself to two steps, replaying
+ * every story it has seen against the new rules, as it does with what ends a level.
+ *
+ * Then it answers 1000 stories per task it has never seen. Where the rules still
+ * standing agree, it says the answer; where they do not, it chooses uniformly
+ * among them. Its Hartley measure is log2 of the rules still standing.
+ */
+#include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_WORDS 8192u
+#define MAX_TOK 16u
+#define MAX_Q 12u
+#define MAX_SENT 400u
+#define N_POS 8
+static const int POS[N_POS] = {0, 1, 2, 3, -1, -2, -3, -4};
+
+/* ---- words ------------------------------------------------------------------ */
+
+static char *WORD[MAX_WORDS];
+static unsigned N_WORDS;
+
+static unsigned word(const char *s, unsigned n) {
+  unsigned i;
+  for (i = 0u; i < N_WORDS; i++) {
+    if (strlen(WORD[i]) == n && memcmp(WORD[i], s, n) == 0) return i;
+  }
+  if (N_WORDS >= MAX_WORDS) return 0u;
+  WORD[N_WORDS] = (char *)malloc(n + 1u);
+  memcpy(WORD[N_WORDS], s, n);
+  WORD[N_WORDS][n] = '\0';
+  return N_WORDS++;
+}
+
+/* ---- stories ---------------------------------------------------------------- */
+
+typedef struct {
+  unsigned n;
+  unsigned short t[MAX_TOK];
+} line_t;
+
+typedef struct {
+  int task;
+  unsigned n_sent;
+  line_t *sent;
+  line_t q;
+  unsigned answer;   /* the whole answer as one word, e.g. "south east" */
+} story_t;
+
+static void split(const char *s, line_t *l) {
+  l->n = 0u;
+  while (*s != '\0' && *s != '\n' && *s != '\r') {
+    const char *e = s;
+    while (*e != '\0' && *e != ' ' && *e != '\n' && *e != '\r') e++;
+    if (e > s && l->n < MAX_TOK) l->t[l->n++] = (unsigned short)word(s, (unsigned)(e - s));
+    s = (*e == ' ') ? e + 1 : e;
+  }
+}
+
+static story_t *load(const char *path, unsigned *count) {
+  FILE *f = fopen(path, "r");
+  char buf[1024];
+  story_t *st = (story_t *)calloc(21000u, sizeof(story_t)), *cur = 0;
+  static line_t tmp[MAX_SENT];
+  *count = 0u;
+  if (f == 0) {
+    fprintf(stderr, "cannot open %s\n", path);
+    exit(1);
+  }
+  while (fgets(buf, sizeof buf, f) != 0) {
+    if (buf[0] == 'T') {
+      cur = &st[(*count)++];
+      cur->task = atoi(buf + 2);
+      cur->n_sent = 0u;
+    } else if (buf[0] == 'S' && cur != 0 && cur->n_sent < MAX_SENT) {
+      split(buf + 2, &tmp[cur->n_sent++]);
+    } else if (buf[0] == 'Q' && cur != 0) {
+      split(buf + 2, &cur->q);
+      cur->sent = (line_t *)malloc(sizeof(line_t) * (cur->n_sent + 1u));
+      memcpy(cur->sent, tmp, sizeof(line_t) * cur->n_sent);
+    } else if (buf[0] == 'A' && cur != 0) {
+      size_t n = strcspn(buf + 2, "\r\n");
+      cur->answer = word(buf + 2, (unsigned)n);
+    }
+  }
+  fclose(f);
+  return st;
+}
+
+/* ---- rules for answering ---------------------------------------------------- */
+
+typedef struct {
+  signed char key;    /* question word to look for; -1: what the step before found */
+  signed char also;   /* a second question word the sentence must hold; -1: none */
+  unsigned char dir;  /* 0: the most recent such sentence; 1: the first */
+  unsigned char pos;  /* index into POS */
+} step_t;
+
+typedef struct {
+  unsigned char depth;
+  step_t step[2];
+  signed char yes;    /* -1: say the word; else "yes" if it is question word `yes`, "no" if not */
+  unsigned idx;       /* where its ruled-out words are kept (see STILL) */
+} rule_t;
+
+/*
+ * Which words change things. For each rule and each step, every word starts as one
+ * that might ("moved" might be why Mary is where she is; so might "the"). A
+ * sentence about Mary that had to be passed over to reach the right answer is one
+ * that did not change where Mary is, so every word in it is ruled out as a word
+ * that changes things -- for that rule. A sentence all of whose words are ruled out
+ * is passed over from then on. Nothing is counted: a word is ruled out or it is not.
+ */
+#define WB 8u                            /* 64-bit words of bitset: up to 512 words */
+static unsigned long long *STILL;        /* per rule, per step: bit set = ruled out */
+static unsigned N_STILL, CAP_STILL;
+static unsigned long long SCRATCH[2][WB];
+
+static unsigned YES, NO;
+#define NONE 0xffffffffu
+
+static int holds(const line_t *l, unsigned w) {
+  unsigned i;
+  for (i = 0u; i < l->n; i++) {
+    if (l->t[i] == w) return 1;
+  }
+  return 0;
+}
+
+static int all_out(const line_t *l, const unsigned long long *out) {
+  unsigned i;
+  for (i = 0u; i < l->n; i++) {
+    unsigned w = l->t[i];
+    if (w >= WB * 64u || !((out[w >> 6] >> (w & 63u)) & 1ull)) return 0;
+  }
+  return 1;
+}
+
+static void rule_out(const line_t *l, unsigned long long *out) {
+  unsigned i;
+  for (i = 0u; i < l->n; i++) {
+    unsigned w = l->t[i];
+    if (w < WB * 64u) out[w >> 6] |= 1ull << (w & 63u);
+  }
+}
+
+static unsigned do_step(const story_t *s, const step_t *st, unsigned key) {
+  unsigned k, also = NONE;
+  if (st->also >= 0) {
+    if ((unsigned)st->also >= s->q.n) return NONE;
+    also = s->q.t[(unsigned)st->also];
+  }
+  for (k = 0u; k < s->n_sent; k++) {
+    const line_t *l = &s->sent[st->dir == 0u ? s->n_sent - 1u - k : k];
+    int p = POS[st->pos];
+    if (!holds(l, key) || (also != NONE && !holds(l, also))) continue;
+    if (p < 0) p += (int)l->n;
+    if (p < 0 || (unsigned)p >= l->n) return NONE;
+    return l->t[p];
+  }
+  return NONE;
+}
+
+/* the next sentence at or after `from` (in the step's direction) that the step could use; its word in *got */
+static int next_use(const story_t *s, const step_t *st, unsigned key, const unsigned long long *out,
+                    unsigned from, unsigned *got) {
+  unsigned k, also = NONE;
+  if (st->also >= 0) {
+    if ((unsigned)st->also >= s->q.n) return -1;
+    also = s->q.t[(unsigned)st->also];
+  }
+  for (k = from; k < s->n_sent; k++) {
+    const line_t *l = &s->sent[st->dir == 0u ? s->n_sent - 1u - k : k];
+    int p = POS[st->pos];
+    if (!holds(l, key) || (also != NONE && !holds(l, also))) continue;
+    if (all_out(l, out)) continue;   /* nothing in it changes things: passed over */
+    if (p < 0) p += (int)l->n;
+    *got = (p < 0 || (unsigned)p >= l->n) ? NONE : l->t[p];
+    return (int)k;
+  }
+  return -1;
+}
+
+static const line_t *line_at(const story_t *s, const step_t *st, unsigned k) {
+  return &s->sent[st->dir == 0u ? s->n_sent - 1u - k : k];
+}
+
+/* what the rule finally says, given the word its last step reached */
+static unsigned verdict(const story_t *s, const rule_t *r, unsigned w) {
+  if (w == NONE) return NONE;
+  if (r->yes >= 0) {
+    if ((unsigned)r->yes >= s->q.n) return NONE;
+    return w == s->q.t[(unsigned)r->yes] ? YES : NO;
+  }
+  return w;
+}
+
+/*
+ * The last step, learning: it takes sentences in order, and every one that would
+ * have given the wrong verdict is passed over, and its words ruled out as words
+ * that change things. For "yes" and "no" this needs no knowing which sentence the
+ * answer came from: a sentence that would have said "yes" when the answer was "no"
+ * is one that did not change things, and that is enough.
+ */
+static unsigned last_step(const story_t *s, const rule_t *r, const step_t *st, unsigned key,
+                          unsigned long long *out, unsigned want) {
+  unsigned from = 0u, got;
+  int k;
+  while ((k = next_use(s, st, key, out, from, &got)) >= 0) {
+    unsigned v = verdict(s, r, got);
+    if (want == NONE || v == want) return v;
+    rule_out(line_at(s, st, (unsigned)k), out);
+    from = (unsigned)k + 1u;
+  }
+  return NONE;
+}
+
+/*
+ * A rule, learning (want = the answer) or answering (want = NONE). With two steps,
+ * when the chain does not reach the answer it retraces: the first step's sentence
+ * is passed over, its words ruled out as ones that change the first thing, and the
+ * next one is tried -- "who had it before that?". What the second step learned on
+ * a wrong first link is not kept.
+ */
+static unsigned answer_l(const story_t *s, const rule_t *r, unsigned long long *out0, unsigned long long *out1, unsigned want) {
+  unsigned key;
+  if (r->step[0].key < 0 || (unsigned)r->step[0].key >= s->q.n) return NONE;
+  key = s->q.t[(unsigned)r->step[0].key];
+  if (r->depth == 1u) return last_step(s, r, &r->step[0], key, out0, want);
+  {
+    unsigned from = 0u, w1;
+    int k;
+    while ((k = next_use(s, &r->step[0], key, out0, from, &w1)) >= 0) {
+      unsigned long long trial[WB];
+      unsigned v;
+      if (w1 == NONE) return NONE;
+      memcpy(trial, out1, sizeof trial);
+      v = last_step(s, r, &r->step[1], w1, trial, want);
+      if (want == NONE || v == want) {
+        memcpy(out1, trial, sizeof trial);
+        return v;
+      }
+      rule_out(line_at(s, &r->step[0], (unsigned)k), out0);   /* the wrong first link */
+      from = (unsigned)k + 1u;
+    }
+  }
+  return NONE;
+}
+
+static unsigned answer(const story_t *s, const rule_t *r) {
+  unsigned w, d;
+  if (STILL != 0 && r->idx != NONE) {
+    return answer_l(s, r, &STILL[(size_t)r->idx * 2u * WB], &STILL[((size_t)r->idx * 2u + 1u) * WB], NONE);
+  }
+  if (r->step[0].key < 0 || (unsigned)r->step[0].key >= s->q.n) return NONE;
+  w = s->q.t[(unsigned)r->step[0].key];
+  for (d = 0u; d < r->depth; d++) {
+    w = do_step(s, &r->step[d], w);
+    if (w == NONE) return NONE;
+  }
+  if (r->yes >= 0) {
+    if ((unsigned)r->yes >= s->q.n) return NONE;
+    return w == s->q.t[(unsigned)r->yes] ? YES : NO;
+  }
+  return w;
+}
+
+/* ---- learning one task by elimination --------------------------------------- */
+
+static rule_t *ALIVE;
+static unsigned N_ALIVE, CAP_ALIVE;
+
+/* the stories of the task being learned, in the order they are read */
+static story_t **LESSON;
+static unsigned N_LESSON;
+
+static int survives(const rule_t *r) {
+  unsigned i;
+  memset(SCRATCH, 0, sizeof SCRATCH);
+  for (i = 0u; i < N_LESSON; i++) {
+    unsigned got = answer_l(LESSON[i], r, SCRATCH[0], SCRATCH[1], LESSON[i]->answer);
+    if (got != LESSON[i]->answer) return 0;   /* contradicted: ruled out */
+  }
+  return 1;
+}
+
+static void lesson(story_t *train, unsigned n_tr, int task, unsigned upto) {
+  unsigned i;
+  N_LESSON = 0u;
+  for (i = 0u; i < n_tr && N_LESSON < upto; i++) {
+    if (train[i].task == task) LESSON[N_LESSON++] = &train[i];
+  }
+}
+
+static void keep(const rule_t *r) {
+  if (N_ALIVE == CAP_ALIVE) {
+    CAP_ALIVE = CAP_ALIVE ? CAP_ALIVE * 2u : 4096u;
+    ALIVE = (rule_t *)realloc(ALIVE, sizeof(rule_t) * CAP_ALIVE);
+  }
+  if (N_STILL == CAP_STILL) {
+    CAP_STILL = CAP_STILL ? CAP_STILL * 2u : 4096u;
+    STILL = (unsigned long long *)realloc(STILL, sizeof(unsigned long long) * 2u * WB * CAP_STILL);
+  }
+  memcpy(&STILL[(size_t)N_STILL * 2u * WB], SCRATCH, sizeof SCRATCH);
+  ALIVE[N_ALIVE] = *r;
+  ALIVE[N_ALIVE].idx = N_STILL++;
+  N_ALIVE++;
+}
+
+/* every rule of the given depth, set against the stories (first n of them, this task) */
+static unsigned formulate(int depth, unsigned qmax) {
+  rule_t r;
+  int k, a, d, p, y, a2, d2, p2;
+  unsigned tried = 0u;
+  memset(&r, 0, sizeof r);
+  r.depth = (unsigned char)depth;
+  r.idx = NONE;
+  for (k = 0; k < (int)qmax; k++)
+    for (a = -1; a < (int)qmax; a++)
+      for (d = 0; d < 2; d++)
+        for (p = 0; p < N_POS; p++) {
+          if (a == k) continue;
+          r.step[0].key = (signed char)k;
+          r.step[0].also = (signed char)a;
+          r.step[0].dir = (unsigned char)d;
+          r.step[0].pos = (unsigned char)p;
+          for (a2 = -1; a2 < (depth == 2 ? (int)qmax : 0); a2++)
+            for (d2 = 0; d2 < (depth == 2 ? 2 : 1); d2++)
+              for (p2 = 0; p2 < (depth == 2 ? N_POS : 1); p2++)
+                for (y = -1; y < (int)qmax; y++) {
+                  r.step[1].key = -1;
+                  r.step[1].also = (signed char)a2;
+                  r.step[1].dir = (unsigned char)d2;
+                  r.step[1].pos = (unsigned char)p2;
+                  r.yes = (signed char)y;
+                  tried++;
+                  if (survives(&r)) keep(&r);
+                }
+        }
+  return tried;
+}
+
+static void say(const rule_t *r, char *out) {
+  static const char *where[N_POS] = {"first", "second", "third", "fourth", "last", "second-last", "third-last", "fourth-last"};
+  char a[64] = "";
+  if (r->step[0].also >= 0) sprintf(a, " and question word %d", r->step[0].also + 1);
+  sprintf(out, "find the %s sentence holding question word %d%s; take its %s word",
+          r->step[0].dir ? "first" : "most recent", r->step[0].key + 1, a, where[r->step[0].pos]);
+  if (r->depth == 2) {
+    char b[64] = "";
+    if (r->step[1].also >= 0) sprintf(b, " and question word %d", r->step[1].also + 1);
+    sprintf(out + strlen(out), "; then find the %s sentence holding that%s; take its %s word",
+            r->step[1].dir ? "first" : "most recent", b, where[r->step[1].pos]);
+  }
+  if (r->yes >= 0) sprintf(out + strlen(out), "; say yes if it is question word %d, else no", r->yes + 1);
+}
+
+static unsigned long long SEED = 1ull;
+static unsigned pick(unsigned n) {
+  SEED = SEED * 6364136223846793005ull + 1442695040888963407ull;
+  return (unsigned)((SEED >> 33) % n);
+}
+
+/* answers on stories never seen: agreed, or chosen uniformly among the rules standing */
+static void test(story_t *te, unsigned n_te, int task, unsigned *right, unsigned *total, unsigned *sure) {
+  unsigned i, j;
+  *right = *total = *sure = 0u;
+  for (i = 0u; i < n_te; i++) {
+    unsigned first = NONE, agree = 1u, got;
+    if (te[i].task != task) continue;
+    (*total)++;
+    if (N_ALIVE == 0u) continue;
+    for (j = 0u; j < N_ALIVE; j++) {
+      unsigned w = answer(&te[i], &ALIVE[j]);
+      if (j == 0u) first = w;
+      else if (w != first) {
+        agree = 0u;
+        break;
+      }
+    }
+    got = agree ? first : answer(&te[i], &ALIVE[pick(N_ALIVE)]);
+    if (agree && first != NONE) (*sure)++;
+    if (got == te[i].answer) (*right)++;
+  }
+}
+
+int main(int argc, char **argv) {
+  unsigned n_tr, n_te, task, total_right = 0u, total = 0u, passed = 0u;
+  story_t *tr, *te;
+  YES = word("yes", 3u);
+  NO = word("no", 2u);
+  tr = load(argc > 1 ? argv[1] : "books/babi_train.txt", &n_tr);
+  te = load(argc > 2 ? argv[2] : "books/babi_test.txt", &n_te);
+  LESSON = (story_t **)malloc(sizeof(story_t *) * (n_tr + 1u));
+  printf("%u stories to learn from, %u never seen to be tested on\n\n", n_tr, n_te);
+  for (task = 1u; task <= 20u; task++) {
+    unsigned qmax = 0u, i, tried, right, all, sure, seen = 0u, depth = 1u, r10;
+    for (i = 0u; i < n_tr; i++) {
+      if (tr[i].task == (int)task && tr[i].q.n > qmax) qmax = tr[i].q.n;
+    }
+    if (qmax > MAX_Q) qmax = MAX_Q;
+    /* after only ten stories */
+    (void)seen;
+    lesson(tr, n_tr, (int)task, 10u);
+    N_ALIVE = 0u;
+    N_STILL = 0u;
+    tried = formulate(1, qmax);
+    if (N_ALIVE == 0u) (void)formulate(2, qmax);
+    test(te, n_te, (int)task, &r10, &all, &sure);
+    /* after all of them */
+    lesson(tr, n_tr, (int)task, 100000u);
+    N_ALIVE = 0u;
+    N_STILL = 0u;
+    tried = formulate(1, qmax);
+    if (N_ALIVE == 0u) {
+      depth = 2u;   /* every one-step rule ruled out: it widens its own language */
+      tried += formulate(2, qmax);
+    }
+    test(te, n_te, (int)task, &right, &all, &sure);
+    printf("task %2u: after 10 stories %5.1f%%, after 900: %5.1f%% right (%5.1f%% sure) | %s rules; %u of %u left (%.1f bits)\n",
+           task, 100.0 * r10 / all, 100.0 * right / all, 100.0 * sure / all,
+           depth == 1u ? "one-step" : "widened to two-step", N_ALIVE, tried,
+           N_ALIVE ? log2((double)N_ALIVE) : 0.0);
+    if (N_ALIVE > 0u) {
+      char words[400];
+      say(&ALIVE[0], words);
+      printf("         e.g. \"%s\"\n", words);
+      {
+        /* the words it has not ruled out as ones that change things, among those in what it read */
+        const unsigned long long *out = &STILL[(size_t)ALIVE[0].idx * 2u * WB];
+        unsigned w, shown = 0u;
+        printf("         words it holds may change things: ");
+        for (w = 2u; w < N_WORDS && w < WB * 64u && shown < 16u; w++) {
+          unsigned i2, seen_it = 0u;
+          for (i2 = 0u; i2 < N_LESSON && !seen_it; i2++) {
+            unsigned k2;
+            for (k2 = 0u; k2 < LESSON[i2]->n_sent && !seen_it; k2++) seen_it = (unsigned)holds(&LESSON[i2]->sent[k2], w);
+          }
+          if (seen_it && !((out[w >> 6] >> (w & 63u)) & 1ull)) {
+            printf("%s ", WORD[w]);
+            shown++;
+          }
+        }
+        printf("\n");
+      }
+    }
+    total_right += right;
+    total += all;
+    if (right * 100u >= all * 95u) passed++;
+  }
+  printf("\nall twenty: %.1f%% right on stories never seen; %u of 20 tasks at 95%% or better\n",
+         100.0 * total_right / total, passed);
+  return 0;
+}
