@@ -1,21 +1,12 @@
 ciall-explorer-mind 1
-runs 45
+runs 46
 best 4
-mask 14 9 1
-mask 14 10 1
-mask 14 11 1
 mask 14 27 1
 mask 14 28 1
 mask 14 29 1
-mask 15 9 1
-mask 15 10 1
-mask 15 11 1
 mask 15 27 1
 mask 15 28 1
 mask 15 29 1
-mask 16 9 1
-mask 16 10 1
-mask 16 11 1
 mask 16 27 1
 mask 16 28 1
 mask 16 29 1
@@ -31,18 +22,27 @@ mask 22 29 1
 mask 23 27 0
 mask 23 28 0
 mask 23 29 0
+mask 32 15 1
+mask 32 16 1
+mask 32 17 1
 mask 32 21 1
 mask 32 22 1
 mask 32 23 1
 mask 32 27 1
 mask 32 28 1
 mask 32 29 1
+mask 33 15 1
+mask 33 16 1
+mask 33 17 1
 mask 33 21 1
 mask 33 22 1
 mask 33 23 1
 mask 33 27 1
 mask 33 28 1
 mask 33 29 1
+mask 34 15 1
+mask 34 16 1
+mask 34 17 1
 mask 34 21 1
 mask 34 22 1
 mask 34 23 1
@@ -134,43 +134,43 @@ mask 63 60 0
 mask 63 61 0
 mask 63 62 0
 mask 63 63 0
-colour 0 44217 79592 0
-shift 1 0 -54 -162 1
-shift 2 0 216 54 1
-shift 3 0 54 -54 1
-shift 4 0 -108 0 1
+colour 0 45353 81414 0
+shift 1 0 -54 0 1
+shift 2 0 -108 108 1
+shift 3 0 0 54 1
+shift 4 0 108 -108 1
 colour 1 0 0 0
-colour 2 0 24920 0
+colour 2 0 25499 0
 colour 3 0 0 0
-colour 4 113361 0 0
-shift 1 4 -8 0 1
-shift 2 4 6 0 3
+colour 4 115973 0 0
+shift 1 4 -8 0 3
+shift 2 4 7 1 1
 shift 3 4 0 -8 1
-shift 4 4 0 6 1
-colour 5 0 8479 36
+shift 4 4 0 8 1
+colour 5 0 8683 36
 colour 6 0 0 0
 colour 7 0 0 0
-colour 8 0 56 0
-colour 9 110734 0 0
-shift 1 9 -46 0 1
-shift 2 9 48 0 3
+colour 8 0 57 0
+colour 9 113258 0 0
+shift 1 9 -46 0 3
+shift 2 9 47 -1 1
 shift 3 9 0 -46 1
-shift 4 9 0 48 1
+shift 4 9 0 46 1
 colour 10 0 0 0
 colour 11 0 0 0
-colour 12 34240 0 0
+colour 12 35144 0 0
 shift 1 12 98 2 1
-shift 2 12 -96 0 1
-shift 3 12 -49 95 1
-shift 4 12 98 -48 1
+shift 2 12 49 -97 1
+shift 3 12 0 2 1
+shift 4 12 0 -48 2
 colour 13 0 0 0
-colour 14 0 0 140
-colour 15 34195 3 0
+colour 14 0 0 144
+colour 15 35098 3 0
 shift 1 15 10 -2 1
-shift 2 15 -12 0 1
-shift 3 15 -5 13 1
-shift 4 15 10 -6 1
-onto 113049 176 6
+shift 2 15 5 -11 1
+shift 3 15 0 -2 1
+shift 4 15 0 -6 2
+onto 115655 180 8
 widened 2
 kind 536870914 1 1
 kind 536870916 1 1
