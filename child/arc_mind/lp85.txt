@@ -1,5 +1,5 @@
 ciall-explorer-mind 1
-runs 56
+runs 57
 best 1
 mask 0 0 0
 mask 1 0 0
@@ -246,7 +246,7 @@ colour 13 0 0 0
 colour 14 0 0 0
 colour 15 0 0 0
 onto 0 0 1
-widened 1
+widened 2
 kind 2105 1 1
 kind 3122 1 0
 kind 3132 1 0
