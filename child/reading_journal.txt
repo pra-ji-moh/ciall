@@ -1,0 +1,85 @@
+-- it remembers 0 stories, and reads 400 more --
+  task 15: a kind of story I have never met; I could answer it 2400 ways
+  task 12: a kind of story I have never met; I could answer it 576 ways
+  task 1: a kind of story I have never met; I could answer it 576 ways
+  task 3: a kind of story I have never met; I could answer it 6272 ways
+  task 13: a kind of story I have never met; I could answer it 576 ways
+  task 13: nothing I could say was left after 1 stories, so now I think in two steps (8 ways)
+  task 6: a kind of story I have never met; I could answer it 2400 ways
+  task 8: a kind of story I have never met; I could answer it 1280 ways
+  task 5: a kind of story I have never met; I could answer it 6272 ways
+  task 19: a kind of story I have never met; I could answer it 17600 ways
+  task 19: nothing I could say was left after 1 stories, so now I think in two steps (0 ways)
+  task 19: even in two steps nothing I can say fits all 1 stories. I cannot make sense of these yet
+  task 9: a kind of story I have never met; I could answer it 2400 ways
+  task 17: a kind of story I have never met; I could answer it 23232 ways
+  task 20: a kind of story I have never met; I could answer it 6272 ways
+  task 20: nothing I could say was left after 1 stories, so now I think in two steps (0 ways)
+  task 20: even in two steps nothing I can say fits all 1 stories. I cannot make sense of these yet
+  task 14: a kind of story I have never met; I could answer it 4032 ways
+  task 11: a kind of story I have never met; I could answer it 576 ways
+  task 11: nothing I could say was left after 1 stories, so now I think in two steps (16 ways)
+  task 10: a kind of story I have never met; I could answer it 2400 ways
+  task 7: a kind of story I have never met; I could answer it 4032 ways
+  task 7: nothing I could say was left after 1 stories, so now I think in two steps (0 ways)
+  task 7: even in two steps nothing I can say fits all 1 stories. I cannot make sense of these yet
+  task 2: a kind of story I have never met; I could answer it 1280 ways
+  task 18: a kind of story I have never met; I could answer it 12960 ways
+  task 4: a kind of story I have never met; I could answer it 4032 ways
+  task 16: a kind of story I have never met; I could answer it 1280 ways
+  task 15, story 3: I was sure it was "wolf", and it was "cat". I did not understand it after all
+  task 15: nothing I could say was left after 3 stories, so now I think in two steps (0 ways)
+  task 15: even in two steps nothing I can say fits all 3 stories. I cannot make sense of these yet
+  task 8: nothing I could say was left after 2 stories, so now I think in two steps (0 ways)
+  task 8: even in two steps nothing I can say fits all 2 stories. I cannot make sense of these yet
+  task 16, story 5: I was sure it was "yellow", and it was "green". I did not understand it after all
+  task 16: nothing I could say was left after 6 stories, so now I think in two steps (8 ways)
+  task 17: nothing I could say was left after 4 stories, so now I think in two steps (0 ways)
+  task 17: even in two steps nothing I can say fits all 4 stories. I cannot make sense of these yet
+  task 3: nothing I could say was left after 4 stories, so now I think in two steps (450 ways)
+  task 5: nothing I could say was left after 2 stories, so now I think in two steps (0 ways)
+  task 5: even in two steps nothing I can say fits all 2 stories. I cannot make sense of these yet
+  task 16: even in two steps nothing I can say fits all 9 stories. I cannot make sense of these yet
+  task 10: nothing I could say was left after 4 stories, so now I think in two steps (0 ways)
+  task 10: even in two steps nothing I can say fits all 4 stories. I cannot make sense of these yet
+  task 13, story 4: I was sure it was "hallway", and it was "bedroom". I did not understand it after all
+  task 13, story 5: I was sure it was "bedroom", and it was "bathroom". I did not understand it after all
+  task 13: even in two steps nothing I can say fits all 6 stories. I cannot make sense of these yet
+  task 18, story 5: I was sure it was "yes", and it was "no". I did not understand it after all
+  task 18, story 6: I was sure it was "yes", and it was "no". I did not understand it after all
+  task 11, story 9: I was sure it was "bedroom", and it was "garden". I did not understand it after all
+  task 18, story 11: I was sure it was "no", and it was "yes". I did not understand it after all
+  task 18: nothing I could say was left after 11 stories, so now I think in two steps (92 ways)
+  task 2, story 6: I was sure it was "kitchen", and it was "garden". I did not understand it after all
+  task 2: nothing I could say was left after 6 stories, so now I think in two steps (16 ways)
+  task 4, story 10: I was sure it was "bedroom", and it was "kitchen". I did not understand it after all
+  task 4, story 11: I was sure it was "garden", and it was "bathroom". I did not understand it after all
+  task 14, story 5: I was sure it was "cinema", and it was "park". I did not understand it after all
+  task 14, story 6: I was sure it was "kitchen", and it was "cinema". I did not understand it after all
+  task 14: nothing I could say was left after 6 stories, so now I think in two steps (42 ways)
+  task 11, story 13: I was sure it was "kitchen", and it was "garden". I did not understand it after all
+  task 11, story 14: I was sure it was "bedroom", and it was "kitchen". I did not understand it after all
+  task 18: even in two steps nothing I can say fits all 15 stories. I cannot make sense of these yet
+  task 9, story 12: I was sure it was "no", and it was "yes". I did not understand it after all
+  task 14: even in two steps nothing I can say fits all 11 stories. I cannot make sense of these yet
+  task 3, story 13: I was sure it was "garden", and it was "bathroom". I did not understand it after all
+  task 3, story 15: I was sure it was "bathroom", and it was "office". I did not understand it after all
+  task 3: even in two steps nothing I can say fits all 15 stories. I cannot make sense of these yet
+  task 9, story 15: I was sure it was "no", and it was "yes". I did not understand it after all
+  task 9: nothing I could say was left after 15 stories, so now I think in two steps (82 ways)
+  task 6, story 17: I was sure it was "no", and it was "yes". I did not understand it after all
+  task 9, story 17: I was sure it was "no", and it was "yes". I did not understand it after all
+  task 2, story 11: I was sure it was "there", and it was "bedroom". I did not understand it after all
+  task 11: even in two steps nothing I can say fits all 28 stories. I cannot make sense of these yet
+  task 4, story 22: I was sure it was "bathroom", and it was "garden". I did not understand it after all
+  task 4: nothing I could say was left after 22 stories, so now I think in two steps (10 ways)
+  task 2, story 18: I was sure it was "hallway", and it was "kitchen". I did not understand it after all
+  task 6, story 29: I was sure it was "no", and it was "yes". I did not understand it after all
+  task 9: even in two steps nothing I can say fits all 21 stories. I cannot make sense of these yet
+  task 2: even in two steps nothing I can say fits all 22 stories. I cannot make sense of these yet
+  task 4: even in two steps nothing I can say fits all 26 stories. I cannot make sense of these yet
+  task 12: sure and right 20 times running. I understand these: "find the most recent sentence holding question word 3; take its last word"
+  task 6, story 44: I was sure it was "no", and it was "yes". I did not understand it after all
+  task 1: sure and right 20 times running. I understand these: "find the most recent sentence holding question word 3; take its last word"
+  task 6: sure and right 20 times running. I understand these: "find the most recent sentence holding question word 2; take its last word; say yes if it is question word 5, else no"
+   now: 15.0% right on stories never seen; it understands 3 kinds of story of 20

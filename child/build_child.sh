@@ -10,4 +10,5 @@ mkdir -p .build
 (cd certifiable-c && $CC $FLAGS smarsh_core.c smarsh_interval.c smarsh_space.c smarsh_frame.c smarsh_guess.c smarsh_ending.c smarsh_explore.c play_arc.c -o ../.build/play_arc.exe -lm)
 (cd certifiable-c && $CC $FLAGS self_map.c -o ../.build/self_map.exe -lm)
 (cd certifiable-c && $CC $FLAGS smarsh_read.c read_books.c -o ../.build/read_books.exe -lm)
+(cd certifiable-c && $CC $FLAGS grasp_books.c -o ../.build/grasp_books.exe -lm)
 echo "built .build/grow.exe, .build/play_arc.exe and .build/self_map.exe"

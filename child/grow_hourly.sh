@@ -13,6 +13,14 @@ if ${PYTHON:-python3} read/fetch_books.py more 500; then
   printf '%s  ' "$(date -u +%Y-%m-%dT%H:%M)" >> child/reading.txt
   grep -E "read .*stories|SHOWN BOTH" child/reading_now.txt | sed -n '7,8p' | tr -s ' ' | paste -sd' ' - >> child/reading.txt
 fi
+# it learns to understand stories: bAbI from Hugging Face, choosing what it is curious about
+if [ ! -f books/babi_train.txt ]; then
+  for s in train test; do
+    curl -sL -o books/babi_$s.jsonl "https://huggingface.co/datasets/Muennighoff/babi/resolve/main/babi_$s.jsonl" || true
+  done
+  ${PYTHON:-python3} read/babi_to_text.py || true
+fi
+if [ -f books/babi_train.txt ]; then ./.build/grasp_books.exe --curious 300 || true; fi
 # one attempt to rewrite itself, unless told not to (child/self_write.off)
 # a refusal to touch itself (its checks did not pass, or no game answered) is a
 # decision, not a failure of the hour: what it played is still kept
