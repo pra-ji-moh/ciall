@@ -17,3 +17,8 @@
   what is wrong: nothing it can say ends a level, in 14 games (g50t re86 tr87 sb26 wa30 ar25 sk48 ka59 bp35 sc25 cn04 r11l lf52 s5i5)
   what I suspect in myself: SELF_OFF_PANELS, now 0; I try 1
   I stopped: my own source does not pass my checks (59 passed, 3 failed)
+
+2026-09-18 16:34
+  what is wrong: nothing it can say ends a level, in 14 games (g50t re86 tr87 sb26 wa30 ar25 sk48 ka59 sc25 bp35 r11l s5i5 cn04 lf52)
+  what I suspect in myself: SELF_OFF_PANELS, now 0; I try 1
+  I stopped: my own source does not pass my checks (59 passed, 3 failed)
