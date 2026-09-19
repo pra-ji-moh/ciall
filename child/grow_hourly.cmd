@@ -8,4 +8,4 @@ rem it reads itself: what it is made of goes to child\self_map.txt
 "C:\Users\USER\AppData\Local\Programs\Python\Python314\python.exe" arc\grow_arc.py
 rem it learns to understand stories, choosing what it is curious about
 if exist books\babi_train.txt .build\grasp_books.exe --curious 300
-if not exist child\self_write.off "C:\Users\USER\AppData\Local\Programs\Python\Python314\python.exe" child\self_write.py
+if not exist child\self_write.off "C:\Users\USER\AppData\Local\Programs\Python\Python314\python.exe" child\self_evolve.py

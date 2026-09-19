@@ -58,7 +58,7 @@
 #define SELF_OFF_WINDOW 0   /* self: 0 1 */
 #define SELF_OFF_REDRAW 0   /* self: 0 1 */
 #define SELF_OFF_RECALL 0   /* self: 0 1 */
-#define SELF_OFF_REPLAY 0   /* self: 0 1 */
+#define SELF_OFF_REPLAY 1   /* self: 0 1 */
 #define SELF_OFF_REACH 0   /* self: 0 1 */
 #define SELF_OFF_CURIOUS 0   /* self: 0 1 */
 #define SELF_OFF_PLAN 0   /* self: 0 1 */

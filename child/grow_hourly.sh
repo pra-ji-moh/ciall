@@ -24,4 +24,5 @@ if [ -f books/babi_train.txt ]; then ./.build/grasp_books.exe --curious 300 || t
 # one attempt to rewrite itself, unless told not to (child/self_write.off)
 # a refusal to touch itself (its checks did not pass, or no game answered) is a
 # decision, not a failure of the hour: what it played is still kept
-if [ ! -f child/self_write.off ]; then ${PYTHON:-python3} child/self_write.py || echo "it did not rewrite itself this hour"; fi
+# it builds itself: one generation of the archive of every version of itself (child/self_evolve.py)
+if [ ! -f child/self_write.off ]; then ${PYTHON:-python3} child/self_evolve.py || echo "it did not build a new version of itself this hour"; fi

@@ -38,3 +38,5 @@ arc/transfer_mind/
 .self_build/
 .self_base/
 books/
+.evolve_*/
+.evolve_build_*/
