@@ -23,20 +23,20 @@ open certifiable-c/smarsh_self.h SELF_USE_LIVE now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_RESTLESS now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_CLOCK now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_STOOD now 0 may be  0 1 */
-open certifiable-c/smarsh_self.h SELF_OFF_PANELS now 0 may be  0 1 */
+open certifiable-c/smarsh_self.h SELF_OFF_PANELS now 1 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_NEAR now 1 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_THEORY now 1 may be  0 1 */
-open certifiable-c/smarsh_self.h SELF_OFF_SKIP now 0 may be  0 1 */
+open certifiable-c/smarsh_self.h SELF_OFF_SKIP now 1 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_DEATHS now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_UNMASK now 0 may be  0 1 */
-open certifiable-c/smarsh_self.h SELF_OFF_WINDOW now 0 may be  0 1 */
+open certifiable-c/smarsh_self.h SELF_OFF_WINDOW now 1 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_REDRAW now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_RECALL now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_REPLAY now 1 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_REACH now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_CURIOUS now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_PLAN now 0 may be  0 1 */
-open certifiable-c/smarsh_self.h SELF_BOLD now 1 may be  0 1 */
+open certifiable-c/smarsh_self.h SELF_BOLD now 0 may be  0 1 */
 file certifiable-c/smarsh_play.c lines 1019
 file certifiable-c/smarsh_grow.c lines 465
 file certifiable-c/play_arc.c lines 186

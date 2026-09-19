@@ -167,3 +167,6 @@
   from version 4 (one of 2 still standing) it made version 7: SELF_OFF_WINDOW 0->1; SELF_OFF_SKIP 0->1
   development games: 11 levels, 0.707% (its parent: 12, 0.706%)
   it is now this version: better on the development games (0.706% -> 0.707%) and no worse on the games held back (0.616% -> 0.647%)
+
+2026-09-19 18:40  (building itself: one generation)
+  the archive begins with the child as it is (two seeds averaged): dev 12.5 levels, 0.478%; held back 0.419%
