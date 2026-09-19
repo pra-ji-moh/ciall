@@ -190,3 +190,7 @@
 -- it remembers 1500 stories, and reads 300 more --
   task 6: I have not been wrong for 20 stories ("find the most recent sentence holding question word 2; take its last word; say yes if it is question word 5, else no"). I do not trust that. I go looking for the story that proves me wrong
    now: wrong 941 times, fixed 207, not yet 793; 41.0% right on stories never seen; not wrong lately about 3 kinds of 20
+-- it remembers 1800 stories, and reads 300 more --
+  task 6, story 490 (hunting for it): I was sure it was "no", and it was "yes". Good: I was wrong
+  task 6: I have not been wrong for 20 stories ("find the most recent sentence holding question word 2; take its last word; say yes if it is question word 5, else no"). I do not trust that. I go looking for the story that proves me wrong
+   now: wrong 942 times, fixed 208, not yet 793; 41.0% right on stories never seen; not wrong lately about 3 kinds of 20

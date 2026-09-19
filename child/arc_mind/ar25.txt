@@ -1,5 +1,5 @@
 ciall-explorer-mind 1
-runs 74
+runs 75
 best 2
 mask 0 0 0
 mask 0 1 0
@@ -226,6 +226,18 @@ mask 3 29 0
 mask 3 30 0
 mask 3 31 0
 mask 3 32 0
+mask 3 33 0
+mask 3 34 0
+mask 3 35 0
+mask 3 36 0
+mask 3 37 0
+mask 3 38 0
+mask 3 39 0
+mask 3 40 0
+mask 3 41 0
+mask 3 42 0
+mask 3 43 0
+mask 3 44 0
 mask 3 45 0
 mask 3 46 0
 mask 3 47 0
@@ -278,6 +290,18 @@ mask 4 29 0
 mask 4 30 0
 mask 4 31 0
 mask 4 32 0
+mask 4 33 0
+mask 4 34 0
+mask 4 35 0
+mask 4 36 0
+mask 4 37 0
+mask 4 38 0
+mask 4 39 0
+mask 4 40 0
+mask 4 41 0
+mask 4 42 0
+mask 4 43 0
+mask 4 44 0
 mask 4 45 0
 mask 4 46 0
 mask 4 47 0
@@ -330,6 +354,18 @@ mask 5 29 0
 mask 5 30 0
 mask 5 31 0
 mask 5 32 0
+mask 5 33 0
+mask 5 34 0
+mask 5 35 0
+mask 5 36 0
+mask 5 37 0
+mask 5 38 0
+mask 5 39 0
+mask 5 40 0
+mask 5 41 0
+mask 5 42 0
+mask 5 43 0
+mask 5 44 0
 mask 5 45 0
 mask 5 46 0
 mask 5 47 0
@@ -382,12 +418,18 @@ mask 6 29 0
 mask 6 30 0
 mask 6 31 0
 mask 6 32 0
+mask 6 33 0
+mask 6 34 0
+mask 6 35 0
 mask 6 36 0
 mask 6 37 0
 mask 6 38 0
 mask 6 39 0
 mask 6 40 0
 mask 6 41 0
+mask 6 42 0
+mask 6 43 0
+mask 6 44 0
 mask 6 45 0
 mask 6 46 0
 mask 6 47 0
@@ -440,12 +482,18 @@ mask 7 29 0
 mask 7 30 0
 mask 7 31 0
 mask 7 32 0
+mask 7 33 0
+mask 7 34 0
+mask 7 35 0
 mask 7 36 0
 mask 7 37 0
 mask 7 38 0
 mask 7 39 0
 mask 7 40 0
 mask 7 41 0
+mask 7 42 0
+mask 7 43 0
+mask 7 44 0
 mask 7 45 0
 mask 7 46 0
 mask 7 47 0
@@ -498,12 +546,18 @@ mask 8 29 0
 mask 8 30 0
 mask 8 31 0
 mask 8 32 0
+mask 8 33 0
+mask 8 34 0
+mask 8 35 0
 mask 8 36 0
 mask 8 37 0
 mask 8 38 0
 mask 8 39 0
 mask 8 40 0
 mask 8 41 0
+mask 8 42 0
+mask 8 43 0
+mask 8 44 0
 mask 8 45 0
 mask 8 46 0
 mask 8 47 0
@@ -550,6 +604,9 @@ mask 9 29 0
 mask 9 30 0
 mask 9 31 0
 mask 9 32 0
+mask 9 33 0
+mask 9 34 0
+mask 9 35 0
 mask 9 36 0
 mask 9 37 0
 mask 9 38 0
@@ -605,6 +662,9 @@ mask 10 29 0
 mask 10 30 0
 mask 10 31 0
 mask 10 32 0
+mask 10 33 0
+mask 10 34 0
+mask 10 35 0
 mask 10 36 0
 mask 10 37 0
 mask 10 38 0
@@ -660,6 +720,9 @@ mask 11 29 0
 mask 11 30 0
 mask 11 31 0
 mask 11 32 0
+mask 11 33 0
+mask 11 34 0
+mask 11 35 0
 mask 11 36 0
 mask 11 37 0
 mask 11 38 0
@@ -709,6 +772,9 @@ mask 12 29 0
 mask 12 30 0
 mask 12 31 0
 mask 12 32 0
+mask 12 33 0
+mask 12 34 0
+mask 12 35 0
 mask 12 36 0
 mask 12 37 0
 mask 12 38 0
@@ -758,6 +824,9 @@ mask 13 29 0
 mask 13 30 0
 mask 13 31 0
 mask 13 32 0
+mask 13 33 0
+mask 13 34 0
+mask 13 35 0
 mask 13 36 0
 mask 13 37 0
 mask 13 38 0
@@ -774,6 +843,7 @@ mask 13 48 0
 mask 13 49 0
 mask 13 50 0
 mask 13 51 0
+mask 13 52 0
 mask 13 53 0
 mask 13 54 0
 mask 13 55 0
@@ -806,6 +876,9 @@ mask 14 29 0
 mask 14 30 0
 mask 14 31 0
 mask 14 32 0
+mask 14 33 0
+mask 14 34 0
+mask 14 35 0
 mask 14 36 0
 mask 14 37 0
 mask 14 38 0
@@ -944,6 +1017,7 @@ mask 16 48 0
 mask 16 49 0
 mask 16 50 0
 mask 16 51 0
+mask 16 52 0
 mask 16 53 0
 mask 16 54 0
 mask 16 55 0
@@ -1123,6 +1197,7 @@ mask 19 39 0
 mask 19 40 0
 mask 19 41 0
 mask 19 42 0
+mask 19 43 0
 mask 19 44 0
 mask 19 45 0
 mask 19 46 0
@@ -1131,6 +1206,7 @@ mask 19 48 0
 mask 19 49 0
 mask 19 50 0
 mask 19 51 0
+mask 19 52 0
 mask 19 53 0
 mask 19 54 0
 mask 19 55 0
@@ -1298,6 +1374,7 @@ mask 22 30 0
 mask 22 31 0
 mask 22 32 0
 mask 22 33 0
+mask 22 34 0
 mask 22 35 0
 mask 22 36 0
 mask 22 38 0
@@ -1314,6 +1391,7 @@ mask 22 48 0
 mask 22 49 0
 mask 22 50 0
 mask 22 51 0
+mask 22 52 0
 mask 22 53 0
 mask 22 54 0
 mask 22 55 0
@@ -1425,6 +1503,9 @@ mask 24 38 0
 mask 24 39 0
 mask 24 40 0
 mask 24 41 0
+mask 24 42 0
+mask 24 43 0
+mask 24 44 0
 mask 24 45 0
 mask 24 46 0
 mask 24 47 0
@@ -1483,7 +1564,11 @@ mask 25 38 0
 mask 25 39 0
 mask 25 40 0
 mask 25 41 0
+mask 25 42 0
+mask 25 43 0
+mask 25 44 0
 mask 25 45 0
+mask 25 46 0
 mask 25 47 0
 mask 25 48 0
 mask 25 49 0
@@ -1540,6 +1625,9 @@ mask 26 38 0
 mask 26 39 0
 mask 26 40 0
 mask 26 41 0
+mask 26 42 0
+mask 26 43 0
+mask 26 44 0
 mask 26 45 0
 mask 26 46 0
 mask 26 47 0
@@ -1601,6 +1689,18 @@ mask 27 41 0
 mask 27 42 0
 mask 27 43 0
 mask 27 44 0
+mask 27 45 0
+mask 27 46 0
+mask 27 47 0
+mask 27 48 0
+mask 27 49 0
+mask 27 50 0
+mask 27 51 0
+mask 27 52 0
+mask 27 53 0
+mask 27 54 0
+mask 27 55 0
+mask 27 56 0
 mask 27 57 0
 mask 27 58 0
 mask 27 59 0
@@ -1648,7 +1748,20 @@ mask 28 39 0
 mask 28 40 0
 mask 28 41 0
 mask 28 42 0
+mask 28 43 0
 mask 28 44 0
+mask 28 45 0
+mask 28 46 0
+mask 28 47 0
+mask 28 48 0
+mask 28 49 0
+mask 28 50 0
+mask 28 51 0
+mask 28 52 0
+mask 28 53 0
+mask 28 54 0
+mask 28 55 0
+mask 28 56 0
 mask 28 57 0
 mask 28 58 0
 mask 28 59 0
@@ -1698,6 +1811,18 @@ mask 29 41 0
 mask 29 42 0
 mask 29 43 0
 mask 29 44 0
+mask 29 45 0
+mask 29 46 0
+mask 29 47 0
+mask 29 48 0
+mask 29 49 0
+mask 29 50 0
+mask 29 51 0
+mask 29 52 0
+mask 29 53 0
+mask 29 54 0
+mask 29 55 0
+mask 29 56 0
 mask 29 57 0
 mask 29 58 0
 mask 29 59 0
@@ -1741,6 +1866,12 @@ mask 30 44 0
 mask 30 45 0
 mask 30 46 0
 mask 30 47 0
+mask 30 48 0
+mask 30 49 0
+mask 30 50 0
+mask 30 51 0
+mask 30 52 0
+mask 30 53 0
 mask 30 54 0
 mask 30 55 0
 mask 30 56 0
@@ -1782,10 +1913,17 @@ mask 31 39 0
 mask 31 40 0
 mask 31 41 0
 mask 31 42 0
+mask 31 43 0
 mask 31 44 0
 mask 31 45 0
 mask 31 46 0
 mask 31 47 0
+mask 31 48 0
+mask 31 49 0
+mask 31 50 0
+mask 31 51 0
+mask 31 52 0
+mask 31 53 0
 mask 31 54 0
 mask 31 55 0
 mask 31 56 0
@@ -1832,6 +1970,12 @@ mask 32 44 0
 mask 32 45 0
 mask 32 46 0
 mask 32 47 0
+mask 32 48 0
+mask 32 49 0
+mask 32 50 0
+mask 32 51 0
+mask 32 52 0
+mask 32 53 0
 mask 32 54 0
 mask 32 55 0
 mask 32 56 0
@@ -2451,6 +2595,9 @@ mask 42 29 0
 mask 42 30 0
 mask 42 31 0
 mask 42 32 0
+mask 42 33 0
+mask 42 34 0
+mask 42 35 0
 mask 42 36 0
 mask 42 37 0
 mask 42 38 0
@@ -2512,6 +2659,9 @@ mask 43 29 0
 mask 43 30 0
 mask 43 31 0
 mask 43 32 0
+mask 43 33 0
+mask 43 34 0
+mask 43 35 0
 mask 43 36 0
 mask 43 37 0
 mask 43 38 0
@@ -2573,6 +2723,9 @@ mask 44 29 0
 mask 44 30 0
 mask 44 31 0
 mask 44 32 0
+mask 44 33 0
+mask 44 34 0
+mask 44 35 0
 mask 44 36 0
 mask 44 37 0
 mask 44 38 0
@@ -2634,6 +2787,9 @@ mask 45 29 0
 mask 45 30 0
 mask 45 31 0
 mask 45 32 0
+mask 45 33 0
+mask 45 34 0
+mask 45 35 0
 mask 45 36 0
 mask 45 37 0
 mask 45 38 0
@@ -2695,6 +2851,9 @@ mask 46 29 0
 mask 46 30 0
 mask 46 31 0
 mask 46 32 0
+mask 46 33 0
+mask 46 34 0
+mask 46 35 0
 mask 46 36 0
 mask 46 37 0
 mask 46 38 0
@@ -2756,6 +2915,9 @@ mask 47 29 0
 mask 47 30 0
 mask 47 31 0
 mask 47 32 0
+mask 47 33 0
+mask 47 34 0
+mask 47 35 0
 mask 47 36 0
 mask 47 37 0
 mask 47 38 0
@@ -2790,17 +2952,66 @@ mask 48 11 0
 mask 48 30 0
 mask 48 31 0
 mask 48 32 0
+mask 48 33 0
+mask 48 34 0
+mask 48 35 0
+mask 48 36 0
+mask 48 37 0
+mask 48 38 0
+mask 48 39 0
+mask 48 40 0
+mask 48 41 0
+mask 48 42 0
+mask 48 43 0
+mask 48 44 0
 mask 48 45 0
 mask 48 46 0
 mask 48 47 0
+mask 48 48 0
+mask 48 49 0
+mask 48 50 0
+mask 48 54 0
+mask 48 55 0
+mask 48 56 0
+mask 48 57 0
+mask 48 58 0
+mask 48 59 0
+mask 48 60 0
+mask 48 61 0
+mask 48 62 0
 mask 48 63 0
 mask 49 9 0
 mask 49 11 0
 mask 49 30 0
 mask 49 31 0
 mask 49 32 0
+mask 49 33 0
+mask 49 34 0
+mask 49 35 0
+mask 49 36 0
+mask 49 37 0
+mask 49 38 0
+mask 49 39 0
+mask 49 40 0
+mask 49 41 0
+mask 49 42 0
+mask 49 43 0
+mask 49 44 0
 mask 49 45 0
+mask 49 46 0
 mask 49 47 0
+mask 49 48 0
+mask 49 49 0
+mask 49 50 0
+mask 49 54 0
+mask 49 55 0
+mask 49 56 0
+mask 49 57 0
+mask 49 58 0
+mask 49 59 0
+mask 49 60 0
+mask 49 61 0
+mask 49 62 0
 mask 49 63 0
 mask 50 9 0
 mask 50 10 0
@@ -2808,9 +3019,33 @@ mask 50 11 0
 mask 50 30 0
 mask 50 31 0
 mask 50 32 0
+mask 50 33 0
+mask 50 34 0
+mask 50 35 0
+mask 50 36 0
+mask 50 37 0
+mask 50 38 0
+mask 50 39 0
+mask 50 40 0
+mask 50 41 0
+mask 50 42 0
+mask 50 43 0
+mask 50 44 0
 mask 50 45 0
 mask 50 46 0
 mask 50 47 0
+mask 50 48 0
+mask 50 49 0
+mask 50 50 0
+mask 50 54 0
+mask 50 55 0
+mask 50 56 0
+mask 50 57 0
+mask 50 58 0
+mask 50 59 0
+mask 50 60 0
+mask 50 61 0
+mask 50 62 0
 mask 50 63 0
 mask 51 0 0
 mask 51 1 0
@@ -2845,6 +3080,18 @@ mask 51 29 0
 mask 51 30 0
 mask 51 31 0
 mask 51 32 0
+mask 51 33 0
+mask 51 34 0
+mask 51 35 0
+mask 51 36 0
+mask 51 37 0
+mask 51 38 0
+mask 51 39 0
+mask 51 40 0
+mask 51 41 0
+mask 51 42 0
+mask 51 43 0
+mask 51 44 0
 mask 51 45 0
 mask 51 46 0
 mask 51 47 0
@@ -2897,6 +3144,18 @@ mask 52 29 0
 mask 52 30 0
 mask 52 31 0
 mask 52 32 0
+mask 52 33 0
+mask 52 34 0
+mask 52 35 0
+mask 52 36 0
+mask 52 37 0
+mask 52 38 0
+mask 52 39 0
+mask 52 40 0
+mask 52 41 0
+mask 52 42 0
+mask 52 43 0
+mask 52 44 0
 mask 52 45 0
 mask 52 46 0
 mask 52 47 0
@@ -2949,6 +3208,18 @@ mask 53 29 0
 mask 53 30 0
 mask 53 31 0
 mask 53 32 0
+mask 53 33 0
+mask 53 34 0
+mask 53 35 0
+mask 53 36 0
+mask 53 37 0
+mask 53 38 0
+mask 53 39 0
+mask 53 40 0
+mask 53 41 0
+mask 53 42 0
+mask 53 43 0
+mask 53 44 0
 mask 53 45 0
 mask 53 46 0
 mask 53 47 0
@@ -3258,6 +3529,7 @@ mask 58 30 0
 mask 58 31 0
 mask 58 32 0
 mask 58 33 0
+mask 58 34 0
 mask 58 35 0
 mask 58 36 0
 mask 58 37 0
@@ -3544,38 +3816,38 @@ mask 62 61 0
 mask 62 62 0
 mask 62 63 0
 mask 63 63 0
-colour 0 28069 1 0
-shift 1 0 -9 0 1
-shift 2 0 3 0 4
-shift 3 0 0 -3 2
-shift 4 0 0 3 3
+colour 0 28492 1 0
+shift 1 0 -3 0 3
+shift 2 0 9 0 2
+shift 3 0 0 -9 2
+shift 4 0 0 9 3
 shift 5 0 -18 -42 1
-shift 7 0 0 -3 1
+shift 7 0 0 -9 1
 colour 1 0 0 0
 colour 2 0 0 0
 colour 3 0 0 0
-colour 4 28018 244 0
-shift 1 4 -9 0 2
-shift 2 4 9 0 1
-shift 3 4 0 27 1
-shift 4 4 0 -54 1
-shift 7 4 0 -54 1
-colour 5 24476 1775 0
-shift 1 5 -72 0 1
-shift 2 5 24 0 4
-shift 3 5 0 -24 2
-shift 4 5 0 24 3
-shift 7 5 0 -24 1
+colour 4 28102 244 0
+shift 1 4 -54 0 1
+shift 2 4 54 0 1
+shift 3 4 -6 9 2
+shift 4 4 0 -27 2
+shift 7 4 54 0 1
+colour 5 24899 1869 0
+shift 1 5 -24 0 3
+shift 2 5 72 0 2
+shift 3 5 0 -72 2
+shift 4 5 0 72 3
+shift 7 5 0 -72 1
 colour 6 0 0 0
 colour 7 0 0 0
 colour 8 0 0 0
-colour 9 21868 8853 8
-shift 1 9 30 24 1
-shift 2 9 -27 -27 1
-shift 3 9 27 189 3
-shift 4 9 -27 -189 1
+colour 9 22412 9040 8
+shift 1 9 27 0 3
+shift 2 9 -81 0 2
+shift 3 9 0 81 1
+shift 4 9 0 -81 3
 shift 5 9 18 42 1
-shift 7 9 -27 -189 1
+shift 7 9 0 81 1
 colour 10 3214 18 0
 shift 1 10 72 0 121
 shift 2 10 -72 0 125
@@ -3592,7 +3864,7 @@ colour 12 0 0 0
 colour 13 0 0 0
 colour 14 0 0 0
 colour 15 0 0 0
-onto 10359 8 3
+onto 10627 8 3
 deep 13 1 13 3 15 3
 kind 8230 1 1
 kind 536870917 1 1
