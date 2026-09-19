@@ -8,3 +8,4 @@
 2026-09-19 07:47	SELF_OFF_NEAR	0	1	ruled-out	no better: dev 14->12 held 7->8
 2026-09-19 08:46	SELF_OFF_THEORY	0	1	ruled-out	no better: dev 14->14 held 7->7
 2026-09-19 09:49	SELF_KEEP_ACTS	24u	12u	ruled-out	no better: dev 14->14 held 7->7
+2026-09-19 10:45	SELF_SKIP_TAU	0.75	0.875	ruled-out	no better: dev 14->12 held 7->6

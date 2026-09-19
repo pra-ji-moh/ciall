@@ -123,3 +123,10 @@
   on the 6 games that showed it: 3 levels as I am, 3 as I would be
   everywhere: dev 14->14 held 7->7
   ruled out: no better once everything is counted
+
+2026-09-19 10:45
+  what is wrong: stopped with actions left, in 13 games (g50t sb26 wa30 ar25 sk48 sc25 r11l ka59 s5i5 cd82 cn04 lf52 lp85)
+  what I suspect in myself: SELF_SKIP_TAU, now 0.75; I try 0.875
+  on the 6 games that showed it: 3 levels as I am, 4 as I would be
+  everywhere: dev 14->12 held 7->6
+  ruled out: no better once everything is counted
