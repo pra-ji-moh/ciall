@@ -510,7 +510,9 @@ static const int WPOS[N_WP] = {0, 1, 2, 3, 4, -1, -2};
 #define MAX_READ 1000u
 
 typedef struct {
-  unsigned char tpos, akind, ak, aj;   /* which word acts; how it answers: 1 follow, 2 one step, 3 yes/no */
+  unsigned char tpos, akind, ak, aj;   /* which word acts; how it answers: 1 follow, 2 one step, 3 yes/no,
+                                          4 how many things it holds, 5 which things it holds */
+  unsigned short numw[8];              /* the word for each amount, learned: 0 not yet, else word + 1 */
   unsigned short eff[MAX_WORDS];       /* what each word does: 0 nothing, else 1 + index */
   story_t *read[MAX_READ];
   unsigned char ok[MAX_READ];
@@ -523,6 +525,24 @@ static unsigned short PIC[MAX_WORDS];
 static unsigned short TOUCHED[MAX_WORDS];
 static unsigned N_TOUCHED;
 #define NOWHERE 0xffffu
+
+/*
+ * Counting. "How many objects is Mary carrying?" is answered by counting the
+ * things whose place in the picture is Mary. What the amount is called -- "none",
+ * "one", "two" -- it is not told: an amount it has no word for yet is answered
+ * with nothing, and the first story that shows it the word for that amount names
+ * it, as the smallest change there is. A name that another story contradicts is
+ * a picture that does not keep what it had right, and is not taken.
+ */
+#define COUNT_CODE 0xfff00000u
+
+static unsigned find_word(const char *s, unsigned n) {
+  unsigned i;
+  for (i = 0u; i < N_WORDS; i++) {
+    if (strlen(WORD[i]) == n && memcmp(WORD[i], s, n) == 0) return i;
+  }
+  return NONE;
+}
 
 static int wpos(const line_t *l, unsigned i) {
   int p = WPOS[i];
@@ -570,7 +590,32 @@ static unsigned imagine(const world_t *w, const story_t *s) {
       if ((unsigned)pa + 2u < l->n && (unsigned)pa + 2u != (unsigned)pb) place(l->t[pa + 2], l->t[pb]);
     }
   }
-  if (w->ak < s->q.n) {
+  if (w->ak < s->q.n && w->akind >= 4u) {
+    /* what the thing asked about holds: the things whose place is it */
+    unsigned holder = s->q.t[w->ak], held[16], n = 0u, j, k;
+    for (i = 0u; i < N_TOUCHED; i++) {
+      if (PIC[TOUCHED[i]] == holder && TOUCHED[i] != holder && n < 16u) held[n++] = TOUCHED[i];
+    }
+    if (w->akind == 4u || n == 0u) {
+      got = COUNT_CODE + (n < 8u ? n : 7u);
+    } else {
+      char buf[256];
+      size_t len = 0u;
+      for (j = 1u; j < n; j++) {   /* named in the order of their names */
+        for (k = j; k > 0u && strcmp(WORD[held[k - 1u]], WORD[held[k]]) > 0; k--) {
+          unsigned tmp = held[k];
+          held[k] = held[k - 1u];
+          held[k - 1u] = tmp;
+        }
+      }
+      for (j = 0u; j < n && len + strlen(WORD[held[j]]) + 2u < sizeof buf; j++) {
+        if (j > 0u) buf[len++] = ' ';
+        memcpy(buf + len, WORD[held[j]], strlen(WORD[held[j]]));
+        len += strlen(WORD[held[j]]);
+      }
+      got = find_word(buf, (unsigned)len);
+    }
+  } else if (w->ak < s->q.n) {
     unsigned thing = s->q.t[w->ak];
     unsigned at = w->akind == 2u ? (PIC[thing] == NOWHERE ? NONE : PIC[thing]) : where(thing);
     if (w->akind == 3u) {
@@ -585,14 +630,37 @@ static unsigned imagine(const world_t *w, const story_t *s) {
   return got;
 }
 
+/* what it says: an amount is said by the name it has learned for it, if it has one */
+static unsigned said(const world_t *w, const story_t *s) {
+  unsigned got = imagine(w, s);
+  if (got >= COUNT_CODE && got < COUNT_CODE + 8u) {
+    unsigned n = w->numw[got - COUNT_CODE];
+    return n ? n - 1u : NONE;
+  }
+  return got;
+}
+
 /* would this picture still get right every story it gets right now, and this one too? */
 static int keeps_all(const world_t *w, const story_t *now) {
   unsigned i;
-  if (imagine(w, now) != now->answer) return 0;
+  if (said(w, now) != now->answer) return 0;
   for (i = 0u; i < w->n_read; i++) {
-    if (w->ok[i] && imagine(w, w->read[i]) != w->read[i]->answer) return 0;
+    if (w->ok[i] && said(w, w->read[i]) != w->read[i]->answer) return 0;
   }
   return 1;
+}
+
+/* keeps_all, where an amount it has no name for yet may take its name from this story */
+static int keeps_naming(world_t *w, const story_t *s) {
+  unsigned got;
+  if (keeps_all(w, s)) return 1;
+  got = imagine(w, s);
+  if (got >= COUNT_CODE && got < COUNT_CODE + 8u && w->numw[got - COUNT_CODE] == 0u) {
+    w->numw[got - COUNT_CODE] = (unsigned short)(s->answer + 1u);
+    if (keeps_all(w, s)) return 1;
+    w->numw[got - COUNT_CODE] = 0u;
+  }
+  return 0;
 }
 
 /* the words in a story that could be the one acting, at this tpos */
@@ -612,6 +680,15 @@ static unsigned acting_words(const world_t *w, const story_t *s, unsigned *out) 
 /* the smallest change that fixes this story without breaking one it gets right */
 static int revise(world_t *w, const story_t *s) {
   unsigned words[64], n, i, e, start;
+  {
+    /* an amount it has no name for yet: this story names it */
+    unsigned got = imagine(w, s);
+    if (got >= COUNT_CODE && got < COUNT_CODE + 8u && w->numw[got - COUNT_CODE] == 0u) {
+      w->numw[got - COUNT_CODE] = (unsigned short)(s->answer + 1u);
+      if (keeps_naming(w, s)) return 1;
+      w->numw[got - COUNT_CODE] = 0u;
+    }
+  }
   /* one word doing something else */
   n = acting_words(w, s, words);
   start = pick(N_EFF);
@@ -621,20 +698,20 @@ static int revise(world_t *w, const story_t *s) {
       unsigned short cand = (unsigned short)((start + e) % N_EFF);
       if (cand == was) continue;
       w->eff[words[i]] = cand;
-      if (keeps_all(w, s)) return 1;
+      if (keeps_naming(w, s)) return 1;
     }
     w->eff[words[i]] = was;
   }
   /* reading the question another way */
   {
     unsigned char k0 = w->akind, a0 = w->ak, j0 = w->aj, kind, ak, aj;
-    for (kind = 1u; kind <= 3u; kind++)
+    for (kind = 1u; kind <= 5u; kind++)
       for (ak = 0u; ak < 6u; ak++)
         for (aj = 0u; aj < (kind == 3u ? 8u : 1u); aj++) {
           w->akind = kind;
           w->ak = ak;
           w->aj = aj;
-          if (keeps_all(w, s)) return 1;
+          if (keeps_naming(w, s)) return 1;
         }
     w->akind = k0;
     w->ak = a0;
@@ -647,7 +724,7 @@ static int revise(world_t *w, const story_t *s) {
     for (tp = 0u; tp < 4u; tp++) {
       w->tpos = tp;
       n = acting_words(w, s, words);
-      for (kind = 1u; kind <= 3u; kind++)
+      for (kind = 1u; kind <= 5u; kind++)
         for (ak = 0u; ak < 6u; ak++)
           for (aj = 0u; aj < (kind == 3u ? 8u : 1u); aj++) {
             w->akind = kind;
@@ -657,7 +734,7 @@ static int revise(world_t *w, const story_t *s) {
               unsigned short was = w->eff[words[i]];
               for (e = 1u; e < N_EFF; e++) {
                 w->eff[words[i]] = (unsigned short)e;
-                if (keeps_all(w, s)) return 1;
+                if (keeps_naming(w, s)) return 1;
               }
               w->eff[words[i]] = was;
             }
@@ -674,7 +751,7 @@ static int revise(world_t *w, const story_t *s) {
 /* a story, in a kind it now pictures: answer first, then fix what it got wrong */
 static unsigned world_read(unsigned t, story_t *s, int *fixed_now) {
   world_t *w = WORLD[t];
-  unsigned mine = imagine(w, s), i;
+  unsigned mine = said(w, s), i;
   *fixed_now = -1;
   if (mine != s->answer) {
     w->revisions++;
@@ -682,7 +759,7 @@ static unsigned world_read(unsigned t, story_t *s, int *fixed_now) {
       w->fixed++;
       *fixed_now = 1;
       for (i = 0u; i < w->n_read; i++) {   /* a fix can also mend older mistakes */
-        if (!w->ok[i] && imagine(w, w->read[i]) == w->read[i]->answer) {
+        if (!w->ok[i] && said(w, w->read[i]) == w->read[i]->answer) {
           w->ok[i] = 1u;
           w->fixed++;
           w->unfixed--;
@@ -695,7 +772,7 @@ static unsigned world_read(unsigned t, story_t *s, int *fixed_now) {
   }
   if (w->n_read < MAX_READ) {
     w->read[w->n_read] = s;
-    w->ok[w->n_read] = (unsigned char)(imagine(w, s) == s->answer);
+    w->ok[w->n_read] = (unsigned char)(said(w, s) == s->answer);
     w->n_read++;
   }
   return mine;
@@ -720,7 +797,7 @@ static void world_test(unsigned t, story_t *te, unsigned n_te, unsigned *right, 
   for (i = 0u; i < n_te; i++) {
     if (te[i].task != (int)t) continue;
     (*total)++;
-    if (imagine(WORLD[t], &te[i]) == te[i].answer) (*right)++;
+    if (said(WORLD[t], &te[i]) == te[i].answer) (*right)++;
   }
 }
 
