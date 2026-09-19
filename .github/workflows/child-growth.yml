@@ -38,8 +38,23 @@ jobs:
           echo "$HOME/bin" >> "$GITHUB_PATH"
           echo "CC=zigcc" >> "$GITHUB_ENV"
 
+      # its bookshelf: the stories it has fetched are kept from hour to hour, so each
+      # hour it reads more than the last instead of starting again at the same 2000
+      - name: its bookshelf, kept between hours
+        uses: actions/cache@v4
+        with:
+          path: books
+          key: books-${{ github.run_id }}
+          restore-keys: books-
+
       - name: build the child
         run: sh child/build_child.sh
+
+      # its own checks, run where it can be seen which fail: the self-writer refuses
+      # to touch a source whose checks fail, and here some do that pass at home
+      - name: its checks, on this machine
+        continue-on-error: true
+        run: bash build_c.sh 2>&1 | grep -E "FAIL|passed, " -A4 | head -60
 
       - name: one stretch, and one attempt to rewrite itself
         run: PYTHON=python sh child/grow_hourly.sh
