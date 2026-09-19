@@ -116,20 +116,37 @@ def standing(rows):
 # ---- playing ----------------------------------------------------------------------
 
 def play(child, games, seed):
-    """Levels ended and the ARC-AGI-3 score (%), fresh, no memory. None if nothing answered."""
+    """Levels ended and the ARC-AGI-3 score (%), fresh, no memory. None if nothing answered.
+    The games are played four at a time, on four cores; nothing about the child changes."""
     env = dict(os.environ)
     env["CIALL_CHILD"] = child
     env["CIALL_SEED"] = str(seed)
     env.pop("CIALL_MIND", None)
-    r = subprocess.run([sys.executable, os.path.join(ROOT, "arc", "arc_bridge.py")] + list(games) +
-                       ["--budget", BUDGET], cwd=ROOT, env=env, stdout=subprocess.PIPE,
-                       stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace")
+    games = list(games)
+    groups = [games[i::4] for i in range(4) if games[i::4]]
+    procs = [subprocess.Popen([sys.executable, os.path.join(ROOT, "arc", "arc_bridge.py")] + g +
+                              ["--budget", BUDGET], cwd=ROOT, env=env, stdout=subprocess.PIPE,
+                              stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace")
+             for g in groups]
     per_game = {}
-    score.score_text(r.stdout, per_game)
+    for pr in procs:
+        out, _ = pr.communicate()
+        score.score_text(out, per_game)
     if not per_game:
         return None
     rows, total, levels = score.rhae(per_game)
     return levels, total
+
+
+SEEDS = (1, 2)   # one seed alone is luck: the same child scores 0.64% on one and 0.23% on another
+
+
+def play_seeds(child, games):
+    """play() on every seed in SEEDS, averaged. None if any seed answered nothing."""
+    got = [play(child, games, sd) for sd in SEEDS]
+    if any(g is None for g in got):
+        return None
+    return (sum(g[0] for g in got) / len(got), sum(g[1] for g in got) / len(got))
 
 
 def stamp():
@@ -172,14 +189,14 @@ def main():
         if not ok:
             write_up(["its own source does not pass its checks; it does not build on it (%s)" % tail])
             return 1
-        dev, held = play(child, sw.DEV, seed), play(child, sw.HELD, seed)
+        dev, held = play_seeds(child, sw.DEV), play_seeds(child, sw.HELD)
         if dev is None or held is None:
             write_up(["no game could be played; nothing recorded"])
             return 1
         append_archive({"id": 0, "parent": "-", "made": stamp(), "change": "the child as it was",
                         "values": in_use, "dev_levels": dev[0], "dev_score": dev[1],
                         "held_score": held[1], "verdict": "in-use"})
-        write_up(["the archive begins with the child as it is: dev %d levels, %.3f%%; held back %.3f%%"
+        write_up(["the archive begins with the child as it is (two seeds averaged): dev %.1f levels, %.3f%%; held back %.3f%%"
                   % (dev[0], dev[1], held[1])])
         print("archive begun")
         return 0
@@ -221,16 +238,16 @@ def main():
         told.append("it does not pass its own checks (%s): kept on the record as a dead end" % tail)
         write_up(told)
         return 0
-    dev = play(child, sw.DEV, seed)
+    dev = play_seeds(child, sw.DEV)
     if dev is None:
         told.append("no game could be played; nothing recorded")
         write_up(told)
         return 1
-    held = play(child, sw.HELD, seed)
+    held = play_seeds(child, sw.HELD)
     row = {"id": new_id, "parent": str(parent["id"]), "made": stamp(), "change": change, "values": values,
            "dev_levels": dev[0], "dev_score": dev[1], "held_score": None if held is None else held[1],
            "verdict": "archived"}
-    told.append("development games: %d levels, %.3f%% (its parent: %d, %.3f%%)"
+    told.append("development games, two seeds averaged: %.1f levels, %.3f%% (its parent: %.1f, %.3f%%)"
                 % (dev[0], dev[1], parent["dev_levels"], parent["dev_score"]))
 
     # the child in use: the best standing version on development, if no worse where it was never tuned
@@ -270,4 +287,9 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # "--generations N": N generations one after another (at the laptop, pushing hard)
+    n = int(sys.argv[sys.argv.index("--generations") + 1]) if "--generations" in sys.argv else 1
+    code = 0
+    for _ in range(n):
+        code = main()
+    sys.exit(code)
