@@ -185,3 +185,8 @@
   from version 2 (one of 2 still standing) it made version 3: SELF_OFF_SKIP 1->0
   development games, two seeds averaged: 13.0 levels, 0.702% (its parent: 12.5, 0.690%)
   kept in the archive (still standing); the child in use stays as it is
+
+2026-09-19 22:35  (building itself: one generation)
+  from version 3 (one of 1 still standing) it made version 4: SELF_OFF_PANELS 1->0; SELF_BOLD 0->1
+  development games, two seeds averaged: 13.0 levels, 0.703% (its parent: 13.0, 0.702%)
+  kept in the archive (still standing); the child in use stays as it is
