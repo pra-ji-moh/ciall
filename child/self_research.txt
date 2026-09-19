@@ -180,3 +180,8 @@
   from version 1 (one of 1 still standing) it made version 2: SELF_WATCH 48u->0u
   development games, two seeds averaged: 12.5 levels, 0.690% (its parent: 12.5, 0.690%)
   kept in the archive (still standing); the child in use stays as it is
+
+2026-09-19 21:34  (building itself: one generation)
+  from version 2 (one of 2 still standing) it made version 3: SELF_OFF_SKIP 1->0
+  development games, two seeds averaged: 13.0 levels, 0.702% (its parent: 12.5, 0.690%)
+  kept in the archive (still standing); the child in use stays as it is
