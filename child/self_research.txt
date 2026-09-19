@@ -157,3 +157,8 @@
   from version 0 (one of 2 still standing) it made version 5: combined 0 and 4
   development games: 14 levels, 0.659% (its parent: 14, 0.657%)
   kept in the archive (still standing); the child in use stays as it is
+
+2026-09-19 16:38  (building itself: one generation)
+  from version 4 (one of 2 still standing) it made version 6: SELF_TIE_MODE 1u->0u
+  development games: 12 levels, 0.184% (its parent: 12, 0.706%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
