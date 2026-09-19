@@ -43,15 +43,15 @@
 /* acts it will spend on one thing it cannot explain before letting it be */
 #define SELF_WATCH 48u   /* self: 0u 16u 48u 96u */
 /* whether families kept by other games are formulated from the first act */
-#define SELF_USE_LIVE 1   /* self: 0 1 */
+#define SELF_USE_LIVE 0   /* self: 0 1 */
 
 /* its own parts, each on (0) or off (1) */
 #define SELF_OFF_RESTLESS 0   /* self: 0 1 */
 #define SELF_OFF_CLOCK 0   /* self: 0 1 */
 #define SELF_OFF_STOOD 0   /* self: 0 1 */
 #define SELF_OFF_PANELS 0   /* self: 0 1 */
-#define SELF_OFF_NEAR 0   /* self: 0 1 */
-#define SELF_OFF_THEORY 0   /* self: 0 1 */
+#define SELF_OFF_NEAR 1   /* self: 0 1 */
+#define SELF_OFF_THEORY 1   /* self: 0 1 */
 #define SELF_OFF_SKIP 0   /* self: 0 1 */
 #define SELF_OFF_DEATHS 0   /* self: 0 1 */
 #define SELF_OFF_UNMASK 0   /* self: 0 1 */

@@ -142,3 +142,8 @@
   from version 1 (one of 2 still standing) it made version 2: SELF_USE_LIVE 1->0; SELF_OFF_THEORY 0->1
   development games: 12 levels, 0.706% (its parent: 12, 0.665%)
   kept in the archive (still standing); the child in use stays as it is
+
+2026-09-19 13:39  (building itself: one generation)
+  from version 2 (one of 2 still standing) it made version 3: SELF_OFF_NEAR 0->1
+  development games: 12 levels, 0.706% (its parent: 12, 0.706%)
+  it is now this version: better on the development games (0.665% -> 0.706%) and no worse on the games held back (0.611% -> 0.616%)
