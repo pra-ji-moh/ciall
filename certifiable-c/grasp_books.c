@@ -478,6 +478,252 @@ static int survey(int argc, char **argv) {
   return 0;
 }
 
+
+/* ==== a picture of the world =================================================
+
+   When no rule it can say fits a kind of story, looking things up in the story
+   is not enough: John picks up the football, walks to the garden, drops it and
+   walks on -- the football is in the garden, and nothing in the last sentence
+   about John or the football says so. It needs a picture of the world, changed
+   by each sentence, and to learn what each word does to that picture.
+
+   The picture: for each thing, where it is (or who has it). A sentence changes it
+   through one word in it (the word at place `tpos`), and what that word does is
+   one of:
+       nothing
+       SET a b     thing a is now at b                "Mary moved to the kitchen"
+       COPY a b    thing a is now wherever b is       "John dropped the football"
+       SET2 a b    things a and a+2 are now at b      "Mary and John went to ..."
+   An answer follows the picture from the thing asked about to where it ends up
+   (football -> John -> garden), or says yes or no by comparing.
+
+   It holds one picture of how the world works, and it is wrong. Each time a story
+   shows it wrong, it looks for the smallest change -- what one word does, or how
+   it reads the question -- that makes that story come out right without making
+   any story it already gets right come out wrong. That is a mistake fixed. When
+   no such change exists, the mistake is kept, unfixed, and said so.
+*/
+
+#define N_WP 7
+static const int WPOS[N_WP] = {0, 1, 2, 3, 4, -1, -2};
+#define N_EFF (1u + 3u * N_WP * N_WP)
+#define MAX_READ 1000u
+
+typedef struct {
+  unsigned char tpos, akind, ak, aj;   /* which word acts; how it answers: 1 follow, 2 one step, 3 yes/no */
+  unsigned short eff[MAX_WORDS];       /* what each word does: 0 nothing, else 1 + index */
+  story_t *read[MAX_READ];
+  unsigned char ok[MAX_READ];
+  unsigned n_read;
+  unsigned fixed, unfixed, revisions;
+} world_t;
+
+static world_t *WORLD[21];
+static unsigned short PIC[MAX_WORDS];
+static unsigned short TOUCHED[MAX_WORDS];
+static unsigned N_TOUCHED;
+#define NOWHERE 0xffffu
+
+static int wpos(const line_t *l, unsigned i) {
+  int p = WPOS[i];
+  if (p < 0) p += (int)l->n;
+  return (p >= 0 && (unsigned)p < l->n) ? p : -1;
+}
+
+static void place(unsigned thing, unsigned at) {
+  if (PIC[thing] == NOWHERE) TOUCHED[N_TOUCHED++] = (unsigned short)thing;
+  PIC[thing] = (unsigned short)at;
+}
+
+static unsigned where(unsigned thing) {
+  unsigned v = thing, steps = 0u, moved = 0u;
+  while (steps++ < 6u && PIC[v] != NOWHERE && PIC[v] != v) {
+    v = PIC[v];
+    moved = 1u;
+  }
+  return moved ? v : NONE;
+}
+
+static unsigned imagine(const world_t *w, const story_t *s) {
+  unsigned i, got = NONE;
+  for (i = 0u; i < s->n_sent; i++) {
+    const line_t *l = &s->sent[i];
+    unsigned e, kind, a, b;
+    int pa, pb;
+    if (w->tpos >= l->n) continue;
+    e = w->eff[l->t[w->tpos]];
+    if (e == 0u) continue;
+    e--;
+    kind = e / (N_WP * N_WP);
+    a = (e / N_WP) % N_WP;
+    b = e % N_WP;
+    pa = wpos(l, a);
+    pb = wpos(l, b);
+    if (pa < 0 || pb < 0 || pa == pb) continue;
+    if (kind == 0u) {
+      place(l->t[pa], l->t[pb]);
+    } else if (kind == 1u) {
+      unsigned at = where(l->t[pb]);
+      if (at != NONE) place(l->t[pa], at);
+    } else {
+      place(l->t[pa], l->t[pb]);
+      if ((unsigned)pa + 2u < l->n && (unsigned)pa + 2u != (unsigned)pb) place(l->t[pa + 2], l->t[pb]);
+    }
+  }
+  if (w->ak < s->q.n) {
+    unsigned thing = s->q.t[w->ak];
+    unsigned at = w->akind == 2u ? (PIC[thing] == NOWHERE ? NONE : PIC[thing]) : where(thing);
+    if (w->akind == 3u) {
+      if (w->aj < s->q.n && at != NONE) got = (at == s->q.t[w->aj]) ? YES : NO;
+      else if (w->aj < s->q.n) got = NO;
+    } else {
+      got = at;
+    }
+  }
+  for (i = 0u; i < N_TOUCHED; i++) PIC[TOUCHED[i]] = NOWHERE;
+  N_TOUCHED = 0u;
+  return got;
+}
+
+/* would this picture still get right every story it gets right now, and this one too? */
+static int keeps_all(const world_t *w, const story_t *now) {
+  unsigned i;
+  if (imagine(w, now) != now->answer) return 0;
+  for (i = 0u; i < w->n_read; i++) {
+    if (w->ok[i] && imagine(w, w->read[i]) != w->read[i]->answer) return 0;
+  }
+  return 1;
+}
+
+/* the words in a story that could be the one acting, at this tpos */
+static unsigned acting_words(const world_t *w, const story_t *s, unsigned *out) {
+  unsigned i, j, n = 0u;
+  for (i = 0u; i < s->n_sent; i++) {
+    unsigned t;
+    if (w->tpos >= s->sent[i].n) continue;
+    t = s->sent[i].t[w->tpos];
+    for (j = 0u; j < n && out[j] != t; j++) {
+    }
+    if (j == n && n < 64u) out[n++] = t;
+  }
+  return n;
+}
+
+/* the smallest change that fixes this story without breaking one it gets right */
+static int revise(world_t *w, const story_t *s) {
+  unsigned words[64], n, i, e, start;
+  /* one word doing something else */
+  n = acting_words(w, s, words);
+  start = pick(N_EFF);
+  for (i = 0u; i < n; i++) {
+    unsigned short was = w->eff[words[i]];
+    for (e = 0u; e < N_EFF; e++) {
+      unsigned short cand = (unsigned short)((start + e) % N_EFF);
+      if (cand == was) continue;
+      w->eff[words[i]] = cand;
+      if (keeps_all(w, s)) return 1;
+    }
+    w->eff[words[i]] = was;
+  }
+  /* reading the question another way */
+  {
+    unsigned char k0 = w->akind, a0 = w->ak, j0 = w->aj, kind, ak, aj;
+    for (kind = 1u; kind <= 3u; kind++)
+      for (ak = 0u; ak < 6u; ak++)
+        for (aj = 0u; aj < (kind == 3u ? 8u : 1u); aj++) {
+          w->akind = kind;
+          w->ak = ak;
+          w->aj = aj;
+          if (keeps_all(w, s)) return 1;
+        }
+    w->akind = k0;
+    w->ak = a0;
+    w->aj = j0;
+  }
+  /* reading the question another way and one word doing something else, together
+     (early on, when it has understood nothing, one change alone never fixes anything) */
+  if (w->fixed < 3u) {
+    unsigned char k0 = w->akind, a0 = w->ak, j0 = w->aj, t0 = w->tpos, kind, ak, aj, tp;
+    for (tp = 0u; tp < 4u; tp++) {
+      w->tpos = tp;
+      n = acting_words(w, s, words);
+      for (kind = 1u; kind <= 3u; kind++)
+        for (ak = 0u; ak < 6u; ak++)
+          for (aj = 0u; aj < (kind == 3u ? 8u : 1u); aj++) {
+            w->akind = kind;
+            w->ak = ak;
+            w->aj = aj;
+            for (i = 0u; i < n; i++) {
+              unsigned short was = w->eff[words[i]];
+              for (e = 1u; e < N_EFF; e++) {
+                w->eff[words[i]] = (unsigned short)e;
+                if (keeps_all(w, s)) return 1;
+              }
+              w->eff[words[i]] = was;
+            }
+          }
+    }
+    w->akind = k0;
+    w->ak = a0;
+    w->aj = j0;
+    w->tpos = t0;
+  }
+  return 0;
+}
+
+/* a story, in a kind it now pictures: answer first, then fix what it got wrong */
+static unsigned world_read(unsigned t, story_t *s, int *fixed_now) {
+  world_t *w = WORLD[t];
+  unsigned mine = imagine(w, s), i;
+  *fixed_now = -1;
+  if (mine != s->answer) {
+    w->revisions++;
+    if (revise(w, s)) {
+      w->fixed++;
+      *fixed_now = 1;
+      for (i = 0u; i < w->n_read; i++) {   /* a fix can also mend older mistakes */
+        if (!w->ok[i] && imagine(w, w->read[i]) == w->read[i]->answer) {
+          w->ok[i] = 1u;
+          w->fixed++;
+          w->unfixed--;
+        }
+      }
+    } else {
+      w->unfixed++;
+      *fixed_now = 0;
+    }
+  }
+  if (w->n_read < MAX_READ) {
+    w->read[w->n_read] = s;
+    w->ok[w->n_read] = (unsigned char)(imagine(w, s) == s->answer);
+    w->n_read++;
+  }
+  return mine;
+}
+
+static void world_begin(unsigned t, unsigned read_so_far, story_t **stories, const unsigned char *done) {
+  unsigned i;
+  int f;
+  WORLD[t] = (world_t *)calloc(1u, sizeof(world_t));
+  WORLD[t]->akind = 1u;
+  for (i = 0u; i < MAX_WORDS; i++) PIC[i] = NOWHERE;
+  (void)read_so_far;
+  /* every story it has read of this kind is lived again in the new picture */
+  for (i = 0u; i < 1000u; i++) {
+    if (done[i]) (void)world_read(t, stories[i], &f);
+  }
+}
+
+static void world_test(unsigned t, story_t *te, unsigned n_te, unsigned *right, unsigned *total) {
+  unsigned i;
+  *right = *total = 0u;
+  for (i = 0u; i < n_te; i++) {
+    if (te[i].task != (int)t) continue;
+    (*total)++;
+    if (imagine(WORLD[t], &te[i]) == te[i].answer) (*right)++;
+  }
+}
+
 /* ==== the curious child ======================================================
 
    Nobody hands it task 1 and then task 2. Each moment it chooses what to read
@@ -512,7 +758,8 @@ typedef struct {
   unsigned long long *still;
   unsigned n, cap_a, n_still, cap_s;
   unsigned depth, qmax, touched, stuck, surprised_last, streak, mastered;
-  unsigned read, sure_right, sure_wrong, unsure, wrong_last, wrong, taught, hunts;
+  unsigned read, sure_right, sure_wrong, unsure, wrong_last, wrong, taught, hunts, fixed, unfixed;
+  unsigned fixed_last, unfixed_run;   /* was its last mistake fixed; mistakes in a row it could not fix */
   story_t **story;
   unsigned n_story;
   unsigned char *done;               /* stories of this kind already read */
@@ -619,6 +866,56 @@ static void read_one(unsigned t, unsigned which) {
   char line[600];
   int sure;
   unsigned mine;
+  if (WORLD[t] != 0) {
+    /* a kind it pictures: it answers from its picture, and fixes the picture when wrong */
+    int fixed_now;
+    unsigned i2, j2;
+    if (hunting) k->hunts++;
+    mine = world_read(t, s, &fixed_now);
+    if (mine == s->answer) {
+      k->streak++;
+      k->wrong_last = 0u;
+      if (k->streak == MASTERED) {
+        k->mastered = 1u;
+        sprintf(line, "task %u: my picture has not been wrong for %u stories. I do not trust that. "
+                "I go looking for the story that proves it wrong", t, MASTERED);
+        note(line);
+      }
+    } else {
+      k->wrong++;
+      k->wrong_last = 1u;
+      k->streak = 0u;
+      k->mastered = 0u;
+      k->fixed_last = (fixed_now == 1);
+      k->unfixed_run = (fixed_now == 1) ? 0u : k->unfixed_run + 1u;
+      if (fixed_now == 1) {
+        k->fixed++;
+        if (k->fixed <= 3u || k->fixed % 25u == 0u) {
+          sprintf(line, "task %u, story %u: I said \"%s\", it was \"%s\". I changed my picture of the world; "
+                  "now I get it right, and everything I got right before too (%u fixed so far)",
+                  t, which + 1u, mine == NONE ? "?" : WORD[mine], WORD[s->answer], k->fixed);
+          note(line);
+        }
+      } else {
+        k->unfixed++;
+        if (k->unfixed <= 2u) {
+          sprintf(line, "task %u, story %u: I said \"%s\", it was \"%s\", and no change to my picture fixes it "
+                  "without breaking something I had right. I keep it, unfixed",
+                  t, which + 1u, mine == NONE ? "?" : WORD[mine], WORD[s->answer]);
+          note(line);
+        }
+      }
+    }
+    k->done[which] = 1u;
+    for (i2 = 0u; i2 < s->n_sent; i2++) {
+      for (j2 = 0u; j2 < s->sent[i2].n; j2++) {
+        unsigned w2 = s->sent[i2].t[j2];
+        if (w2 < WB * 64u) k->met[w2 >> 6] |= 1ull << (w2 & 63u);
+      }
+    }
+    k->read++;
+    return;
+  }
   swap_in(t);
   if (!k->touched) {
     k->touched = 1u;
@@ -669,6 +966,12 @@ static void read_one(unsigned t, unsigned which) {
     }
   }
   rule_down(s);
+  if (mine != s->answer) {
+    k->fixed_last = (N_ALIVE > 0u);
+    k->unfixed_run = k->fixed_last ? 0u : k->unfixed_run + 1u;
+    if (N_ALIVE > 0u) k->fixed++;   /* what was wrong is ruled out, and what is left gets it right */
+    else k->unfixed++;
+  }
   if (N_ALIVE < before_rules) {
     k->taught += before_rules - N_ALIVE;
     if (k->wrong_last && k->sure_wrong <= 3u && before_rules - N_ALIVE > 0u && sure) {
@@ -703,20 +1006,28 @@ static void read_one(unsigned t, unsigned which) {
   }
   if (N_ALIVE == 0u && !k->stuck) {
     k->stuck = 1u;
-    sprintf(line, "task %u: even in two steps nothing I can say fits all %u stories. I cannot make sense of these yet",
-            t, k->read);
+    swap_out(t);
+    world_begin(t, k->read, k->story, k->done);
+    sprintf(line, "task %u: no rule I can say fits these %u stories, so I stop looking things up and keep a picture "
+            "of the world instead, and learn what each word does to it (%u of them right so far)",
+            t, k->read, WORLD[t]->n_read - WORLD[t]->unfixed);
     note(line);
+    k->fixed += WORLD[t]->fixed;
+    return;
   }
   swap_out(t);
 }
 
-/* where it can still be wrong: 3 never met, or just wrong; 2 unsure, or cannot make sense of yet;
-   1 not wrong for a while (it still goes there, hunting) */
+/* where its mistakes get fixed: 3 never met, or its last mistake there was fixed (it is learning);
+   2 unsure, or its last mistake is not fixed yet; 1 not wrong for a while (it still goes, hunting);
+   0 ten mistakes in a row it could not fix (it still comes back, when nothing else calls) */
 static int curiosity(unsigned t) {
   const kind_t *k = &K[t];
   if (k->read >= k->n_story) return -1;
-  if (!k->touched || (k->wrong_last && !k->stuck)) return 3;
-  if (k->stuck || !k->mastered) return 2;
+  if (!k->touched) return 3;
+  if (k->unfixed_run >= 10u) return 0;
+  if (k->wrong_last && k->fixed_last) return 3;
+  if (!k->mastered) return 2;
   return 1;
 }
 
@@ -794,28 +1105,37 @@ static int curious(unsigned budget, const char *mind, const char *diary_path, st
     fclose(f);
   }
   {
-    unsigned all_right = 0u, all = 0u, understood = 0u, wrong = 0u, hunts = 0u;
-    printf("\n  task  read  times wrong  what being wrong ruled out   rules left   hunting   now              never-seen\n");
+    unsigned all_right = 0u, all = 0u, understood = 0u, wrong = 0u, hunts = 0u, fixed = 0u, unfixed = 0u;
+    printf("\n  task  read   wrong  fixed  unfixed   how it answers          now                never-seen\n");
     for (t = 1u; t <= 20u; t++) {
       unsigned right, total, sure;
-      const char *state = !K[t].touched ? "not met yet" : K[t].stuck ? "cannot make sense yet"
-                          : K[t].mastered ? "not wrong lately" : "being wrong";
-      swap_in(t);
-      test(te, n_te, (int)t, &right, &total, &sure);
-      printf("  %4u  %4u  %11u  %26u  %11u  %8u   %-21s  %5.1f%%\n", t, K[t].read, K[t].wrong, K[t].taught,
-             N_ALIVE, K[t].hunts, state, total ? 100.0 * right / total : 0.0);
+      const char *state = !K[t].touched ? "not met yet" : K[t].mastered ? "not wrong lately" : "being wrong";
+      char how[40];
+      if (WORLD[t] != 0) {
+        world_test(t, te, n_te, &right, &total);
+        strcpy(how, "a picture of the world");
+      } else {
+        swap_in(t);
+        test(te, n_te, (int)t, &right, &total, &sure);
+        sprintf(how, "%u rule%s", N_ALIVE, N_ALIVE == 1u ? "" : "s");
+      }
+      printf("  %4u  %4u  %6u  %5u  %7u   %-22s  %-17s  %5.1f%%\n", t, K[t].read, K[t].wrong, K[t].fixed,
+             K[t].unfixed, how, state, total ? 100.0 * right / total : 0.0);
       wrong += K[t].wrong;
       hunts += K[t].hunts;
+      fixed += K[t].fixed;
+      unfixed += K[t].unfixed;
       all_right += right;
       all += total;
       if (K[t].mastered) understood++;
     }
-    printf("\n  wrong %u times in all, %u stories read hunting for its own mistakes\n", wrong, hunts);
+    printf("\n  wrong %u times in all; %u of those mistakes fixed, %u not yet; %u stories read hunting for mistakes\n",
+           wrong, fixed, unfixed, hunts);
     printf("  all twenty, on stories never seen: %.1f%%; kinds it has not been wrong about lately: %u of 20\n",
            100.0 * all_right / all, understood);
     if (DIARY) {
-      fprintf(DIARY, "   now: wrong %u times in all; %.1f%% right on stories never seen; not wrong lately about %u kinds of 20\n",
-              wrong, 100.0 * all_right / all, understood);
+      fprintf(DIARY, "   now: wrong %u times, fixed %u, not yet %u; %.1f%% right on stories never seen; "
+              "not wrong lately about %u kinds of 20\n", wrong, fixed, unfixed, 100.0 * all_right / all, understood);
       fclose(DIARY);
     }
   }
