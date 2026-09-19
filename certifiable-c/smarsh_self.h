@@ -49,13 +49,13 @@
 #define SELF_OFF_RESTLESS 0   /* self: 0 1 */
 #define SELF_OFF_CLOCK 0   /* self: 0 1 */
 #define SELF_OFF_STOOD 0   /* self: 0 1 */
-#define SELF_OFF_PANELS 0   /* self: 0 1 */
+#define SELF_OFF_PANELS 1   /* self: 0 1 */
 #define SELF_OFF_NEAR 1   /* self: 0 1 */
 #define SELF_OFF_THEORY 1   /* self: 0 1 */
-#define SELF_OFF_SKIP 0   /* self: 0 1 */
+#define SELF_OFF_SKIP 1   /* self: 0 1 */
 #define SELF_OFF_DEATHS 0   /* self: 0 1 */
 #define SELF_OFF_UNMASK 0   /* self: 0 1 */
-#define SELF_OFF_WINDOW 0   /* self: 0 1 */
+#define SELF_OFF_WINDOW 1   /* self: 0 1 */
 #define SELF_OFF_REDRAW 0   /* self: 0 1 */
 #define SELF_OFF_RECALL 0   /* self: 0 1 */
 #define SELF_OFF_REPLAY 1   /* self: 0 1 */
@@ -63,6 +63,6 @@
 #define SELF_OFF_CURIOUS 0   /* self: 0 1 */
 #define SELF_OFF_PLAN 0   /* self: 0 1 */
 /* act on the best theory it has, before an ending has proved it */
-#define SELF_BOLD 1   /* self: 0 1 */
+#define SELF_BOLD 0   /* self: 0 1 */
 
 #endif
