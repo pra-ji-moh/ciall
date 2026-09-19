@@ -137,3 +137,8 @@
   on the 6 games that showed it: 3 levels as I am, 4 as I would be
   everywhere: dev 14->12 held 7->7
   ruled out: no better once everything is counted
+
+2026-09-19 12:43  (building itself: one generation)
+  from version 1 (one of 2 still standing) it made version 2: SELF_USE_LIVE 1->0; SELF_OFF_THEORY 0->1
+  development games: 12 levels, 0.706% (its parent: 12, 0.665%)
+  kept in the archive (still standing); the child in use stays as it is

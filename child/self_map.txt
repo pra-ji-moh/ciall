@@ -32,7 +32,7 @@ open certifiable-c/smarsh_self.h SELF_OFF_UNMASK now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_WINDOW now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_REDRAW now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_RECALL now 0 may be  0 1 */
-open certifiable-c/smarsh_self.h SELF_OFF_REPLAY now 0 may be  0 1 */
+open certifiable-c/smarsh_self.h SELF_OFF_REPLAY now 1 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_REACH now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_CURIOUS now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_PLAN now 0 may be  0 1 */
