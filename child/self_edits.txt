@@ -2,3 +2,4 @@
 2026-09-15 12:16	SELF_TIE_MODE	2u	0u	ruled-out	worse where it hurt: trial 2->1
 2026-09-16 08:28	SELF_USE_LIVE	1	0	ruled-out	no better: dev 12->12 held 11->11
 2026-09-18 20:36	SELF_DEATH_RETRIES	10u	3u	ruled-out	no better: dev 10->10 held 6->6
+2026-09-19 05:15	SELF_OFF_PANELS	0	1	ruled-out	no better: dev 10->10 held 6->6

@@ -82,3 +82,10 @@
   what is wrong: nothing it can say ends a level, in 14 games (g50t ar25 re86 tr87 wa30 sb26 sk48 bp35 sc25 ka59 cn04 r11l s5i5 lf52)
   what I suspect in myself: SELF_OFF_PANELS, now 0; I try 1
   I stopped: my own source does not pass my checks (59 passed, 3 failed)
+
+2026-09-19 05:15
+  what is wrong: nothing it can say ends a level, in 14 games (g50t ar25 re86 tr87 wa30 sb26 sk48 bp35 sc25 ka59 cn04 r11l s5i5 lf52)
+  what I suspect in myself: SELF_OFF_PANELS, now 0; I try 1
+  on the 6 games that showed it: 1 levels as I am, 1 as I would be
+  everywhere: dev 10->10 held 6->6
+  ruled out: no better once everything is counted
