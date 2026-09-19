@@ -4,3 +4,4 @@
 2026-09-18 20:36	SELF_DEATH_RETRIES	10u	3u	ruled-out	no better: dev 10->10 held 6->6
 2026-09-19 05:15	SELF_OFF_PANELS	0	1	ruled-out	no better: dev 10->10 held 6->6
 2026-09-19 05:46	SELF_TIE_MODE	2u	1u	adopted	dev 10->14 held 6->7
+2026-09-19 06:42	SELF_TIE_MODE	1u	2u	ruled-out	worse where it hurt: trial 3->1

@@ -187,3 +187,6 @@
    now: wrong 1023 times in all; 14.8% right on stories never seen; not wrong lately about 2 kinds of 20
 -- it remembers 1200 stories, and reads 300 more --
    now: wrong 1312 times in all; 15.0% right on stories never seen; not wrong lately about 2 kinds of 20
+-- it remembers 1500 stories, and reads 300 more --
+  task 6: I have not been wrong for 20 stories ("find the most recent sentence holding question word 2; take its last word; say yes if it is question word 5, else no"). I do not trust that. I go looking for the story that proves me wrong
+   now: wrong 941 times, fixed 207, not yet 793; 41.0% right on stories never seen; not wrong lately about 3 kinds of 20

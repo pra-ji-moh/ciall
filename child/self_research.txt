@@ -96,3 +96,9 @@
   on the 6 games that showed it: 1 levels as I am, 3 as I would be
   everywhere: dev 10->14 held 6->7
   kept: I am now SELF_TIE_MODE = 1u
+
+2026-09-19 06:42
+  what is wrong: nothing it can say ends a level, in 14 games (g50t re86 tr87 sb26 wa30 sk48 ar25 sc25 r11l ka59 s5i5 bp35 cn04 lf52)
+  what I suspect in myself: SELF_TIE_MODE, now 1u; I try 2u
+  on the 6 games that showed it: 3 levels as I am, 1 as I would be
+  ruled out there and then: worse where the trouble is

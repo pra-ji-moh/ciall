@@ -1,5 +1,5 @@
 ciall-explorer-mind 1
-runs 73
+runs 74
 best 2
 mask 0 0 0
 mask 0 1 0
@@ -697,9 +697,6 @@ mask 12 5 0
 mask 12 6 0
 mask 12 7 0
 mask 12 8 0
-mask 12 18 1
-mask 12 19 1
-mask 12 20 1
 mask 12 21 0
 mask 12 22 0
 mask 12 23 0
@@ -712,9 +709,6 @@ mask 12 29 0
 mask 12 30 0
 mask 12 31 0
 mask 12 32 0
-mask 12 33 1
-mask 12 34 1
-mask 12 35 1
 mask 12 36 0
 mask 12 37 0
 mask 12 38 0
@@ -752,9 +746,6 @@ mask 13 5 0
 mask 13 6 0
 mask 13 7 0
 mask 13 8 0
-mask 13 18 1
-mask 13 19 1
-mask 13 20 1
 mask 13 21 0
 mask 13 22 0
 mask 13 23 0
@@ -767,9 +758,6 @@ mask 13 29 0
 mask 13 30 0
 mask 13 31 0
 mask 13 32 0
-mask 13 33 1
-mask 13 34 1
-mask 13 35 1
 mask 13 36 0
 mask 13 37 0
 mask 13 38 0
@@ -806,9 +794,6 @@ mask 14 5 0
 mask 14 6 0
 mask 14 7 0
 mask 14 8 0
-mask 14 18 1
-mask 14 19 1
-mask 14 20 1
 mask 14 21 0
 mask 14 22 0
 mask 14 23 0
@@ -821,9 +806,6 @@ mask 14 29 0
 mask 14 30 0
 mask 14 31 0
 mask 14 32 0
-mask 14 33 1
-mask 14 34 1
-mask 14 35 1
 mask 14 36 0
 mask 14 37 0
 mask 14 38 0
@@ -888,9 +870,6 @@ mask 15 32 0
 mask 15 33 0
 mask 15 34 0
 mask 15 35 0
-mask 15 36 1
-mask 15 37 1
-mask 15 38 1
 mask 15 39 0
 mask 15 40 0
 mask 15 41 0
@@ -952,9 +931,6 @@ mask 16 32 0
 mask 16 33 0
 mask 16 34 0
 mask 16 35 0
-mask 16 36 1
-mask 16 37 1
-mask 16 38 1
 mask 16 39 0
 mask 16 40 0
 mask 16 41 0
@@ -1015,9 +991,6 @@ mask 17 32 0
 mask 17 33 0
 mask 17 34 0
 mask 17 35 0
-mask 17 36 1
-mask 17 37 1
-mask 17 38 1
 mask 17 39 0
 mask 17 40 0
 mask 17 41 0
@@ -1325,7 +1298,6 @@ mask 22 30 0
 mask 22 31 0
 mask 22 32 0
 mask 22 33 0
-mask 22 34 1
 mask 22 35 0
 mask 22 36 0
 mask 22 38 0
@@ -3572,38 +3544,38 @@ mask 62 61 0
 mask 62 62 0
 mask 62 63 0
 mask 63 63 0
-colour 0 27754 1 0
-shift 1 0 -6 6 2
-shift 2 0 3 0 7
-shift 3 0 0 -3 3
-shift 4 0 0 6 1
+colour 0 28069 1 0
+shift 1 0 -9 0 1
+shift 2 0 3 0 4
+shift 3 0 0 -3 2
+shift 4 0 0 3 3
 shift 5 0 -18 -42 1
-shift 7 0 -3 0 1
+shift 7 0 0 -3 1
 colour 1 0 0 0
 colour 2 0 0 0
 colour 3 0 0 0
-colour 4 27680 244 0
-shift 1 4 -3 0 2
+colour 4 28018 244 0
+shift 1 4 -9 0 2
 shift 2 4 9 0 1
 shift 3 4 0 27 1
-shift 4 4 0 -27 1
-shift 7 4 3 0 1
-colour 5 24258 1743 0
-shift 1 5 -48 48 2
-shift 2 5 24 0 7
-shift 3 5 0 -24 3
-shift 4 5 0 48 1
-shift 7 5 -24 0 1
+shift 4 4 0 -54 1
+shift 7 4 0 -54 1
+colour 5 24476 1775 0
+shift 1 5 -72 0 1
+shift 2 5 24 0 4
+shift 3 5 0 -24 2
+shift 4 5 0 24 3
+shift 7 5 0 -24 1
 colour 6 0 0 0
 colour 7 0 0 0
 colour 8 0 0 0
-colour 9 21632 8772 8
-shift 1 9 27 -243 1
-shift 2 9 -27 0 1
-shift 3 9 0 27 3
-shift 4 9 0 -54 1
+colour 9 21868 8853 8
+shift 1 9 30 24 1
+shift 2 9 -27 -27 1
+shift 3 9 27 189 3
+shift 4 9 -27 -189 1
 shift 5 9 18 42 1
-shift 7 9 0 -27 1
+shift 7 9 -27 -189 1
 colour 10 3214 18 0
 shift 1 10 72 0 121
 shift 2 10 -72 0 125
@@ -3620,7 +3592,7 @@ colour 12 0 0 0
 colour 13 0 0 0
 colour 14 0 0 0
 colour 15 0 0 0
-onto 10248 8 3
+onto 10359 8 3
 deep 13 1 13 3 15 3
 kind 8230 1 1
 kind 536870917 1 1
