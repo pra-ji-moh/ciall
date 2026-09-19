@@ -152,3 +152,8 @@
   from version 3 (one of 2 still standing) it made version 4: SELF_OFF_PANELS 0->1; SELF_BOLD 1->0
   development games: 12 levels, 0.706% (its parent: 12, 0.706%)
   kept in the archive (still standing); the child in use stays as it is
+
+2026-09-19 15:38  (building itself: one generation)
+  from version 0 (one of 2 still standing) it made version 5: combined 0 and 4
+  development games: 14 levels, 0.659% (its parent: 14, 0.657%)
+  kept in the archive (still standing); the child in use stays as it is
