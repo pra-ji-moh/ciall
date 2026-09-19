@@ -90,8 +90,18 @@ int main(void) {
       for (k = 0u; k < 8u; k++) b[k] = (unsigned char)(u >> (8u * k));
       crc = crc_step(crc, b, 8u);
     }
-    check("a million normals: CRC-32 equals numpy's (0x8A58B154)",
-          (crc ^ 0xFFFFFFFFu) == 0x8A58B154u);
+    {
+      /*
+       * numpy draws its normals with the C library's log1p and exp, and those
+       * round differently in the last bit on different systems. So the check is
+       * against numpy on this machine: NPRAND_NUMPY_CRC, when set, is numpy's own
+       * CRC here (the cloud computes it); otherwise the value numpy gives at home.
+       */
+      const char *env = getenv("NPRAND_NUMPY_CRC");
+      uint32_t want = env != 0 ? (uint32_t)strtoul(env, 0, 16) : 0x8A58B154u;
+      check("a million normals: CRC-32 equals numpy's on this machine",
+            (crc ^ 0xFFFFFFFFu) == want);
+    }
   }
 
   {

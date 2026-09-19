@@ -113,11 +113,13 @@ build test_guess $C smarsh_core.c smarsh_interval.c smarsh_space.c smarsh_frame.
 build self_map $C self_map.c
 build test_explore $C smarsh_core.c smarsh_interval.c smarsh_space.c smarsh_frame.c smarsh_guess.c smarsh_ending.c smarsh_explore.c test_explore.c && run_test test_explore $C
 build play_arc $C smarsh_core.c smarsh_interval.c smarsh_space.c smarsh_frame.c smarsh_guess.c smarsh_ending.c smarsh_explore.c play_arc.c
-if command -v node >/dev/null 2>&1; then
+# they need node and the Smarsh repo beside this one (C:/Users/USER/smarsh)
+has_smarsh() { command -v node >/dev/null 2>&1 && [ -f "$HOME/smarsh/bin/smarsh.mjs" -o -f "/c/Users/USER/smarsh/bin/smarsh.mjs" -o -f "C:/Users/USER/smarsh/bin/smarsh.mjs" ]; }
+if has_smarsh; then
   build test_frontend $C smarsh_lexer.c smarsh_ast.c smarsh_parser.c smarsh_value.c smarsh_interp.c test_frontend.c \
     && run_test test_frontend $C
 else
-  echo "  skip  test_frontend (needs node for the JavaScript side)"
+  echo "  skip  test_frontend (needs node and the Smarsh repo for the JavaScript side)"
 fi
 
 build test_null_args $C smarsh_core.c smarsh_reason.c smarsh_learner.c smarsh_concept.c smarsh_analogy.c smarsh_informant.c smarsh_law.c smarsh_proof.c smarsh_abstract.c smarsh_time.c smarsh_interval.c smarsh_space.c smarsh_frame.c smarsh_object.c smarsh_play.c arc_worldgen.c smarsh_grow.c smarsh_guess.c smarsh_ending.c smarsh_explore.c smarsh_child.c test_null_args.c \
@@ -130,10 +132,10 @@ build diff_kernel $C smarsh_core.c smarsh_reason.c diff_kernel.c \
 build diff_learner $C smarsh_core.c smarsh_reason.c smarsh_learner.c diff_learner.c \
   && run_golden diff_learner $C diff_learner.txt
 # C against Smarsh's JavaScript speculation gate
-if command -v node >/dev/null 2>&1; then
+if has_smarsh; then
   build diff_core $C smarsh_core.c diff_core.c && run_test diff_core $C
 else
-  echo "  skip  diff_core (needs node for the JavaScript side)"
+  echo "  skip  diff_core (needs node and the Smarsh repo for the JavaScript side)"
 fi
 
 # Stack bounds, measured from the compiler's own assembly (stack_depth.c).

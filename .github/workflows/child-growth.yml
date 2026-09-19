@@ -29,7 +29,9 @@ jobs:
 
       - name: ARC Prize toolkit, and the same compiler the child is checked with at home
         run: |
-          pip install arc-agi ziglang
+          pip install arc-agi ziglang numpy
+          # numpy's own normals on this machine, for the check that the child's match them
+          echo "NPRAND_NUMPY_CRC=$(python -c 'import numpy as np, zlib; print(hex(zlib.crc32(np.random.default_rng(0).standard_normal(1000000).astype("<f8").tobytes())))')" >> "$GITHUB_ENV"
           # a wrapper, so every script that says $CC gets zig, exactly as on the laptop
           mkdir -p "$HOME/bin"
           echo '#!/bin/sh' > "$HOME/bin/zigcc"
