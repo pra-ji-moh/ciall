@@ -209,3 +209,7 @@
 2026-09-20 02:35  (building itself: one generation)
   from version 6 (one of 2 still standing) it made version 8: SELF_OFF_REACH 0->1; SELF_OFF_CLOCK 0->1
   it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
+
+2026-09-20 03:35  (building itself: one generation)
+  from version 6 (one of 2 still standing) it made version 9: SELF_MATCH_WEIGHT 4.0->16.0
+  it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
