@@ -221,3 +221,6 @@
 2026-09-20 05:33  (building itself: one generation)
   from version 5 (one of 2 still standing) it made version 11: SELF_MATCH_WEIGHT 4.0->8.0
   it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
+
+2026-09-20 06:38  (building itself: one generation)
+  from version 6 it made a version it had already made (combined 6 and 5); it tries again next time
