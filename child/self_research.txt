@@ -195,3 +195,8 @@
   from version 4 (one of 1 still standing) it made version 5: SELF_RESTLESS_WINDOW 12u->24u; SELF_FEW_SITUATIONS 64u->32u; SELF_MATCH_WEIGHT 8.0->4.0
   development games, two seeds averaged: 13.5 levels, 0.714% (its parent: 13.0, 0.703%)
   kept in the archive (still standing); the child in use stays as it is
+
+2026-09-20 00:45  (building itself: one generation)
+  from version 5 (one of 1 still standing) it made version 6: SELF_BOLD 1->0
+  development games, two seeds averaged: 13.5 levels, 0.714% (its parent: 13.5, 0.714%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
