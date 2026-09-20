@@ -243,3 +243,6 @@
 
 2026-09-20 11:32  (building itself: one generation)
   from version 5 it made a version it had already made (combined 5 and 6); it tries again next time
+
+2026-09-20 12:37  (building itself: one generation)
+  from version 6 it made a version it had already made (combined 6 and 5); it tries again next time
