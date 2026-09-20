@@ -200,3 +200,8 @@
   from version 5 (one of 1 still standing) it made version 6: SELF_BOLD 1->0
   development games, two seeds averaged: 13.5 levels, 0.714% (its parent: 13.5, 0.714%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-09-20 01:36  (building itself: one generation)
+  from version 5 (one of 2 still standing) it made version 7: SELF_OFF_THEORY 1->0; SELF_OFF_REPLAY 1->0
+  development games, two seeds averaged: 12.5 levels, 0.659% (its parent: 13.5, 0.714%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
