@@ -111,8 +111,8 @@ build grow $C smarsh_core.c smarsh_play.c arc_worldgen.c smarsh_grow.c grow.c
 build test_ending $C smarsh_core.c smarsh_ending.c test_ending.c && run_test test_ending $C
 build test_guess $C smarsh_core.c smarsh_interval.c smarsh_space.c smarsh_frame.c smarsh_guess.c test_guess.c && run_test test_guess $C
 build self_map $C self_map.c
-build test_explore $C smarsh_core.c smarsh_interval.c smarsh_space.c smarsh_frame.c smarsh_guess.c smarsh_ending.c smarsh_explore.c test_explore.c && run_test test_explore $C
-build play_arc $C smarsh_core.c smarsh_interval.c smarsh_space.c smarsh_frame.c smarsh_guess.c smarsh_ending.c smarsh_explore.c play_arc.c
+build test_explore $C smarsh_core.c smarsh_interval.c smarsh_space.c smarsh_frame.c smarsh_guess.c smarsh_ending.c smarsh_rules.c smarsh_explore.c test_explore.c && run_test test_explore $C
+build play_arc $C smarsh_core.c smarsh_interval.c smarsh_space.c smarsh_frame.c smarsh_guess.c smarsh_ending.c smarsh_rules.c smarsh_explore.c play_arc.c
 # they need node and the Smarsh repo beside this one (C:/Users/USER/smarsh)
 has_smarsh() { command -v node >/dev/null 2>&1 && [ -f "$HOME/smarsh/bin/smarsh.mjs" -o -f "/c/Users/USER/smarsh/bin/smarsh.mjs" -o -f "C:/Users/USER/smarsh/bin/smarsh.mjs" ]; }
 if has_smarsh; then
@@ -122,7 +122,7 @@ else
   echo "  skip  test_frontend (needs node and the Smarsh repo for the JavaScript side)"
 fi
 
-build test_null_args $C smarsh_core.c smarsh_reason.c smarsh_learner.c smarsh_concept.c smarsh_analogy.c smarsh_informant.c smarsh_law.c smarsh_proof.c smarsh_abstract.c smarsh_time.c smarsh_interval.c smarsh_space.c smarsh_frame.c smarsh_object.c smarsh_play.c arc_worldgen.c smarsh_grow.c smarsh_guess.c smarsh_ending.c smarsh_explore.c smarsh_child.c test_null_args.c \
+build test_null_args $C smarsh_core.c smarsh_reason.c smarsh_learner.c smarsh_concept.c smarsh_analogy.c smarsh_informant.c smarsh_law.c smarsh_proof.c smarsh_abstract.c smarsh_time.c smarsh_interval.c smarsh_space.c smarsh_frame.c smarsh_object.c smarsh_play.c arc_worldgen.c smarsh_grow.c smarsh_guess.c smarsh_ending.c smarsh_rules.c smarsh_explore.c smarsh_child.c test_null_args.c \
   && run_test test_null_args $C
 
 # C against the Python reference, without Python: these goldens ARE the

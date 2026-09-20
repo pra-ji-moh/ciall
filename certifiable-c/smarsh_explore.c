@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "smarsh_ending.h"
+#include "smarsh_rules.h"
 #include "smarsh_guess.h"
 #include "smarsh_self.h"   /* the part of its source the child rewrites */
 
@@ -19,11 +20,11 @@
  */
 typedef enum {
   M_RESTLESS, M_CLOCK, M_STOOD, M_PANELS, M_NEAR, M_THEORY, M_SKIP,
-  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_CURIOUS, M_PLAN, M_COUNT
+  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_CURIOUS, M_PLAN, M_WONAIM, M_RULES, M_COUNT
 } ex_mech_t;
 static const char *MECH_NAME[M_COUNT] = {
   "restless", "clock", "stood", "panels", "near", "theory", "skip",
-  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach", "curious", "plan"
+  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach", "curious", "plan", "wonaim", "rules"
 };
 static unsigned OFF_MASK;
 #define ON(m) ((OFF_MASK & (1u << (m))) == 0u)
@@ -34,7 +35,7 @@ static void read_off(void) {
   static const unsigned by_self[M_COUNT] = {
     SELF_OFF_RESTLESS, SELF_OFF_CLOCK, SELF_OFF_STOOD, SELF_OFF_PANELS, SELF_OFF_NEAR, SELF_OFF_THEORY,
     SELF_OFF_SKIP, SELF_OFF_DEATHS, SELF_OFF_UNMASK, SELF_OFF_WINDOW, SELF_OFF_REDRAW, SELF_OFF_RECALL,
-    SELF_OFF_REPLAY, SELF_OFF_REACH, SELF_OFF_CURIOUS, SELF_OFF_PLAN
+    SELF_OFF_REPLAY, SELF_OFF_REACH, SELF_OFF_CURIOUS, SELF_OFF_PLAN, SELF_OFF_WONAIM, SELF_OFF_RULES
   };
   OFF_MASK = 0u;
   for (m = 0u; m < M_COUNT; m++) {
@@ -471,9 +472,32 @@ static unsigned theories_left(void) {
   return n;
 }
 
+/*
+ * What was true when it last won, said in roles. Its theories of what ends a level
+ * are often all ruled out by the time a level is won -- and then, on the next
+ * level, it has nothing to go towards and wanders. But it saw the win: the kind of
+ * thing it was on or against, the kind of thing it pointed at, the kind of thing
+ * that was gone. Where its theories say nothing, that is where it goes: the one
+ * ending it has actually seen, which no theory yet explains but no act has yet
+ * shown to be beside the point either. Only when the theories are silent; a
+ * theory that still stands comes first.
+ */
+static ru_world_t RULES;      /* what each act does to each kind of thing */
+static pl_frame_t GUESSED;
+static unsigned SAID_IT;
+
+static uint16_t WON_ONTO_R, WON_GONE_R, WON_POINT_R;
+static unsigned WON_ANY;
+
 static void theory_aims(void) {
   uint16_t onto_r = 0u, gone_r = 0u, point_r = 0u;
   (void)en_aim(&THEORY, &AIM_ONTO, &AIM_GONE, &AIM_POINT, &AIM_MATCH, &onto_r, &gone_r, &point_r);
+  if (WON_ANY && ON(M_WONAIM) && onto_r == 0u && gone_r == 0u && point_r == 0u &&
+      AIM_ONTO == 0u && AIM_GONE == 0u && AIM_POINT == 0u) {
+    onto_r = WON_ONTO_R;
+    gone_r = WON_GONE_R;
+    point_r = WON_POINT_R;
+  }
   /* what the theories say in roles becomes colours in the game it is in now */
   AIM_ONTO |= (uint16_t)colours_of_roles(onto_r);
   AIM_GONE |= (uint16_t)colours_of_roles(gone_r);
@@ -2359,6 +2383,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
   (void)en_begin(&THEORY, SELF_USE_LIVE ? getenv("CIALL_LIVE") : 0);
   ways_begin();
   puzzles_begin();
+  ru_begin(&RULES);
   PLAN_LEN = 0u;
   memset(SENT_LAW, 0, sizeof SENT_LAW);   /* a new world: how far a thing goes here is unknown */
   HOLDING = 0;
@@ -2534,13 +2559,25 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
     }
     /* something untried right here */
     if (idx == EX_MAX_ACTS && N_UNTRIED[cur] > 0u) {
-      int body = body_colour();
+      int body = body_colour(), spare;
       unsigned best_d = EX_GOAL_UNKNOWN + 1u;
       static ex_sum_t cs[PL_COLOURS];
       int aim = body >= 0 && aim_mask() != 0u && N_GOALD[cur] != EX_GOAL_UNKNOWN && !WAY_OUT[W_AIM];
       WAY_NOW = aim ? W_AIM : W_EXPLORE;
       if (aim) colour_sums(&now, cs);
+      /*
+       * First time round it passes over any act its rules say changes nothing at
+       * all -- every kind of thing it can see settled to "nothing happens to it".
+       * An act that buys nothing is an act not spent, and the benchmark counts
+       * acts. If that leaves it nothing to do, it goes round again and takes them.
+       */
+      for (spare = 1; spare >= 0 && idx == EX_MAX_ACTS; spare--)
       for (i = 0u; i < N_NACT[cur]; i++) {
+        if (spare && ON(M_RULES) && KIND(N_ACT[cur][i]) != 6u &&
+            ru_changes_nothing(&RULES, KIND(N_ACT[cur][i]), &now)) {
+          RULES.spared++;
+          continue;
+        }
         if (N_NEXT[cur][i] == EX_NONE && N_FLAG[cur][i] == 0u) {
           unsigned d = EX_GOAL_UNKNOWN, k2 = KIND(N_ACT[cur][i]);
           if (!aim) {
@@ -2861,6 +2898,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
     LAST_CODE = (unsigned short)code;
     PLAN_BLOCKED = 0u;
     outcome = g->act(g, kind, PX(code), PY(code), &next);
+    if (outcome == 0) (void)ru_saw(&RULES, kind, &now, &next);   /* what happened rules out what did not */
     OBS.ended = (unsigned char)(outcome == 1 || outcome == 2);
     {
       /*
@@ -2902,6 +2940,11 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
     if (kind == 6u) ex->point_tried[now.c[PY(code)][PX(code)]]++;
 
     if (outcome == 2 || outcome == 1) {
+      /* what was true of the act that won, in roles: where to go when theories are silent */
+      WON_ONTO_R = (uint16_t)(OBS.onto_r | OBS.touch_r | OBS.last_r);
+      WON_GONE_R = OBS.gone_r;
+      WON_POINT_R = OBS.point_r;
+      WON_ANY = 1u;
       {
         /* what did winning change? The situation it won from, set against how the
            level began, is added to what it knows winning looks like */
@@ -3177,6 +3220,7 @@ void ex_report(FILE *out, const ex_explorer_t *ex) {
     fprintf(out, "  remembered from %u earlier run%s (best before: %u levels); walked %u steps it remembered\n",
             ex->runs_before, ex->runs_before == 1u ? "" : "s", ex->best_before, ex->recalled);
   }
+  (void)ru_report(&RULES, out);
   if (ex->plans_laid > 0u) {
     fprintf(out, "  ways it reckoned over the board from what it worked out: %u laid, %u steps walked, %u dropped when it was not where it said\n",
             ex->plans_laid, ex->plan_steps, ex->plans_broke);
