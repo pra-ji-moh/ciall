@@ -283,3 +283,7 @@
 2026-09-20 22:32  (building itself: one generation)
   from version 6 (one of 2 still standing) it made version 22: SELF_SHIFT_SURE 2u->1u
   it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
+
+2026-09-20 23:31  (building itself: one generation)
+  from version 5 (one of 2 still standing) it made version 23: SELF_WATCH 0u->96u; SELF_RESTLESS_WINDOW 24u->16u
+  it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
