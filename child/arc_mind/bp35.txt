@@ -1,5 +1,5 @@
 ciall-explorer-mind 1
-runs 99
+runs 100
 best 1
 mask 37 19 1
 mask 37 20 1
