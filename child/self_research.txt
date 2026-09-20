@@ -236,3 +236,7 @@
 2026-09-20 09:32  (building itself: one generation)
   from version 6 (one of 2 still standing) it made version 14: SELF_MATCH_WEIGHT 4.0->8.0; SELF_SHIFT_SURE 2u->3u
   it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
+
+2026-09-20 10:34  (building itself: one generation)
+  from version 5 (one of 2 still standing) it made version 15: SELF_TICK_MAX 8u->4u
+  it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
