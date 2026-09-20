@@ -217,3 +217,7 @@
 2026-09-20 04:33  (building itself: one generation)
   from version 6 (one of 2 still standing) it made version 10: SELF_FRESH_STARTS 3u->6u; SELF_OFF_THEORY 1->0; SELF_OFF_CURIOUS 1->0
   it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
+
+2026-09-20 05:33  (building itself: one generation)
+  from version 5 (one of 2 still standing) it made version 11: SELF_MATCH_WEIGHT 4.0->8.0
+  it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
