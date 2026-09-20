@@ -252,3 +252,5 @@
    now: wrong 5462 times, fixed 242, not yet 5279; 41.1% right on stories never seen; not wrong lately about 3 kinds of 20
 -- it remembers 10500 stories, and reads 300 more --
    now: wrong 5663 times, fixed 242, not yet 5480; 41.1% right on stories never seen; not wrong lately about 3 kinds of 20
+-- it remembers 10800 stories, and reads 300 more --
+   now: wrong 5860 times, fixed 243, not yet 5676; 41.1% right on stories never seen; not wrong lately about 3 kinds of 20
