@@ -268,3 +268,7 @@
 
 2026-09-20 18:36  (building itself: one generation)
   from version 5 it made a version it had already made (combined 5 and 6); it tries again next time
+
+2026-09-20 19:31  (building itself: one generation)
+  from version 5 (one of 2 still standing) it made version 20: SELF_OFF_RECALL 0->1
+  it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
