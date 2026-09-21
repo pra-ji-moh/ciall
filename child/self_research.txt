@@ -323,3 +323,7 @@
 
 2026-09-21 09:34  (building itself: one generation)
   from version 6 it made a version it had already made (combined 6 and 5); it tries again next time
+
+2026-09-21 10:35  (building itself: one generation)
+  from version 6 (one of 2 still standing) it made version 30: SELF_OFF_STOOD 0->1
+  it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
