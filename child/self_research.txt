@@ -370,3 +370,7 @@
 2026-09-21 21:34  (building itself: one generation)
   from version 6 (one of 2 still standing) it made version 40: SELF_KEEP_ACTS 24u->40u; SELF_OFF_DEATHS 0->1; SELF_WATCH 0u->48u
   it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
+
+2026-09-21 22:33  (building itself: one generation)
+  from version 5 (one of 2 still standing) it made version 41: SELF_OFF_STOOD 0->1; SELF_OFF_SKIP 0->1
+  it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
