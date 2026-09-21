@@ -358,3 +358,7 @@
 2026-09-21 18:39  (building itself: one generation)
   from version 6 (one of 2 still standing) it made version 37: SELF_OFF_REDRAW 0->1; SELF_OFF_WINDOW 1->0
   it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
+
+2026-09-21 19:33  (building itself: one generation)
+  from version 6 (one of 2 still standing) it made version 38: SELF_OFF_RECALL 0->1; SELF_OFF_PANELS 0->1; SELF_BOLD 0->1
+  it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
