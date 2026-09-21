@@ -320,3 +320,6 @@
 2026-09-21 08:36  (building itself: one generation)
   from version 6 (one of 2 still standing) it made version 29: SELF_FEW_SITUATIONS 32u->128u; SELF_OFF_RESTLESS 0->1; SELF_OFF_REPLAY 1->0
   it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
+
+2026-09-21 09:34  (building itself: one generation)
+  from version 6 it made a version it had already made (combined 6 and 5); it tries again next time
