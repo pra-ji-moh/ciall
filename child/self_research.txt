@@ -350,3 +350,7 @@
 2026-09-21 16:35  (building itself: one generation)
   from version 5 (one of 2 still standing) it made version 35: SELF_OFF_RESTLESS 0->1; SELF_RESTLESS_WINDOW 24u->8u; SELF_FRESH_STARTS 3u->0u
   it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
+
+2026-09-21 17:32  (building itself: one generation)
+  from version 6 (one of 2 still standing) it made version 36: SELF_OFF_REDRAW 0->1; SELF_TIE_MODE 1u->0u; SELF_FRESH_STARTS 3u->1u
+  it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
