@@ -305,3 +305,7 @@
 2026-09-21 04:36  (building itself: one generation)
   from version 5 (one of 2 still standing) it made version 26: SELF_OFF_NEAR 1->0; SELF_SHIFT_SURE 2u->3u; SELF_SKIP_TAU 0.75->0.5
   it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
+
+2026-09-21 05:34  (building itself: one generation)
+  from version 5 (one of 2 still standing) it made version 27: SELF_FEW_SITUATIONS 32u->16u
+  it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
