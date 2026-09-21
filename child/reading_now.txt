@@ -1,33 +1,33 @@
-26000 stories; the last 200 are never read, and it is tested on them
+26500 stories; the last 200 are never read, and it is tested on them
 
   likeness on  read  100 stories:  1500 words,   9026 places words stood in,   7737 word pairs read
-      never-read sentences it could judge: 1866 of 4363 (the rest hold a word it has never met)
-      real sentences it said were its language:       44.9%
-      swapped sentences it said were not:             92.7%
-      told the real one from the swapped one:         38.4%
-      SHOWN BOTH, picked the real one:  88.2%   picked the swapped one:  5.1%   could not tell:  6.8%
+      never-read sentences it could judge: 1765 of 4418 (the rest hold a word it has never met)
+      real sentences it said were its language:       40.3%
+      swapped sentences it said were not:             92.3%
+      told the real one from the swapped one:         33.1%
+      SHOWN BOTH, picked the real one:  86.9%   picked the swapped one:  4.9%   could not tell:  8.3%
   likeness on  read  400 stories:  3240 words,  29112 places words stood in,  23477 word pairs read
-      never-read sentences it could judge: 2960 of 4362 (the rest hold a word it has never met)
-      real sentences it said were its language:       74.8%
-      swapped sentences it said were not:             52.9%
-      told the real one from the swapped one:         28.6%
-      SHOWN BOTH, picked the real one:  88.8%   picked the swapped one:  3.1%   could not tell:  8.1%
+      never-read sentences it could judge: 2875 of 4417 (the rest hold a word it has never met)
+      real sentences it said were its language:       73.9%
+      swapped sentences it said were not:             51.0%
+      told the real one from the swapped one:         26.0%
+      SHOWN BOTH, picked the real one:  87.3%   picked the swapped one:  3.4%   could not tell:  9.4%
   likeness on  read 1000 stories:  4851 words,  60795 places words stood in,  46319 word pairs read
-      never-read sentences it could judge: 3876 of 4360 (the rest hold a word it has never met)
-      real sentences it said were its language:       92.0%
-      swapped sentences it said were not:             24.8%
-      told the real one from the swapped one:         17.3%
-      SHOWN BOTH, picked the real one:  90.2%   picked the swapped one:  1.6%   could not tell:  8.2%
-  likeness on  read 25800 stories: 13401 words, 484951 places words stood in, 306416 word pairs read
-      never-read sentences it could judge: 4334 of 4359 (the rest hold a word it has never met)
-      real sentences it said were its language:       99.7%
-      swapped sentences it said were not:              8.4%
-      told the real one from the swapped one:          8.1%
-      SHOWN BOTH, picked the real one:  82.2%   picked the swapped one:  0.5%   could not tell: 17.4%
+      never-read sentences it could judge: 3790 of 4417 (the rest hold a word it has never met)
+      real sentences it said were its language:       89.8%
+      swapped sentences it said were not:             24.9%
+      told the real one from the swapped one:         15.6%
+      SHOWN BOTH, picked the real one:  88.1%   picked the swapped one:  1.7%   could not tell: 10.2%
+  likeness on  read 26300 stories: 13479 words, 490211 places words stood in, 309454 word pairs read
+      never-read sentences it could judge: 4341 of 4417 (the rest hold a word it has never met)
+      real sentences it said were its language:       99.6%
+      swapped sentences it said were not:              7.4%
+      told the real one from the swapped one:          7.0%
+      SHOWN BOTH, picked the real one:  82.0%   picked the swapped one:  0.7%   could not tell: 17.3%
 
-  likeness off read 25800 stories: 13401 words,      0 places words stood in, 306416 word pairs read
-      never-read sentences it could judge: 4334 of 4359 (the rest hold a word it has never met)
-      real sentences it said were its language:       79.7%
-      swapped sentences it said were not:             87.6%
-      told the real one from the swapped one:         67.6%
-      SHOWN BOTH, picked the real one:  82.1%   picked the swapped one:  0.5%   could not tell: 17.4%
+  likeness off read 26300 stories: 13479 words,      0 places words stood in, 309454 word pairs read
+      never-read sentences it could judge: 4341 of 4417 (the rest hold a word it has never met)
+      real sentences it said were its language:       77.8%
+      swapped sentences it said were not:             87.5%
+      told the real one from the swapped one:         65.5%
+      SHOWN BOTH, picked the real one:  81.9%   picked the swapped one:  0.7%   could not tell: 17.4%
