@@ -295,3 +295,6 @@
 2026-09-21 01:33  (building itself: one generation)
   from version 6 (one of 2 still standing) it made version 25: SELF_OFF_THEORY 1->0
   it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
+
+2026-09-21 02:35  (building itself: one generation)
+  from version 6 it made a version it had already made (combined 6 and 5); it tries again next time
