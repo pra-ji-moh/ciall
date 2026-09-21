@@ -342,3 +342,7 @@
 
 2026-09-21 14:34  (building itself: one generation)
   from version 5 it made a version it had already made (combined 5 and 6); it tries again next time
+
+2026-09-21 15:33  (building itself: one generation)
+  from version 6 (one of 2 still standing) it made version 34: SELF_OFF_RECALL 0->1; SELF_RESTLESS_WINDOW 24u->8u
+  it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
