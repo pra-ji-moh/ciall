@@ -1,5 +1,5 @@
 ciall-explorer-mind 1
-runs 113
+runs 114
 best 1
 mask 36 8 0
 mask 36 9 0
@@ -71,11 +71,11 @@ mask 63 62 0
 mask 63 63 0
 colour 0 0 0 0
 colour 1 0 0 0
-colour 2 9253 15216 0
-shift 1 2 8 0 4282
-shift 2 2 -8 0 1499
-shift 3 2 0 8 1693
-shift 4 2 0 -8 1779
+colour 2 9325 15329 0
+shift 1 2 8 0 4310
+shift 2 2 -8 0 1508
+shift 3 2 0 8 1710
+shift 4 2 0 -8 1797
 colour 3 0 0 0
 colour 4 0 0 0
 colour 5 0 0 0
@@ -84,36 +84,36 @@ shift 1 6 8 0 35
 shift 2 6 -8 0 1
 shift 3 6 0 8 28
 shift 4 6 0 -8 76
-colour 7 1649 2528 0
-shift 1 7 8 0 364
+colour 7 1654 2536 0
+shift 1 7 8 0 365
 shift 2 7 -8 0 354
-shift 3 7 0 8 279
-shift 4 7 0 -8 652
-colour 8 6290 10885 0
-shift 1 8 8 0 823
-shift 2 8 -8 0 993
-shift 3 8 0 8 621
-shift 4 8 0 -8 3853
-colour 9 5139 10146 0
-shift 1 9 8 0 539
-shift 2 9 -8 0 2732
-shift 3 9 0 8 258
-shift 4 9 0 -8 1610
+shift 3 7 0 8 280
+shift 4 7 0 -8 655
+colour 8 6330 10954 0
+shift 1 8 8 0 829
+shift 2 8 -8 0 1000
+shift 3 8 0 8 627
+shift 4 8 0 -8 3874
+colour 9 5180 10226 0
+shift 1 9 8 0 547
+shift 2 9 -8 0 2752
+shift 3 9 0 8 259
+shift 4 9 0 -8 1622
 colour 10 0 0 0
-colour 11 0 0 113
+colour 11 0 0 114
 colour 12 0 0 0
-colour 13 1203 2912 0
-shift 1 13 8 0 186
-shift 2 13 -8 0 279
-shift 3 13 0 8 77
-shift 4 13 0 -8 661
-colour 14 42282 0 0
-shift 1 14 -8 0 9829
-shift 2 14 8 0 8987
-shift 3 14 0 -8 6507
-shift 4 14 0 8 16959
+colour 13 1209 2925 0
+shift 1 13 8 0 188
+shift 2 13 -8 0 280
+shift 3 13 0 8 78
+shift 4 13 0 -8 663
+colour 14 42565 0 0
+shift 1 14 -8 0 9899
+shift 2 14 8 0 9045
+shift 3 14 0 -8 6554
+shift 4 14 0 8 17067
 colour 15 0 0 0
-onto 42249 113 2
+onto 42532 114 2
 family-here ONTO 1
 family-here LAST 1
 family ONTO_R 1
