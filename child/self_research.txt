@@ -430,3 +430,8 @@
 2026-09-22 13:35  (building itself: one generation)
   from version 6 (one of 2 still standing) it made version 52: SELF_OFF_NEAR 1->0
   it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
+
+2026-09-22 14:38  (building itself: one generation)
+  from version 6 (one of 2 still standing) it made version 53: SELF_SHIFT_SURE 2u->1u; SELF_OFF_NEAR 1->0; SELF_OFF_STOOD 0->1
+  development games, two seeds averaged: 12.5 levels, 0.651% (its parent: 13.5, 0.714%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
