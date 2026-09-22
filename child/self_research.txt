@@ -426,3 +426,7 @@
 2026-09-22 12:40  (building itself: one generation)
   from version 6 (one of 2 still standing) it made version 51: SELF_OFF_CURIOUS 1->0
   it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
+
+2026-09-22 13:35  (building itself: one generation)
+  from version 6 (one of 2 still standing) it made version 52: SELF_OFF_NEAR 1->0
+  it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
