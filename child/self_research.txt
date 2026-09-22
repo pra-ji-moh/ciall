@@ -451,3 +451,6 @@
   from version 5 (one of 2 still standing) it made version 55: SELF_OFF_THEORY 1->0; SELF_FRESH_STARTS 3u->6u
   development games, two seeds averaged: 13.5 levels, 0.661% (its parent: 13.5, 0.714%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-09-22 19:32  (building itself: one generation)
+  from version 6 it made a version it had already made (combined 6 and 5); it tries again next time
