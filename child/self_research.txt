@@ -414,3 +414,7 @@
 
 2026-09-22 09:33  (building itself: one generation)
   from version 5 it made a version it had already made (combined 5 and 6); it tries again next time
+
+2026-09-22 10:36  (building itself: one generation)
+  from version 5 (one of 2 still standing) it made version 49: SELF_OFF_REPLAY 1->0; SELF_KEEP_ACTS 24u->12u; SELF_RESTLESS_WINDOW 24u->16u
+  it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
