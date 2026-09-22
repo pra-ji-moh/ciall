@@ -395,3 +395,7 @@
 
 2026-09-22 04:34  (building itself: one generation)
   from version 6 it made a version it had already made (SELF_SHIFT_SURE 2u->1u); it tries again next time
+
+2026-09-22 05:33  (building itself: one generation)
+  from version 5 (one of 2 still standing) it made version 45: SELF_BOLD 1->0; SELF_RESTLESS_WINDOW 24u->8u; SELF_OFF_REACH 0->1
+  it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
