@@ -411,3 +411,6 @@
 2026-09-22 08:36  (building itself: one generation)
   from version 5 (one of 2 still standing) it made version 48: SELF_SHIFT_SURE 2u->1u; SELF_OFF_REPLAY 1->0; SELF_OFF_STOOD 0->1
   it does not pass its own checks (59 passed, 1 failed): kept on the record as a dead end
+
+2026-09-22 09:33  (building itself: one generation)
+  from version 5 it made a version it had already made (combined 5 and 6); it tries again next time
