@@ -27540,3 +27540,157 @@
 2026-09-22 15:31  the stretch ends: 4404 worlds in all
 2026-09-22 15:31  ARC-AGI-3, all 25 public games, remembering what it settled before:
     this stretch it ended 17 of 183 levels; the most it has ever ended is 24
+
+2026-09-22 16:35  a stretch of growth begins. Where it stands: mazes frontier 9; keys and doors frontier 9; pushing frontier 9;
+  world 4405  mazes  difficulty 9  seed 4405
+    finished all 3 levels in 100 actions, shortest 91; after the first level 1.00 times the shortest
+    itself: 4 cells that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 7; it ends a level by covering: colour 13
+    nothing it could not explain
+  handled the hardest mazes it can be given, three times running
+  world 4406  keys and doors  difficulty 9  seed 4406
+    finished all 3 levels in 322 actions, shortest 256; after the first level 1.00 times the shortest
+    itself: 9 cells that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 2 colour 13; it ends a level by covering: colour 6
+    causes it found: covering colour 10 turns colour 13 into colour 4;
+    what it could not explain: 19 times it had nowhere left to go, so something it had concluded was wrong;
+  handled the hardest keys and doors it can be given, three times running
+  world 4407  pushing  difficulty 9  seed 4407
+    finished all 3 levels in 279 actions, shortest 53; after the first level 1.00 times the shortest
+    itself: 9 cells that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 2; it ends a level by covering: nothing settled
+    it pushes a thing of 9 cells, 28 times; a level ends when that thing covers colour 10
+    it stranded itself and started a level again 1 time
+    what it could not explain: 6 times it had nowhere left to go, so something it had concluded was wrong;
+  handled the hardest pushing it can be given, three times running
+  world 4408  mazes  difficulty 9  seed 4408
+    finished all 3 levels in 122 actions, shortest 94; after the first level 1.00 times the shortest
+    itself: 1 cell that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 5; it ends a level by covering: colour 6
+    what it could not explain: 2 times it had nowhere left to go, so something it had concluded was wrong;
+  world 4409  keys and doors  difficulty 9  seed 4409
+    finished all 3 levels in 308 actions, shortest 261; after the first level 1.00 times the shortest
+    itself: 9 cells that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 3 colour 5; it ends a level by covering: colour 4
+    causes it found: covering colour 1 turns colour 3 into colour 0;
+    nothing it could not explain
+  world 4410  pushing  difficulty 9  seed 4410
+    finished all 3 levels in 61 actions, shortest 43; after the first level 1.00 times the shortest
+    itself: 4 cells that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 4; it ends a level by covering: nothing settled
+    it pushes a thing of 4 cells, 14 times; a level ends when that thing covers colour 11
+    nothing it could not explain
+  world 4411  mazes  difficulty 9  seed 4411
+    finished all 3 levels in 149 actions, shortest 84; after the first level 1.00 times the shortest
+    itself: 4 cells that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 8; it ends a level by covering: colour 9
+    what it could not explain: 16 times it had nowhere left to go, so something it had concluded was wrong;
+  world 4412  keys and doors  difficulty 9  seed 4412
+    finished all 3 levels in 295 actions, shortest 230; after the first level 1.00 times the shortest
+    itself: 1 cell that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 2 colour 8; it ends a level by covering: colour 11
+    causes it found: covering colour 13 turns colour 2 into colour 6;
+    what it could not explain: 13 times it had nowhere left to go, so something it had concluded was wrong;
+  world 4413  pushing  difficulty 9  seed 4413
+    finished all 3 levels in 75 actions, shortest 61; after the first level 1.00 times the shortest
+    itself: 1 cell that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 8; it ends a level by covering: nothing settled
+    it pushes a thing of 1 cell, 18 times; a level ends when that thing covers colour 12
+    nothing it could not explain
+  world 4414  mazes  difficulty 9  seed 4414
+    finished all 3 levels in 119 actions, shortest 81; after the first level 1.00 times the shortest
+    itself: 9 cells that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 6; it ends a level by covering: colour 5
+    what it could not explain: 4 times it had nowhere left to go, so something it had concluded was wrong;
+  handled the hardest mazes it can be given, three times running
+  world 4415  keys and doors  difficulty 9  seed 4415
+    finished all 3 levels in 268 actions, shortest 237; after the first level 1.11 times the shortest
+    itself: 1 cell that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 4 colour 9; it ends a level by covering: colour 0
+    causes it found: covering colour 8 turns colour 9 into colour 13;
+    nothing it could not explain
+  handled the hardest keys and doors it can be given, three times running
+  world 4416  pushing  difficulty 9  seed 4416
+    finished all 3 levels in 57 actions, shortest 48; after the first level 1.00 times the shortest
+    itself: 9 cells that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 10; it ends a level by covering: nothing settled
+    it pushes a thing of 9 cells, 9 times; a level ends when that thing covers colour 14
+    nothing it could not explain
+  handled the hardest pushing it can be given, three times running
+  world 4417  mazes  difficulty 9  seed 4417
+    finished all 3 levels in 120 actions, shortest 78; after the first level 1.51 times the shortest
+    itself: 1 cell that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 6; it ends a level by covering: colour 12
+    what it could not explain: 2 times it had nowhere left to go, so something it had concluded was wrong;
+  world 4418  keys and doors  difficulty 9  seed 4418
+    finished all 3 levels in 373 actions, shortest 295; after the first level 1.00 times the shortest
+    itself: 9 cells that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 5 colour 8; it ends a level by covering: colour 4
+    causes it found: covering colour 1 turns colour 5 into colour 12;
+    nothing it could not explain
+  world 4419  pushing  difficulty 9  seed 4419
+    finished all 3 levels in 296 actions, shortest 65; after the first level 1.00 times the shortest
+    itself: 4 cells that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 10; it ends a level by covering: nothing settled
+    it pushes a thing of 4 cells, 31 times; a level ends when that thing covers colour 7
+    it stranded itself and started a level again 1 time
+    what it could not explain: 6 times it had nowhere left to go, so something it had concluded was wrong;
+  world 4420  mazes  difficulty 9  seed 4420
+    finished all 3 levels in 100 actions, shortest 80; after the first level 1.00 times the shortest
+    itself: 1 cell that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 2; it ends a level by covering: colour 15
+    nothing it could not explain
+  world 4421  keys and doors  difficulty 9  seed 4421
+    finished all 3 levels in 254 actions, shortest 208; after the first level 1.18 times the shortest
+    itself: 1 cell that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 3 colour 4; it ends a level by covering: colour 0
+    causes it found: covering colour 2 turns colour 3 into colour 5;
+    what it could not explain: 3 times it had nowhere left to go, so something it had concluded was wrong;
+  world 4422  pushing  difficulty 9  seed 4422
+    finished all 3 levels in 312 actions, shortest 71; after the first level 1.00 times the shortest
+    itself: 1 cell that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 2; it ends a level by covering: nothing settled
+    it pushes a thing of 1 cell, 32 times; a level ends when that thing covers colour 10
+    it stranded itself and started a level again 1 time
+    what it could not explain: 6 times it had nowhere left to go, so something it had concluded was wrong;
+  world 4423  mazes  difficulty 9  seed 4423
+    finished all 3 levels in 110 actions, shortest 97; after the first level 1.00 times the shortest
+    itself: 1 cell that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 14; it ends a level by covering: colour 10
+    nothing it could not explain
+  handled the hardest mazes it can be given, three times running
+  world 4424  keys and doors  difficulty 9  seed 4424
+    finished all 3 levels in 258 actions, shortest 221; after the first level 1.00 times the shortest
+    itself: 9 cells that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 0; it ends a level by covering: colour 3
+    causes it found: covering colour 2 turns colour 13 into colour 5;
+    what it could not explain: 5 times it had nowhere left to go, so something it had concluded was wrong;
+  handled the hardest keys and doors it can be given, three times running
+  world 4425  pushing  difficulty 9  seed 4425
+    finished all 3 levels in 98 actions, shortest 63; after the first level 1.00 times the shortest
+    itself: 4 cells that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 15; it ends a level by covering: nothing settled
+    it pushes a thing of 4 cells, 28 times; a level ends when that thing covers colour 14
+    nothing it could not explain
+  handled the hardest pushing it can be given, three times running
+  world 4426  mazes  difficulty 9  seed 4426
+    finished all 3 levels in 94 actions, shortest 74; after the first level 1.00 times the shortest
+    itself: 9 cells that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 4; it ends a level by covering: colour 12
+    nothing it could not explain
+  world 4427  keys and doors  difficulty 9  seed 4427
+    finished all 3 levels in 402 actions, shortest 330; after the first level 1.00 times the shortest
+    itself: 9 cells that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 2 colour 12; it ends a level by covering: colour 5
+    causes it found: covering colour 11 turns colour 12 into colour 10;
+    what it could not explain: 2 times it had nowhere left to go, so something it had concluded was wrong;
+  world 4428  pushing  difficulty 9  seed 4428
+    finished all 3 levels in 298 actions, shortest 77; after the first level 1.00 times the shortest
+    itself: 9 cells that moved together; 4 actions that move it, 1 that do nothing
+    in the way: colour 8; it ends a level by covering: nothing settled
+    it pushes a thing of 9 cells, 21 times; a level ends when that thing covers colour 3
+    it stranded itself and started a level again 1 time
+    what it could not explain: 6 times it had nowhere left to go, so something it had concluded was wrong;
+2026-09-22 16:35  the stretch ends: 4428 worlds in all
+2026-09-22 16:35  ARC-AGI-3, all 25 public games, remembering what it settled before:
+    this stretch it ended 17 of 183 levels; the most it has ever ended is 24
