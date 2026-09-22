@@ -462,3 +462,8 @@
   from version 5 (one of 2 still standing) it made version 56: SELF_KEEP_ACTS 24u->40u
   development games, two seeds averaged: 13.5 levels, 0.714% (its parent: 13.5, 0.714%)
   kept in the archive (still standing); the child in use stays as it is
+
+2026-09-22 22:37  (building itself: one generation)
+  from version 56 (one of 1 still standing) it made version 57: SELF_FRESH_STARTS 3u->1u
+  development games, two seeds averaged: 13.5 levels, 0.714% (its parent: 13.5, 0.714%)
+  kept in the archive (still standing); the child in use stays as it is
