@@ -3,7 +3,7 @@
  * by elimination, and used to say what the next picture will be.
  *
  * A THING is a patch of one colour, joined side to side. Its KIND is what the child
- * can say about it without naming it: its colour, and how big it is, in classes.
+ * can say about it without naming it: its colour, and its shape (how tall, how wide).
  * Things of a kind behave alike, so what is learned of one is learned of all.
  *
  * For each (kind, act) it holds every rule its language can say:
@@ -31,10 +31,13 @@
 
 #include "smarsh_play.h"
 
-#define RU_KINDS (PL_COLOURS * 6u)     /* colour, and six classes of size */
+#define RU_KINDS 1024u                  /* colour and shape (height, width): things alike in both are one kind */
 #define RU_ACTS 8u
-#define RU_MOVES 25u                   /* go(dr, dc), each -2..2 */
-#define RU_RULES (1u + RU_MOVES + 2u + 1u)   /* nothing, the moves, gone, changed size, recoloured */
+#define RU_REACH 8                     /* go(dr, dc), each -8..8: a thing in these games steps by a whole block */
+#define RU_SIDE (2u * RU_REACH + 1u)
+#define RU_MOVES (RU_SIDE * RU_SIDE)   /* go(0, 0) is "nothing" */
+/* the moves; gone; changed size; recoloured; then each move again as "unless something is in the way" */
+#define RU_WORDS ((2u * RU_MOVES + 3u + 63u) / 64u)
 #define RU_MAX_THINGS 256u
 
 typedef struct {
@@ -44,9 +47,10 @@ typedef struct {
 } ru_thing_t;
 
 typedef struct {
-  uint32_t left[RU_KINDS][RU_ACTS];    /* a bit per rule still possible */
+  uint64_t left[RU_KINDS][RU_ACTS][RU_WORDS];   /* a bit per rule still possible */
   unsigned seen[RU_KINDS][RU_ACTS];    /* times an act was done with such a thing there */
   unsigned said, said_right, said_wrong, cannot_say, spared;
+  uint16_t passable;                   /* colours a thing has been seen to move into */
   unsigned long long ruled_out;
 } ru_world_t;
 
@@ -77,6 +81,14 @@ int ru_say(ru_world_t *w, unsigned act, const pl_frame_t *now, pl_frame_t *out);
  * the act is known to change nothing, and spending one on it would buy nothing.
  */
 int ru_changes_nothing(const ru_world_t *w, unsigned act, const pl_frame_t *now);
+
+/*
+ * Imagining: the picture this act would leave, by its rules -- each thing whose kind
+ * has settled moves or goes as its one rule says; a thing whose kind has not settled
+ * is imagined where it is. That last is a hypothesis, not knowledge, so a plan made
+ * in imagination is checked step by step against what really happens.
+ */
+void ru_imagine(const ru_world_t *w, unsigned act, const pl_frame_t *now, pl_frame_t *out);
 
 /* how much it still does not know about acts and kinds, in bits */
 double ru_bits(const ru_world_t *w);

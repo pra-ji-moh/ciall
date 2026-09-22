@@ -1,16 +1,55 @@
 /*
  * smarsh_rules.c -- see smarsh_rules.h.
+ *
+ * Rules are numbered: 0 .. RU_MOVES-1 are go(dr, dc) for dr, dc in -RU_REACH..RU_REACH
+ * (go(0, 0) is "nothing happens to it"); then gone; then changed size; then recoloured.
+ * Each (kind, act) holds one bit per rule still possible.
  */
 #include "smarsh_rules.h"
 
+#include <stdlib.h>
 #include <string.h>
 
-/* rule numbers: 0 nothing; 1..25 go(dr, dc) with dr, dc in -2..2; 26 gone; 27 size changed; 28 recoloured */
-#define R_NOTHING 0u
-#define R_GO 1u
-#define R_GONE (R_GO + RU_MOVES)
-#define R_SIZE (R_GONE + 1u)
-#define R_COLOUR (R_SIZE + 1u)
+#define R_MOVE(dr, dc) ((unsigned)(((dr) + RU_REACH) * (int)RU_SIDE + ((dc) + RU_REACH)))
+#define R_NOTHING R_MOVE(0, 0)
+#define R_GONE (RU_MOVES)
+#define R_SIZE (RU_MOVES + 1u)
+#define R_COLOUR (RU_MOVES + 2u)
+/*
+ * go(dr, dc) unless something is in the way: it moves, or, where any cell it would
+ * move into holds something other than ground (or lies off the board), it stays.
+ * Solid things do not pass through each other. This is the rule a child knows
+ * without being told; here it is only one more rule, and it too is ruled out the
+ * first time a thing moves into something or stays with nothing in its way.
+ */
+#define R_BMOVE(dr, dc) (RU_MOVES + 3u + R_MOVE(dr, dc))
+#define R_ALL (2u * RU_MOVES + 3u)
+
+static unsigned GROUND;   /* the colour of the biggest thing in the picture being read */
+/*
+ * What a thing can move into is not assumed: in some games the floor is the
+ * commonest colour, in others the walls are. A colour is passable once a thing has
+ * been seen to move into it; every other colour is in the way until then.
+ */
+static uint16_t PASSABLE;
+
+/* would a move by (dr, dc) put any cell of it where something other than ground, or itself, is? */
+static int blocked(const ru_thing_t *t, const pl_frame_t *f, int dr, int dc) {
+  unsigned r, c;
+  for (r = t->top; r <= t->bottom; r++) {
+    for (c = t->left; c <= t->right; c++) {
+      int nr, nc;
+      unsigned v;
+      if (f->c[r][c] != t->colour) continue;
+      nr = (int)r + dr;
+      nc = (int)c + dc;
+      if (nr < 0 || nc < 0 || nr >= (int)f->h || nc >= (int)f->w) return 1;
+      v = f->c[nr][nc];
+      if (v != t->colour && !((PASSABLE >> v) & 1u)) return 1;
+    }
+  }
+  return 0;
+}
 
 static unsigned size_class(unsigned cells) {
   if (cells <= 1u) return 0u;
@@ -22,14 +61,58 @@ static unsigned size_class(unsigned cells) {
 }
 
 unsigned ru_kind(const ru_thing_t *t) {
-  return t->colour * 6u + size_class(t->cells);
+  /* colour and shape; a big field of ground is one kind whatever its shape */
+  unsigned hgt = t->bottom - t->top + 1u, wid = t->right - t->left + 1u;
+  if (t->cells > 400u) return (t->colour * 64u) % RU_KINDS;
+  return (t->colour * 7919u + hgt * 131u + wid * 17u + t->cells) % RU_KINDS;
+}
+
+/* ---- sets of rules ------------------------------------------------------------ */
+
+static void set_all(uint64_t *b) {
+  unsigned i;
+  for (i = 0u; i < RU_WORDS; i++) b[i] = 0u;
+  for (i = 0u; i < R_ALL; i++) b[i / 64u] |= 1ull << (i % 64u);
+}
+
+static int has(const uint64_t *b, unsigned r) {
+  return (int)((b[r / 64u] >> (r % 64u)) & 1ull);
+}
+
+static void put(uint64_t *b, unsigned r) {
+  b[r / 64u] |= 1ull << (r % 64u);
+}
+
+static unsigned count(const uint64_t *b) {
+  unsigned i, n = 0u;
+  for (i = 0u; i < RU_WORDS; i++) {
+    uint64_t x = b[i];
+    while (x) {
+      x &= x - 1u;
+      n++;
+    }
+  }
+  return n;
+}
+
+/* the one rule left, if one is */
+static int only_rule(const uint64_t *b, unsigned *rule) {
+  unsigned i;
+  if (count(b) != 1u) return 0;
+  for (i = 0u; i < R_ALL; i++) {
+    if (has(b, i)) {
+      *rule = i;
+      return 1;
+    }
+  }
+  return 0;
 }
 
 void ru_begin(ru_world_t *w) {
   unsigned k, a;
   memset(w, 0, sizeof *w);
   for (k = 0u; k < RU_KINDS; k++) {
-    for (a = 0u; a < RU_ACTS; a++) w->left[k][a] = (1u << RU_RULES) - 1u;
+    for (a = 0u; a < RU_ACTS; a++) set_all(w->left[k][a]);
   }
 }
 
@@ -114,7 +197,6 @@ static int still_there(const ru_thing_t *t, const pl_frame_t *after) {
   return 0;
 }
 
-/* how many cells of the thing's colour are in its box now */
 static unsigned cells_now(const ru_thing_t *t, const pl_frame_t *after) {
   unsigned r, c, n = 0u;
   for (r = t->top; r <= t->bottom; r++) {
@@ -126,21 +208,35 @@ static unsigned cells_now(const ru_thing_t *t, const pl_frame_t *after) {
 }
 
 /* the rules that could be true of what happened to this thing */
-static uint32_t happened(const ru_thing_t *t, const pl_frame_t *before, const pl_frame_t *after) {
-  uint32_t ok = 0u;
+static void happened(const ru_thing_t *t, const pl_frame_t *before, const pl_frame_t *after, uint64_t *ok) {
   int dr, dc;
-  unsigned n = cells_now(t, after);
-  if (n == t->cells && moved_by(t, before, after, 0, 0)) ok |= 1u << R_NOTHING;
-  for (dr = -2; dr <= 2; dr++) {
-    for (dc = -2; dc <= 2; dc++) {
-      unsigned bit = R_GO + (unsigned)((dr + 2) * 5 + (dc + 2));
-      if ((dr != 0 || dc != 0) && moved_by(t, before, after, dr, dc)) ok |= 1u << bit;
+  unsigned n = cells_now(t, after), i;
+  for (i = 0u; i < RU_WORDS; i++) ok[i] = 0u;
+  for (dr = -RU_REACH; dr <= RU_REACH; dr++) {
+    for (dc = -RU_REACH; dc <= RU_REACH; dc++) {
+      if (dr == 0 && dc == 0) {
+        if (n == t->cells && moved_by(t, before, after, 0, 0)) put(ok, R_NOTHING);
+      } else if (moved_by(t, before, after, dr, dc)) {
+        put(ok, R_MOVE(dr, dc));
+      }
     }
   }
-  if (!still_there(t, after)) ok |= 1u << R_GONE;
-  if (n != t->cells && n > 0u) ok |= 1u << R_SIZE;
   {
-    /* recoloured: its box now holds one other colour where its cells were */
+    /* each move, "unless something is in the way": true if it moved and nothing was in the
+       way, or if it stayed and something was */
+    int stayed = (n == t->cells && moved_by(t, before, after, 0, 0));
+    for (dr = -RU_REACH; dr <= RU_REACH; dr++) {
+      for (dc = -RU_REACH; dc <= RU_REACH; dc++) {
+        int in_way;
+        if (dr == 0 && dc == 0) continue;
+        in_way = blocked(t, before, dr, dc);
+        if ((in_way && stayed) || (!in_way && moved_by(t, before, after, dr, dc))) put(ok, R_BMOVE(dr, dc));
+      }
+    }
+  }
+  if (!still_there(t, after)) put(ok, R_GONE);
+  if (n != t->cells && n > 0u) put(ok, R_SIZE);
+  {
     unsigned r, c, other = PL_COLOURS, one = 1u;
     for (r = t->top; r <= t->bottom && one; r++) {
       for (c = t->left; c <= t->right && one; c++) {
@@ -150,109 +246,76 @@ static uint32_t happened(const ru_thing_t *t, const pl_frame_t *before, const pl
         else if (other != after->c[r][c]) one = 0u;
       }
     }
-    if (one && other != PL_COLOURS) ok |= 1u << R_COLOUR;
+    if (one && other != PL_COLOURS) put(ok, R_COLOUR);
   }
-  return ok;
 }
 
 /* ---- reading what an act did ------------------------------------------------------ */
 
-static int only_rule(uint32_t bits, unsigned *rule);
-
-static unsigned popcount32(uint32_t x) {
-  unsigned n = 0u;
-  while (x) {
-    x &= x - 1u;
-    n++;
-  }
-  return n;
-}
-
 unsigned ru_saw(ru_world_t *w, unsigned act, const pl_frame_t *before, const pl_frame_t *after) {
   static ru_thing_t things[RU_MAX_THINGS];
-  unsigned n = ru_things(before, things, RU_MAX_THINGS), i, cut = 0u;
+  unsigned n = ru_things(before, things, RU_MAX_THINGS), i, j, cut = 0u, most = 0u;
   if (act >= RU_ACTS) return 0u;
   for (i = 0u; i < n; i++) {
-    unsigned k = ru_kind(&things[i]);
-    uint32_t could = happened(&things[i], before, after);
-    uint32_t was = w->left[k][act];
-    {
-      /* what it could have said of this thing before the act, and whether it was right */
-      unsigned rule;
-      if (only_rule(was, &rule)) {
-        w->said++;
-        if ((could >> rule) & 1u) w->said_right++;
-        else w->said_wrong++;
-      } else {
-        w->cannot_say++;
+    if (things[i].cells > most) {
+      most = things[i].cells;
+      GROUND = things[i].colour;
+    }
+  }
+  /* first, what the things that moved moved into: those colours are passable */
+  PASSABLE = w->passable;
+  for (i = 0u; i < n; i++) {
+    int dr, dc;
+    for (dr = -RU_REACH; dr <= RU_REACH; dr++) {
+      for (dc = -RU_REACH; dc <= RU_REACH; dc++) {
+        unsigned r, c;
+        if ((dr == 0 && dc == 0) || !moved_by(&things[i], before, after, dr, dc)) continue;
+        for (r = things[i].top; r <= things[i].bottom; r++) {
+          for (c = things[i].left; c <= things[i].right; c++) {
+            int nr = (int)r + dr, nc = (int)c + dc;
+            unsigned v;
+            if (before->c[r][c] != things[i].colour) continue;
+            v = before->c[nr][nc];
+            if (v != things[i].colour) PASSABLE |= (uint16_t)(1u << v);
+          }
+        }
       }
     }
-    w->left[k][act] &= could;   /* every rule that says otherwise is ruled out */
+  }
+  w->passable = PASSABLE;
+  for (i = 0u; i < n; i++) {
+    unsigned k = ru_kind(&things[i]), rule, was;
+    uint64_t could[RU_WORDS];
+    uint64_t *left = w->left[k][act];
+    happened(&things[i], before, after, could);
+    /* what it could have said of this thing before the act, and whether it was right */
+    if (w->seen[k][act] > 0u && only_rule(left, &rule)) {
+      w->said++;
+      if (has(could, rule)) w->said_right++;
+      else w->said_wrong++;
+    } else {
+      w->cannot_say++;
+    }
+    was = count(left);
+    for (j = 0u; j < RU_WORDS; j++) left[j] &= could[j];   /* every rule that says otherwise is ruled out */
     w->seen[k][act]++;
-    cut += popcount32(was) - popcount32(w->left[k][act]);
+    cut += was - count(left);
   }
   w->ruled_out += cut;
   return cut;
 }
 
-/* ---- saying what will happen ------------------------------------------------------- */
-
-static int only_rule(uint32_t bits, unsigned *rule) {
-  if (bits == 0u || popcount32(bits) != 1u) return 0;
-  {
-    unsigned r = 0u;
-    while (!((bits >> r) & 1u)) r++;
-    *rule = r;
-    return 1;
-  }
-}
+/* ---- saying and imagining ------------------------------------------------------------ */
 
 int ru_say(ru_world_t *w, unsigned act, const pl_frame_t *now, pl_frame_t *out) {
   static ru_thing_t things[RU_MAX_THINGS];
-  unsigned n = ru_things(now, things, RU_MAX_THINGS), i, r, c;
+  unsigned n = ru_things(now, things, RU_MAX_THINGS), i;
   if (act >= RU_ACTS) return 0;
-  w->said++;
-  *out = *now;
   for (i = 0u; i < n; i++) {
-    unsigned k = ru_kind(&things[i]), rule;
-    if (!only_rule(w->left[k][act], &rule)) {
-      w->cannot_say++;
-      return 0;   /* more than one rule is still possible: it cannot say */
-    }
-    if (rule == R_GONE || rule == R_SIZE || rule == R_COLOUR) {
-      w->cannot_say++;
-      return 0;   /* it knows something changes, but not into what */
-    }
-  }
-  /* every thing moved by what its one rule says; the ground shows where they were */
-  for (i = 0u; i < n; i++) {
-    const ru_thing_t *t = &things[i];
     unsigned rule;
-    (void)only_rule(w->left[ru_kind(t)][act], &rule);
-    if (rule == R_NOTHING) continue;
-    for (r = t->top; r <= t->bottom; r++) {
-      for (c = t->left; c <= t->right; c++) {
-        if (now->c[r][c] == t->colour) out->c[r][c] = 0u;
-      }
-    }
+    if (!only_rule(w->left[ru_kind(&things[i])][act], &rule) || (rule >= RU_MOVES && rule < RU_MOVES + 3u)) return 0;
   }
-  for (i = 0u; i < n; i++) {
-    const ru_thing_t *t = &things[i];
-    unsigned rule;
-    int dr, dc;
-    (void)only_rule(w->left[ru_kind(t)][act], &rule);
-    if (rule == R_NOTHING) continue;
-    dr = (int)((rule - R_GO) / 5u) - 2;
-    dc = (int)((rule - R_GO) % 5u) - 2;
-    for (r = t->top; r <= t->bottom; r++) {
-      for (c = t->left; c <= t->right; c++) {
-        int nr = (int)r + dr, nc = (int)c + dc;
-        if (now->c[r][c] != t->colour) continue;
-        if (nr < 0 || nc < 0 || nr >= (int)now->h || nc >= (int)now->w) continue;
-        out->c[nr][nc] = (unsigned char)t->colour;
-      }
-    }
-  }
+  ru_imagine(w, act, now, out);
   return 1;
 }
 
@@ -264,19 +327,65 @@ int ru_changes_nothing(const ru_world_t *w, unsigned act, const pl_frame_t *now)
   for (i = 0u; i < n; i++) {
     unsigned k = ru_kind(&things[i]), rule, a2, stirs = 0u, met = 0u;
     if (w->seen[k][act] > 0u && only_rule(w->left[k][act], &rule)) {
-      if (rule == R_NOTHING) continue;   /* this act does nothing to such a thing */
+      if (rule == R_NOTHING) continue;
       return 0;
     }
-    /* not settled for this act: it is still passed over if nothing has ever stirred
-       such a thing, whatever was done -- the scenery of the world */
     for (a2 = 0u; a2 < RU_ACTS; a2++) {
       if (w->seen[k][a2] == 0u) continue;
       met++;
-      if (!(w->left[k][a2] & (1u << R_NOTHING)) || popcount32(w->left[k][a2]) > 1u) stirs++;
+      if (!has(w->left[k][a2], R_NOTHING) || count(w->left[k][a2]) > 1u) stirs++;
     }
     if (met == 0u || stirs > 0u) return 0;
   }
   return n > 0u;
+}
+
+void ru_imagine(const ru_world_t *w, unsigned act, const pl_frame_t *now, pl_frame_t *out) {
+  static ru_thing_t things[RU_MAX_THINGS];
+  static unsigned rule_of[RU_MAX_THINGS];
+  unsigned n = ru_things(now, things, RU_MAX_THINGS), i, r, c, ground = 0u, most = 0u;
+  *out = *now;
+  if (act >= RU_ACTS) return;
+  for (i = 0u; i < n; i++) {
+    if (things[i].cells > most) {
+      most = things[i].cells;
+      ground = things[i].colour;
+    }
+  }
+  GROUND = ground;
+  PASSABLE = w->passable;
+  for (i = 0u; i < n; i++) {
+    unsigned rule = R_NOTHING;
+    if (w->seen[ru_kind(&things[i])][act] == 0u || !only_rule(w->left[ru_kind(&things[i])][act], &rule)) {
+      rule = R_NOTHING;   /* unsettled: imagined where it is -- a hypothesis, checked on the way */
+    }
+    if (rule == R_SIZE || rule == R_COLOUR) rule = R_NOTHING;   /* it changes, but it cannot say into what */
+    if (rule >= RU_MOVES + 3u) {   /* moves unless something is in the way */
+      int dr = (int)((rule - RU_MOVES - 3u) / RU_SIDE) - RU_REACH, dc = (int)((rule - RU_MOVES - 3u) % RU_SIDE) - RU_REACH;
+      rule = blocked(&things[i], now, dr, dc) ? R_NOTHING : R_MOVE(dr, dc);
+    }
+    rule_of[i] = rule;
+    if (rule == R_NOTHING) continue;
+    for (r = things[i].top; r <= things[i].bottom; r++) {
+      for (c = things[i].left; c <= things[i].right; c++) {
+        if (now->c[r][c] == things[i].colour) out->c[r][c] = (unsigned char)ground;
+      }
+    }
+  }
+  for (i = 0u; i < n; i++) {
+    int dr, dc;
+    if (rule_of[i] == R_NOTHING || rule_of[i] >= RU_MOVES) continue;
+    dr = (int)(rule_of[i] / RU_SIDE) - RU_REACH;
+    dc = (int)(rule_of[i] % RU_SIDE) - RU_REACH;
+    for (r = things[i].top; r <= things[i].bottom; r++) {
+      for (c = things[i].left; c <= things[i].right; c++) {
+        int nr = (int)r + dr, nc = (int)c + dc;
+        if (now->c[r][c] != things[i].colour) continue;
+        if (nr < 0 || nc < 0 || nr >= (int)now->h || nc >= (int)now->w) continue;
+        out->c[nr][nc] = (unsigned char)things[i].colour;
+      }
+    }
+  }
 }
 
 double ru_bits(const ru_world_t *w) {
@@ -284,9 +393,9 @@ double ru_bits(const ru_world_t *w) {
   unsigned k, a;
   for (k = 0u; k < RU_KINDS; k++) {
     for (a = 0u; a < RU_ACTS; a++) {
-      unsigned n = popcount32(w->left[k][a]);
+      unsigned n = count(w->left[k][a]);
       if (w->seen[k][a] == 0u || n == 0u) continue;
-      while (n > 1u) {   /* log2, counted the plain way */
+      while (n > 1u) {
         bits += 1.0;
         n >>= 1;
       }
@@ -302,12 +411,13 @@ sm_status_t ru_report(const ru_world_t *w, FILE *out) {
     for (a = 0u; a < RU_ACTS; a++) {
       if (w->seen[k][a] == 0u) continue;
       met++;
-      if (popcount32(w->left[k][a]) == 1u) settled++;
+      if (count(w->left[k][a]) == 1u) settled++;
     }
   }
   fprintf(out, "  what each act does to each kind of thing: %u of %u settled to one rule (%.0f bits left); "
-               "it said what would happen %u times, right %u, wrong %u, and would not say %u\n",
-          settled, met, ru_bits(w), w->said, w->said_right, w->said_wrong, w->cannot_say);
+               "of things it could say about before an act, right %u of %u (%.0f%%); could not say of %u\n",
+          settled, met, ru_bits(w), w->said_right, w->said,
+          w->said ? 100.0 * (double)w->said_right / (double)w->said : 0.0, w->cannot_say);
   if (w->spared > 0u) {
     fprintf(out, "  acts it did not spend because its rules said they change nothing: %u\n", w->spared);
   }

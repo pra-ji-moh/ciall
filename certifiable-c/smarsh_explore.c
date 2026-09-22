@@ -483,8 +483,6 @@ static unsigned theories_left(void) {
  * theory that still stands comes first.
  */
 static ru_world_t RULES;      /* what each act does to each kind of thing */
-static pl_frame_t GUESSED;
-static unsigned SAID_IT;
 
 static uint16_t WON_ONTO_R, WON_GONE_R, WON_POINT_R;
 static unsigned WON_ANY;
@@ -2006,6 +2004,170 @@ static unsigned plan_from_theory(ex_explorer_t *ex, const pl_frame_t *f) {
   return plan_over_world(ex, f, want);
 }
 
+
+/*
+ * Planning in imagination.
+ *
+ * With its rules it can imagine what each act would leave (ru_imagine). So before
+ * spending acts it searches, in imagination only, for a way to where its goal
+ * holds: the body on or against a thing of a colour it is aiming at, or a colour it
+ * is aiming to be rid of gone. Breadth first, no imagined picture visited twice, at
+ * most EX_MPLAN_DEPTH acts deep.
+ *
+ * A plan is a hypothesis: where its rules are unsettled it imagined things staying
+ * put. So it walks the plan one act at a time and checks, after each, that the body
+ * is where the plan said. The first time it is not, the plan is dropped -- the rules
+ * have already ruled out whatever was wrong -- and it plans again from where it is.
+ */
+#define EX_MPLAN_DEPTH 24u
+#define EX_MPLAN_STATES 3000u
+
+static unsigned char MPLAN_ACT[EX_MPLAN_DEPTH];
+static unsigned short MPLAN_R[EX_MPLAN_DEPTH], MPLAN_C[EX_MPLAN_DEPTH];
+static unsigned MPLAN_LEN, MPLAN_POS, MPLAN_WAIT;
+static unsigned MPLAN_LAID, MPLAN_WALKED, MPLAN_BROKE, MPLAN_REACHED;
+static int MPLAN_CHECK;   /* the step just taken was a planned one: check where the body is */
+/*
+ * What the body has been on or against this level. With no goal yet -- nothing has
+ * ended a level, so nothing says what to go for -- it goes to touch a kind of thing
+ * it has not touched: that is where its rules are unsettled, and where an ending,
+ * if touching ends anything, would be.
+ */
+static uint16_t TOUCHED_EVER;
+static unsigned MPLAN_CURIOUS;
+
+static uint64_t frame_hash(const pl_frame_t *f) {
+  uint64_t h = 1469598103934665603ull;
+  unsigned r, c;
+  for (r = 0u; r < f->h; r++) {
+    for (c = 0u; c < f->w; c++) h = (h ^ f->c[r][c]) * 1099511628211ull;
+  }
+  return h;
+}
+
+/* where the body is in a picture: the middle of its cells */
+static int body_at(const pl_frame_t *f, int body, unsigned *br, unsigned *bc) {
+  unsigned r, c, n = 0u;
+  unsigned long sr = 0u, sc = 0u;
+  for (r = 0u; r < f->h; r++) {
+    for (c = 0u; c < f->w; c++) {
+      if (f->c[r][c] == (unsigned)body) {
+        sr += r;
+        sc += c;
+        n++;
+      }
+    }
+  }
+  if (n == 0u) return 0;
+  *br = (unsigned)(sr / n);
+  *bc = (unsigned)(sc / n);
+  return 1;
+}
+
+/* does its goal hold in this imagined picture? */
+static int goal_holds(const pl_frame_t *f, const pl_frame_t *start, int body, unsigned onto, unsigned gone) {
+  unsigned r, c, v;
+  if (gone != 0u) {
+    for (v = 0u; v < PL_COLOURS; v++) {
+      unsigned left = 0u, was = 0u;
+      if (!(gone & (1u << v))) continue;
+      for (r = 0u; r < f->h; r++) {
+        for (c = 0u; c < f->w; c++) {
+          if (f->c[r][c] == v) left++;
+          if (start->c[r][c] == v) was++;
+        }
+      }
+      if (was > 0u && left == 0u) return 1;
+    }
+  }
+  if (onto != 0u) {
+    for (r = 0u; r < f->h; r++) {
+      for (c = 0u; c < f->w; c++) {
+        if (f->c[r][c] != (unsigned)body) continue;
+        if (onto & (1u << start->c[r][c])) return 1;   /* standing where one was */
+        if ((r > 0u && (onto & (1u << f->c[r - 1u][c]))) || (c > 0u && (onto & (1u << f->c[r][c - 1u]))) ||
+            (r + 1u < f->h && (onto & (1u << f->c[r + 1u][c]))) ||
+            (c + 1u < f->w && (onto & (1u << f->c[r][c + 1u])))) return 1;   /* against one */
+      }
+    }
+  }
+  return 0;
+}
+
+static unsigned mplan_lay(const pl_frame_t *now, const unsigned char *acts, unsigned n_acts) {
+  static pl_frame_t state[EX_MPLAN_STATES];
+  static uint64_t seen[EX_MPLAN_STATES];
+  static unsigned parent[EX_MPLAN_STATES];
+  static unsigned char via[EX_MPLAN_STATES], depth[EX_MPLAN_STATES];
+  unsigned head = 0u, tail = 0u, found = EX_MPLAN_STATES, i, a;
+  int body = body_colour();
+  unsigned onto = aim_mask() != 0u ? aim_mask() : (unsigned)AIM_ONTO_WIDE, gone = AIM_GONE;
+  if (onto == 0u && gone == 0u && body >= 0 && ON(M_CURIOUS)) {
+    /* no goal: the kinds of thing here the body has never been on or against */
+    static ex_sum_t cs[PL_COLOURS];
+    unsigned v, ground = 0u, most = 0u;
+    colour_sums(now, cs);
+    for (v = 0u; v < PL_COLOURS; v++) {
+      if (cs[v].count > most) {
+        most = cs[v].count;
+        ground = v;
+      }
+    }
+    for (v = 0u; v < PL_COLOURS; v++) {
+      if (cs[v].count == 0u || v == ground || (int)v == body || BLOCKER[v]) continue;
+      if (TOUCHED_EVER & (1u << v)) continue;
+      onto |= 1u << v;
+    }
+    if (onto != 0u) MPLAN_CURIOUS++;
+  }
+  if (body < 0 || (onto == 0u && gone == 0u) || n_acts == 0u) return 0u;
+  onto &= ~(1u << body);
+  if (goal_holds(now, now, body, onto, gone)) return 0u;
+  state[tail] = *now;
+  seen[tail] = frame_hash(now);
+  depth[tail] = 0u;
+  tail++;
+  while (head < tail && found == EX_MPLAN_STATES) {
+    unsigned at = head++;
+    if (depth[at] >= EX_MPLAN_DEPTH) continue;
+    for (a = 0u; a < n_acts && tail < EX_MPLAN_STATES; a++) {
+      uint64_t h;
+      int dup = 0;
+      ru_imagine(&RULES, acts[a], &state[at], &state[tail]);
+      h = frame_hash(&state[tail]);
+      for (i = 0u; i < tail && !dup; i++) dup = (seen[i] == h);
+      if (dup) continue;
+      seen[tail] = h;
+      parent[tail] = at;
+      via[tail] = acts[a];
+      depth[tail] = (unsigned char)(depth[at] + 1u);
+      if (goal_holds(&state[tail], now, body, onto, gone)) {
+        found = tail;
+        tail++;
+        break;
+      }
+      tail++;
+    }
+  }
+  if (found == EX_MPLAN_STATES) return 0u;
+  {
+    unsigned n = depth[found], k = found;
+    MPLAN_LEN = n;
+    while (n > 0u) {
+      unsigned br = 0u, bc = 0u;
+      n--;
+      MPLAN_ACT[n] = via[k];
+      (void)body_at(&state[k], body, &br, &bc);
+      MPLAN_R[n] = (unsigned short)br;
+      MPLAN_C[n] = (unsigned short)bc;
+      k = parent[k];
+    }
+    MPLAN_POS = 0u;
+    MPLAN_LAID++;
+    return MPLAN_LEN;
+  }
+}
+
 /* ---- finding the nearest thing untried -------------------------------------------- */
 
 static int BFS_PREV[EX_MAX_NODES];
@@ -2384,6 +2546,9 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
   ways_begin();
   puzzles_begin();
   ru_begin(&RULES);
+  MPLAN_LEN = MPLAN_POS = MPLAN_WAIT = 0u;
+  MPLAN_LAID = MPLAN_WALKED = MPLAN_BROKE = MPLAN_REACHED = MPLAN_CURIOUS = 0u;
+  TOUCHED_EVER = 0u;
   PLAN_LEN = 0u;
   memset(SENT_LAW, 0, sizeof SENT_LAW);   /* a new world: how far a thing goes here is unknown */
   HOLDING = 0;
@@ -2557,6 +2722,42 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
         path_len = 0u;
       }
     }
+    /* a way it imagined, from its rules: lay one when it has a goal and none is laid */
+    if (idx == EX_MAX_ACTS && ON(M_RULES) && ON(M_PLAN)) {
+      if (MPLAN_POS >= MPLAN_LEN && MPLAN_WAIT == 0u) {
+        unsigned char acts[8];
+        unsigned n_acts = 0u, w2, j2;
+        for (w2 = 0u; w2 < N_NACT[cur]; w2++) {
+          unsigned k2 = KIND(N_ACT[cur][w2]);
+          if (k2 == 6u || k2 >= 8u || N_FLAG[cur][w2] == 1u) continue;
+          for (j2 = 0u; j2 < n_acts && acts[j2] != k2; j2++) {
+          }
+          if (j2 == n_acts) acts[n_acts++] = (unsigned char)k2;
+        }
+        MPLAN_LEN = MPLAN_POS = 0u;
+        if (mplan_lay(&now, acts, n_acts) == 0u) MPLAN_WAIT = 12u;   /* no way found: not again for a while */
+        else think(ex, "can I see, in my head, a way to what I am after?",
+                   "yes: I have imagined it act by act from what I know each act does; I walk it and check each step");
+      }
+      if (MPLAN_POS < MPLAN_LEN) {
+        unsigned w2;
+        for (w2 = 0u; w2 < N_NACT[cur]; w2++) {
+          if (KIND(N_ACT[cur][w2]) == MPLAN_ACT[MPLAN_POS] && N_FLAG[cur][w2] != 1u) {
+            idx = w2;
+            break;
+          }
+        }
+        if (idx == EX_MAX_ACTS) {
+          MPLAN_LEN = 0u;
+        } else {
+          MPLAN_CHECK = 1;
+          MPLAN_WALKED++;
+          WAY_NOW = W_PLAN;
+          path_len = 0u;
+        }
+      }
+    }
+    if (MPLAN_WAIT > 0u) MPLAN_WAIT--;
     /* something untried right here */
     if (idx == EX_MAX_ACTS && N_UNTRIED[cur] > 0u) {
       int body = body_colour(), spare;
@@ -2895,9 +3096,23 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
         if (OBS.touch & (1u << v)) OBS.touch_r |= ROLE_OF[v];
       }
     }
+    TOUCHED_EVER |= (uint16_t)(OBS.touch | OBS.onto);
     LAST_CODE = (unsigned short)code;
     PLAN_BLOCKED = 0u;
     outcome = g->act(g, kind, PX(code), PY(code), &next);
+    if (MPLAN_CHECK) {
+      unsigned br = 0u, bc = 0u;
+      int body = body_colour();
+      MPLAN_CHECK = 0;
+      if (outcome != 0 || body < 0 || !body_at(&next, body, &br, &bc) ||
+          br != MPLAN_R[MPLAN_POS] || bc != MPLAN_C[MPLAN_POS]) {
+        if (outcome == 0) MPLAN_BROKE++;
+        MPLAN_LEN = MPLAN_POS = 0u;   /* not where it imagined: the plan was wrong, and is dropped */
+      } else if (++MPLAN_POS >= MPLAN_LEN) {
+        MPLAN_REACHED++;   /* it got where it imagined it would */
+        MPLAN_LEN = MPLAN_POS = 0u;
+      }
+    }
     if (outcome == 0) (void)ru_saw(&RULES, kind, &now, &next);   /* what happened rules out what did not */
     OBS.ended = (unsigned char)(outcome == 1 || outcome == 2);
     {
@@ -3038,6 +3253,8 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       death_retry_at = 0u;
       STOOD_OFF = 0u;
       ways_begin();   /* a new level: every way of going is worth trying again */
+      MPLAN_LEN = MPLAN_POS = MPLAN_WAIT = 0u;
+      TOUCHED_EVER = 0u;
       PLAN_LEN = 0u;
       puzzles_begin();
       recalling = ON(M_RECALL) && ex->levels_done < EX_MAX_LEVELS && KNOWN_LEN[ex->levels_done] > 0u;
@@ -3221,6 +3438,10 @@ void ex_report(FILE *out, const ex_explorer_t *ex) {
             ex->runs_before, ex->runs_before == 1u ? "" : "s", ex->best_before, ex->recalled);
   }
   (void)ru_report(&RULES, out);
+  if (MPLAN_LAID > 0u) {
+    fprintf(out, "  ways it imagined from its rules: %u laid, %u steps walked, %u reached where it imagined, "
+                 "%u dropped when the world did otherwise\n", MPLAN_LAID, MPLAN_WALKED, MPLAN_REACHED, MPLAN_BROKE);
+  }
   if (ex->plans_laid > 0u) {
     fprintf(out, "  ways it reckoned over the board from what it worked out: %u laid, %u steps walked, %u dropped when it was not where it said\n",
             ex->plans_laid, ex->plan_steps, ex->plans_broke);
