@@ -1,5 +1,5 @@
 ciall-explorer-mind 1
-runs 171
+runs 172
 best 0
 mask 12 17 0
 mask 12 18 0
@@ -889,35 +889,35 @@ mask 53 60 0
 mask 53 61 0
 mask 53 62 0
 mask 53 63 0
-colour 0 27844 2 0
-shift 1 0 -72 0 14683
-shift 2 0 72 0 10844
+colour 0 27923 2 0
+shift 1 0 -72 0 14729
+shift 2 0 72 0 10867
 shift 7 0 72 0 9
-colour 1 18068 8 0
-shift 1 1 -6 0 7116
-shift 2 1 6 0 5555
+colour 1 18120 8 0
+shift 1 1 -6 0 7146
+shift 2 1 6 0 5570
 shift 7 1 6 0 6
-colour 2 18067 8 0
-shift 1 2 18 0 7116
-shift 2 2 -18 0 5555
+colour 2 18119 8 0
+shift 1 2 18 0 7146
+shift 2 2 -18 0 5570
 shift 7 2 -18 0 6
-colour 3 15098 27192 0
-shift 1 3 48 0 8289
-shift 2 3 -48 0 6179
-shift 7 3 -48 0 159
-colour 4 608 27783 0
+colour 3 15138 27270 0
+shift 1 3 48 0 8313
+shift 2 3 -48 0 6190
+shift 7 3 -48 0 164
+colour 4 608 27862 0
 shift 1 4 96 0 11
 shift 2 4 -96 0 6
 shift 3 4 0 48 70
 shift 4 4 0 -48 16
 shift 7 4 -96 0 6
-colour 5 15098 27762 0
-shift 1 5 144 0 8289
-shift 2 5 -144 0 6179
-shift 7 5 -144 0 159
-colour 6 27844 27763 0
-shift 1 6 -132 0 14683
-shift 2 6 132 0 10844
+colour 5 15138 27841 0
+shift 1 5 144 0 8313
+shift 2 5 -144 0 6190
+shift 7 5 -144 0 164
+colour 6 27923 27842 0
+shift 1 6 -132 0 14729
+shift 2 6 132 0 10867
 shift 7 6 132 0 9
 colour 7 0 0 0
 colour 8 185 4 0
@@ -943,7 +943,7 @@ shift 3 14 0 -96 2
 shift 4 14 0 96 1
 shift 7 14 96 0 4
 colour 15 0 0 0
-onto 27783 0 3
+onto 27862 0 3
 kind 64661 1 0
 kind 29813 1 0
 kind 1042 1 0
