@@ -2,8 +2,11 @@
  * smarsh_rules.h -- what each act does to each kind of thing on the board, learned
  * by elimination, and used to say what the next picture will be.
  *
- * A THING is a patch of one colour, joined side to side. Its KIND is what the child
- * can say about it without naming it: its colour, and its shape (how tall, how wide).
+ * A THING is a patch of one colour, joined side to side. What the child can say
+ * about it without naming it, three ways at once, from the narrowest to the widest:
+ * its colour and exact shape; its colour and how big it is, in classes; its colour.
+ * It learns a rule at all three, and says what will happen by the narrowest that has
+ * settled to one rule: as wide a rule as the evidence allows, and no wider.
  * Things of a kind behave alike, so what is learned of one is learned of all.
  *
  * For each (kind, act) it holds every rule its language can say:
@@ -31,7 +34,8 @@
 
 #include "smarsh_play.h"
 
-#define RU_KINDS 1024u                  /* colour and shape (height, width): things alike in both are one kind */
+#define RU_KINDS 1024u
+#define RU_WAYS 3u                     /* colour and shape; colour and size; colour */
 #define RU_ACTS 8u
 #define RU_REACH 8                     /* go(dr, dc), each -8..8: a thing in these games steps by a whole block */
 #define RU_SIDE (2u * RU_REACH + 1u)
@@ -47,8 +51,8 @@ typedef struct {
 } ru_thing_t;
 
 typedef struct {
-  uint64_t left[RU_KINDS][RU_ACTS][RU_WORDS];   /* a bit per rule still possible */
-  unsigned seen[RU_KINDS][RU_ACTS];    /* times an act was done with such a thing there */
+  uint64_t left[RU_WAYS][RU_KINDS][RU_ACTS][RU_WORDS];   /* a bit per rule still possible */
+  unsigned seen[RU_WAYS][RU_KINDS][RU_ACTS];             /* times an act was done with such a thing there */
   unsigned said, said_right, said_wrong, cannot_say, spared;
   uint16_t passable;                   /* colours a thing has been seen to move into */
   unsigned long long ruled_out;
@@ -61,7 +65,8 @@ void ru_begin(ru_world_t *w);
 unsigned ru_things(const pl_frame_t *f, ru_thing_t *out, unsigned cap);
 
 /* what kind a thing is: its colour and how big it is, in classes */
-unsigned ru_kind(const ru_thing_t *t);
+unsigned ru_kind(const ru_thing_t *t);      /* the narrowest: colour and shape */
+unsigned ru_kind_way(const ru_thing_t *t, unsigned way);
 
 /*
  * An act, and the picture before and after it: every rule that says something else

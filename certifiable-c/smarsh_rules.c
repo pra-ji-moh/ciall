@@ -60,13 +60,6 @@ static unsigned size_class(unsigned cells) {
   return 5u;
 }
 
-unsigned ru_kind(const ru_thing_t *t) {
-  /* colour and shape; a big field of ground is one kind whatever its shape */
-  unsigned hgt = t->bottom - t->top + 1u, wid = t->right - t->left + 1u;
-  if (t->cells > 400u) return (t->colour * 64u) % RU_KINDS;
-  return (t->colour * 7919u + hgt * 131u + wid * 17u + t->cells) % RU_KINDS;
-}
-
 /* ---- sets of rules ------------------------------------------------------------ */
 
 static void set_all(uint64_t *b) {
@@ -108,11 +101,39 @@ static int only_rule(const uint64_t *b, unsigned *rule) {
   return 0;
 }
 
+unsigned ru_kind_way(const ru_thing_t *t, unsigned way) {
+  unsigned hgt = t->bottom - t->top + 1u, wid = t->right - t->left + 1u;
+  if (way == 2u) return t->colour % RU_KINDS;                                  /* its colour */
+  if (way == 1u) return (t->colour * 64u + size_class(t->cells)) % RU_KINDS;   /* colour and size */
+  if (t->cells > 400u) return (t->colour * 64u) % RU_KINDS;                    /* a whole field of ground */
+  return (t->colour * 7919u + hgt * 131u + wid * 17u + t->cells) % RU_KINDS;   /* colour and shape */
+}
+
+unsigned ru_kind(const ru_thing_t *t) {
+  return ru_kind_way(t, 0u);
+}
+
+/* the rule of the narrowest way of saying what it is that has settled to one */
+static int settled_rule(const ru_world_t *w, const ru_thing_t *t, unsigned act, unsigned *rule) {
+  unsigned way;
+  for (way = 0u; way < RU_WAYS; way++) {
+    unsigned k = ru_kind_way(t, way);
+    if (w->seen[way][k][act] == 0u) continue;
+    if (only_rule(w->left[way][k][act], rule)) return 1;
+  }
+  return 0;
+}
+
 void ru_begin(ru_world_t *w) {
   unsigned k, a;
   memset(w, 0, sizeof *w);
-  for (k = 0u; k < RU_KINDS; k++) {
-    for (a = 0u; a < RU_ACTS; a++) set_all(w->left[k][a]);
+  {
+    unsigned way;
+    for (way = 0u; way < RU_WAYS; way++) {
+      for (k = 0u; k < RU_KINDS; k++) {
+        for (a = 0u; a < RU_ACTS; a++) set_all(w->left[way][k][a]);
+      }
+    }
   }
 }
 
@@ -284,22 +305,25 @@ unsigned ru_saw(ru_world_t *w, unsigned act, const pl_frame_t *before, const pl_
   }
   w->passable = PASSABLE;
   for (i = 0u; i < n; i++) {
-    unsigned k = ru_kind(&things[i]), rule, was;
+    unsigned rule, was, way;
     uint64_t could[RU_WORDS];
-    uint64_t *left = w->left[k][act];
     happened(&things[i], before, after, could);
     /* what it could have said of this thing before the act, and whether it was right */
-    if (w->seen[k][act] > 0u && only_rule(left, &rule)) {
+    if (settled_rule(w, &things[i], act, &rule)) {
       w->said++;
       if (has(could, rule)) w->said_right++;
       else w->said_wrong++;
     } else {
       w->cannot_say++;
     }
-    was = count(left);
-    for (j = 0u; j < RU_WORDS; j++) left[j] &= could[j];   /* every rule that says otherwise is ruled out */
-    w->seen[k][act]++;
-    cut += was - count(left);
+    for (way = 0u; way < RU_WAYS; way++) {
+      unsigned k = ru_kind_way(&things[i], way);
+      uint64_t *left = w->left[way][k][act];
+      was = count(left);
+      for (j = 0u; j < RU_WORDS; j++) left[j] &= could[j];   /* what says otherwise is ruled out */
+      w->seen[way][k][act]++;
+      cut += was - count(left);
+    }
   }
   w->ruled_out += cut;
   return cut;
@@ -313,7 +337,7 @@ int ru_say(ru_world_t *w, unsigned act, const pl_frame_t *now, pl_frame_t *out) 
   if (act >= RU_ACTS) return 0;
   for (i = 0u; i < n; i++) {
     unsigned rule;
-    if (!only_rule(w->left[ru_kind(&things[i])][act], &rule) || (rule >= RU_MOVES && rule < RU_MOVES + 3u)) return 0;
+    if (!settled_rule(w, &things[i], act, &rule) || (rule >= RU_MOVES && rule < RU_MOVES + 3u)) return 0;
   }
   ru_imagine(w, act, now, out);
   return 1;
@@ -326,14 +350,14 @@ int ru_changes_nothing(const ru_world_t *w, unsigned act, const pl_frame_t *now)
   n = ru_things(now, things, RU_MAX_THINGS);
   for (i = 0u; i < n; i++) {
     unsigned k = ru_kind(&things[i]), rule, a2, stirs = 0u, met = 0u;
-    if (w->seen[k][act] > 0u && only_rule(w->left[k][act], &rule)) {
+    if (settled_rule(w, &things[i], act, &rule)) {
       if (rule == R_NOTHING) continue;
       return 0;
     }
     for (a2 = 0u; a2 < RU_ACTS; a2++) {
-      if (w->seen[k][a2] == 0u) continue;
+      if (w->seen[0][k][a2] == 0u) continue;
       met++;
-      if (!has(w->left[k][a2], R_NOTHING) || count(w->left[k][a2]) > 1u) stirs++;
+      if (!has(w->left[0][k][a2], R_NOTHING) || count(w->left[0][k][a2]) > 1u) stirs++;
     }
     if (met == 0u || stirs > 0u) return 0;
   }
@@ -356,7 +380,7 @@ void ru_imagine(const ru_world_t *w, unsigned act, const pl_frame_t *now, pl_fra
   PASSABLE = w->passable;
   for (i = 0u; i < n; i++) {
     unsigned rule = R_NOTHING;
-    if (w->seen[ru_kind(&things[i])][act] == 0u || !only_rule(w->left[ru_kind(&things[i])][act], &rule)) {
+    if (!settled_rule(w, &things[i], act, &rule)) {
       rule = R_NOTHING;   /* unsettled: imagined where it is -- a hypothesis, checked on the way */
     }
     if (rule == R_SIZE || rule == R_COLOUR) rule = R_NOTHING;   /* it changes, but it cannot say into what */
@@ -393,8 +417,8 @@ double ru_bits(const ru_world_t *w) {
   unsigned k, a;
   for (k = 0u; k < RU_KINDS; k++) {
     for (a = 0u; a < RU_ACTS; a++) {
-      unsigned n = count(w->left[k][a]);
-      if (w->seen[k][a] == 0u || n == 0u) continue;
+      unsigned n = count(w->left[0][k][a]);
+      if (w->seen[0][k][a] == 0u || n == 0u) continue;
       while (n > 1u) {
         bits += 1.0;
         n >>= 1;
@@ -409,9 +433,9 @@ sm_status_t ru_report(const ru_world_t *w, FILE *out) {
   if (w == 0 || out == 0) return SM_ERR_NULL_ARGUMENT;
   for (k = 0u; k < RU_KINDS; k++) {
     for (a = 0u; a < RU_ACTS; a++) {
-      if (w->seen[k][a] == 0u) continue;
+      if (w->seen[0][k][a] == 0u) continue;
       met++;
-      if (count(w->left[k][a]) == 1u) settled++;
+      if (count(w->left[0][k][a]) == 1u) settled++;
     }
   }
   fprintf(out, "  what each act does to each kind of thing: %u of %u settled to one rule (%.0f bits left); "
