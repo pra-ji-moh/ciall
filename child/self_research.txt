@@ -557,3 +557,8 @@
   from version 69 (one of 2 still standing) it made version 71: SELF_MATCH_WEIGHT 4.0->8.0
   development games, two seeds averaged: 14.5 levels, 0.715% (its parent: 14.5, 0.715%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-09-23 20:39  (building itself: one generation)
+  from version 69 (one of 3 still standing) it made version 72: SELF_USE_LIVE 0->1
+  development games, two seeds averaged: 14.5 levels, 0.715% (its parent: 14.5, 0.715%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
