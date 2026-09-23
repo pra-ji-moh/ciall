@@ -510,3 +510,8 @@
 
 2026-09-23 09:33  (building itself: one generation)
   from version 56 it made a version it had already made (combined 56 and 57); it tries again next time
+
+2026-09-23 10:38  (building itself: one generation)
+  from version 61 (one of 5 still standing) it made version 63: SELF_WATCH 0u->48u; SELF_OFF_STOOD 0->1
+  development games, two seeds averaged: 10.5 levels, 0.715% (its parent: 11.5, 0.730%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
