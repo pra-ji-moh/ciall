@@ -1,5 +1,5 @@
 ciall-explorer-mind 1
-runs 155
+runs 156
 best 2
 mask 0 0 0
 mask 0 1 0
@@ -65,6 +65,22 @@ mask 0 60 0
 mask 0 61 0
 mask 0 62 0
 mask 0 63 0
+mask 52 28 0
+mask 52 29 0
+mask 52 30 0
+mask 52 31 0
+mask 52 32 0
+mask 52 33 0
+mask 52 34 0
+mask 52 35 0
+mask 53 28 0
+mask 53 29 0
+mask 53 30 0
+mask 53 31 0
+mask 53 32 0
+mask 53 33 0
+mask 53 34 0
+mask 53 35 0
 mask 54 28 0
 mask 54 29 0
 mask 54 30 0
@@ -81,10 +97,22 @@ mask 55 32 0
 mask 55 33 0
 mask 55 34 0
 mask 55 35 0
+mask 56 18 0
+mask 56 19 0
+mask 56 20 0
+mask 56 21 0
+mask 56 22 0
+mask 56 23 0
 mask 56 30 0
 mask 56 31 0
 mask 56 32 0
 mask 56 33 0
+mask 57 18 0
+mask 57 19 0
+mask 57 20 0
+mask 57 21 0
+mask 57 22 0
+mask 57 23 0
 mask 57 30 0
 mask 57 31 0
 mask 57 32 0
@@ -142,6 +170,7 @@ kind 11569 1 0
 kind 15665 1 0
 kind 1036 1 0
 kind 5137 1 0
+kind 9233 1 0
 kind 7313 1 0
 kind 2063 1 0
 kind 1084 1 0

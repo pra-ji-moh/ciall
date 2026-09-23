@@ -1,5 +1,5 @@
 ciall-explorer-mind 1
-runs 155
+runs 156
 best 1
 mask 1 1 0
 mask 1 2 0
@@ -81,7 +81,6 @@ colour 15 0 0 0
 onto 0 0 1
 family-here GONE 1
 family GONE_R 1
-deep 13 1 13 3 15 3
 kind 30148 1 0
 kind 61450 1 1
 kind 3132 1 0

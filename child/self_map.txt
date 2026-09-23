@@ -7,34 +7,34 @@ file certifiable-c/smarsh_ending.h lines 167
 file certifiable-c/smarsh_explore.c lines 3514
 file certifiable-c/smarsh_explore.h lines 154
 file certifiable-c/smarsh_self.h lines 70
-open certifiable-c/smarsh_self.h SELF_TICK_MAX now 8u may be  4u 8u 16u */
-open certifiable-c/smarsh_self.h SELF_RESTLESS_WINDOW now 12u may be  8u 12u 16u 24u */
-open certifiable-c/smarsh_self.h SELF_BODY_VOTES now 3u may be  2u 3u 5u */
+open certifiable-c/smarsh_self.h SELF_TICK_MAX now 16u may be  4u 8u 16u */
+open certifiable-c/smarsh_self.h SELF_RESTLESS_WINDOW now 24u may be  8u 12u 16u 24u */
+open certifiable-c/smarsh_self.h SELF_BODY_VOTES now 5u may be  2u 3u 5u */
 open certifiable-c/smarsh_self.h SELF_SHIFT_SURE now 2u may be  1u 2u 3u */
 open certifiable-c/smarsh_self.h SELF_SKIP_TAU now 0.75 may be  0.5 0.625 0.75 0.875 1.01 */
-open certifiable-c/smarsh_self.h SELF_MATCH_WEIGHT now 8.0 may be  0.0 4.0 8.0 16.0 */
-open certifiable-c/smarsh_self.h SELF_KEEP_ACTS now 24u may be  12u 24u 40u */
-open certifiable-c/smarsh_self.h SELF_FEW_SITUATIONS now 64u may be  16u 32u 64u 128u */
+open certifiable-c/smarsh_self.h SELF_MATCH_WEIGHT now 4.0 may be  0.0 4.0 8.0 16.0 */
+open certifiable-c/smarsh_self.h SELF_KEEP_ACTS now 40u may be  12u 24u 40u */
+open certifiable-c/smarsh_self.h SELF_FEW_SITUATIONS now 32u may be  16u 32u 64u 128u */
 open certifiable-c/smarsh_self.h SELF_FRESH_STARTS now 3u may be  0u 1u 3u 6u */
 open certifiable-c/smarsh_self.h SELF_DEATH_RETRIES now 10u may be  0u 3u 10u 20u */
 open certifiable-c/smarsh_self.h SELF_TIE_MODE now 1u may be  0u 1u 2u */
-open certifiable-c/smarsh_self.h SELF_WATCH now 48u may be  0u 16u 48u 96u */
-open certifiable-c/smarsh_self.h SELF_USE_LIVE now 1 may be  0 1 */
+open certifiable-c/smarsh_self.h SELF_WATCH now 0u may be  0u 16u 48u 96u */
+open certifiable-c/smarsh_self.h SELF_USE_LIVE now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_RESTLESS now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_CLOCK now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_STOOD now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_PANELS now 0 may be  0 1 */
-open certifiable-c/smarsh_self.h SELF_OFF_NEAR now 0 may be  0 1 */
-open certifiable-c/smarsh_self.h SELF_OFF_THEORY now 0 may be  0 1 */
+open certifiable-c/smarsh_self.h SELF_OFF_NEAR now 1 may be  0 1 */
+open certifiable-c/smarsh_self.h SELF_OFF_THEORY now 1 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_SKIP now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_DEATHS now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_UNMASK now 0 may be  0 1 */
-open certifiable-c/smarsh_self.h SELF_OFF_WINDOW now 0 may be  0 1 */
+open certifiable-c/smarsh_self.h SELF_OFF_WINDOW now 1 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_REDRAW now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_RECALL now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_REPLAY now 1 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_REACH now 0 may be  0 1 */
-open certifiable-c/smarsh_self.h SELF_OFF_CURIOUS now 0 may be  0 1 */
+open certifiable-c/smarsh_self.h SELF_OFF_CURIOUS now 1 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_PLAN now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_WONAIM now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_RULES now 0 may be  0 1 */
