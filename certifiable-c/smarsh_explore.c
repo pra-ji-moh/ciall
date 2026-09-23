@@ -20,11 +20,11 @@
  */
 typedef enum {
   M_RESTLESS, M_CLOCK, M_STOOD, M_PANELS, M_NEAR, M_THEORY, M_SKIP,
-  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_CURIOUS, M_PLAN, M_WONAIM, M_RULES, M_COUNT
+  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_CURIOUS, M_PLAN, M_WONAIM, M_RULES, M_GOALS, M_COUNT
 } ex_mech_t;
 static const char *MECH_NAME[M_COUNT] = {
   "restless", "clock", "stood", "panels", "near", "theory", "skip",
-  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach", "curious", "plan", "wonaim", "rules"
+  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach", "curious", "plan", "wonaim", "rules", "goals"
 };
 static unsigned OFF_MASK;
 #define ON(m) ((OFF_MASK & (1u << (m))) == 0u)
@@ -35,7 +35,7 @@ static void read_off(void) {
   static const unsigned by_self[M_COUNT] = {
     SELF_OFF_RESTLESS, SELF_OFF_CLOCK, SELF_OFF_STOOD, SELF_OFF_PANELS, SELF_OFF_NEAR, SELF_OFF_THEORY,
     SELF_OFF_SKIP, SELF_OFF_DEATHS, SELF_OFF_UNMASK, SELF_OFF_WINDOW, SELF_OFF_REDRAW, SELF_OFF_RECALL,
-    SELF_OFF_REPLAY, SELF_OFF_REACH, SELF_OFF_CURIOUS, SELF_OFF_PLAN, SELF_OFF_WONAIM, SELF_OFF_RULES
+    SELF_OFF_REPLAY, SELF_OFF_REACH, SELF_OFF_CURIOUS, SELF_OFF_PLAN, SELF_OFF_WONAIM, SELF_OFF_RULES, SELF_OFF_GOALS
   };
   OFF_MASK = 0u;
   for (m = 0u; m < M_COUNT; m++) {
@@ -2036,6 +2036,117 @@ static int MPLAN_CHECK;   /* the step just taken was a planned one: check where 
 static uint16_t TOUCHED_EVER;
 static unsigned MPLAN_CURIOUS;
 
+/*
+ * Goals of its own.
+ *
+ * Nothing tells it what ends a level. So it sets itself small ambitions out of what
+ * it can see -- be on or against a thing of this colour; have none of that colour
+ * left -- and holds every one of them as possible. It takes one, chosen uniformly
+ * among those not yet ruled out, and plans to it. Reaching it and finding the level
+ * has not ended rules that goal out: it was not what ends this. Reaching it and
+ * finding the level has ended is the one thing it was after, and is carried to the
+ * next level. Small steps, and it keeps every ambition until the world says no.
+ */
+static uint16_t GOAL_ONTO_LEFT, GOAL_GONE_LEFT;   /* the ambitions not yet ruled out */
+static unsigned GOAL_KIND;                        /* 0: none; 1: be against a colour; 2: have it gone */
+static unsigned GOAL_COLOUR, GOAL_SPENT;
+static unsigned GOALS_SET, GOALS_RULED_OUT, GOALS_REACHED;
+#define EX_GOAL_PATIENCE 120u                     /* acts spent on one ambition before trying another */
+
+/* every colour here it might be worth being against, or worth being rid of */
+static void goals_begin(const pl_frame_t *f) {
+  static ex_sum_t cs[PL_COLOURS];
+  unsigned v, ground = 0u, most = 0u;
+  int body = body_colour();
+  colour_sums(f, cs);
+  for (v = 0u; v < PL_COLOURS; v++) {
+    if (cs[v].count > most) {
+      most = cs[v].count;
+      ground = v;
+    }
+  }
+  GOAL_ONTO_LEFT = GOAL_GONE_LEFT = 0u;
+  for (v = 0u; v < PL_COLOURS; v++) {
+    if (cs[v].count == 0u || v == ground || (int)v == body) continue;
+    GOAL_ONTO_LEFT |= (uint16_t)(1u << v);
+    GOAL_GONE_LEFT |= (uint16_t)(1u << v);
+  }
+  GOAL_KIND = 0u;
+  GOAL_SPENT = 0u;
+}
+
+/* is the ambition it is holding now met in this picture? */
+static int goal_met(const pl_frame_t *f) {
+  static ex_sum_t cs[PL_COLOURS];
+  int body = body_colour();
+  unsigned r, c;
+  if (GOAL_KIND == 0u) return 0;
+  if (GOAL_KIND == 2u) {
+    colour_sums(f, cs);
+    return cs[GOAL_COLOUR].count == 0u;
+  }
+  if (body < 0) return 0;
+  for (r = 0u; r < f->h; r++) {
+    for (c = 0u; c < f->w; c++) {
+      if (f->c[r][c] != (unsigned)body) continue;
+      if ((r > 0u && f->c[r - 1u][c] == GOAL_COLOUR) || (c > 0u && f->c[r][c - 1u] == GOAL_COLOUR) ||
+          (r + 1u < f->h && f->c[r + 1u][c] == GOAL_COLOUR) ||
+          (c + 1u < f->w && f->c[r][c + 1u] == GOAL_COLOUR)) return 1;
+    }
+  }
+  return 0;
+}
+
+/* one ambition, chosen uniformly among those it has not ruled out */
+static void goal_take(ex_explorer_t *ex, const pl_frame_t *f) {
+  unsigned v, n = 0u, pickd;
+  unsigned char kinds[PL_COLOURS * 2u], cols[PL_COLOURS * 2u];
+  static ex_sum_t cs[PL_COLOURS];
+  colour_sums(f, cs);
+  for (v = 0u; v < PL_COLOURS; v++) {
+    if ((GOAL_ONTO_LEFT & (1u << v)) && cs[v].count > 0u) {
+      kinds[n] = 1u;
+      cols[n++] = (unsigned char)v;
+    }
+    if ((GOAL_GONE_LEFT & (1u << v)) && cs[v].count > 0u) {
+      kinds[n] = 2u;
+      cols[n++] = (unsigned char)v;
+    }
+  }
+  if (n == 0u) {
+    GOAL_KIND = 0u;
+    return;
+  }
+  {
+    /* uniformly among the ambitions still standing, the same way ties are settled */
+    uint64_t z = ((uint64_t)ex->actions + TIE_SEED + 977u) * 0x9E3779B97F4A7C15ULL;
+    z = (z ^ (z >> 30)) * 0xBF58476D1CE4E5B9ULL;
+    z = (z ^ (z >> 27)) * 0x94D049BB133111EBULL;
+    z ^= z >> 31;
+    pickd = (unsigned)(z % (uint64_t)n);
+  }
+  GOAL_KIND = kinds[pickd];
+  GOAL_COLOUR = cols[pickd];
+  GOAL_SPENT = 0u;
+  GOALS_SET++;
+  {
+    char said[200];
+    sprintf(said, "%s colour %u", GOAL_KIND == 1u ? "I go to be against" : "I go to leave none of",
+            GOAL_COLOUR);
+    think(ex, "nothing tells me what ends this: what shall I go for?", said);
+  }
+}
+
+/* the ambition it was holding is ruled out: reaching it did not end the level */
+static void goal_ruled_out(ex_explorer_t *ex) {
+  if (GOAL_KIND == 1u) GOAL_ONTO_LEFT &= (uint16_t)~(1u << GOAL_COLOUR);
+  if (GOAL_KIND == 2u) GOAL_GONE_LEFT &= (uint16_t)~(1u << GOAL_COLOUR);
+  GOALS_RULED_OUT++;
+  GOAL_KIND = 0u;
+  think(ex, "I got what I was after: did the level end?",
+        "no. So that was not what ends it, and I go after something else");
+}
+
 static uint64_t frame_hash(const pl_frame_t *f) {
   uint64_t h = 1469598103934665603ull;
   unsigned r, c;
@@ -2102,6 +2213,8 @@ static unsigned mplan_lay(const pl_frame_t *now, const unsigned char *acts, unsi
   unsigned head = 0u, tail = 0u, found = EX_MPLAN_STATES, i, a;
   int body = body_colour();
   unsigned onto = aim_mask() != 0u ? aim_mask() : (unsigned)AIM_ONTO_WIDE, gone = AIM_GONE;
+  if (GOAL_KIND == 1u) onto |= 1u << GOAL_COLOUR;
+  if (GOAL_KIND == 2u) gone |= 1u << GOAL_COLOUR;
   if (onto == 0u && gone == 0u && body >= 0 && ON(M_CURIOUS)) {
     /* no goal: the kinds of thing here the body has never been on or against */
     static ex_sum_t cs[PL_COLOURS];
@@ -2548,7 +2661,10 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
   ru_begin(&RULES);
   MPLAN_LEN = MPLAN_POS = MPLAN_WAIT = 0u;
   MPLAN_LAID = MPLAN_WALKED = MPLAN_BROKE = MPLAN_REACHED = MPLAN_CURIOUS = 0u;
+  GOALS_SET = GOALS_RULED_OUT = GOALS_REACHED = 0u;
   TOUCHED_EVER = 0u;
+  GOAL_KIND = 0u;
+  GOAL_ONTO_LEFT = GOAL_GONE_LEFT = 0xffffu;
   PLAN_LEN = 0u;
   memset(SENT_LAW, 0, sizeof SENT_LAW);   /* a new world: how far a thing goes here is unknown */
   HOLDING = 0;
@@ -2721,6 +2837,19 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
         ex->plan_steps++;
         path_len = 0u;
       }
+    }
+    /* its own ambition: take one, and let the world rule it out */
+    if (ON(M_RULES) && ON(M_GOALS)) {
+      if (GOAL_KIND != 0u && goal_met(&now)) {
+        GOALS_REACHED++;
+        goal_ruled_out(ex);   /* met, and the level did not end: not what ends it */
+        MPLAN_LEN = MPLAN_POS = 0u;
+      }
+      if (GOAL_KIND != 0u && ++GOAL_SPENT > EX_GOAL_PATIENCE) {
+        GOAL_KIND = 0u;       /* it has spent long enough on that one for now */
+        MPLAN_LEN = MPLAN_POS = 0u;
+      }
+      if (GOAL_KIND == 0u && aim_mask() == 0u && AIM_GONE == 0u) goal_take(ex, &now);
     }
     /* a way it imagined, from its rules: lay one when it has a goal and none is laid */
     if (idx == EX_MAX_ACTS && ON(M_RULES) && ON(M_PLAN)) {
@@ -3155,6 +3284,12 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
     if (kind == 6u) ex->point_tried[now.c[PY(code)][PX(code)]]++;
 
     if (outcome == 2 || outcome == 1) {
+      if (GOAL_KIND != 0u) {
+        char said[200];
+        sprintf(said, "I was going %s colour %u when it ended: I keep that",
+                GOAL_KIND == 1u ? "to be against" : "to leave none of", GOAL_COLOUR);
+        think(ex, "what was I after when the level ended?", said);
+      }
       /* what was true of the act that won, in roles: where to go when theories are silent */
       WON_ONTO_R = (uint16_t)(OBS.onto_r | OBS.touch_r | OBS.last_r);
       WON_GONE_R = OBS.gone_r;
@@ -3255,6 +3390,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       ways_begin();   /* a new level: every way of going is worth trying again */
       MPLAN_LEN = MPLAN_POS = MPLAN_WAIT = 0u;
       TOUCHED_EVER = 0u;
+      goals_begin(&now);
       PLAN_LEN = 0u;
       puzzles_begin();
       recalling = ON(M_RECALL) && ex->levels_done < EX_MAX_LEVELS && KNOWN_LEN[ex->levels_done] > 0u;
@@ -3438,6 +3574,10 @@ void ex_report(FILE *out, const ex_explorer_t *ex) {
             ex->runs_before, ex->runs_before == 1u ? "" : "s", ex->best_before, ex->recalled);
   }
   (void)ru_report(&RULES, out);
+  if (GOALS_SET > 0u) {
+    fprintf(out, "  ambitions it set itself: %u; reached %u; ruled out %u as not what ends a level\n",
+            GOALS_SET, GOALS_REACHED, GOALS_RULED_OUT);
+  }
   if (MPLAN_LAID > 0u) {
     fprintf(out, "  ways it imagined from its rules: %u laid, %u steps walked, %u reached where it imagined, "
                  "%u dropped when the world did otherwise\n", MPLAN_LAID, MPLAN_WALKED, MPLAN_REACHED, MPLAN_BROKE);
