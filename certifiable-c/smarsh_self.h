@@ -19,21 +19,21 @@
 #define SMARSH_SELF_H
 
 /* what ticks by itself: a change patch this small may be a clock */
-#define SELF_TICK_MAX 8u   /* self: 4u 8u 16u */
+#define SELF_TICK_MAX 16u   /* self: 4u 8u 16u */
 /* how many steps a cell is watched before it is judged restless */
-#define SELF_RESTLESS_WINDOW 12u   /* self: 8u 12u 16u 24u */
+#define SELF_RESTLESS_WINDOW 24u   /* self: 8u 12u 16u 24u */
 /* how often a colour must move before it is taken as the body */
-#define SELF_BODY_VOTES 3u   /* self: 2u 3u 5u */
+#define SELF_BODY_VOTES 5u   /* self: 2u 3u 5u */
 /* how often a shift must repeat before a step is predicted by it */
 #define SELF_SHIFT_SURE 2u   /* self: 1u 2u 3u */
 /* the gate for not spending a pointing: support needed (above 1 never skips) */
 #define SELF_SKIP_TAU 0.75   /* self: 0.5 0.625 0.75 0.875 1.01 */
 /* steps worth one cell nearer to two panels matching */
-#define SELF_MATCH_WEIGHT 8.0   /* self: 0.0 4.0 8.0 16.0 */
+#define SELF_MATCH_WEIGHT 4.0   /* self: 0.0 4.0 8.0 16.0 */
 /* acts always kept, in order, when a situation offers more than it can hold */
-#define SELF_KEEP_ACTS 24u   /* self: 12u 24u 40u */
+#define SELF_KEEP_ACTS 40u   /* self: 12u 24u 40u */
 /* fewer situations than this, with much left out: watch everything again */
-#define SELF_FEW_SITUATIONS 64u   /* self: 16u 32u 64u 128u */
+#define SELF_FEW_SITUATIONS 32u   /* self: 16u 32u 64u 128u */
 /* times it redraws its map of a level before giving it up */
 #define SELF_FRESH_STARTS 3u   /* self: 0u 1u 3u 6u */
 /* times per level it doubts that a death was the last step's doing */
@@ -41,26 +41,26 @@
 /* how a tie is made uniform: 0 plain acts only, 1 every act, 2 kinds then acts */
 #define SELF_TIE_MODE 1u   /* self: 0u 1u 2u */
 /* acts it will spend on one thing it cannot explain before letting it be */
-#define SELF_WATCH 48u   /* self: 0u 16u 48u 96u */
+#define SELF_WATCH 0u   /* self: 0u 16u 48u 96u */
 /* whether families kept by other games are formulated from the first act */
-#define SELF_USE_LIVE 1   /* self: 0 1 */
+#define SELF_USE_LIVE 0   /* self: 0 1 */
 
 /* its own parts, each on (0) or off (1) */
 #define SELF_OFF_RESTLESS 0   /* self: 0 1 */
 #define SELF_OFF_CLOCK 0   /* self: 0 1 */
 #define SELF_OFF_STOOD 0   /* self: 0 1 */
 #define SELF_OFF_PANELS 0   /* self: 0 1 */
-#define SELF_OFF_NEAR 0   /* self: 0 1 */
-#define SELF_OFF_THEORY 0   /* self: 0 1 */
+#define SELF_OFF_NEAR 1   /* self: 0 1 */
+#define SELF_OFF_THEORY 1   /* self: 0 1 */
 #define SELF_OFF_SKIP 0   /* self: 0 1 */
 #define SELF_OFF_DEATHS 0   /* self: 0 1 */
 #define SELF_OFF_UNMASK 0   /* self: 0 1 */
-#define SELF_OFF_WINDOW 0   /* self: 0 1 */
+#define SELF_OFF_WINDOW 1   /* self: 0 1 */
 #define SELF_OFF_REDRAW 0   /* self: 0 1 */
 #define SELF_OFF_RECALL 0   /* self: 0 1 */
 #define SELF_OFF_REPLAY 1   /* self: 0 1 */
 #define SELF_OFF_REACH 0   /* self: 0 1 */
-#define SELF_OFF_CURIOUS 0   /* self: 0 1 */
+#define SELF_OFF_CURIOUS 1   /* self: 0 1 */
 #define SELF_OFF_PLAN 0   /* self: 0 1 */
 #define SELF_OFF_WONAIM 0   /* self: 0 1 */
 #define SELF_OFF_RULES 0   /* self: 0 1 */
