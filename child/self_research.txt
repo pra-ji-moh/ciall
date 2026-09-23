@@ -520,3 +520,8 @@
   from version 61 (one of 5 still standing) it made version 64: SELF_OFF_THEORY 1->0
   development games, two seeds averaged: 10.5 levels, 0.725% (its parent: 11.5, 0.730%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-09-23 12:43  (building itself: one generation)
+  from version 57 (one of 5 still standing) it made version 65: SELF_OFF_SKIP 0->1; SELF_TIE_MODE 1u->2u; SELF_OFF_UNMASK 0->1
+  development games, two seeds averaged: 11.5 levels, 0.710% (its parent: 13.5, 0.714%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
