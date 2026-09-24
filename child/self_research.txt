@@ -603,3 +603,6 @@
   from version 74 (one of 8 still standing) it made version 79: SELF_DEATH_RETRIES 10u->20u; SELF_OFF_THEORY 1->0
   development games, two seeds averaged: 10.5 levels, 0.730% (its parent: 11.0, 0.786%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-09-24 06:40  (building itself: one generation)
+  from version 74 it made a version it had already made (combined 74 and 71); it tries again next time
