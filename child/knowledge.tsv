@@ -1,0 +1,761 @@
+when	game	colour	cells	act	family	arg	sightings	if_so	if_not	suggested_by
+2026-09-24 15:53	ar25	11	59	1	size	60	11	do any of 2 things	do any of 69 things	its own study
+2026-09-24 15:53	ar25	11	45	4	size	46	27	do any of 2 things	do any of 69 things	its own study
+2026-09-24 15:53	ar25	11	45	4	many	192	27	do any of 69 things	do any of 2 things	its own study
+2026-09-24 15:53	ar25	10	63	1	size	126	19	do any of 156 things	do any of 2 things	its own study
+2026-09-24 15:53	ar25	0	1	3	near	162	48	stay where it is	do any of 2 things	library
+2026-09-24 15:53	ar25	0	1	3	near	163	48	stay where it is	do any of 2 things	library
+2026-09-24 15:53	ar25	0	1	3	near	164	48	stay where it is	do any of 2 things	library
+2026-09-24 15:53	ar25	10	117	2	ahead	5	13	do any of 2 things	do any of 139 things	library
+2026-09-24 15:53	ar25	10	189	4	ahead	37	16	do any of 2 things	do any of 256 things	library
+2026-09-24 15:53	ar25	10	189	4	ahead	52	16	do any of 2 things	do any of 256 things	library
+2026-09-24 15:53	ar25	10	189	3	ahead	36	40	do any of 2 things	stay where it is	library
+2026-09-24 15:53	ar25	10	189	3	ahead	53	40	do any of 2 things	stay where it is	library
+2026-09-24 15:53	ar25	10	189	3	ahead	36	16	do any of 2 things	do any of 256 things	library
+2026-09-24 15:53	ar25	10	189	3	ahead	53	16	do any of 2 things	do any of 256 things	library
+2026-09-24 15:53	bp35	3	1	3	touch	14	48	do any of 126 things	do any of 70 things	library
+2026-09-24 15:53	bp35	3	1	3	nth	1426	48	do any of 28 things	do any of 299 things	its own study
+2026-09-24 15:53	bp35	3	1	3	nth	1427	48	do any of 28 things	do any of 289 things	its own study
+2026-09-24 15:53	bp35	15	1	3	ahead	16	15	change size	do any of 283 things	library
+2026-09-24 15:53	bp35	15	1	3	ahead	21	15	change size	do any of 283 things	library
+2026-09-24 15:53	bp35	15	1	3	ahead	37	15	change size	do any of 283 things	library
+2026-09-24 15:53	bp35	3	1	6	nth	398	48	do any of 4 things	do any of 27 things	its own study
+2026-09-24 15:53	bp35	5	24	6	cycle	48	4	stay where it is	do any of 2 things	library
+2026-09-24 15:53	bp35	15	15	7	ahead	16	17	change size	do any of 211 things	library
+2026-09-24 15:53	bp35	15	15	7	ahead	21	17	change size	do any of 211 things	library
+2026-09-24 15:53	bp35	15	15	7	ahead	37	17	change size	do any of 211 things	library
+2026-09-24 15:53	bp35	15	215	6	ahead	16	48	change size	do any of 211 things	library
+2026-09-24 15:53	bp35	15	215	6	ahead	21	48	change size	do any of 211 things	library
+2026-09-24 15:53	bp35	15	215	6	ahead	37	48	change size	do any of 211 things	library
+2026-09-24 15:53	bp35	5	4	7	nth	33	48	move 0 down and -6 across unless something is in the way	do any of 3 things	its own study
+2026-09-24 15:53	bp35	5	4	7	nth	34	48	move 0 down and -6 across unless something is in the way	do any of 3 things	its own study
+2026-09-24 15:53	bp35	5	4	7	nth	35	48	move 0 down and -6 across unless something is in the way	do any of 3 things	its own study
+2026-09-24 15:53	bp35	15	10	4	ahead	16	25	change size	do any of 211 things	library
+2026-09-24 15:53	bp35	15	10	4	ahead	21	25	change size	do any of 211 things	library
+2026-09-24 15:53	bp35	15	10	4	ahead	37	25	change size	do any of 211 things	library
+2026-09-24 15:53	cd82	4	62	1	cycle	65	6	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	cd82	15	85	5	ahead	18	10	change size	do any of 289 things	library
+2026-09-24 15:53	cd82	15	85	5	near	35	10	change size	do any of 289 things	library
+2026-09-24 15:53	cd82	15	85	5	size	85	10	change size	do any of 289 things	its own study
+2026-09-24 15:53	cd82	4	55	5	cycle	67	8	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	cd82	4	54	6	cycle	67	8	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	cd82	15	85	6	ahead	18	12	change size	do any of 289 things	library
+2026-09-24 15:53	cd82	15	85	6	near	35	12	change size	do any of 289 things	library
+2026-09-24 15:53	cd82	15	85	6	size	85	12	change size	do any of 289 things	its own study
+2026-09-24 15:53	cd82	15	84	4	ahead	34	11	change size	do any of 283 things	library
+2026-09-24 15:53	cd82	15	84	1	ahead	18	14	change size	do any of 289 things	library
+2026-09-24 15:53	cd82	15	85	2	ahead	18	7	change size	do any of 289 things	library
+2026-09-24 15:53	cd82	15	85	2	near	35	7	change size	do any of 289 things	library
+2026-09-24 15:53	cd82	15	85	2	size	85	7	change size	do any of 289 things	its own study
+2026-09-24 15:53	cd82	2	43	1	cycle	32	4	do any of 289 things	change size	library
+2026-09-24 15:53	cd82	2	43	1	cycle	33	4	change size	do any of 289 things	library
+2026-09-24 15:53	cd82	2	43	1	near	82	4	do any of 289 things	change size	library
+2026-09-24 15:53	cd82	4	28	6	size	29	43	do any of 2 things	do any of 205 things	its own study
+2026-09-24 15:53	cd82	0	85	4	many	242	17	do any of 284 things	change size	its own study
+2026-09-24 15:53	cd82	2	43	2	near	82	8	change size	do any of 289 things	library
+2026-09-24 15:53	cd82	0	84	6	cycle	65	6	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	cd82	2	30	1	near	34	10	do any of 3 things	change size	library
+2026-09-24 15:53	cd82	2	30	1	near	83	10	do any of 3 things	change size	library
+2026-09-24 15:53	cd82	0	84	1	ahead	18	35	change size	stay where it is	library
+2026-09-24 15:53	cd82	2	30	2	near	34	6	do any of 3 things	change size	library
+2026-09-24 15:53	cd82	2	30	2	near	83	6	do any of 3 things	change size	library
+2026-09-24 15:53	cd82	2	30	4	ahead	63	5	change size	do any of 289 things	library
+2026-09-24 15:53	cd82	2	30	4	cycle	64	5	change size	do any of 289 things	library
+2026-09-24 15:53	cd82	2	30	4	near	34	5	change size	do any of 289 things	library
+2026-09-24 15:53	cd82	15	65	6	ahead	0	9	change size	stay where it is	library
+2026-09-24 15:53	cd82	15	65	6	ahead	48	9	change size	stay where it is	library
+2026-09-24 15:53	cd82	0	85	1	ahead	5	6	change size	stay where it is	library
+2026-09-24 15:53	cd82	0	85	1	ahead	53	6	change size	stay where it is	library
+2026-09-24 15:53	cd82	0	85	4	ahead	53	4	change size	stay where it is	library
+2026-09-24 15:53	cd82	0	85	4	cycle	32	4	change size	stay where it is	library
+2026-09-24 15:53	cd82	0	85	4	cycle	33	4	stay where it is	change size	library
+2026-09-24 15:53	cd82	15	85	6	ahead	53	14	change size	do any of 2 things	library
+2026-09-24 15:53	cd82	15	85	6	many	2	14	do any of 2 things	change size	its own study
+2026-09-24 15:53	cd82	4	8	6	cycle	49	5	do any of 209 things	do any of 2 things	library
+2026-09-24 15:53	cd82	15	85	4	ahead	21	6	change size	stay where it is	library
+2026-09-24 15:53	cd82	15	85	4	ahead	53	6	change size	stay where it is	library
+2026-09-24 15:53	cd82	15	85	4	near	4	6	stay where it is	change size	library
+2026-09-24 15:53	cd82	4	52	6	cycle	48	4	do any of 209 things	do any of 2 things	library
+2026-09-24 15:53	cd82	0	84	6	cycle	66	7	do any of 2 things	stay where it is	library
+2026-09-24 15:53	cd82	12	85	6	ahead	18	16	do any of 2 things	stay where it is	library
+2026-09-24 15:53	cd82	12	85	6	near	35	16	do any of 2 things	stay where it is	library
+2026-09-24 15:53	cd82	12	85	6	near	83	16	do any of 2 things	stay where it is	library
+2026-09-24 15:53	cd82	0	90	5	cycle	64	5	stay where it is	change size	library
+2026-09-24 15:53	cd82	2	30	3	cycle	48	4	stay where it is	change size	library
+2026-09-24 15:53	cd82	0	85	3	ahead	50	9	change size	stay where it is	library
+2026-09-24 15:53	cd82	4	22	5	cycle	48	4	do any of 209 things	do any of 2 things	library
+2026-09-24 15:53	cd82	12	84	4	many	2	14	stay where it is	change size	its own study
+2026-09-24 15:53	dc22	3	578	6	ahead	4	4	change size	do any of 289 things	library
+2026-09-24 15:53	dc22	3	578	6	ahead	5	4	change size	do any of 289 things	library
+2026-09-24 15:53	dc22	3	578	6	ahead	20	4	do any of 289 things	change size	library
+2026-09-24 15:53	dc22	0	61	6	size	62	9	do any of 2 things	do any of 289 things	its own study
+2026-09-24 15:53	dc22	2	32	1	ahead	30	10	change colour	do any of 289 things	library
+2026-09-24 15:53	dc22	3	589	2	cycle	65	6	change size	do any of 289 things	library
+2026-09-24 15:53	dc22	0	50	2	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	50	2	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	2	32	2	ahead	14	10	change colour	do any of 289 things	library
+2026-09-24 15:53	dc22	2	32	3	ahead	62	6	change colour	do any of 289 things	library
+2026-09-24 15:53	dc22	2	32	3	cycle	65	6	change colour	do any of 289 things	library
+2026-09-24 15:53	dc22	3	601	3	cycle	67	8	change size	do any of 289 things	library
+2026-09-24 15:53	dc22	3	604	4	cycle	65	6	change size	do any of 289 things	library
+2026-09-24 15:53	dc22	0	18	1	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	18	1	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	2	32	4	ahead	30	12	change colour	do any of 35 things	library
+2026-09-24 15:53	dc22	2	32	4	ahead	46	12	change colour	do any of 35 things	library
+2026-09-24 15:53	dc22	0	16	4	cycle	48	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	5	1190	6	touch	8	48	do any of 289 things	change size	library
+2026-09-24 15:53	dc22	5	1190	6	touch	9	48	do any of 289 things	change size	library
+2026-09-24 15:53	dc22	5	1190	6	nth	63	48	change size	do any of 289 things	its own study
+2026-09-24 15:53	dc22	14	4	4	ahead	2	8	do any of 4 things	do any of 40 things	library
+2026-09-24 15:53	dc22	14	4	4	ahead	4	8	do any of 40 things	do any of 4 things	library
+2026-09-24 15:53	dc22	14	4	4	ahead	50	8	do any of 4 things	do any of 40 things	library
+2026-09-24 15:53	dc22	0	52	4	cycle	49	5	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	14	4	3	ahead	34	10	do any of 4 things	do any of 17 things	library
+2026-09-24 15:53	dc22	14	4	3	ahead	36	10	do any of 17 things	do any of 4 things	library
+2026-09-24 15:53	dc22	0	42	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	42	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	33	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	33	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	14	4	2	ahead	18	13	do any of 4 things	do any of 13 things	library
+2026-09-24 15:53	dc22	14	4	2	ahead	20	13	do any of 13 things	do any of 4 things	library
+2026-09-24 15:53	dc22	14	4	2	near	147	13	do any of 4 things	do any of 13 things	library
+2026-09-24 15:53	dc22	0	11	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	11	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	10	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	10	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	9	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	9	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	8	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	8	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	7	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	7	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	6	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	6	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	5	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	5	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	4	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	4	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	3	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	3	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	2	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	2	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	60	6	cycle	48	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	59	6	cycle	48	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	58	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	58	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	48	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	48	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	47	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	47	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	46	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	46	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	45	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	45	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	44	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	44	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	40	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	40	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	39	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	39	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	38	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	38	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	37	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	37	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	36	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	36	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	35	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	35	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	32	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	32	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	31	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	31	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	30	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	30	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	29	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	29	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	28	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	28	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	27	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	27	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	26	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	26	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	25	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	25	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	23	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	23	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	22	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	22	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	21	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:53	dc22	0	21	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	20	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:53	dc22	0	20	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	ar25	11	59	1	size	60	11	do any of 2 things	do any of 69 things	its own study
+2026-09-24 15:55	ar25	11	45	4	size	46	27	do any of 2 things	do any of 69 things	its own study
+2026-09-24 15:55	ar25	11	45	4	many	192	27	do any of 69 things	do any of 2 things	its own study
+2026-09-24 15:55	ar25	10	63	1	size	126	19	do any of 156 things	do any of 2 things	its own study
+2026-09-24 15:55	ar25	0	1	3	near	162	48	stay where it is	do any of 2 things	library
+2026-09-24 15:55	ar25	0	1	3	near	163	48	stay where it is	do any of 2 things	library
+2026-09-24 15:55	ar25	0	1	3	near	164	48	stay where it is	do any of 2 things	library
+2026-09-24 15:55	ar25	10	117	2	ahead	5	13	do any of 2 things	do any of 139 things	library
+2026-09-24 15:55	ar25	10	189	4	ahead	37	16	do any of 2 things	do any of 256 things	library
+2026-09-24 15:55	ar25	10	189	4	ahead	52	16	do any of 2 things	do any of 256 things	library
+2026-09-24 15:55	ar25	10	189	3	ahead	36	40	do any of 2 things	stay where it is	library
+2026-09-24 15:55	ar25	10	189	3	ahead	53	40	do any of 2 things	stay where it is	library
+2026-09-24 15:55	ar25	10	189	3	ahead	36	16	do any of 2 things	do any of 256 things	library
+2026-09-24 15:55	ar25	10	189	3	ahead	53	16	do any of 2 things	do any of 256 things	library
+2026-09-24 15:55	bp35	3	1	3	touch	14	48	do any of 126 things	do any of 70 things	library
+2026-09-24 15:55	bp35	3	1	3	nth	1426	48	do any of 28 things	do any of 299 things	its own study
+2026-09-24 15:55	bp35	3	1	3	nth	1427	48	do any of 28 things	do any of 289 things	its own study
+2026-09-24 15:55	bp35	15	1	3	ahead	16	15	change size	do any of 283 things	library
+2026-09-24 15:55	bp35	15	1	3	ahead	21	15	change size	do any of 283 things	library
+2026-09-24 15:55	bp35	15	1	3	ahead	37	15	change size	do any of 283 things	library
+2026-09-24 15:55	bp35	3	1	6	nth	398	48	do any of 4 things	do any of 27 things	its own study
+2026-09-24 15:55	bp35	5	24	6	cycle	48	4	stay where it is	do any of 2 things	library
+2026-09-24 15:55	bp35	15	15	7	ahead	16	17	change size	do any of 211 things	library
+2026-09-24 15:55	bp35	15	15	7	ahead	21	17	change size	do any of 211 things	library
+2026-09-24 15:55	bp35	15	15	7	ahead	37	17	change size	do any of 211 things	library
+2026-09-24 15:55	bp35	15	215	6	ahead	16	48	change size	do any of 211 things	library
+2026-09-24 15:55	bp35	15	215	6	ahead	21	48	change size	do any of 211 things	library
+2026-09-24 15:55	bp35	15	215	6	ahead	37	48	change size	do any of 211 things	library
+2026-09-24 15:55	bp35	5	4	7	nth	33	48	move 0 down and -6 across unless something is in the way	do any of 3 things	its own study
+2026-09-24 15:55	bp35	5	4	7	nth	34	48	move 0 down and -6 across unless something is in the way	do any of 3 things	its own study
+2026-09-24 15:55	bp35	5	4	7	nth	35	48	move 0 down and -6 across unless something is in the way	do any of 3 things	its own study
+2026-09-24 15:55	bp35	15	10	4	ahead	16	25	change size	do any of 211 things	library
+2026-09-24 15:55	bp35	15	10	4	ahead	21	25	change size	do any of 211 things	library
+2026-09-24 15:55	bp35	15	10	4	ahead	37	25	change size	do any of 211 things	library
+2026-09-24 15:55	cd82	4	62	1	cycle	65	6	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	cd82	15	85	5	ahead	18	10	change size	do any of 289 things	library
+2026-09-24 15:55	cd82	15	85	5	near	35	10	change size	do any of 289 things	library
+2026-09-24 15:55	cd82	15	85	5	size	85	10	change size	do any of 289 things	its own study
+2026-09-24 15:55	cd82	4	55	5	cycle	67	8	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	cd82	4	54	6	cycle	67	8	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	cd82	15	85	6	ahead	18	12	change size	do any of 289 things	library
+2026-09-24 15:55	cd82	15	85	6	near	35	12	change size	do any of 289 things	library
+2026-09-24 15:55	cd82	15	85	6	size	85	12	change size	do any of 289 things	its own study
+2026-09-24 15:55	cd82	15	84	4	ahead	34	11	change size	do any of 283 things	library
+2026-09-24 15:55	cd82	15	84	1	ahead	18	14	change size	do any of 289 things	library
+2026-09-24 15:55	cd82	15	85	2	ahead	18	7	change size	do any of 289 things	library
+2026-09-24 15:55	cd82	15	85	2	near	35	7	change size	do any of 289 things	library
+2026-09-24 15:55	cd82	15	85	2	size	85	7	change size	do any of 289 things	its own study
+2026-09-24 15:55	cd82	2	43	1	cycle	32	4	do any of 289 things	change size	library
+2026-09-24 15:55	cd82	2	43	1	cycle	33	4	change size	do any of 289 things	library
+2026-09-24 15:55	cd82	2	43	1	near	82	4	do any of 289 things	change size	library
+2026-09-24 15:55	cd82	4	28	6	size	29	43	do any of 2 things	do any of 205 things	its own study
+2026-09-24 15:55	cd82	0	85	4	many	242	17	do any of 284 things	change size	its own study
+2026-09-24 15:55	cd82	2	43	2	near	82	8	change size	do any of 289 things	library
+2026-09-24 15:55	cd82	0	84	6	cycle	65	6	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	cd82	2	30	1	near	34	10	do any of 3 things	change size	library
+2026-09-24 15:55	cd82	2	30	1	near	83	10	do any of 3 things	change size	library
+2026-09-24 15:55	cd82	0	84	1	ahead	18	35	change size	stay where it is	library
+2026-09-24 15:55	cd82	2	30	2	near	34	6	do any of 3 things	change size	library
+2026-09-24 15:55	cd82	2	30	2	near	83	6	do any of 3 things	change size	library
+2026-09-24 15:55	cd82	2	30	4	ahead	63	5	change size	do any of 289 things	library
+2026-09-24 15:55	cd82	2	30	4	cycle	64	5	change size	do any of 289 things	library
+2026-09-24 15:55	cd82	2	30	4	near	34	5	change size	do any of 289 things	library
+2026-09-24 15:55	cd82	15	65	6	ahead	0	9	change size	stay where it is	library
+2026-09-24 15:55	cd82	15	65	6	ahead	48	9	change size	stay where it is	library
+2026-09-24 15:55	cd82	0	85	1	ahead	5	6	change size	stay where it is	library
+2026-09-24 15:55	cd82	0	85	1	ahead	53	6	change size	stay where it is	library
+2026-09-24 15:55	cd82	0	85	4	ahead	53	4	change size	stay where it is	library
+2026-09-24 15:55	cd82	0	85	4	cycle	32	4	change size	stay where it is	library
+2026-09-24 15:55	cd82	0	85	4	cycle	33	4	stay where it is	change size	library
+2026-09-24 15:55	cd82	15	85	6	ahead	53	14	change size	do any of 2 things	library
+2026-09-24 15:55	cd82	15	85	6	many	2	14	do any of 2 things	change size	its own study
+2026-09-24 15:55	cd82	4	8	6	cycle	49	5	do any of 209 things	do any of 2 things	library
+2026-09-24 15:55	cd82	15	85	4	ahead	21	6	change size	stay where it is	library
+2026-09-24 15:55	cd82	15	85	4	ahead	53	6	change size	stay where it is	library
+2026-09-24 15:55	cd82	15	85	4	near	4	6	stay where it is	change size	library
+2026-09-24 15:55	cd82	4	52	6	cycle	48	4	do any of 209 things	do any of 2 things	library
+2026-09-24 15:55	cd82	0	84	6	cycle	66	7	do any of 2 things	stay where it is	library
+2026-09-24 15:55	cd82	12	85	6	ahead	18	16	do any of 2 things	stay where it is	library
+2026-09-24 15:55	cd82	12	85	6	near	35	16	do any of 2 things	stay where it is	library
+2026-09-24 15:55	cd82	12	85	6	near	83	16	do any of 2 things	stay where it is	library
+2026-09-24 15:55	cd82	0	90	5	cycle	64	5	stay where it is	change size	library
+2026-09-24 15:55	cd82	2	30	3	cycle	48	4	stay where it is	change size	library
+2026-09-24 15:55	cd82	0	85	3	ahead	50	9	change size	stay where it is	library
+2026-09-24 15:55	cd82	4	22	5	cycle	48	4	do any of 209 things	do any of 2 things	library
+2026-09-24 15:55	cd82	12	84	4	many	2	14	stay where it is	change size	its own study
+2026-09-24 15:55	dc22	3	578	6	ahead	4	4	change size	do any of 289 things	library
+2026-09-24 15:55	dc22	3	578	6	ahead	5	4	change size	do any of 289 things	library
+2026-09-24 15:55	dc22	3	578	6	ahead	20	4	do any of 289 things	change size	library
+2026-09-24 15:55	dc22	0	61	6	size	62	9	do any of 2 things	do any of 289 things	its own study
+2026-09-24 15:55	dc22	2	32	1	ahead	30	10	change colour	do any of 289 things	library
+2026-09-24 15:55	dc22	3	589	2	cycle	65	6	change size	do any of 289 things	library
+2026-09-24 15:55	dc22	0	50	2	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	50	2	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	2	32	2	ahead	14	10	change colour	do any of 289 things	library
+2026-09-24 15:55	dc22	2	32	3	ahead	62	6	change colour	do any of 289 things	library
+2026-09-24 15:55	dc22	2	32	3	cycle	65	6	change colour	do any of 289 things	library
+2026-09-24 15:55	dc22	3	601	3	cycle	67	8	change size	do any of 289 things	library
+2026-09-24 15:55	dc22	3	604	4	cycle	65	6	change size	do any of 289 things	library
+2026-09-24 15:55	dc22	0	18	1	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	18	1	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	2	32	4	ahead	30	12	change colour	do any of 35 things	library
+2026-09-24 15:55	dc22	2	32	4	ahead	46	12	change colour	do any of 35 things	library
+2026-09-24 15:55	dc22	0	16	4	cycle	48	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	5	1190	6	touch	8	48	do any of 289 things	change size	library
+2026-09-24 15:55	dc22	5	1190	6	touch	9	48	do any of 289 things	change size	library
+2026-09-24 15:55	dc22	5	1190	6	nth	63	48	change size	do any of 289 things	its own study
+2026-09-24 15:55	dc22	14	4	4	ahead	2	8	do any of 4 things	do any of 40 things	library
+2026-09-24 15:55	dc22	14	4	4	ahead	4	8	do any of 40 things	do any of 4 things	library
+2026-09-24 15:55	dc22	14	4	4	ahead	50	8	do any of 4 things	do any of 40 things	library
+2026-09-24 15:55	dc22	0	52	4	cycle	49	5	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	14	4	3	ahead	34	10	do any of 4 things	do any of 17 things	library
+2026-09-24 15:55	dc22	14	4	3	ahead	36	10	do any of 17 things	do any of 4 things	library
+2026-09-24 15:55	dc22	0	42	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	42	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	33	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	33	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	14	4	2	ahead	18	13	do any of 4 things	do any of 13 things	library
+2026-09-24 15:55	dc22	14	4	2	ahead	20	13	do any of 13 things	do any of 4 things	library
+2026-09-24 15:55	dc22	14	4	2	near	147	13	do any of 4 things	do any of 13 things	library
+2026-09-24 15:55	dc22	0	11	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	11	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	10	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	10	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	9	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	9	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	8	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	8	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	7	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	7	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	6	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	6	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	5	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	5	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	4	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	4	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	3	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	3	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	2	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	2	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	60	6	cycle	48	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	59	6	cycle	48	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	58	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	58	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	48	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	48	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	47	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	47	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	46	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	46	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	45	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	45	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	44	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	44	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	40	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	40	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	39	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	39	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	38	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	38	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	37	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	37	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	36	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	36	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	35	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	35	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	32	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	32	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	31	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	31	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	30	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	30	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	29	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	29	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	28	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	28	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	27	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	27	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	26	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	26	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	25	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	25	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	23	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	23	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	22	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	22	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	21	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 15:55	dc22	0	21	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	20	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 15:55	dc22	0	20	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	ar25	11	59	1	size	60	11	do any of 2 things	do any of 69 things	its own study
+2026-09-24 16:00	ar25	11	45	4	size	46	27	do any of 2 things	do any of 69 things	its own study
+2026-09-24 16:00	ar25	11	45	4	many	192	27	do any of 69 things	do any of 2 things	its own study
+2026-09-24 16:00	ar25	10	63	1	size	126	19	do any of 156 things	do any of 2 things	its own study
+2026-09-24 16:00	ar25	0	1	3	near	162	48	stay where it is	do any of 2 things	library
+2026-09-24 16:00	ar25	0	1	3	near	163	48	stay where it is	do any of 2 things	library
+2026-09-24 16:00	ar25	0	1	3	near	164	48	stay where it is	do any of 2 things	library
+2026-09-24 16:00	ar25	10	117	2	ahead	5	13	do any of 2 things	do any of 139 things	library
+2026-09-24 16:00	ar25	10	189	4	ahead	37	16	do any of 2 things	do any of 256 things	library
+2026-09-24 16:00	ar25	10	189	4	ahead	52	16	do any of 2 things	do any of 256 things	library
+2026-09-24 16:00	ar25	10	189	3	ahead	36	40	do any of 2 things	stay where it is	library
+2026-09-24 16:00	ar25	10	189	3	ahead	53	40	do any of 2 things	stay where it is	library
+2026-09-24 16:00	ar25	10	189	3	ahead	36	16	do any of 2 things	do any of 256 things	library
+2026-09-24 16:00	ar25	10	189	3	ahead	53	16	do any of 2 things	do any of 256 things	library
+2026-09-24 16:00	bp35	3	1	3	touch	14	48	do any of 126 things	do any of 70 things	library
+2026-09-24 16:00	bp35	3	1	3	nth	1426	48	do any of 28 things	do any of 299 things	its own study
+2026-09-24 16:00	bp35	3	1	3	nth	1427	48	do any of 28 things	do any of 289 things	its own study
+2026-09-24 16:00	bp35	15	1	3	ahead	16	15	change size	do any of 283 things	library
+2026-09-24 16:00	bp35	15	1	3	ahead	21	15	change size	do any of 283 things	library
+2026-09-24 16:00	bp35	15	1	3	ahead	37	15	change size	do any of 283 things	library
+2026-09-24 16:00	bp35	3	1	6	nth	398	48	do any of 4 things	do any of 27 things	its own study
+2026-09-24 16:00	bp35	5	24	6	cycle	48	4	stay where it is	do any of 2 things	library
+2026-09-24 16:00	bp35	15	15	7	ahead	16	17	change size	do any of 211 things	library
+2026-09-24 16:00	bp35	15	15	7	ahead	21	17	change size	do any of 211 things	library
+2026-09-24 16:00	bp35	15	15	7	ahead	37	17	change size	do any of 211 things	library
+2026-09-24 16:00	bp35	15	215	6	ahead	16	48	change size	do any of 211 things	library
+2026-09-24 16:00	bp35	15	215	6	ahead	21	48	change size	do any of 211 things	library
+2026-09-24 16:00	bp35	15	215	6	ahead	37	48	change size	do any of 211 things	library
+2026-09-24 16:00	bp35	5	4	7	nth	33	48	move 0 down and -6 across unless something is in the way	do any of 3 things	its own study
+2026-09-24 16:00	bp35	5	4	7	nth	34	48	move 0 down and -6 across unless something is in the way	do any of 3 things	its own study
+2026-09-24 16:00	bp35	5	4	7	nth	35	48	move 0 down and -6 across unless something is in the way	do any of 3 things	its own study
+2026-09-24 16:00	bp35	15	10	4	ahead	16	25	change size	do any of 211 things	library
+2026-09-24 16:00	bp35	15	10	4	ahead	21	25	change size	do any of 211 things	library
+2026-09-24 16:00	bp35	15	10	4	ahead	37	25	change size	do any of 211 things	library
+2026-09-24 16:00	cd82	4	62	1	cycle	65	6	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	cd82	15	85	5	ahead	18	10	change size	do any of 289 things	library
+2026-09-24 16:00	cd82	15	85	5	near	35	10	change size	do any of 289 things	library
+2026-09-24 16:00	cd82	15	85	5	size	85	10	change size	do any of 289 things	its own study
+2026-09-24 16:00	cd82	4	55	5	cycle	67	8	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	cd82	4	54	6	cycle	67	8	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	cd82	15	85	6	ahead	18	12	change size	do any of 289 things	library
+2026-09-24 16:00	cd82	15	85	6	near	35	12	change size	do any of 289 things	library
+2026-09-24 16:00	cd82	15	85	6	size	85	12	change size	do any of 289 things	its own study
+2026-09-24 16:00	cd82	15	84	4	ahead	34	11	change size	do any of 283 things	library
+2026-09-24 16:00	cd82	15	84	1	ahead	18	14	change size	do any of 289 things	library
+2026-09-24 16:00	cd82	15	85	2	ahead	18	7	change size	do any of 289 things	library
+2026-09-24 16:00	cd82	15	85	2	near	35	7	change size	do any of 289 things	library
+2026-09-24 16:00	cd82	15	85	2	size	85	7	change size	do any of 289 things	its own study
+2026-09-24 16:00	cd82	2	43	1	cycle	32	4	do any of 289 things	change size	library
+2026-09-24 16:00	cd82	2	43	1	cycle	33	4	change size	do any of 289 things	library
+2026-09-24 16:00	cd82	2	43	1	near	82	4	do any of 289 things	change size	library
+2026-09-24 16:00	cd82	4	28	6	size	29	43	do any of 2 things	do any of 205 things	its own study
+2026-09-24 16:00	cd82	0	85	4	many	242	17	do any of 284 things	change size	its own study
+2026-09-24 16:00	cd82	2	43	2	near	82	8	change size	do any of 289 things	library
+2026-09-24 16:00	cd82	0	84	6	cycle	65	6	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	cd82	2	30	1	near	34	10	do any of 3 things	change size	library
+2026-09-24 16:00	cd82	2	30	1	near	83	10	do any of 3 things	change size	library
+2026-09-24 16:00	cd82	0	84	1	ahead	18	35	change size	stay where it is	library
+2026-09-24 16:00	cd82	2	30	2	near	34	6	do any of 3 things	change size	library
+2026-09-24 16:00	cd82	2	30	2	near	83	6	do any of 3 things	change size	library
+2026-09-24 16:00	cd82	2	30	4	ahead	63	5	change size	do any of 289 things	library
+2026-09-24 16:00	cd82	2	30	4	cycle	64	5	change size	do any of 289 things	library
+2026-09-24 16:00	cd82	2	30	4	near	34	5	change size	do any of 289 things	library
+2026-09-24 16:00	cd82	15	65	6	ahead	0	9	change size	stay where it is	library
+2026-09-24 16:00	cd82	15	65	6	ahead	48	9	change size	stay where it is	library
+2026-09-24 16:00	cd82	0	85	1	ahead	5	6	change size	stay where it is	library
+2026-09-24 16:00	cd82	0	85	1	ahead	53	6	change size	stay where it is	library
+2026-09-24 16:00	cd82	0	85	4	ahead	53	4	change size	stay where it is	library
+2026-09-24 16:00	cd82	0	85	4	cycle	32	4	change size	stay where it is	library
+2026-09-24 16:00	cd82	0	85	4	cycle	33	4	stay where it is	change size	library
+2026-09-24 16:00	cd82	15	85	6	ahead	53	14	change size	do any of 2 things	library
+2026-09-24 16:00	cd82	15	85	6	many	2	14	do any of 2 things	change size	its own study
+2026-09-24 16:00	cd82	4	8	6	cycle	49	5	do any of 209 things	do any of 2 things	library
+2026-09-24 16:00	cd82	15	85	4	ahead	21	6	change size	stay where it is	library
+2026-09-24 16:00	cd82	15	85	4	ahead	53	6	change size	stay where it is	library
+2026-09-24 16:00	cd82	15	85	4	near	4	6	stay where it is	change size	library
+2026-09-24 16:00	cd82	4	52	6	cycle	48	4	do any of 209 things	do any of 2 things	library
+2026-09-24 16:00	cd82	0	84	6	cycle	66	7	do any of 2 things	stay where it is	library
+2026-09-24 16:00	cd82	12	85	6	ahead	18	16	do any of 2 things	stay where it is	library
+2026-09-24 16:00	cd82	12	85	6	near	35	16	do any of 2 things	stay where it is	library
+2026-09-24 16:00	cd82	12	85	6	near	83	16	do any of 2 things	stay where it is	library
+2026-09-24 16:00	cd82	0	90	5	cycle	64	5	stay where it is	change size	library
+2026-09-24 16:00	cd82	2	30	3	cycle	48	4	stay where it is	change size	library
+2026-09-24 16:00	cd82	0	85	3	ahead	50	9	change size	stay where it is	library
+2026-09-24 16:00	cd82	4	22	5	cycle	48	4	do any of 209 things	do any of 2 things	library
+2026-09-24 16:00	cd82	12	84	4	many	2	14	stay where it is	change size	its own study
+2026-09-24 16:00	dc22	3	578	6	ahead	4	4	change size	do any of 289 things	library
+2026-09-24 16:00	dc22	3	578	6	ahead	5	4	change size	do any of 289 things	library
+2026-09-24 16:00	dc22	3	578	6	ahead	20	4	do any of 289 things	change size	library
+2026-09-24 16:00	dc22	0	61	6	size	62	9	do any of 2 things	do any of 289 things	its own study
+2026-09-24 16:00	dc22	2	32	1	ahead	30	10	change colour	do any of 289 things	library
+2026-09-24 16:00	dc22	3	589	2	cycle	65	6	change size	do any of 289 things	library
+2026-09-24 16:00	dc22	0	50	2	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	50	2	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	2	32	2	ahead	14	10	change colour	do any of 289 things	library
+2026-09-24 16:00	dc22	2	32	3	ahead	62	6	change colour	do any of 289 things	library
+2026-09-24 16:00	dc22	2	32	3	cycle	65	6	change colour	do any of 289 things	library
+2026-09-24 16:00	dc22	3	601	3	cycle	67	8	change size	do any of 289 things	library
+2026-09-24 16:00	dc22	3	604	4	cycle	65	6	change size	do any of 289 things	library
+2026-09-24 16:00	dc22	0	18	1	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	18	1	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	2	32	4	ahead	30	12	change colour	do any of 35 things	library
+2026-09-24 16:00	dc22	2	32	4	ahead	46	12	change colour	do any of 35 things	library
+2026-09-24 16:00	dc22	0	16	4	cycle	48	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	5	1190	6	touch	8	48	do any of 289 things	change size	library
+2026-09-24 16:00	dc22	5	1190	6	touch	9	48	do any of 289 things	change size	library
+2026-09-24 16:00	dc22	5	1190	6	nth	63	48	change size	do any of 289 things	its own study
+2026-09-24 16:00	dc22	14	4	4	ahead	2	8	do any of 4 things	do any of 40 things	library
+2026-09-24 16:00	dc22	14	4	4	ahead	4	8	do any of 40 things	do any of 4 things	library
+2026-09-24 16:00	dc22	14	4	4	ahead	50	8	do any of 4 things	do any of 40 things	library
+2026-09-24 16:00	dc22	0	52	4	cycle	49	5	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	14	4	3	ahead	34	10	do any of 4 things	do any of 17 things	library
+2026-09-24 16:00	dc22	14	4	3	ahead	36	10	do any of 17 things	do any of 4 things	library
+2026-09-24 16:00	dc22	0	42	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	42	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	33	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	33	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	14	4	2	ahead	18	13	do any of 4 things	do any of 13 things	library
+2026-09-24 16:00	dc22	14	4	2	ahead	20	13	do any of 13 things	do any of 4 things	library
+2026-09-24 16:00	dc22	14	4	2	near	147	13	do any of 4 things	do any of 13 things	library
+2026-09-24 16:00	dc22	0	11	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	11	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	10	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	10	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	9	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	9	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	8	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	8	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	7	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	7	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	6	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	6	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	5	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	5	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	4	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	4	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	3	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	3	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	2	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	2	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	60	6	cycle	48	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	59	6	cycle	48	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	58	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	58	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	48	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	48	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	47	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	47	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	46	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	46	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	45	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	45	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	44	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	44	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	40	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	40	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	39	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	39	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	38	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	38	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	37	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	37	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	36	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	36	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	35	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	35	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	32	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	32	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	31	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	31	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	30	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	30	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	29	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	29	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	28	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	28	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	27	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	27	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	26	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	26	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	25	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	25	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	23	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	23	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	22	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	22	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	21	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:00	dc22	0	21	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	20	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:00	dc22	0	20	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	ar25	11	59	1	size	60	11	do any of 2 things	do any of 69 things	its own study
+2026-09-24 16:13	ar25	11	45	4	size	46	27	do any of 2 things	do any of 69 things	its own study
+2026-09-24 16:13	ar25	11	45	4	many	192	27	do any of 69 things	do any of 2 things	its own study
+2026-09-24 16:13	ar25	10	63	1	size	126	19	do any of 156 things	do any of 2 things	its own study
+2026-09-24 16:13	ar25	0	1	3	near	162	48	stay where it is	do any of 2 things	library
+2026-09-24 16:13	ar25	0	1	3	near	163	48	stay where it is	do any of 2 things	library
+2026-09-24 16:13	ar25	0	1	3	near	164	48	stay where it is	do any of 2 things	library
+2026-09-24 16:13	ar25	10	117	2	ahead	5	13	do any of 2 things	do any of 139 things	library
+2026-09-24 16:13	ar25	10	189	4	ahead	37	16	do any of 2 things	do any of 256 things	library
+2026-09-24 16:13	ar25	10	189	4	ahead	52	16	do any of 2 things	do any of 256 things	library
+2026-09-24 16:13	ar25	10	189	3	ahead	36	40	do any of 2 things	stay where it is	library
+2026-09-24 16:13	ar25	10	189	3	ahead	53	40	do any of 2 things	stay where it is	library
+2026-09-24 16:13	ar25	10	189	3	ahead	36	16	do any of 2 things	do any of 256 things	library
+2026-09-24 16:13	ar25	10	189	3	ahead	53	16	do any of 2 things	do any of 256 things	library
+2026-09-24 16:13	bp35	3	1	3	touch	14	48	do any of 126 things	do any of 70 things	library
+2026-09-24 16:13	bp35	3	1	3	nth	1426	48	do any of 28 things	do any of 299 things	its own study
+2026-09-24 16:13	bp35	3	1	3	nth	1427	48	do any of 28 things	do any of 289 things	its own study
+2026-09-24 16:13	bp35	15	1	3	ahead	16	15	change size	do any of 283 things	library
+2026-09-24 16:13	bp35	15	1	3	ahead	21	15	change size	do any of 283 things	library
+2026-09-24 16:13	bp35	15	1	3	ahead	37	15	change size	do any of 283 things	library
+2026-09-24 16:13	bp35	3	1	6	nth	398	48	do any of 4 things	do any of 27 things	its own study
+2026-09-24 16:13	bp35	5	24	6	cycle	48	4	stay where it is	do any of 2 things	library
+2026-09-24 16:13	bp35	15	15	7	ahead	16	17	change size	do any of 211 things	library
+2026-09-24 16:13	bp35	15	15	7	ahead	21	17	change size	do any of 211 things	library
+2026-09-24 16:13	bp35	15	15	7	ahead	37	17	change size	do any of 211 things	library
+2026-09-24 16:13	bp35	15	215	6	ahead	16	48	change size	do any of 211 things	library
+2026-09-24 16:13	bp35	15	215	6	ahead	21	48	change size	do any of 211 things	library
+2026-09-24 16:13	bp35	15	215	6	ahead	37	48	change size	do any of 211 things	library
+2026-09-24 16:13	bp35	5	4	7	nth	33	48	move 0 down and -6 across unless something is in the way	do any of 3 things	its own study
+2026-09-24 16:13	bp35	5	4	7	nth	34	48	move 0 down and -6 across unless something is in the way	do any of 3 things	its own study
+2026-09-24 16:13	bp35	5	4	7	nth	35	48	move 0 down and -6 across unless something is in the way	do any of 3 things	its own study
+2026-09-24 16:13	bp35	15	10	4	ahead	16	25	change size	do any of 211 things	library
+2026-09-24 16:13	bp35	15	10	4	ahead	21	25	change size	do any of 211 things	library
+2026-09-24 16:13	bp35	15	10	4	ahead	37	25	change size	do any of 211 things	library
+2026-09-24 16:13	cd82	4	62	1	cycle	65	6	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	cd82	15	85	5	ahead	18	10	change size	do any of 289 things	library
+2026-09-24 16:13	cd82	15	85	5	near	35	10	change size	do any of 289 things	library
+2026-09-24 16:13	cd82	15	85	5	size	85	10	change size	do any of 289 things	its own study
+2026-09-24 16:13	cd82	4	55	5	cycle	67	8	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	cd82	4	54	6	cycle	67	8	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	cd82	15	85	6	ahead	18	12	change size	do any of 289 things	library
+2026-09-24 16:13	cd82	15	85	6	near	35	12	change size	do any of 289 things	library
+2026-09-24 16:13	cd82	15	85	6	size	85	12	change size	do any of 289 things	its own study
+2026-09-24 16:13	cd82	15	84	4	ahead	34	11	change size	do any of 283 things	library
+2026-09-24 16:13	cd82	15	84	1	ahead	18	14	change size	do any of 289 things	library
+2026-09-24 16:13	cd82	15	85	2	ahead	18	7	change size	do any of 289 things	library
+2026-09-24 16:13	cd82	15	85	2	near	35	7	change size	do any of 289 things	library
+2026-09-24 16:13	cd82	15	85	2	size	85	7	change size	do any of 289 things	its own study
+2026-09-24 16:13	cd82	2	43	1	cycle	32	4	do any of 289 things	change size	library
+2026-09-24 16:13	cd82	2	43	1	cycle	33	4	change size	do any of 289 things	library
+2026-09-24 16:13	cd82	2	43	1	near	82	4	do any of 289 things	change size	library
+2026-09-24 16:13	cd82	4	28	6	size	29	43	do any of 2 things	do any of 205 things	its own study
+2026-09-24 16:13	cd82	0	85	4	many	242	17	do any of 284 things	change size	its own study
+2026-09-24 16:13	cd82	2	43	2	near	82	8	change size	do any of 289 things	library
+2026-09-24 16:13	cd82	0	84	6	cycle	65	6	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	cd82	2	30	1	near	34	10	do any of 3 things	change size	library
+2026-09-24 16:13	cd82	2	30	1	near	83	10	do any of 3 things	change size	library
+2026-09-24 16:13	cd82	0	84	1	ahead	18	35	change size	stay where it is	library
+2026-09-24 16:13	cd82	2	30	2	near	34	6	do any of 3 things	change size	library
+2026-09-24 16:13	cd82	2	30	2	near	83	6	do any of 3 things	change size	library
+2026-09-24 16:13	cd82	2	30	4	ahead	63	5	change size	do any of 289 things	library
+2026-09-24 16:13	cd82	2	30	4	cycle	64	5	change size	do any of 289 things	library
+2026-09-24 16:13	cd82	2	30	4	near	34	5	change size	do any of 289 things	library
+2026-09-24 16:13	cd82	15	65	6	ahead	0	9	change size	stay where it is	library
+2026-09-24 16:13	cd82	15	65	6	ahead	48	9	change size	stay where it is	library
+2026-09-24 16:13	cd82	0	85	1	ahead	5	6	change size	stay where it is	library
+2026-09-24 16:13	cd82	0	85	1	ahead	53	6	change size	stay where it is	library
+2026-09-24 16:13	cd82	0	85	4	ahead	53	4	change size	stay where it is	library
+2026-09-24 16:13	cd82	0	85	4	cycle	32	4	change size	stay where it is	library
+2026-09-24 16:13	cd82	0	85	4	cycle	33	4	stay where it is	change size	library
+2026-09-24 16:13	cd82	15	85	6	ahead	53	14	change size	do any of 2 things	library
+2026-09-24 16:13	cd82	15	85	6	many	2	14	do any of 2 things	change size	its own study
+2026-09-24 16:13	cd82	4	8	6	cycle	49	5	do any of 209 things	do any of 2 things	library
+2026-09-24 16:13	cd82	15	85	4	ahead	21	6	change size	stay where it is	library
+2026-09-24 16:13	cd82	15	85	4	ahead	53	6	change size	stay where it is	library
+2026-09-24 16:13	cd82	15	85	4	near	4	6	stay where it is	change size	library
+2026-09-24 16:13	cd82	4	52	6	cycle	48	4	do any of 209 things	do any of 2 things	library
+2026-09-24 16:13	cd82	0	84	6	cycle	66	7	do any of 2 things	stay where it is	library
+2026-09-24 16:13	cd82	12	85	6	ahead	18	16	do any of 2 things	stay where it is	library
+2026-09-24 16:13	cd82	12	85	6	near	35	16	do any of 2 things	stay where it is	library
+2026-09-24 16:13	cd82	12	85	6	near	83	16	do any of 2 things	stay where it is	library
+2026-09-24 16:13	cd82	0	90	5	cycle	64	5	stay where it is	change size	library
+2026-09-24 16:13	cd82	2	30	3	cycle	48	4	stay where it is	change size	library
+2026-09-24 16:13	cd82	0	85	3	ahead	50	9	change size	stay where it is	library
+2026-09-24 16:13	cd82	4	22	5	cycle	48	4	do any of 209 things	do any of 2 things	library
+2026-09-24 16:13	cd82	12	84	4	many	2	14	stay where it is	change size	its own study
+2026-09-24 16:13	dc22	3	578	6	ahead	4	4	change size	do any of 289 things	library
+2026-09-24 16:13	dc22	3	578	6	ahead	5	4	change size	do any of 289 things	library
+2026-09-24 16:13	dc22	3	578	6	ahead	20	4	do any of 289 things	change size	library
+2026-09-24 16:13	dc22	0	61	6	size	62	9	do any of 2 things	do any of 289 things	its own study
+2026-09-24 16:13	dc22	2	32	1	ahead	30	10	change colour	do any of 289 things	library
+2026-09-24 16:13	dc22	3	589	2	cycle	65	6	change size	do any of 289 things	library
+2026-09-24 16:13	dc22	0	50	2	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	50	2	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	2	32	2	ahead	14	10	change colour	do any of 289 things	library
+2026-09-24 16:13	dc22	2	32	3	ahead	62	6	change colour	do any of 289 things	library
+2026-09-24 16:13	dc22	2	32	3	cycle	65	6	change colour	do any of 289 things	library
+2026-09-24 16:13	dc22	3	601	3	cycle	67	8	change size	do any of 289 things	library
+2026-09-24 16:13	dc22	3	604	4	cycle	65	6	change size	do any of 289 things	library
+2026-09-24 16:13	dc22	0	18	1	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	18	1	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	2	32	4	ahead	30	12	change colour	do any of 35 things	library
+2026-09-24 16:13	dc22	2	32	4	ahead	46	12	change colour	do any of 35 things	library
+2026-09-24 16:13	dc22	0	16	4	cycle	48	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	5	1190	6	touch	8	48	do any of 289 things	change size	library
+2026-09-24 16:13	dc22	5	1190	6	touch	9	48	do any of 289 things	change size	library
+2026-09-24 16:13	dc22	5	1190	6	nth	63	48	change size	do any of 289 things	its own study
+2026-09-24 16:13	dc22	14	4	4	ahead	2	8	do any of 4 things	do any of 40 things	library
+2026-09-24 16:13	dc22	14	4	4	ahead	4	8	do any of 40 things	do any of 4 things	library
+2026-09-24 16:13	dc22	14	4	4	ahead	50	8	do any of 4 things	do any of 40 things	library
+2026-09-24 16:13	dc22	0	52	4	cycle	49	5	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	14	4	3	ahead	34	10	do any of 4 things	do any of 17 things	library
+2026-09-24 16:13	dc22	14	4	3	ahead	36	10	do any of 17 things	do any of 4 things	library
+2026-09-24 16:13	dc22	0	42	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	42	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	33	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	33	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	14	4	2	ahead	18	13	do any of 4 things	do any of 13 things	library
+2026-09-24 16:13	dc22	14	4	2	ahead	20	13	do any of 13 things	do any of 4 things	library
+2026-09-24 16:13	dc22	14	4	2	near	147	13	do any of 4 things	do any of 13 things	library
+2026-09-24 16:13	dc22	0	11	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	11	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	10	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	10	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	9	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	9	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	8	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	8	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	7	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	7	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	6	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	6	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	5	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	5	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	4	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	4	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	3	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	3	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	2	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	2	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	60	6	cycle	48	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	59	6	cycle	48	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	58	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	58	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	48	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	48	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	47	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	47	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	46	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	46	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	45	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	45	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	44	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	44	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	40	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	40	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	39	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	39	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	38	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	38	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	37	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	37	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	36	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	36	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	35	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	35	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	32	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	32	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	31	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	31	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	30	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	30	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	29	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	29	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	28	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	28	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	27	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	27	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	26	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	26	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	25	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	25	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	23	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	23	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	22	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	22	6	cycle	33	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	21	6	cycle	32	4	do any of 289 things	do any of 2 things	library
+2026-09-24 16:13	dc22	0	21	6	cycle	33	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	20	6	cycle	32	4	do any of 2 things	do any of 289 things	library
+2026-09-24 16:13	dc22	0	20	6	cycle	33	4	do any of 289 things	do any of 2 things	library

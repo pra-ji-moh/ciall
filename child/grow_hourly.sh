@@ -6,7 +6,13 @@ cd "$(dirname "$0")/.."
 ./.build/grow.exe 24 child
 # it reads itself: what it is made of goes to child/self_map.txt
 ./.build/self_map.exe certifiable-c/smarsh_core.c certifiable-c/smarsh_core.h certifiable-c/smarsh_ending.c certifiable-c/smarsh_ending.h certifiable-c/smarsh_explore.c certifiable-c/smarsh_explore.h certifiable-c/smarsh_self.h certifiable-c/smarsh_play.c certifiable-c/smarsh_grow.c certifiable-c/play_arc.c certifiable-c/self_map.c > child/self_map.txt
-${PYTHON:-python3} arc/grow_arc.py
+# it plays with the kinds of fact its last study said to hold (child/facts.txt), and
+# writes down every case it could not account for, for study after
+rm -rf .build/dumps
+CIALL_FACTS="$PWD/child/facts.txt" CIALL_DEADDUMP_DIR="$PWD/.build/dumps" ${PYTHON:-python3} arc/grow_arc.py
+# it studies what it could not account for: every family of fact it knows, the library,
+# and practice on the hardest games
+${PYTHON:-python3} child/study.py --dumps .build/dumps --online --practice 2 || echo "its study did not finish this hour"
 # it reads: 500 more stories from Hugging Face each hour, then is tested on ones it never read
 if ${PYTHON:-python3} read/fetch_books.py more 500; then
   ./.build/read_books.exe books/tinystories.txt > child/reading_now.txt || true

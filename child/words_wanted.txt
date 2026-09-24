@@ -1,0 +1,17 @@
+# the edge of the child's language, 2026-09-24 16:13
+# words it wants: what study could use but play cannot, and what was suggested it cannot test
+appears	suggested 2 times (library); I have no word to test it with
+becomes-size	suggested 3 times (library); I have no word to test it with
+follow	suggested 15 times (library); I have no word to test it with
+line	accounts for 6 cases in study, but cannot be held in play yet
+many	accounts for 14 cases in study, but cannot be held in play yet
+merge-split	suggested 1 times (library); I have no word to test it with
+near	accounts for 17 cases in study, but cannot be held in play yet
+size	accounts for 15 cases in study, but cannot be held in play yet
+# cases no family reaches at all, by what happened in the last sighting
+unreached:size	20 cases
+unreached:stayed	15 cases
+unreached:moved	9 cases
+unreached:gone	9 cases
+unreached:other	2 cases
+unreached:colour	2 cases

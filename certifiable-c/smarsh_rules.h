@@ -45,12 +45,64 @@
 #define RU_MAX_THINGS 256u
 #define RU_LOG 320u                    /* pictures kept: a whole game at the usual budget */
 #define RU_NO_ACT 255u                 /* this picture does not follow from the one before */
+#define RU_EV 65536u                   /* sightings kept: what each thing could have done, and what it touched */
+#define RU_CONDS 4096u                 /* accounts of where a rule breaks, held at once */
+#define RU_CUT_MAX 1024u               /* sightings looked back over when a rule dies */
+
+/*
+ * Where a rule breaks.
+ *
+ * When every rule for a kind and an act has been ruled out, it does not take the
+ * world's word for it and stop. It looks back over every time it saw that kind do
+ * that act, and asks what was different about the times that went one way and the
+ * times that went the other. Each single fact that splits them, so that some rule
+ * still stands on each side, is an account of where the rule breaks, and every such
+ * account is held at once until the world rules it out:
+ *
+ *   TOUCH v    it does one thing when touching colour v, another when not
+ *              (one thing's rule depending on another thing)
+ *   NTH m      it did one thing the first times and another from the m-th time on
+ *              (something it cannot see changed: a switch, a count)
+ *   LEVEL L    it changed when the level changed
+ *   MISREAD    every other time agrees; that one sighting was read wrong
+ *              (it does not trust its own eyes over everything else it has seen)
+ *   AHEAD d v  what lies directly beside it on side d is colour v
+ *              (blocked by v, pushed by v, let through by v)
+ *   CYCLE p r  it is the r-th of every p times
+ *              (something unseen that goes round: alternates, counts in threes)
+ *
+ * Which of these families it may use is itself something it sets, from what its
+ * study finds between games (ru_families).
+ */
+enum { RU_F_TOUCH = 0, RU_F_NTH = 1, RU_F_LEVEL = 2, RU_F_MISREAD = 3, RU_F_AHEAD = 4, RU_F_CYCLE = 5,
+       RU_FACTS = 6 };
+#define RU_FAMILIES_FIRST ((1u << RU_F_TOUCH) | (1u << RU_F_NTH) | (1u << RU_F_LEVEL) | (1u << RU_F_MISREAD))
+#define RU_CROP 12u                    /* the picture around a sighting, kept for study: RU_CROP square */
 
 typedef struct {
   unsigned colour, size, cells;
   unsigned top, left, bottom, right;
   unsigned row, col;                   /* where its middle is */
 } ru_thing_t;
+
+typedef struct {
+  uint16_t k[RU_WAYS];                 /* its kind, each way of saying it */
+  uint16_t nth[RU_WAYS];               /* how many times before this that act met that kind */
+  uint16_t touch;                      /* the colours it was touching */
+  uint16_t ahead[4];                   /* the colours beside it: above, below, left, right */
+  uint8_t crop[RU_CROP][RU_CROP];      /* the picture around it, centred on it; 16 is off the board */
+  uint16_t colour, cells;              /* to say which it was, in words */
+  uint8_t act, level;
+  uint64_t could[RU_WORDS];            /* every rule this sighting allowed */
+} ru_ev_t;
+
+typedef struct {
+  uint16_t k, arg;
+  uint16_t next;                       /* the next account of the same (way, kind, act), plus one */
+  uint8_t way, act, fact, alive;
+  uint64_t yes[RU_WORDS], no[RU_WORDS];   /* the rules still standing where the fact holds, and where not */
+  unsigned said, right;
+} ru_cond_t;
 
 typedef struct {
   uint64_t left[RU_WAYS][RU_KINDS][RU_ACTS][RU_WORDS];   /* a bit per rule still possible */
@@ -70,6 +122,18 @@ typedef struct {
   pl_frame_t log[RU_LOG];
   unsigned char log_act[RU_LOG];       /* the act leading from log[i] to log[i+1] */
   unsigned logged, lost;
+  /* every sighting, the newest kept, and the accounts of where rules break */
+  ru_ev_t ev[RU_EV];
+  unsigned ev_next, ev_count;
+  ru_cond_t cond[RU_CONDS];
+  uint16_t chain[RU_WAYS][RU_KINDS][RU_ACTS];   /* the first account of each, plus one: found without a search */
+  unsigned n_cond, cond_full;
+  unsigned level;                      /* which level of the game it is on */
+  int conds_on;                        /* whether it looks for where rules break */
+  unsigned families;                   /* which kinds of fact it may say a rule turns on */
+  unsigned made[RU_FACTS], killed[RU_FACTS];
+  unsigned repaired, unrepaired;       /* deaths it found an account for, and deaths it could not */
+  unsigned cond_said, cond_right;      /* what it said from those accounts, and how often rightly */
   uint16_t passable;                   /* colours a thing has been seen to move into */
   unsigned long long ruled_out;
 } ru_world_t;
@@ -125,6 +189,24 @@ unsigned ru_no_words(const ru_world_t *w);
 
 /* forget what was ruled out and put the kept evidence to the language afresh */
 void ru_replay(ru_world_t *w);
+
+/* which level it is on now: a level is one of the facts a rule can break at */
+void ru_level(ru_world_t *w, unsigned level);
+
+/* look for where rules break when they die (on), or let them die (off) */
+void ru_conds(ru_world_t *w, int on);
+
+/* where to write, in words, why it believes what it does and why it stopped */
+void ru_tell(FILE *f);
+
+/* which kinds of fact a rule may turn on: a mask of 1 << RU_F_... */
+void ru_families(ru_world_t *w, unsigned mask);
+
+/*
+ * Where to put, for study between games, each death it could not account for: every
+ * sighting of that kind under that act, with the picture around it. One JSON line each.
+ */
+void ru_dump(FILE *f);
 
 sm_status_t ru_report(const ru_world_t *w, FILE *out);
 

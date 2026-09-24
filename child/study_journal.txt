@@ -1,0 +1,249 @@
+== study, 2026-09-24 15:53: 159 cases it could not account for in play, from 4 games
+
+families of fact, and how many cases each accounts for:
+  touch     2   (usable in play)
+  nth       4   (usable in play)
+  level     0   (usable in play)
+  ahead    32   (usable in play)
+  cycle    62   (usable in play)
+  near     17   (study only: a word it wants)
+  line      6   (study only: a word it wants)
+  size     15   (study only: a word it wants)
+  many     14   (study only: a word it wants)
+accounted for: 102 of 159; still with no account: 57
+
+how hard each game is (bits of evidence it could not account for) and practice given:
+  dc22    183.6 bits, 65 cases, 54 newly playable, 2 practice runs
+  cd82    175.8 bits, 51 cases, 25 newly playable, 2 practice runs
+  bp35    103.6 bits, 26 cases, 8 newly playable, 2 practice runs
+  ar25     66.2 bits, 17 cases, 4 newly playable, 1 practice runs
+
+reading: 12 questions
+  could not read arXiv about 'Lights Out (game)': HTTP Error 406: Not Acceptable
+  could not read arXiv about 'Pac-Man': HTTP Error 406: Not Acceptable
+  could not read about 'Snake (video game genre)': HTTP Error 429: Too Many Requests
+  could not read arXiv about 'Snake (video game genre)': HTTP Error 406: Not Acceptable
+  could not read about 'Sokoban': HTTP Error 429: Too Many Requests
+  could not read arXiv about 'Sokoban': HTTP Error 406: Not Acceptable
+  could not read about 'abstraction and reasoning corpus': HTTP Error 429: Too Many Requests
+  could not read arXiv about 'abstraction and reasoning corpus': HTTP Error 406: Not Acceptable
+  could not read about 'puzzle video game block pushing': HTTP Error 429: Too Many Requests
+  could not read arXiv about 'puzzle video game block pushing': HTTP Error 406: Not Acceptable
+  could not read about 'puzzle video game collectible item': HTTP Error 429: Too Many Requests
+  could not read arXiv about 'puzzle video game collectible item': HTTP Error 406: Not Acceptable
+  could not read about 'puzzle video game mechanics': HTTP Error 429: Too Many Requests
+  could not read arXiv about 'puzzle video game mechanics': HTTP Error 406: Not Acceptable
+  could not read about 'puzzle video game object grows': HTTP Error 429: Too Many Requests
+  could not read arXiv about 'puzzle video game object grows': HTTP Error 406: Not Acceptable
+  could not read about 'puzzle video game obstacle': HTTP Error 429: Too Many Requests
+  could not read arXiv about 'puzzle video game obstacle': HTTP Error 406: Not Acceptable
+  could not read about 'puzzle video game tile colour change': HTTP Error 429: Too Many Requests
+  could not read arXiv about 'puzzle video game tile colour change': HTTP Error 406: Not Acceptable
+  could not read about 'tile-based video game collision': HTTP Error 429: Too Many Requests
+  could not read arXiv about 'tile-based video game collision': HTTP Error 406: Not Acceptable
+  7 new sources
+
+what it read and was told, and whether its own sightings bore it out:
+  cycle                  borne out: accounts for 62 cases             (3 suggestions, e.g. Lights Out (game))
+  WANT:follow            cannot test: I do not have a word for it     (3 suggestions, e.g. Lights Out (Lanterns))
+  line                   borne out: accounts for 6 cases              (2 suggestions, e.g. Snake (video game genre))
+  near                   borne out: accounts for 17 cases             (1 suggestions, e.g. Lights Out (game))
+  touch                  borne out: accounts for 2 cases              (1 suggestions, e.g. Ms. Pac-Man)
+  WANT:appears           cannot test: I do not have a word for it     (1 suggestions, e.g. Ms. Pac-Man)
+  WANT:becomes-size      cannot test: I do not have a word for it     (1 suggestions, e.g. Snake (video game genre))
+  ahead                  borne out: accounts for 32 cases             (1 suggestions, e.g. Snake (video game genre))
+
+holding in play from now: touch, nth, level, misread, ahead, cycle
+
+why, case by case (the first few):
+  colour 11, act 1, in ar25: it stayed where it was. In play I had no rule that says so. Studying the 11 times, it turns on whether it was at least 60 cells big: if so, it would do any of 2 things; if not, it would do any of 69 things. I hold this because every one of the 11 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 11, act 4, in ar25: it stayed where it was. In play I had no rule that says so. Studying the 27 times, it turns on whether it was at least 46 cells big: if so, it would do any of 2 things; if not, it would do any of 69 things. I hold this because every one of the 27 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 10, act 1, in ar25: it changed size. In play I had no rule that says so. Studying the 19 times, it turns on whether it was at least 126 cells big: if so, it would do any of 156 things; if not, it would do any of 2 things. I hold this because every one of the 19 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 0, act 3, in ar25: it stayed where it was. In play I had no rule that says so. Studying the 48 times, it turns on whether colour 10 was within 2 cells of it: if so, it would stay where it is; if not, it would do any of 2 things. I hold this because every one of the 48 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 10, act 2, in ar25: it changed size. In play I had no rule that says so. Studying the 13 times, it turns on whether colour 5 was right above it: if so, it would do any of 2 things; if not, it would do any of 139 things. I hold this because every one of the 13 sightings agrees with it, and the idea was suggested by library (Snake (video game genre)). The first time that fact holds and it does something else, I drop it.
+  colour 10, act 4, in ar25: it changed size. In play I had no rule that says so. Studying the 16 times, it turns on whether colour 5 was right to the left of it: if so, it would do any of 2 things; if not, it would do any of 256 things. I hold this because every one of the 16 sightings agrees with it, and the idea was suggested by library (Snake (video game genre)). The first time that fact holds and it does something else, I drop it.
+  colour 10, act 3, in ar25: it stayed where it was. In play I had no rule that says so. Studying the 40 times, it turns on whether colour 4 was right to the left of it: if so, it would do any of 2 things; if not, it would stay where it is. I hold this because every one of the 40 sightings agrees with it, and the idea was suggested by library (Snake (video game genre)). The first time that fact holds and it does something else, I drop it.
+  colour 10, act 3, in ar25: it changed size. In play I had no rule that says so. Studying the 16 times, it turns on whether colour 4 was right to the left of it: if so, it would do any of 2 things; if not, it would do any of 256 things. I hold this because every one of the 16 sightings agrees with it, and the idea was suggested by library (Snake (video game genre)). The first time that fact holds and it does something else, I drop it.
+  colour 3, act 3, in bp35: it stayed where it was. In play I had no rule that says so. Studying the 48 times, it turns on whether it was touching colour 14: if so, it would do any of 126 things; if not, it would do any of 70 things. I hold this because every one of the 48 sightings agrees with it, and the idea was suggested by library (Ms. Pac-Man). The first time that fact holds and it does something else, I drop it.
+  colour 15, act 3, in bp35: it stayed where it was. In play I had no rule that says so. Studying the 15 times, it turns on whether colour 0 was right below it: if so, it would change size; if not, it would do any of 283 things. I hold this because every one of the 15 sightings agrees with it, and the idea was suggested by library (Snake (video game genre)). The first time that fact holds and it does something else, I drop it.
+  colour 3, act 6, in bp35: it stayed where it was. In play I had no rule that says so. Studying the 48 times, it turns on whether this had already happened 398 times: something unseen changed then: if so, it would do any of 4 things; if not, it would do any of 27 things. I hold this because every one of the 48 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 5, act 6, in bp35: it stayed where it was. In play I had no rule that says so. Studying the 4 times, it turns on whether it was time 1 of every 3: if so, it would stay where it is; if not, it would do any of 2 things. I hold this because every one of the 4 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 0, act 4, in ar25: it moved -6 down and -3 across, and no fact in any family I have splits the 15 times. I need a word I do not have.
+  colour 9, act 7, in ar25: it did something none of my words can say, and no fact in any family I have splits the 4 times. I need a word I do not have.
+  colour 0, act 7, in ar25: it moved 0 down and 3 across, and no fact in any family I have splits the 11 times. I need a word I do not have.
+  colour 9, act 2, in ar25: it did something none of my words can say, and no fact in any family I have splits the 4 times. I need a word I do not have.
+  colour 10, act 7, in ar25: it changed size, and no fact in any family I have splits the 14 times. I need a word I do not have.
+
+== study, 2026-09-24 15:55: 159 cases it could not account for in play, from 4 games
+
+families of fact, and how many cases each accounts for:
+  touch     2   (usable in play)
+  nth       4   (usable in play)
+  level     0   (usable in play)
+  ahead    32   (usable in play)
+  cycle    62   (usable in play)
+  near     17   (study only: a word it wants)
+  line      6   (study only: a word it wants)
+  size     15   (study only: a word it wants)
+  many     14   (study only: a word it wants)
+accounted for: 102 of 159; still with no account: 57
+
+how hard each game is (bits of evidence it could not account for) and practice given:
+  dc22    183.6 bits, 65 cases, 54 newly playable, 2 practice runs
+  cd82    175.8 bits, 51 cases, 25 newly playable, 2 practice runs
+  bp35    103.6 bits, 26 cases, 8 newly playable, 2 practice runs
+  ar25     66.2 bits, 17 cases, 4 newly playable, 1 practice runs
+
+reading: 12 questions
+  could not read arXiv about 'Sokoban': HTTP Error 406: Not Acceptable
+  could not read arXiv about 'abstraction and reasoning corpus': export.arxiv.org refused earlier this run
+  could not read arXiv about 'puzzle video game block pushing': export.arxiv.org refused earlier this run
+  could not read arXiv about 'puzzle video game collectible item': export.arxiv.org refused earlier this run
+  could not read arXiv about 'puzzle video game mechanics': export.arxiv.org refused earlier this run
+  could not read arXiv about 'puzzle video game object grows': export.arxiv.org refused earlier this run
+  could not read arXiv about 'puzzle video game obstacle': export.arxiv.org refused earlier this run
+  could not read arXiv about 'puzzle video game tile colour change': export.arxiv.org refused earlier this run
+  could not read arXiv about 'tile-based video game collision': export.arxiv.org refused earlier this run
+  27 new sources
+
+what it read and was told, and whether its own sightings bore it out:
+  WANT:follow            cannot test: I do not have a word for it     (15 suggestions, e.g. Lights Out (Lanterns))
+  cycle                  borne out: accounts for 62 cases             (11 suggestions, e.g. Lights Out (game))
+  ahead                  borne out: accounts for 32 cases             (8 suggestions, e.g. Snake (video game genre))
+  WANT:becomes-size      cannot test: I do not have a word for it     (3 suggestions, e.g. Snake (video game genre))
+  WANT:appears           cannot test: I do not have a word for it     (2 suggestions, e.g. Ms. Pac-Man)
+  line                   borne out: accounts for 6 cases              (2 suggestions, e.g. Snake (video game genre))
+  near                   borne out: accounts for 17 cases             (1 suggestions, e.g. Lights Out (game))
+  touch                  borne out: accounts for 2 cases              (1 suggestions, e.g. Ms. Pac-Man)
+  WANT:merge-split       cannot test: I do not have a word for it     (1 suggestions, e.g. It Takes Two (video game))
+
+holding in play from now: touch, nth, level, misread, ahead, cycle
+
+why, case by case (the first few):
+  colour 11, act 1, in ar25: it stayed where it was. In play I had no rule that says so. Studying the 11 times, it turns on whether it was at least 60 cells big: if so, it would do any of 2 things; if not, it would do any of 69 things. I hold this because every one of the 11 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 11, act 4, in ar25: it stayed where it was. In play I had no rule that says so. Studying the 27 times, it turns on whether it was at least 46 cells big: if so, it would do any of 2 things; if not, it would do any of 69 things. I hold this because every one of the 27 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 10, act 1, in ar25: it changed size. In play I had no rule that says so. Studying the 19 times, it turns on whether it was at least 126 cells big: if so, it would do any of 156 things; if not, it would do any of 2 things. I hold this because every one of the 19 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 0, act 3, in ar25: it stayed where it was. In play I had no rule that says so. Studying the 48 times, it turns on whether colour 10 was within 2 cells of it: if so, it would stay where it is; if not, it would do any of 2 things. I hold this because every one of the 48 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 10, act 2, in ar25: it changed size. In play I had no rule that says so. Studying the 13 times, it turns on whether colour 5 was right above it: if so, it would do any of 2 things; if not, it would do any of 139 things. I hold this because every one of the 13 sightings agrees with it, and the idea was suggested by library (Snake (video game genre)). The first time that fact holds and it does something else, I drop it.
+  colour 10, act 4, in ar25: it changed size. In play I had no rule that says so. Studying the 16 times, it turns on whether colour 5 was right to the left of it: if so, it would do any of 2 things; if not, it would do any of 256 things. I hold this because every one of the 16 sightings agrees with it, and the idea was suggested by library (Snake (video game genre)). The first time that fact holds and it does something else, I drop it.
+  colour 10, act 3, in ar25: it stayed where it was. In play I had no rule that says so. Studying the 40 times, it turns on whether colour 4 was right to the left of it: if so, it would do any of 2 things; if not, it would stay where it is. I hold this because every one of the 40 sightings agrees with it, and the idea was suggested by library (Snake (video game genre)). The first time that fact holds and it does something else, I drop it.
+  colour 10, act 3, in ar25: it changed size. In play I had no rule that says so. Studying the 16 times, it turns on whether colour 4 was right to the left of it: if so, it would do any of 2 things; if not, it would do any of 256 things. I hold this because every one of the 16 sightings agrees with it, and the idea was suggested by library (Snake (video game genre)). The first time that fact holds and it does something else, I drop it.
+  colour 3, act 3, in bp35: it stayed where it was. In play I had no rule that says so. Studying the 48 times, it turns on whether it was touching colour 14: if so, it would do any of 126 things; if not, it would do any of 70 things. I hold this because every one of the 48 sightings agrees with it, and the idea was suggested by library (Ms. Pac-Man). The first time that fact holds and it does something else, I drop it.
+  colour 15, act 3, in bp35: it stayed where it was. In play I had no rule that says so. Studying the 15 times, it turns on whether colour 0 was right below it: if so, it would change size; if not, it would do any of 283 things. I hold this because every one of the 15 sightings agrees with it, and the idea was suggested by library (Snake (video game genre)). The first time that fact holds and it does something else, I drop it.
+  colour 3, act 6, in bp35: it stayed where it was. In play I had no rule that says so. Studying the 48 times, it turns on whether this had already happened 398 times: something unseen changed then: if so, it would do any of 4 things; if not, it would do any of 27 things. I hold this because every one of the 48 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 5, act 6, in bp35: it stayed where it was. In play I had no rule that says so. Studying the 4 times, it turns on whether it was time 1 of every 3: if so, it would stay where it is; if not, it would do any of 2 things. I hold this because every one of the 4 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 0, act 4, in ar25: it moved -6 down and -3 across, and no fact in any family I have splits the 15 times. I need a word I do not have.
+  colour 9, act 7, in ar25: it did something none of my words can say, and no fact in any family I have splits the 4 times. I need a word I do not have.
+  colour 0, act 7, in ar25: it moved 0 down and 3 across, and no fact in any family I have splits the 11 times. I need a word I do not have.
+  colour 9, act 2, in ar25: it did something none of my words can say, and no fact in any family I have splits the 4 times. I need a word I do not have.
+  colour 10, act 7, in ar25: it changed size, and no fact in any family I have splits the 14 times. I need a word I do not have.
+
+== study, 2026-09-24 16:00: 159 cases it could not account for in play, from 4 games
+
+families of fact, and how many cases each accounts for:
+  touch     2   (usable in play)
+  nth       4   (usable in play)
+  level     0   (usable in play)
+  ahead    32   (usable in play)
+  cycle    62   (usable in play)
+  near     17   (study only: a word it wants)
+  line      6   (study only: a word it wants)
+  size     15   (study only: a word it wants)
+  many     14   (study only: a word it wants)
+accounted for: 102 of 159; still with no account: 57
+
+how hard each game is (bits of evidence it could not account for) and practice given:
+  dc22    183.6 bits, 65 cases, 54 newly playable, 2 practice runs
+  cd82    175.8 bits, 51 cases, 25 newly playable, 2 practice runs
+  bp35    103.6 bits, 26 cases, 8 newly playable, 2 practice runs
+  ar25     66.2 bits, 17 cases, 4 newly playable, 1 practice runs
+
+what it read and was told, and whether its own sightings bore it out:
+  WANT:follow            cannot test: I do not have a word for it     (15 suggestions, e.g. Lights Out (Lanterns))
+  cycle                  borne out: accounts for 62 cases             (11 suggestions, e.g. Lights Out (game))
+  ahead                  borne out: accounts for 32 cases             (8 suggestions, e.g. Snake (video game genre))
+  WANT:becomes-size      cannot test: I do not have a word for it     (3 suggestions, e.g. Snake (video game genre))
+  WANT:appears           cannot test: I do not have a word for it     (2 suggestions, e.g. Ms. Pac-Man)
+  line                   borne out: accounts for 6 cases              (2 suggestions, e.g. Snake (video game genre))
+  near                   borne out: accounts for 17 cases             (1 suggestions, e.g. Lights Out (game))
+  touch                  borne out: accounts for 2 cases              (1 suggestions, e.g. Ms. Pac-Man)
+  WANT:merge-split       cannot test: I do not have a word for it     (1 suggestions, e.g. It Takes Two (video game))
+
+holding in play from now: touch, nth, level, misread, ahead, cycle
+
+why, case by case (the first few):
+  colour 11, act 1, in ar25: it stayed where it was. In play I had no rule that says so. Studying the 11 times, it turns on whether it was at least 60 cells big: if so, it would do any of 2 things; if not, it would do any of 69 things. I hold this because every one of the 11 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 11, act 4, in ar25: it stayed where it was. In play I had no rule that says so. Studying the 27 times, it turns on whether it was at least 46 cells big: if so, it would do any of 2 things; if not, it would do any of 69 things. I hold this because every one of the 27 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 10, act 1, in ar25: it changed size. In play I had no rule that says so. Studying the 19 times, it turns on whether it was at least 126 cells big: if so, it would do any of 156 things; if not, it would do any of 2 things. I hold this because every one of the 19 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 0, act 3, in ar25: it stayed where it was. In play I had no rule that says so. Studying the 48 times, it turns on whether colour 10 was within 2 cells of it: if so, it would stay where it is; if not, it would do any of 2 things. I hold this because every one of the 48 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 10, act 2, in ar25: it changed size. In play I had no rule that says so. Studying the 13 times, it turns on whether colour 5 was right above it: if so, it would do any of 2 things; if not, it would do any of 139 things. I hold this because every one of the 13 sightings agrees with it, and the idea was suggested by library (Snake (video game genre)). The first time that fact holds and it does something else, I drop it.
+  colour 10, act 4, in ar25: it changed size. In play I had no rule that says so. Studying the 16 times, it turns on whether colour 5 was right to the left of it: if so, it would do any of 2 things; if not, it would do any of 256 things. I hold this because every one of the 16 sightings agrees with it, and the idea was suggested by library (Snake (video game genre)). The first time that fact holds and it does something else, I drop it.
+  colour 10, act 3, in ar25: it stayed where it was. In play I had no rule that says so. Studying the 40 times, it turns on whether colour 4 was right to the left of it: if so, it would do any of 2 things; if not, it would stay where it is. I hold this because every one of the 40 sightings agrees with it, and the idea was suggested by library (Snake (video game genre)). The first time that fact holds and it does something else, I drop it.
+  colour 10, act 3, in ar25: it changed size. In play I had no rule that says so. Studying the 16 times, it turns on whether colour 4 was right to the left of it: if so, it would do any of 2 things; if not, it would do any of 256 things. I hold this because every one of the 16 sightings agrees with it, and the idea was suggested by library (Snake (video game genre)). The first time that fact holds and it does something else, I drop it.
+  colour 3, act 3, in bp35: it stayed where it was. In play I had no rule that says so. Studying the 48 times, it turns on whether it was touching colour 14: if so, it would do any of 126 things; if not, it would do any of 70 things. I hold this because every one of the 48 sightings agrees with it, and the idea was suggested by library (Ms. Pac-Man). The first time that fact holds and it does something else, I drop it.
+  colour 15, act 3, in bp35: it stayed where it was. In play I had no rule that says so. Studying the 15 times, it turns on whether colour 0 was right below it: if so, it would change size; if not, it would do any of 283 things. I hold this because every one of the 15 sightings agrees with it, and the idea was suggested by library (Snake (video game genre)). The first time that fact holds and it does something else, I drop it.
+  colour 3, act 6, in bp35: it stayed where it was. In play I had no rule that says so. Studying the 48 times, it turns on whether this had already happened 398 times: something unseen changed then: if so, it would do any of 4 things; if not, it would do any of 27 things. I hold this because every one of the 48 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 5, act 6, in bp35: it stayed where it was. In play I had no rule that says so. Studying the 4 times, it turns on whether it was time 1 of every 3: if so, it would stay where it is; if not, it would do any of 2 things. I hold this because every one of the 4 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 0, act 4, in ar25: it moved -6 down and -3 across, and no fact in any family I have splits the 15 times. I need a word I do not have.
+  colour 9, act 7, in ar25: it did something none of my words can say, and no fact in any family I have splits the 4 times. I need a word I do not have.
+  colour 0, act 7, in ar25: it moved 0 down and 3 across, and no fact in any family I have splits the 11 times. I need a word I do not have.
+  colour 9, act 2, in ar25: it did something none of my words can say, and no fact in any family I have splits the 4 times. I need a word I do not have.
+  colour 10, act 7, in ar25: it changed size, and no fact in any family I have splits the 14 times. I need a word I do not have.
+
+
+practice, with what study found against without:
+  dc22   without: 0 levels, 101 unaccounted, right 9/12  |  with: 0 levels, 34 unaccounted, right 29/31
+  cd82   without: 1 levels, 86 unaccounted, right 99/119  |  with: 1 levels, 77 unaccounted, right 148/162
+
+== study, 2026-09-24 16:13: 159 cases it could not account for in play, from 4 games
+
+families of fact, and how many cases each accounts for:
+  touch     2   (usable in play)
+  nth       4   (usable in play)
+  level     0   (usable in play)
+  ahead    32   (usable in play)
+  cycle    62   (usable in play)
+  near     17   (study only: a word it wants)
+  line      6   (study only: a word it wants)
+  size     15   (study only: a word it wants)
+  many     14   (study only: a word it wants)
+accounted for: 102 of 159; still with no account: 57
+
+how hard each game is (bits of evidence it could not account for) and practice given:
+  dc22    183.6 bits, 65 cases, 54 newly playable, 2 practice runs
+  cd82    175.8 bits, 51 cases, 25 newly playable, 2 practice runs
+  bp35    103.6 bits, 26 cases, 8 newly playable, 2 practice runs
+  ar25     66.2 bits, 17 cases, 4 newly playable, 1 practice runs
+
+what it read and was told, and whether its own sightings bore it out:
+  WANT:follow            cannot test: I do not have a word for it     (15 suggestions, e.g. Lights Out (Lanterns))
+  cycle                  borne out: accounts for 62 cases             (11 suggestions, e.g. Lights Out (game))
+  ahead                  borne out: accounts for 32 cases             (8 suggestions, e.g. Snake (video game genre))
+  WANT:becomes-size      cannot test: I do not have a word for it     (3 suggestions, e.g. Snake (video game genre))
+  WANT:appears           cannot test: I do not have a word for it     (2 suggestions, e.g. Ms. Pac-Man)
+  line                   borne out: accounts for 6 cases              (2 suggestions, e.g. Snake (video game genre))
+  near                   borne out: accounts for 17 cases             (1 suggestions, e.g. Lights Out (game))
+  touch                  borne out: accounts for 2 cases              (1 suggestions, e.g. Ms. Pac-Man)
+  WANT:merge-split       cannot test: I do not have a word for it     (1 suggestions, e.g. It Takes Two (video game))
+
+holding in play from now: touch, nth, level, misread, ahead, cycle
+
+why, case by case (the first few):
+  colour 11, act 1, in ar25: it stayed where it was. In play I had no rule that says so. Studying the 11 times, it turns on whether it was at least 60 cells big: if so, it would do any of 2 things; if not, it would do any of 69 things. I hold this because every one of the 11 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 11, act 4, in ar25: it stayed where it was. In play I had no rule that says so. Studying the 27 times, it turns on whether it was at least 46 cells big: if so, it would do any of 2 things; if not, it would do any of 69 things. I hold this because every one of the 27 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 10, act 1, in ar25: it changed size. In play I had no rule that says so. Studying the 19 times, it turns on whether it was at least 126 cells big: if so, it would do any of 156 things; if not, it would do any of 2 things. I hold this because every one of the 19 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 0, act 3, in ar25: it stayed where it was. In play I had no rule that says so. Studying the 48 times, it turns on whether colour 10 was within 2 cells of it: if so, it would stay where it is; if not, it would do any of 2 things. I hold this because every one of the 48 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 10, act 2, in ar25: it changed size. In play I had no rule that says so. Studying the 13 times, it turns on whether colour 5 was right above it: if so, it would do any of 2 things; if not, it would do any of 139 things. I hold this because every one of the 13 sightings agrees with it, and the idea was suggested by library (Snake (video game genre)). The first time that fact holds and it does something else, I drop it.
+  colour 10, act 4, in ar25: it changed size. In play I had no rule that says so. Studying the 16 times, it turns on whether colour 5 was right to the left of it: if so, it would do any of 2 things; if not, it would do any of 256 things. I hold this because every one of the 16 sightings agrees with it, and the idea was suggested by library (Snake (video game genre)). The first time that fact holds and it does something else, I drop it.
+  colour 10, act 3, in ar25: it stayed where it was. In play I had no rule that says so. Studying the 40 times, it turns on whether colour 4 was right to the left of it: if so, it would do any of 2 things; if not, it would stay where it is. I hold this because every one of the 40 sightings agrees with it, and the idea was suggested by library (Snake (video game genre)). The first time that fact holds and it does something else, I drop it.
+  colour 10, act 3, in ar25: it changed size. In play I had no rule that says so. Studying the 16 times, it turns on whether colour 4 was right to the left of it: if so, it would do any of 2 things; if not, it would do any of 256 things. I hold this because every one of the 16 sightings agrees with it, and the idea was suggested by library (Snake (video game genre)). The first time that fact holds and it does something else, I drop it.
+  colour 3, act 3, in bp35: it stayed where it was. In play I had no rule that says so. Studying the 48 times, it turns on whether it was touching colour 14: if so, it would do any of 126 things; if not, it would do any of 70 things. I hold this because every one of the 48 sightings agrees with it, and the idea was suggested by library (Ms. Pac-Man). The first time that fact holds and it does something else, I drop it.
+  colour 15, act 3, in bp35: it stayed where it was. In play I had no rule that says so. Studying the 15 times, it turns on whether colour 0 was right below it: if so, it would change size; if not, it would do any of 283 things. I hold this because every one of the 15 sightings agrees with it, and the idea was suggested by library (Snake (video game genre)). The first time that fact holds and it does something else, I drop it.
+  colour 3, act 6, in bp35: it stayed where it was. In play I had no rule that says so. Studying the 48 times, it turns on whether this had already happened 398 times: something unseen changed then: if so, it would do any of 4 things; if not, it would do any of 27 things. I hold this because every one of the 48 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 5, act 6, in bp35: it stayed where it was. In play I had no rule that says so. Studying the 4 times, it turns on whether it was time 1 of every 3: if so, it would stay where it is; if not, it would do any of 2 things. I hold this because every one of the 4 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 0, act 4, in ar25: it moved -6 down and -3 across, and no fact in any family I have splits the 15 times. I need a word I do not have.
+  colour 9, act 7, in ar25: it did something none of my words can say, and no fact in any family I have splits the 4 times. I need a word I do not have.
+  colour 0, act 7, in ar25: it moved 0 down and 3 across, and no fact in any family I have splits the 11 times. I need a word I do not have.
+  colour 9, act 2, in ar25: it did something none of my words can say, and no fact in any family I have splits the 4 times. I need a word I do not have.
+  colour 10, act 7, in ar25: it changed size, and no fact in any family I have splits the 14 times. I need a word I do not have.
+

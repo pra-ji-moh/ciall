@@ -40,3 +40,6 @@ arc/transfer_mind/
 books/
 .evolve_*/
 .evolve_build_*/
+
+# what the child read, in full: kept locally, not republished (child/library/claims.tsv keeps the quoted sentences and links)
+child/library/sources.jsonl

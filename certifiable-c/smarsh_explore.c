@@ -20,11 +20,11 @@
  */
 typedef enum {
   M_RESTLESS, M_CLOCK, M_STOOD, M_PANELS, M_NEAR, M_THEORY, M_SKIP,
-  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_CURIOUS, M_PLAN, M_WONAIM, M_RULES, M_GOALS, M_ASKBEST, M_COUNT
+  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_CURIOUS, M_PLAN, M_WONAIM, M_RULES, M_GOALS, M_ASKBEST, M_CONDS, M_COUNT
 } ex_mech_t;
 static const char *MECH_NAME[M_COUNT] = {
   "restless", "clock", "stood", "panels", "near", "theory", "skip",
-  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach", "curious", "plan", "wonaim", "rules", "goals", "askbest"
+  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach", "curious", "plan", "wonaim", "rules", "goals", "askbest", "conds"
 };
 static unsigned OFF_MASK;
 #define ON(m) ((OFF_MASK & (1u << (m))) == 0u)
@@ -35,7 +35,7 @@ static void read_off(void) {
   static const unsigned by_self[M_COUNT] = {
     SELF_OFF_RESTLESS, SELF_OFF_CLOCK, SELF_OFF_STOOD, SELF_OFF_PANELS, SELF_OFF_NEAR, SELF_OFF_THEORY,
     SELF_OFF_SKIP, SELF_OFF_DEATHS, SELF_OFF_UNMASK, SELF_OFF_WINDOW, SELF_OFF_REDRAW, SELF_OFF_RECALL,
-    SELF_OFF_REPLAY, SELF_OFF_REACH, SELF_OFF_CURIOUS, SELF_OFF_PLAN, SELF_OFF_WONAIM, SELF_OFF_RULES, SELF_OFF_GOALS, SELF_OFF_ASKBEST
+    SELF_OFF_REPLAY, SELF_OFF_REACH, SELF_OFF_CURIOUS, SELF_OFF_PLAN, SELF_OFF_WONAIM, SELF_OFF_RULES, SELF_OFF_GOALS, SELF_OFF_ASKBEST, SELF_OFF_CONDS
   };
   OFF_MASK = 0u;
   for (m = 0u; m < M_COUNT; m++) {
@@ -2662,6 +2662,45 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
   ways_begin();
   puzzles_begin();
   ru_begin(&RULES);
+  ru_conds(&RULES, ON(M_CONDS));   /* when a rule dies, look for where it breaks */
+  {
+    /* where it says, in words, why it believes what it does, and why it stopped */
+    static FILE *reasons;
+    const char *rp = getenv("CIALL_REASONS");
+    if (reasons != 0) fclose(reasons);
+    reasons = (rp != 0 && rp[0] != 0) ? fopen(rp, "a") : 0;
+    ru_tell(reasons);
+  }
+  {
+    /* what it could not account for, kept for study between games */
+    static FILE *dump;
+    const char *dp = getenv("CIALL_DEADDUMP");
+    if (dump != 0) fclose(dump);
+    dump = (dp != 0 && dp[0] != 0) ? fopen(dp, "a") : 0;
+    ru_dump(dump);
+  }
+  {
+    /*
+     * Which kinds of fact a rule may turn on. Its study between games tests each
+     * family against what it could not account for, and writes the ones worth
+     * holding to child/facts.txt: a line per family, by name. Nothing there, and it
+     * uses the first four.
+     */
+    const char *fp = getenv("CIALL_FACTS");
+    FILE *ff = (fp != 0 && fp[0] != 0) ? fopen(fp, "r") : 0;
+    if (ff != 0) {
+      static const char *NAME[RU_FACTS] = {"touch", "nth", "level", "misread", "ahead", "cycle"};
+      unsigned mask = 0u, i;
+      char word[64];
+      while (fscanf(ff, "%63s", word) == 1) {
+        for (i = 0u; i < RU_FACTS; i++) {
+          if (strcmp(word, NAME[i]) == 0) mask |= 1u << i;
+        }
+      }
+      fclose(ff);
+      if (mask != 0u) ru_families(&RULES, mask);
+    }
+  }
   MPLAN_LEN = MPLAN_POS = MPLAN_WAIT = 0u;
   MPLAN_LAID = MPLAN_WALKED = MPLAN_BROKE = MPLAN_REACHED = MPLAN_CURIOUS = 0u;
   GOALS_SET = GOALS_RULED_OUT = GOALS_REACHED = 0u;
@@ -3428,6 +3467,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       MPLAN_LEN = MPLAN_POS = MPLAN_WAIT = 0u;
       TOUCHED_EVER = 0u;
       goals_begin(&now);
+      ru_level(&RULES, ex->levels_done);   /* a level is one of the facts a rule can break at */
       PLAN_LEN = 0u;
       puzzles_begin();
       recalling = ON(M_RECALL) && ex->levels_done < EX_MAX_LEVELS && KNOWN_LEN[ex->levels_done] > 0u;

@@ -240,6 +240,13 @@ def carry(game, label, budget, journal, mind_dir=None):
         env["CIALL_MIND"] = os.path.join(mind_dir, getattr(game, "game_id", "standin").split("-")[0] + ".txt")
         if "CIALL_LIVE" not in env:   # the kinds of world other games turned out to be
             env["CIALL_LIVE"] = ",".join(families_elsewhere(mind_dir, getattr(game, "game_id", "standin").split("-")[0]))
+    # what it could not account for, and why it believes what it does: a file per game,
+    # for its study between games (child/study.py)
+    short = getattr(game, "game_id", "standin").split("-")[0]
+    for var, folder in (("CIALL_DEADDUMP", "CIALL_DEADDUMP_DIR"), ("CIALL_REASONS", "CIALL_REASONS_DIR")):
+        if os.environ.get(folder):
+            os.makedirs(os.environ[folder], exist_ok=True)
+            env[var] = os.path.join(os.environ[folder], short + (".jsonl" if var == "CIALL_DEADDUMP" else ".txt"))
     child = subprocess.Popen([CHILD, str(budget)], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
                              stderr=account, text=True, cwd=ROOT, env=env)
     obs = game.reset()

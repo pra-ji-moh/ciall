@@ -1,0 +1,6 @@
+touch
+nth
+level
+misread
+ahead
+cycle
