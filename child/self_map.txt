@@ -4,9 +4,9 @@ file certifiable-c/smarsh_core.c lines 377
 file certifiable-c/smarsh_core.h lines 287
 file certifiable-c/smarsh_ending.c lines 446
 file certifiable-c/smarsh_ending.h lines 167
-file certifiable-c/smarsh_explore.c lines 3699
+file certifiable-c/smarsh_explore.c lines 3739
 file certifiable-c/smarsh_explore.h lines 154
-file certifiable-c/smarsh_self.h lines 72
+file certifiable-c/smarsh_self.h lines 73
 open certifiable-c/smarsh_self.h SELF_TICK_MAX now 16u may be  4u 8u 16u */
 open certifiable-c/smarsh_self.h SELF_RESTLESS_WINDOW now 24u may be  8u 12u 16u 24u */
 open certifiable-c/smarsh_self.h SELF_BODY_VOTES now 5u may be  2u 3u 5u */
@@ -40,6 +40,7 @@ open certifiable-c/smarsh_self.h SELF_OFF_WONAIM now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_RULES now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_GOALS now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_OFF_ASKBEST now 1 may be  0 1 */
+open certifiable-c/smarsh_self.h SELF_OFF_CONDS now 0 may be  0 1 */
 open certifiable-c/smarsh_self.h SELF_BOLD now 1 may be  0 1 */
 file certifiable-c/smarsh_play.c lines 1019
 file certifiable-c/smarsh_grow.c lines 465
@@ -141,7 +142,7 @@ function ex_save in certifiable-c/smarsh_explore.c at line 2475 calls sm_count e
 function ex_load in certifiable-c/smarsh_explore.c at line 2542 calls kind_slot
 function recall_step in certifiable-c/smarsh_explore.c at line 2607 calls
 function ex_play in certifiable-c/smarsh_explore.c at line 2623 calls en_begin en_observe read_off place_of place_nothing forget_places act_rank kind_slot think colour_sums body_colour learn_moving work_out_roles theories_left theory_aims ways_begin way_judge sent_law aim_mask goal_distance forget_level thing_rank thing_size_class node_of forget_changes any_restless puzzles_begin be_confused watch_puzzles would_meet_mover body_cell act_step plan_from_theory goals_begin goal_met goal_take goal_ruled_out body_at mplan_lay plan_to_untried route fit_step new_level recall_step
-function ex_report in certifiable-c/smarsh_explore.c at line 3583 calls en_report ex_init body_colour ex_save ex_load ex_play
+function ex_report in certifiable-c/smarsh_explore.c at line 3623 calls en_report ex_init body_colour ex_save ex_load ex_play
 function changed in certifiable-c/smarsh_play.c at line 19 calls
 function inside in certifiable-c/smarsh_play.c at line 23 calls
 function shares_fate in certifiable-c/smarsh_play.c at line 28 calls changed inside
