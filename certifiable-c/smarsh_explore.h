@@ -142,6 +142,13 @@ typedef struct {
 
 void ex_init(ex_explorer_t *ex);
 
+/*
+ * The board as the act that ended a level left it, before the next level is drawn
+ * over it. A front end that can see it says so just before it returns the ending;
+ * one that cannot says nothing, and the child imagines it from its rules instead.
+ */
+void ex_saw_final(const pl_frame_t *board);
+
 /* Play from the frame the world shows now, spending at most budget actions. */
 /* What it settled about this game, carried to its next run (ex_save after, ex_load before). */
 sm_status_t ex_save(const ex_explorer_t *ex, FILE *out);

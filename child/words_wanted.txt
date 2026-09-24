@@ -1,4 +1,12 @@
-# the edge of the child's language, 2026-09-24 16:13
+# the edge of the child's language, 2026-09-24 21:48
+# by kind of sense (cases accounted for, words wanted, cases nothing reaches):
+#   space           49 | near | 24
+#   number          29 | size, many | 0
+#   body            0 | - | 0
+#   time            66 | - | 0
+#   pattern         6 | line | 0
+#   others          2 | follow, appears | 9
+#   transformation  0 | becomes-size, merge-split | 24
 # words it wants: what study could use but play cannot, and what was suggested it cannot test
 appears	suggested 2 times (library); I have no word to test it with
 becomes-size	suggested 3 times (library); I have no word to test it with

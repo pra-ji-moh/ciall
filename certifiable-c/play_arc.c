@@ -10,6 +10,9 @@
  *   to it     BASE <n> <actions a person needed for each level>   (once, first)
  *             OBS <state> <levels_completed> <height> <width> <n> <action>...
  *             then <height> lines of <width> hexadecimal colours
+ *             and, just before the OBS of an act that ended a level:
+ *             END <height> <width>, then the board as that act left it, before
+ *             the next level was drawn over it
  *             state: 0 still playing, 1 won, 2 game over
  *   from it   ACT <n>          take action n
  *             ACT 6 <x> <y>    point at column x, row y
@@ -39,11 +42,41 @@ typedef struct {
 
 static arc_link_t LINK;
 
+static int read_grid(unsigned h, unsigned w, pl_frame_t *out) {
+  unsigned r, c;
+  memset(out, 0, sizeof(*out));
+  out->h = h;
+  out->w = w;
+  for (r = 0u; r < h; r++) {
+    char row[PL_SIZE + 2u];
+    if (scanf("%65s", row) != 1 || strlen(row) != w) return -1;
+    for (c = 0u; c < w; c++) {
+      char ch = row[c];
+      unsigned v = (ch >= '0' && ch <= '9') ? (unsigned)(ch - '0')
+                 : (ch >= 'a' && ch <= 'f') ? (unsigned)(ch - 'a' + 10)
+                 : (ch >= 'A' && ch <= 'F') ? (unsigned)(ch - 'A' + 10) : 0u;
+      out->c[r][c] = (unsigned char)v;
+    }
+  }
+  return 0;
+}
+
+static pl_frame_t ENDED_ON;   /* the board an ending act left, when the bridge sent it */
+static int HAS_END;
+
 static int read_obs(ex_game_t *g, pl_frame_t *out) {
   char word[16];
   int state;
   unsigned levels, h, w, n, i, r, c;
-  if (scanf("%15s", word) != 1 || strcmp(word, "OBS") != 0) return -1;
+  HAS_END = 0;
+  if (scanf("%15s", word) != 1) return -1;
+  if (strcmp(word, "END") == 0) {
+    if (scanf("%u %u", &h, &w) != 2 || h == 0u || w == 0u || h > PL_SIZE || w > PL_SIZE) return -1;
+    if (read_grid(h, w, &ENDED_ON) != 0) return -1;
+    HAS_END = 1;
+    if (scanf("%15s", word) != 1) return -1;
+  }
+  if (strcmp(word, "OBS") != 0) return -1;
   if (scanf("%d %u %u %u %u", &state, &levels, &h, &w, &n) != 5) return -1;
   if (h == 0u || w == 0u || h > PL_SIZE || w > PL_SIZE || n > 8u) return -1;
   g->n_available = n;
@@ -86,6 +119,7 @@ static int arc_act(ex_game_t *g, unsigned action, unsigned x, unsigned y, pl_fra
     LINK.broken = 1;
     return 2;
   }
+  if (HAS_END) ex_saw_final(&ENDED_ON);   /* the board the ending left, before the next was drawn */
   if (state == 1) {
     LINK.won = 1;
     return 2;

@@ -181,6 +181,22 @@ def facts_of_family(name, sightings):
     return out
 
 
+# The same several kinds of sense as the goals (smarsh_goal.h), plus the one the rules
+# need that the goals do not: what a thing turns into. Every family, and every word it
+# wants, belongs to one; a modality with nothing in it is a kind of sense it lacks.
+MODALITY = {
+    "touch": "others", "ahead": "space", "near": "space", "line": "pattern",
+    "nth": "time", "cycle": "time", "level": "time",
+    "size": "number", "many": "number",
+    "follow": "others", "appears": "others", "teleport": "space",
+    "rotate": "transformation", "becomes-size": "transformation", "becomes-colour": "transformation",
+    "merge-split": "transformation",
+}
+MODALITIES = ["space", "number", "body", "time", "pattern", "others", "transformation"]
+# what the last sighting of a case no family reaches says about the sense it needed
+UNREACHED_MODALITY = {"size": "transformation", "colour": "transformation", "other": "transformation",
+                      "moved": "space", "stayed": "space", "gone": "others"}
+
 PLAYABLE = ["touch", "nth", "level", "ahead", "cycle"]
 STUDY_ONLY = ["near", "line", "size", "many"]
 FIRST_FOUR = ["touch", "nth", "level", "misread"]   # what the child holds when nothing says otherwise
@@ -493,8 +509,26 @@ def main():
     for c in unexplained:
         k = outcome_kind(c["sightings"][-1]["could"])
         kinds[k] = kinds.get(k, 0) + 1
+    # the same, by kind of sense: which the child has words for, and which it lacks
+    by_mod = {m: {"accounted": 0, "wanted": [], "unreached": 0} for m in MODALITIES}
+    for fam in PLAYABLE + STUDY_ONLY:
+        by_mod[MODALITY.get(fam, "others")]["accounted"] += len(by_family.get(fam, ()))
+    for fam in wanted:
+        by_mod[MODALITY.get(fam, "others")]["wanted"].append(fam)
+    for k, n in kinds.items():
+        by_mod[UNREACHED_MODALITY.get(k, "others")]["unreached"] += n
+    say("")
+    say("by kind of sense: cases its words account for / words it wants / cases nothing reaches:")
+    for m in MODALITIES:
+        b = by_mod[m]
+        flag = "   <- a sense it lacks" if b["accounted"] == 0 and (b["wanted"] or b["unreached"]) else ""
+        say("  %-15s %4d / %-38s / %3d%s" % (m, b["accounted"], ", ".join(b["wanted"]) or "-", b["unreached"], flag))
     with open(WANTED, "w", encoding="utf-8") as f:
         f.write("# the edge of the child's language, %s\n" % now)
+        f.write("# by kind of sense (cases accounted for, words wanted, cases nothing reaches):\n")
+        for m in MODALITIES:
+            b = by_mod[m]
+            f.write("#   %-15s %d | %s | %d\n" % (m, b["accounted"], ", ".join(b["wanted"]) or "-", b["unreached"]))
         f.write("# words it wants: what study could use but play cannot, and what was suggested it cannot test\n")
         for fam, why in sorted(wanted.items()):
             f.write("%s\t%s\n" % (fam, why))

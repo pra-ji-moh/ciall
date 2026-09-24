@@ -151,6 +151,15 @@ class RealGame:
         return frame
 
     @staticmethod
+    def _first_grid(frame):
+        if isinstance(frame, (list, tuple)) and frame:
+            first = frame[0]
+            first = first.tolist() if hasattr(first, "tolist") else first
+            if first and isinstance(first[0], list) and first[0] and not isinstance(first[0][0], list):
+                return first
+        return None
+
+    @staticmethod
     def _actions(obs):
         out = []
         for a in getattr(obs, "available_actions", []) or []:
@@ -169,10 +178,21 @@ class RealGame:
             if self.last is None:
                 raise RuntimeError("the engine answered with no frame at the start")
             obs = self.last
+        before = int(getattr(self.last, "levels_completed", 0)) if self.last is not None else None
         self.last = obs
         grid = self._last_grid(obs.frame)
-        return encode(self._state_code(obs.state), int(getattr(obs, "levels_completed", 0)), grid,
+        text = encode(self._state_code(obs.state), int(getattr(obs, "levels_completed", 0)), grid,
                       self._actions(obs))
+        # an act that ended a level: the response animates from the board that act left
+        # to the next level. The child is sent the first too, since the board that ended
+        # the level is the only evidence there is of what ends one.
+        levels = int(getattr(obs, "levels_completed", 0))
+        if before is not None and (levels > before or self._state_code(obs.state) == STATE_WON):
+            first = self._first_grid(obs.frame)
+            if first:
+                rows = [bytes((int(v) & 15) for v in row).translate(HEX).decode("ascii") for row in first]
+                text = "END %d %d\n%s\n" % (len(first), len(first[0]), "\n".join(rows)) + text
+        return text
 
     def reset(self):
         return self._encode(self.env.reset())
@@ -243,6 +263,7 @@ def carry(game, label, budget, journal, mind_dir=None):
     # what it could not account for, and why it believes what it does: a file per game,
     # for its study between games (child/study.py)
     short = getattr(game, "game_id", "standin").split("-")[0]
+    env["CIALL_GAME"] = short   # which game this is: kinds of goal carried from OTHER games are read
     for var, folder in (("CIALL_DEADDUMP", "CIALL_DEADDUMP_DIR"), ("CIALL_REASONS", "CIALL_REASONS_DIR")):
         if os.environ.get(folder):
             os.makedirs(os.environ[folder], exist_ok=True)

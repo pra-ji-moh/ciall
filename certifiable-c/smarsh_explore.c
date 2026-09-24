@@ -8,6 +8,7 @@
 #include <string.h>
 #include "smarsh_ending.h"
 #include "smarsh_rules.h"
+#include "smarsh_goal.h"
 #include "smarsh_guess.h"
 #include "smarsh_self.h"   /* the part of its source the child rewrites */
 
@@ -20,11 +21,11 @@
  */
 typedef enum {
   M_RESTLESS, M_CLOCK, M_STOOD, M_PANELS, M_NEAR, M_THEORY, M_SKIP,
-  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_CURIOUS, M_PLAN, M_WONAIM, M_RULES, M_GOALS, M_ASKBEST, M_CONDS, M_COUNT
+  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_CURIOUS, M_PLAN, M_WONAIM, M_RULES, M_GOALS, M_ASKBEST, M_CONDS, M_STATE, M_EARLY, M_CARRY, M_COUNT
 } ex_mech_t;
 static const char *MECH_NAME[M_COUNT] = {
   "restless", "clock", "stood", "panels", "near", "theory", "skip",
-  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach", "curious", "plan", "wonaim", "rules", "goals", "askbest", "conds"
+  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach", "curious", "plan", "wonaim", "rules", "goals", "askbest", "conds", "state", "early", "carry"
 };
 static unsigned OFF_MASK;
 #define ON(m) ((OFF_MASK & (1u << (m))) == 0u)
@@ -35,7 +36,7 @@ static void read_off(void) {
   static const unsigned by_self[M_COUNT] = {
     SELF_OFF_RESTLESS, SELF_OFF_CLOCK, SELF_OFF_STOOD, SELF_OFF_PANELS, SELF_OFF_NEAR, SELF_OFF_THEORY,
     SELF_OFF_SKIP, SELF_OFF_DEATHS, SELF_OFF_UNMASK, SELF_OFF_WINDOW, SELF_OFF_REDRAW, SELF_OFF_RECALL,
-    SELF_OFF_REPLAY, SELF_OFF_REACH, SELF_OFF_CURIOUS, SELF_OFF_PLAN, SELF_OFF_WONAIM, SELF_OFF_RULES, SELF_OFF_GOALS, SELF_OFF_ASKBEST, SELF_OFF_CONDS
+    SELF_OFF_REPLAY, SELF_OFF_REACH, SELF_OFF_CURIOUS, SELF_OFF_PLAN, SELF_OFF_WONAIM, SELF_OFF_RULES, SELF_OFF_GOALS, SELF_OFF_ASKBEST, SELF_OFF_CONDS, SELF_OFF_STATE, SELF_OFF_EARLY, SELF_OFF_CARRY
   };
   OFF_MASK = 0u;
   for (m = 0u; m < M_COUNT; m++) {
@@ -2023,6 +2024,7 @@ static unsigned plan_from_theory(ex_explorer_t *ex, const pl_frame_t *f) {
 #define EX_MPLAN_STATES 3000u
 
 static unsigned char MPLAN_ACT[EX_MPLAN_DEPTH];
+static int MPLAN_STATE_GOAL;   /* the plan being laid walks to a state goal */
 static unsigned short MPLAN_R[EX_MPLAN_DEPTH], MPLAN_C[EX_MPLAN_DEPTH];
 static unsigned MPLAN_LEN, MPLAN_POS, MPLAN_WAIT;
 static unsigned MPLAN_LAID, MPLAN_WALKED, MPLAN_BROKE, MPLAN_REACHED;
@@ -2052,6 +2054,124 @@ static unsigned GOAL_KIND;                        /* 0: none; 1: be against a co
 static unsigned GOAL_COLOUR, GOAL_SPENT;
 static unsigned GOALS_SET, GOALS_RULED_OUT, GOALS_REACHED;
 static unsigned ASKED_SHARP;      /* times it chose the act that asks the most */
+
+/*
+ * What ends a level, said of the board (smarsh_goal.h), and the one goal among those
+ * still standing that it is going after now.
+ */
+static go_world_t GOALW;
+static pl_frame_t FINAL;           /* the board the ending act left, when the front end could see it */
+static int FINAL_FRESH;
+static go_goal_t STATE_GOAL;
+static int STATE_HAVE;
+static unsigned STATE_SPENT;
+static unsigned STATE_PICKS, STATE_PLANS, STATE_ENDED_AFTER, STATE_REACHED_NOT, STATE_TRIGGERED;
+static unsigned STATE_PLANNED_AT;  /* acts, when a plan to a state goal was last laid */
+
+/*
+ * Kinds of goal that were still standing when levels of OTHER games ended: tested
+ * first here, before any ending of this game has said anything. A kind is a shape of
+ * goal without its colours (go_kind). Kept in the file CIALL_GOALKINDS, a line per
+ * game and kind; this game's own lines are not read back as evidence for itself.
+ */
+#define EX_GKINDS 512u
+static char GK_CARRIED[EX_GKINDS][24];
+static unsigned N_GK_CARRIED, GK_PICKS;
+static char WROTE[EX_GKINDS][24];
+static unsigned N_WROTE;
+
+/*
+ * Is this kind carried? Whole, or by the kind of any fact in it: "15/16/5" ended a level
+ * elsewhere as two facts and an act, but before any ending here a goal is one fact, and
+ * "15" alone is still the kind of fact that ended something before.
+ */
+static int kind_carried(const char *k) {
+  unsigned i;
+  char a[8], b[8];
+  if (sscanf(k, "%7[^/]/%7[^/]", a, b) != 2) b[0] = 0;
+  for (i = 0u; i < N_GK_CARRIED; i++) {
+    char ca[8], cb[8];
+    if (strcmp(GK_CARRIED[i], k) == 0) return 1;
+    if (sscanf(GK_CARRIED[i], "%7[^/]/%7[^/]", ca, cb) != 2) continue;
+    if (strcmp(a, ca) == 0 || strcmp(a, cb) == 0) return 1;
+    if (b[0] != '-' && (strcmp(b, ca) == 0 || strcmp(b, cb) == 0)) return 1;
+  }
+  return 0;
+}
+
+static void kinds_load(void) {
+  const char *path = getenv("CIALL_GOALKINDS"), *game = getenv("CIALL_GAME");
+  FILE *f;
+  char g[64], k[64];
+  N_GK_CARRIED = N_WROTE = GK_PICKS = 0u;
+  if (path == 0 || path[0] == 0 || !ON(M_CARRY)) return;
+  f = fopen(path, "r");
+  if (f == 0) return;
+  while (fscanf(f, "%63s %63s", g, k) == 2) {
+    if (game != 0 && strcmp(g, game) == 0) continue;   /* its own endings are not evidence from elsewhere */
+    if (strlen(k) >= sizeof GK_CARRIED[0] || kind_carried(k) || N_GK_CARRIED >= EX_GKINDS) continue;
+    strcpy(GK_CARRIED[N_GK_CARRIED++], k);
+  }
+  fclose(f);
+}
+
+/* after an ending: the kinds of goal still standing, for other games to try first */
+static go_goal_t GOAL_LIST[GO_FACTS + GO_PAIRS];
+
+static void kinds_write(void) {
+  const char *path = getenv("CIALL_GOALKINDS"), *game = getenv("CIALL_GAME");
+  unsigned n = go_list(&GOALW, GOAL_LIST, GO_FACTS + GO_PAIRS), k, i;
+  FILE *f;
+  if (path == 0 || path[0] == 0 || game == 0 || n == 0u) return;
+  f = fopen(path, "a");
+  if (f == 0) return;
+  for (k = 0u; k < n; k++) {
+    char kind[32];
+    int seen = 0;
+    go_kind(&GOAL_LIST[k], kind);
+    for (i = 0u; i < N_WROTE && !seen; i++) seen = (strcmp(WROTE[i], kind) == 0);
+    if (seen || N_WROTE >= EX_GKINDS) continue;
+    strcpy(WROTE[N_WROTE++], kind);
+    (void)seen;
+    fprintf(f, "%s %s\n", game, kind);
+  }
+  fclose(f);
+}
+
+/*
+ * Which goal to go after: first, uniformly among the goals standing whose kind ended
+ * levels in other games; if none is, uniformly across the kinds of sense (go_pick).
+ */
+static int pick_goal(uint64_t z, go_goal_t *out) {
+  unsigned n, k, m = 0u, want;
+  if (N_GK_CARRIED > 0u) {
+    n = go_list(&GOALW, GOAL_LIST, GO_FACTS + GO_PAIRS);
+    for (k = 0u; k < n; k++) {
+      char kind[32];
+      go_kind(&GOAL_LIST[k], kind);
+      if (kind_carried(kind)) m++;
+    }
+    if (m > 0u) {
+      want = (unsigned)(z % m);
+      for (k = 0u; k < n; k++) {
+        char kind[32];
+        go_kind(&GOAL_LIST[k], kind);
+        if (!kind_carried(kind)) continue;
+        if (want-- == 0u) {
+          *out = GOAL_LIST[k];
+          GK_PICKS++;
+          return 1;
+        }
+      }
+    }
+  }
+  return go_pick(&GOALW, z, out);
+}
+
+void ex_saw_final(const pl_frame_t *board) {
+  FINAL = *board;
+  FINAL_FRESH = 1;
+}
 static unsigned ACTS_LEARNT, ACTS_BARREN;   /* acts done, and those that ruled nothing out */
 static double SHARP_BITS;         /* bits those acts were bound to win, whatever the answer */
 #define EX_GOAL_PATIENCE 120u                     /* acts spent on one ambition before trying another */
@@ -2208,12 +2328,26 @@ static int goal_holds(const pl_frame_t *f, const pl_frame_t *start, int body, un
   return 0;
 }
 
+/* the goal the planner walks to: its state goal when it holds one, else what it aims at */
+static int plan_goal(int state_goal, const pl_frame_t *f, const pl_frame_t *start, int body, unsigned onto,
+                     unsigned gone) {
+  if (state_goal) return go_holds(&GOALW, &STATE_GOAL, f, body);
+  return goal_holds(f, start, body, onto, gone);
+}
+
 static unsigned mplan_lay(const pl_frame_t *now, const unsigned char *acts, unsigned n_acts) {
   static pl_frame_t state[EX_MPLAN_STATES];
   static uint64_t seen[EX_MPLAN_STATES];
   static unsigned parent[EX_MPLAN_STATES];
   static unsigned char via[EX_MPLAN_STATES], depth[EX_MPLAN_STATES];
-  unsigned head = 0u, tail = 0u, found = EX_MPLAN_STATES, i, a;
+  /*
+   * Which pictures it has already imagined: an open-addressed set, so each new one is
+   * checked in a step or two rather than against every one before it (the same answer,
+   * found without walking the whole list).
+   */
+  static uint64_t SET_KEY[8192];
+  static unsigned SET_STAMP[8192], SET_NOW;
+  unsigned head = 0u, tail = 0u, found = EX_MPLAN_STATES, a;
   int body = body_colour();
   unsigned onto = aim_mask() != 0u ? aim_mask() : (unsigned)AIM_ONTO_WIDE, gone = AIM_GONE;
   if (GOAL_KIND == 1u) onto |= 1u << GOAL_COLOUR;
@@ -2236,11 +2370,21 @@ static unsigned mplan_lay(const pl_frame_t *now, const unsigned char *acts, unsi
     }
     if (onto != 0u) MPLAN_CURIOUS++;
   }
-  if (body < 0 || (onto == 0u && gone == 0u) || n_acts == 0u) return 0u;
-  onto &= ~(1u << body);
-  if (goal_holds(now, now, body, onto, gone)) return 0u;
+  {
+    int state_goal = ON(M_STATE) && STATE_HAVE && go_standing(&GOALW, &STATE_GOAL);
+    if (n_acts == 0u || (!state_goal && (body < 0 || (onto == 0u && gone == 0u)))) return 0u;
+    if (body >= 0) onto &= ~(1u << body);
+    if (plan_goal(state_goal, now, now, body, onto, gone)) return 0u;
+    MPLAN_STATE_GOAL = state_goal;
+  }
+  SET_NOW++;
   state[tail] = *now;
   seen[tail] = frame_hash(now);
+  {
+    unsigned slot = (unsigned)(seen[tail] % 8192u);
+    SET_STAMP[slot] = SET_NOW;
+    SET_KEY[slot] = seen[tail];
+  }
   depth[tail] = 0u;
   tail++;
   while (head < tail && found == EX_MPLAN_STATES) {
@@ -2251,13 +2395,21 @@ static unsigned mplan_lay(const pl_frame_t *now, const unsigned char *acts, unsi
       int dup = 0;
       ru_imagine(&RULES, acts[a], &state[at], &state[tail]);
       h = frame_hash(&state[tail]);
-      for (i = 0u; i < tail && !dup; i++) dup = (seen[i] == h);
+      {
+        unsigned slot = (unsigned)(h % 8192u);
+        while (SET_STAMP[slot] == SET_NOW && SET_KEY[slot] != h) slot = (slot + 1u) % 8192u;
+        dup = (SET_STAMP[slot] == SET_NOW);
+        if (!dup) {
+          SET_STAMP[slot] = SET_NOW;
+          SET_KEY[slot] = h;
+        }
+      }
       if (dup) continue;
       seen[tail] = h;
       parent[tail] = at;
       via[tail] = acts[a];
       depth[tail] = (unsigned char)(depth[at] + 1u);
-      if (goal_holds(&state[tail], now, body, onto, gone)) {
+      if (plan_goal(MPLAN_STATE_GOAL, &state[tail], now, body, onto, gone)) {
         found = tail;
         tail++;
         break;
@@ -2662,6 +2814,13 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
   ways_begin();
   puzzles_begin();
   ru_begin(&RULES);
+  go_begin(&GOALW);
+  go_level(&GOALW, &now, 0u);
+  kinds_load();
+  FINAL_FRESH = 0;
+  STATE_HAVE = 0;
+  STATE_SPENT = STATE_PICKS = STATE_PLANS = STATE_ENDED_AFTER = STATE_REACHED_NOT = STATE_TRIGGERED = 0u;
+  STATE_PLANNED_AT = 0u;
   ru_conds(&RULES, ON(M_CONDS));   /* when a rule dies, look for where it breaks */
   {
     /* where it says, in words, why it believes what it does, and why it stopped */
@@ -2883,8 +3042,34 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
         path_len = 0u;
       }
     }
+    /*
+     * Once it has seen a level end, it knows something of what ends one, said of the
+     * board. It takes one goal among those still standing, uniformly, and plans to it.
+     * Reaching it without the level ending rules it out; so does the world, act by act.
+     */
+    if (ON(M_RULES) && ON(M_STATE) && (GOALW.endings > 0u || ON(M_EARLY))) {
+      if (STATE_HAVE && (!go_standing(&GOALW, &STATE_GOAL) || ++STATE_SPENT > EX_GOAL_PATIENCE)) {
+        STATE_HAVE = 0;
+        MPLAN_LEN = MPLAN_POS = 0u;
+      }
+      if (!STATE_HAVE && go_count(&GOALW) > 0u) {
+        uint64_t z = ((uint64_t)ex->actions + TIE_SEED + 7919u) * 0x9E3779B97F4A7C15ULL;
+        z = (z ^ (z >> 29)) * 0xBF58476D1CE4E5B9ULL;
+        z ^= z >> 32;
+        if (pick_goal(z, &STATE_GOAL)) {
+          char words[300], said[400];
+          STATE_HAVE = 1;
+          STATE_SPENT = 0u;
+          STATE_PICKS++;
+          MPLAN_LEN = MPLAN_POS = MPLAN_WAIT = 0u;
+          go_words(&STATE_GOAL, words);
+          sprintf(said, "one of the %u goals still standing, chosen uniformly: %s", go_count(&GOALW), words);
+          think(ex, "what shall I go for, from what I know of how levels end?", said);
+        }
+      }
+    }
     /* its own ambition: take one, and let the world rule it out */
-    if (ON(M_RULES) && ON(M_GOALS)) {
+    if (ON(M_RULES) && ON(M_GOALS) && !(ON(M_STATE) && STATE_HAVE)) {
       if (GOAL_KIND != 0u && goal_met(&now)) {
         GOALS_REACHED++;
         goal_ruled_out(ex);   /* met, and the level did not end: not what ends it */
@@ -2895,6 +3080,22 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
         MPLAN_LEN = MPLAN_POS = 0u;
       }
       if (GOAL_KIND == 0u && aim_mask() == 0u && AIM_GONE == 0u) goal_take(ex, &now);
+    }
+    /*
+     * A goal that holds only when an act is done: when the board is as the goal says, do
+     * that act. (Doing it and the level not ending rules the goal out, like any other.)
+     */
+    if (idx == EX_MAX_ACTS && ON(M_STATE) && STATE_HAVE && STATE_GOAL.act != GO_ANY_ACT &&
+        go_holds(&GOALW, &STATE_GOAL, &now, body_colour())) {
+      unsigned w2;
+      for (w2 = 0u; w2 < N_NACT[cur]; w2++) {
+        if (KIND(N_ACT[cur][w2]) == STATE_GOAL.act) {
+          idx = w2;
+          STATE_TRIGGERED++;
+          think(ex, "the board is as my goal says: what now?", "I do the act that ends it, when the board is right");
+          break;
+        }
+      }
     }
     /* a way it imagined, from its rules: lay one when it has a goal and none is laid */
     if (idx == EX_MAX_ACTS && ON(M_RULES) && ON(M_PLAN)) {
@@ -2910,6 +3111,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
         }
         MPLAN_LEN = MPLAN_POS = 0u;
         if (mplan_lay(&now, acts, n_acts) == 0u) MPLAN_WAIT = 12u;   /* no way found: not again for a while */
+        else if (MPLAN_STATE_GOAL) STATE_PLANS++;
         else think(ex, "can I see, in my head, a way to what I am after?",
                    "yes: I have imagined it act by act from what I know each act does; I walk it and check each step");
       }
@@ -3313,6 +3515,40 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
         MPLAN_LEN = MPLAN_POS = 0u;
       }
     }
+    /*
+     * What ends a level, said of the board: an act that ended nothing rules out every
+     * goal that holds on the board it left; one that ended the level, every goal that
+     * does not hold on the board it left (the board the engine drew, when it could be
+     * seen; else the one it imagines from its rules).
+     */
+    if (outcome == 0) {
+      go_saw(&GOALW, kind, &next, body_colour());
+      if (STATE_HAVE && go_holds(&GOALW, &STATE_GOAL, &next, body_colour())) STATE_REACHED_NOT++;
+    } else if (outcome == 1 || outcome == 2) {
+      static pl_frame_t imagined;
+      const pl_frame_t *board = &FINAL;
+      int seen_board = FINAL_FRESH;
+      if (!FINAL_FRESH) {
+        ru_imagine(&RULES, kind, &now, &imagined);
+        board = &imagined;
+      }
+      if (STATE_HAVE) STATE_ENDED_AFTER++;
+      go_ended(&GOALW, kind, board, body_colour(), seen_board);
+      kinds_write();
+      FINAL_FRESH = 0;
+      STATE_HAVE = 0;
+      {
+        char said[400];
+        unsigned n = go_count(&GOALW), d;
+        int at = sprintf(said, "%u goals still stand, by kind of sense:", n);
+        for (d = 0u; d < GD_DOMAINS; d++) {
+          unsigned c = go_domain_count(&GOALW, d);
+          at += sprintf(said + at, " %s %u%s", go_domain_name(d), c, c == 0u ? " (nothing: a sense this level found wanting)" : "");
+        }
+        sprintf(said + at, "; I carry them into the next level");
+        think(ex, "the level ended: what was true of the board then, that never was before?", said);
+      }
+    }
     if (outcome == 0) {
       /* what happened rules out what did not, and sometimes rules out nothing at all */
       unsigned cut = ru_saw(&RULES, kind, &now, &next);
@@ -3468,6 +3704,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       TOUCHED_EVER = 0u;
       goals_begin(&now);
       ru_level(&RULES, ex->levels_done);   /* a level is one of the facts a rule can break at */
+      go_level(&GOALW, &now, ex->levels_done);
       PLAN_LEN = 0u;
       puzzles_begin();
       recalling = ON(M_RECALL) && ex->levels_done < EX_MAX_LEVELS && KNOWN_LEN[ex->levels_done] > 0u;
@@ -3651,6 +3888,17 @@ void ex_report(FILE *out, const ex_explorer_t *ex) {
             ex->runs_before, ex->runs_before == 1u ? "" : "s", ex->best_before, ex->recalled);
   }
   (void)ru_report(&RULES, out);
+  go_report(&GOALW, out);
+  if (STATE_PICKS > 0u) {
+    fprintf(out, "  goals it went after, from what ends a level: %u; ways laid to them %u; reached without the "
+                 "level ending (so ruled out) %u; the ending act done when the board was right %u; levels ended "
+                 "while going after one %u\n",
+            STATE_PICKS, STATE_PLANS, STATE_REACHED_NOT, STATE_TRIGGERED, STATE_ENDED_AFTER);
+    if (N_GK_CARRIED > 0u) {
+      fprintf(out, "  kinds of goal carried from other games: %u; goals of those kinds chosen first %u times\n",
+              N_GK_CARRIED, GK_PICKS);
+    }
+  }
   if (ACTS_LEARNT > 0u) {
     fprintf(out, "  of %u acts it learned from, %u ruled nothing out at all\n",
             ACTS_LEARNT, ACTS_BARREN);
