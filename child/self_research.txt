@@ -577,3 +577,6 @@
   from version 71 (one of 6 still standing) it made version 75: SELF_OFF_REACH 0->1; SELF_OFF_RESTLESS 1->0; SELF_OFF_DEATHS 0->1
   development games, two seeds averaged: 11.0 levels, 0.515% (its parent: 14.5, 0.715%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-09-24 00:39  (building itself: one generation)
+  from version 74 it made a version it had already made (combined 74 and 61); it tries again next time
