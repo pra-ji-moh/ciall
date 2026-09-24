@@ -593,3 +593,8 @@
   from version 61 (one of 7 still standing) it made version 77: SELF_KEEP_ACTS 40u->24u
   development games, two seeds averaged: 11.0 levels, 0.729% (its parent: 11.5, 0.730%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-09-24 04:38  (building itself: one generation)
+  from version 73 (one of 7 still standing) it made version 78: SELF_RESTLESS_WINDOW 24u->16u
+  development games, two seeds averaged: 13.5 levels, 0.717% (its parent: 13.5, 0.717%)
+  kept in the archive (still standing); the child in use stays as it is
