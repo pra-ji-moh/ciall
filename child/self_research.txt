@@ -588,3 +588,8 @@
 
 2026-09-24 02:33  (building itself: one generation)
   from version 76 it made a version it had already made (SELF_BODY_VOTES 3u->5u); it tries again next time
+
+2026-09-24 03:37  (building itself: one generation)
+  from version 61 (one of 7 still standing) it made version 77: SELF_KEEP_ACTS 40u->24u
+  development games, two seeds averaged: 11.0 levels, 0.729% (its parent: 11.5, 0.730%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
