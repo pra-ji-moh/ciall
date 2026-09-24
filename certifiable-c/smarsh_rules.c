@@ -8,6 +8,7 @@
 #include "smarsh_rules.h"
 
 #include <stdlib.h>
+#include <math.h>
 #include <string.h>
 
 #define R_MOVE(dr, dc) ((unsigned)(((dr) + RU_REACH) * (int)RU_SIDE + ((dc) + RU_REACH)))
@@ -34,21 +35,26 @@ static unsigned GROUND;   /* the colour of the biggest thing in the picture bein
 static uint16_t PASSABLE;
 
 /* would a move by (dr, dc) put any cell of it where something other than ground, or itself, is? */
-static int blocked(const ru_thing_t *t, const pl_frame_t *f, int dr, int dc) {
-  unsigned r, c;
-  for (r = t->top; r <= t->bottom; r++) {
-    for (c = t->left; c <= t->right; c++) {
-      int nr, nc;
-      unsigned v;
-      if (f->c[r][c] != t->colour) continue;
-      nr = (int)r + dr;
-      nc = (int)c + dc;
-      if (nr < 0 || nc < 0 || nr >= (int)f->h || nc >= (int)f->w) return 1;
-      v = f->c[nr][nc];
-      if (v != t->colour && !((PASSABLE >> v) & 1u)) return 1;
-    }
+static void gather(const ru_thing_t *t, const pl_frame_t *f);
+static unsigned short CELL_R[PL_SIZE * PL_SIZE], CELL_C[PL_SIZE * PL_SIZE];
+static unsigned N_CELLS;
+
+/* would a move by (dr, dc) put any of its cells where something it cannot pass is? */
+static int blocked_cells(const ru_thing_t *t, const pl_frame_t *f, int dr, int dc) {
+  unsigned i;
+  for (i = 0u; i < N_CELLS; i++) {
+    int nr = (int)CELL_R[i] + dr, nc = (int)CELL_C[i] + dc;
+    unsigned v;
+    if (nr < 0 || nc < 0 || nr >= (int)f->h || nc >= (int)f->w) return 1;
+    v = f->c[nr][nc];
+    if (v != t->colour && !((PASSABLE >> v) & 1u)) return 1;
   }
   return 0;
+}
+
+static int blocked(const ru_thing_t *t, const pl_frame_t *f, int dr, int dc) {
+  gather(t, f);
+  return blocked_cells(t, f, dr, dc);
 }
 
 static unsigned size_class(unsigned cells) {
@@ -191,21 +197,45 @@ unsigned ru_things(const pl_frame_t *f, ru_thing_t *out, unsigned cap) {
 
 /* ---- what happened to one thing -------------------------------------------------- */
 
-/* is every cell of `t`, moved by (dr, dc), of the thing's colour in `after`? */
-static int moved_by(const ru_thing_t *t, const pl_frame_t *before, const pl_frame_t *after, int dr, int dc) {
-  unsigned r, c, n = 0u;
+/*
+ * The cells of a thing, gathered once. Walking its whole box for each of the 289
+ * moves it might have made, and again for each move something might be in the way
+ * of, was nearly all the time a turn took.
+ */
+
+static void gather(const ru_thing_t *t, const pl_frame_t *f) {
+  unsigned r, c;
+  N_CELLS = 0u;
   for (r = t->top; r <= t->bottom; r++) {
     for (c = t->left; c <= t->right; c++) {
-      int nr, nc;
-      if (before->c[r][c] != t->colour) continue;
-      nr = (int)r + dr;
-      nc = (int)c + dc;
-      if (nr < 0 || nc < 0 || nr >= (int)after->h || nc >= (int)after->w) return 0;
-      if (after->c[nr][nc] != t->colour) return 0;
-      n++;
+      if (f->c[r][c] != t->colour) continue;
+      CELL_R[N_CELLS] = (unsigned short)r;
+      CELL_C[N_CELLS] = (unsigned short)c;
+      N_CELLS++;
     }
   }
-  return n > 0u;
+}
+
+/* is every cell of `t`, moved by (dr, dc), of the thing's colour in `after`? */
+static int moved_cells(const ru_thing_t *t, const pl_frame_t *after, int dr, int dc) {
+  unsigned i;
+  if (N_CELLS == 0u) return 0;
+  {   /* one cell first: nearly every move is ruled out by it, and costs one look */
+    int nr = (int)CELL_R[0] + dr, nc = (int)CELL_C[0] + dc;
+    if (nr < 0 || nc < 0 || nr >= (int)after->h || nc >= (int)after->w) return 0;
+    if (after->c[nr][nc] != t->colour) return 0;
+  }
+  for (i = 1u; i < N_CELLS; i++) {
+    int nr = (int)CELL_R[i] + dr, nc = (int)CELL_C[i] + dc;
+    if (nr < 0 || nc < 0 || nr >= (int)after->h || nc >= (int)after->w) return 0;
+    if (after->c[nr][nc] != t->colour) return 0;
+  }
+  return 1;
+}
+
+static int moved_by(const ru_thing_t *t, const pl_frame_t *before, const pl_frame_t *after, int dr, int dc) {
+  gather(t, before);
+  return moved_cells(t, after, dr, dc);
 }
 
 static int still_there(const ru_thing_t *t, const pl_frame_t *after) {
@@ -233,11 +263,12 @@ static void happened(const ru_thing_t *t, const pl_frame_t *before, const pl_fra
   int dr, dc;
   unsigned n = cells_now(t, after), i;
   for (i = 0u; i < RU_WORDS; i++) ok[i] = 0u;
+  gather(t, before);
   for (dr = -RU_REACH; dr <= RU_REACH; dr++) {
     for (dc = -RU_REACH; dc <= RU_REACH; dc++) {
       if (dr == 0 && dc == 0) {
-        if (n == t->cells && moved_by(t, before, after, 0, 0)) put(ok, R_NOTHING);
-      } else if (moved_by(t, before, after, dr, dc)) {
+        if (n == t->cells && moved_cells(t, after, 0, 0)) put(ok, R_NOTHING);
+      } else if (moved_cells(t, after, dr, dc)) {
         put(ok, R_MOVE(dr, dc));
       }
     }
@@ -245,13 +276,14 @@ static void happened(const ru_thing_t *t, const pl_frame_t *before, const pl_fra
   {
     /* each move, "unless something is in the way": true if it moved and nothing was in the
        way, or if it stayed and something was */
-    int stayed = (n == t->cells && moved_by(t, before, after, 0, 0));
+    int stayed = (n == t->cells && moved_cells(t, after, 0, 0));
     for (dr = -RU_REACH; dr <= RU_REACH; dr++) {
       for (dc = -RU_REACH; dc <= RU_REACH; dc++) {
         int in_way;
         if (dr == 0 && dc == 0) continue;
-        in_way = blocked(t, before, dr, dc);
-        if ((in_way && stayed) || (!in_way && moved_by(t, before, after, dr, dc))) put(ok, R_BMOVE(dr, dc));
+        if (!stayed && !moved_cells(t, after, dr, dc)) continue;   /* neither: nothing to say */
+        in_way = blocked_cells(t, before, dr, dc);
+        if ((in_way && stayed) || (!in_way && moved_cells(t, after, dr, dc))) put(ok, R_BMOVE(dr, dc));
       }
     }
   }
@@ -273,7 +305,8 @@ static void happened(const ru_thing_t *t, const pl_frame_t *before, const pl_fra
 
 /* ---- reading what an act did ------------------------------------------------------ */
 
-unsigned ru_saw(ru_world_t *w, unsigned act, const pl_frame_t *before, const pl_frame_t *after) {
+/* what was learned from one act, without keeping the picture: used live and in replay */
+static unsigned ru_learn(ru_world_t *w, unsigned act, const pl_frame_t *before, const pl_frame_t *after) {
   static ru_thing_t things[RU_MAX_THINGS];
   unsigned n = ru_things(before, things, RU_MAX_THINGS), i, j, cut = 0u, most = 0u;
   if (act >= RU_ACTS) return 0u;
@@ -316,17 +349,180 @@ unsigned ru_saw(ru_world_t *w, unsigned act, const pl_frame_t *before, const pl_
     } else {
       w->cannot_say++;
     }
+    /*
+     * Nothing left to say is not the same as too much left to say. Many rules still
+     * standing means wait and watch. None standing means no rule in this language is
+     * true of what just happened, and no further watching can help: the language is
+     * the thing at fault. They are told apart here so the second can be acted on.
+     */
+    {
+      unsigned way2, dead = 0u, met = 0u;
+      for (way2 = 0u; way2 < RU_WAYS; way2++) {
+        unsigned k2 = ru_kind_way(&things[i], way2);
+        if (w->seen[way2][k2][act] == 0u) continue;
+        met++;
+        if (count(w->left[way2][k2][act]) == 0u) dead++;
+      }
+      if (met > 0u && dead == met) w->mute++;   /* met again, and still with nothing to say */
+      else if (met > 0u) w->unsettled++;
+    }
     for (way = 0u; way < RU_WAYS; way++) {
       unsigned k = ru_kind_way(&things[i], way);
       uint64_t *left = w->left[way][k][act];
       was = count(left);
       for (j = 0u; j < RU_WORDS; j++) left[j] &= could[j];   /* what says otherwise is ruled out */
       w->seen[way][k][act]++;
-      cut += was - count(left);
+      {
+        unsigned now = count(left);
+        /* the last rule has just gone: from here it is the language that is at fault */
+        if (was > 0u && now == 0u) w->no_words++;
+        cut += was - now;
+      }
     }
   }
   w->ruled_out += cut;
   return cut;
+}
+
+unsigned ru_saw(ru_world_t *w, unsigned act, const pl_frame_t *before, const pl_frame_t *after) {
+  /* keep the picture, then learn from it */
+  if (act < RU_ACTS) {
+    int fresh = (w->logged == 0u) ||
+                (w->log[w->logged - 1u].h != before->h) ||
+                (w->log[w->logged - 1u].w != before->w) ||
+                (memcmp(w->log[w->logged - 1u].c, before->c, sizeof before->c) != 0);
+    if (fresh) {
+      if (w->logged > 0u) w->log_act[w->logged - 1u] = (unsigned char)RU_NO_ACT;
+      if (w->logged + 1u < RU_LOG) w->log[w->logged++] = *before;
+      else w->lost++;
+    }
+    if (w->logged > 0u && w->logged + 1u <= RU_LOG) {
+      w->log_act[w->logged - 1u] = (unsigned char)act;
+      if (w->logged < RU_LOG) w->log[w->logged++] = *after;
+      else w->lost++;
+    }
+  }
+  return ru_learn(w, act, before, after);
+}
+
+/* which bit of a word is the lowest set one, without leaning on the compiler */
+static unsigned ctz64(uint64_t x) {
+  unsigned n = 0u;
+  while ((x & 1u) == 0u) {
+    x >>= 1;
+    n++;
+  }
+  return n;
+}
+/* ---- which act asks the most ------------------------------------------------------ */
+
+/*
+ * Doing something is asking the world a question, and the answers are not equally
+ * worth having. Before an act, a kind of thing has some number of rules still
+ * standing. Two rules that would look exactly the same here cannot be told apart by
+ * doing it, however the world answers; rules that would look different are separated
+ * the moment the answer comes.
+ *
+ * So group the standing rules by what they would look like if done here, and take the
+ * largest group. Whatever the world answers, at least everything outside that group
+ * goes. That is the guaranteed harvest, log2(standing) - log2(largest group) bits, and
+ * it is a worst case, not an average: no likelihoods are used, and none are needed.
+ * The act with the most guaranteed bits is the sharpest question available.
+ */
+#define RU_SIG_SLOTS 2048u
+#define RU_SIG_NONE 0xFFFFFFFFu
+
+static unsigned SIG_KEY[RU_SIG_SLOTS], SIG_N[RU_SIG_SLOTS], SIG_STAMP[RU_SIG_SLOTS], SIG_NOW;
+
+static unsigned biggest_group(const uint64_t *left, const ru_thing_t *t, const pl_frame_t *f,
+                              unsigned *standing) {
+  unsigned word, best = 0u, m = 0u;
+  SIG_NOW++;
+  for (word = 0u; word < RU_WORDS; word++) {
+    uint64_t bits = left[word];
+    while (bits != 0u) {
+      unsigned r = word * 64u + (unsigned)ctz64(bits), key, slot;
+      int dr = 0, dc = 0, off = 0;
+      bits &= bits - 1u;
+      m++;
+      if (r >= RU_MOVES + 3u) {   /* moves unless something is in the way: which it is, is known now */
+        unsigned q = r - RU_MOVES - 3u;
+        dr = (int)(q / RU_SIDE) - RU_REACH;
+        dc = (int)(q % RU_SIDE) - RU_REACH;
+        if (blocked(t, f, dr, dc)) dr = dc = 0;
+      } else if (r < RU_MOVES) {
+        dr = (int)(r / RU_SIDE) - RU_REACH;
+        dc = (int)(r % RU_SIDE) - RU_REACH;
+      } else {
+        off = (int)(r - RU_MOVES) + 1;   /* gone, bigger or smaller, another colour: each its own look */
+      }
+      if (off != 0) {
+        key = 0xF0000000u + (unsigned)off;
+      } else if ((int)t->top + dr < 0 || (int)t->left + dc < 0 ||
+                 (int)t->bottom + dr >= (int)f->h || (int)t->right + dc >= (int)f->w) {
+        key = 0xE0000000u + (unsigned)(r + 1u);   /* off the board: it cannot look like anything */
+      } else {
+        key = (unsigned)((int)t->top + dr) * 256u + (unsigned)((int)t->left + dc);
+      }
+      slot = (key * 2654435761u) % RU_SIG_SLOTS;
+      while (SIG_STAMP[slot] == SIG_NOW && SIG_KEY[slot] != key) slot = (slot + 1u) % RU_SIG_SLOTS;
+      if (SIG_STAMP[slot] != SIG_NOW) {
+        SIG_STAMP[slot] = SIG_NOW;
+        SIG_KEY[slot] = key;
+        SIG_N[slot] = 0u;
+      }
+      SIG_N[slot]++;
+      if (SIG_N[slot] > best) best = SIG_N[slot];
+    }
+  }
+  *standing = m;
+  return best;
+}
+
+double ru_worst_bits(const ru_world_t *w, unsigned act, const pl_frame_t *now) {
+  static ru_thing_t things[RU_MAX_THINGS];
+  unsigned n, i, way;
+  double bits = 0.0;
+  if (act >= RU_ACTS) return 0.0;
+  n = ru_things(now, things, RU_MAX_THINGS);
+  PASSABLE = w->passable;
+  for (i = 0u; i < n; i++) {
+    for (way = 0u; way < RU_WAYS; way++) {
+      unsigned k = ru_kind_way(&things[i], way), standing = 0u, big;
+      /*
+       * A kind this act has never been tried on still has its whole language standing,
+       * which is the most there is to win, so it is counted like any other. Passing
+       * over those would have it favour the acts it has already asked, which is the
+       * opposite of asking.
+       */
+      big = biggest_group(w->left[way][k][act], &things[i], now, &standing);
+      if (standing > 1u && big > 0u) bits += log2((double)standing) - log2((double)big);
+    }
+  }
+  return bits;
+}
+
+unsigned ru_no_words(const ru_world_t *w) {
+  return w->no_words;
+}
+
+void ru_replay(ru_world_t *w) {
+  unsigned i, way, k, a;
+  for (way = 0u; way < RU_WAYS; way++) {
+    for (k = 0u; k < RU_KINDS; k++) {
+      for (a = 0u; a < RU_ACTS; a++) {
+        set_all(w->left[way][k][a]);
+        w->seen[way][k][a] = 0u;
+      }
+    }
+  }
+  w->passable = 0u;
+  w->said = w->said_right = w->said_wrong = w->cannot_say = 0u;
+  w->unsettled = w->no_words = 0u;
+  for (i = 0u; i + 1u < w->logged; i++) {
+    if (w->log_act[i] == (unsigned char)RU_NO_ACT) continue;
+    (void)ru_learn(w, w->log_act[i], &w->log[i], &w->log[i + 1u]);
+  }
 }
 
 /* ---- saying and imagining ------------------------------------------------------------ */
@@ -438,6 +634,14 @@ sm_status_t ru_report(const ru_world_t *w, FILE *out) {
       if (count(w->left[0][k][a]) == 1u) settled++;
     }
   }
+  if (w->no_words > 0u) {
+    fprintf(out, "  %u times its last rule went, leaving nothing that could account for what\n"
+                 "  happened (and %u acts met afterwards it still had nothing to say of): no\n"
+                 "  amount of further watching settles those, only more words\n",
+            w->no_words, w->mute);
+  }
+  fprintf(out, "  pictures kept to put a wider language to: %u%s\n", w->logged,
+          w->lost > 0u ? " (and some let go)" : "");
   fprintf(out, "  what each act does to each kind of thing: %u of %u settled to one rule (%.0f bits left); "
                "of things it could say about before an act, right %u of %u (%.0f%%); could not say of %u\n",
           settled, met, ru_bits(w), w->said_right, w->said,

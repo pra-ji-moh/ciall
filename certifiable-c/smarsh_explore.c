@@ -20,11 +20,11 @@
  */
 typedef enum {
   M_RESTLESS, M_CLOCK, M_STOOD, M_PANELS, M_NEAR, M_THEORY, M_SKIP,
-  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_CURIOUS, M_PLAN, M_WONAIM, M_RULES, M_GOALS, M_COUNT
+  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_CURIOUS, M_PLAN, M_WONAIM, M_RULES, M_GOALS, M_ASKBEST, M_COUNT
 } ex_mech_t;
 static const char *MECH_NAME[M_COUNT] = {
   "restless", "clock", "stood", "panels", "near", "theory", "skip",
-  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach", "curious", "plan", "wonaim", "rules", "goals"
+  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach", "curious", "plan", "wonaim", "rules", "goals", "askbest"
 };
 static unsigned OFF_MASK;
 #define ON(m) ((OFF_MASK & (1u << (m))) == 0u)
@@ -35,7 +35,7 @@ static void read_off(void) {
   static const unsigned by_self[M_COUNT] = {
     SELF_OFF_RESTLESS, SELF_OFF_CLOCK, SELF_OFF_STOOD, SELF_OFF_PANELS, SELF_OFF_NEAR, SELF_OFF_THEORY,
     SELF_OFF_SKIP, SELF_OFF_DEATHS, SELF_OFF_UNMASK, SELF_OFF_WINDOW, SELF_OFF_REDRAW, SELF_OFF_RECALL,
-    SELF_OFF_REPLAY, SELF_OFF_REACH, SELF_OFF_CURIOUS, SELF_OFF_PLAN, SELF_OFF_WONAIM, SELF_OFF_RULES, SELF_OFF_GOALS
+    SELF_OFF_REPLAY, SELF_OFF_REACH, SELF_OFF_CURIOUS, SELF_OFF_PLAN, SELF_OFF_WONAIM, SELF_OFF_RULES, SELF_OFF_GOALS, SELF_OFF_ASKBEST
   };
   OFF_MASK = 0u;
   for (m = 0u; m < M_COUNT; m++) {
@@ -2051,6 +2051,9 @@ static uint16_t GOAL_ONTO_LEFT, GOAL_GONE_LEFT;   /* the ambitions not yet ruled
 static unsigned GOAL_KIND;                        /* 0: none; 1: be against a colour; 2: have it gone */
 static unsigned GOAL_COLOUR, GOAL_SPENT;
 static unsigned GOALS_SET, GOALS_RULED_OUT, GOALS_REACHED;
+static unsigned ASKED_SHARP;      /* times it chose the act that asks the most */
+static unsigned ACTS_LEARNT, ACTS_BARREN;   /* acts done, and those that ruled nothing out */
+static double SHARP_BITS;         /* bits those acts were bound to win, whatever the answer */
 #define EX_GOAL_PATIENCE 120u                     /* acts spent on one ambition before trying another */
 
 /* every colour here it might be worth being against, or worth being rid of */
@@ -2662,6 +2665,9 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
   MPLAN_LEN = MPLAN_POS = MPLAN_WAIT = 0u;
   MPLAN_LAID = MPLAN_WALKED = MPLAN_BROKE = MPLAN_REACHED = MPLAN_CURIOUS = 0u;
   GOALS_SET = GOALS_RULED_OUT = GOALS_REACHED = 0u;
+  ASKED_SHARP = 0u;
+  ACTS_LEARNT = ACTS_BARREN = 0u;
+  SHARP_BITS = 0.0;
   TOUCHED_EVER = 0u;
   GOAL_KIND = 0u;
   GOAL_ONTO_LEFT = GOAL_GONE_LEFT = 0xffffu;
@@ -2968,6 +2974,32 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
           if (rk == rank0) tie[nt++] = i;
         }
         if (TIE_MODE == 0u && KIND(N_ACT[cur][idx]) == 6u) nt = 0u;
+        /*
+         * Nothing known tells these acts apart as ways on. But they are also
+         * questions, and a question has a worth: the rules it is bound to separate
+         * whatever the answer turns out to be. Among the acts open here it keeps the
+         * ones that ask the most, and stays uniform among those. It is not guessing
+         * which answer will come; it is choosing where an answer cannot fail to teach.
+         */
+        if (nt > 1u && ON(M_RULES) && ON(M_ASKBEST)) {
+          double bits[EX_MAX_ACTS], best = -1.0;
+          unsigned a, keep[EX_MAX_ACTS], nk2 = 0u;
+          for (a = 0u; a < nt; a++) {
+            bits[a] = ru_worst_bits(&RULES, KIND(N_ACT[cur][tie[a]]), &now);
+            if (bits[a] > best) best = bits[a];
+          }
+          if (best > 0.0) {
+            for (a = 0u; a < nt; a++) {
+              if (bits[a] > best - 1e-9) keep[nk2++] = tie[a];
+            }
+            if (nk2 > 0u && nk2 < nt) {
+              ASKED_SHARP++;
+              SHARP_BITS += best;
+              for (a = 0u; a < nk2; a++) tie[a] = keep[a];
+              nt = nk2;
+            }
+          }
+        }
         if (nt > 1u && TIE_MODE == 2u) {
           uint32_t kinds[EX_MAX_ACTS];
           unsigned nk = 0u, a, b, inkind[EX_MAX_ACTS], ni = 0u;
@@ -3242,7 +3274,12 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
         MPLAN_LEN = MPLAN_POS = 0u;
       }
     }
-    if (outcome == 0) (void)ru_saw(&RULES, kind, &now, &next);   /* what happened rules out what did not */
+    if (outcome == 0) {
+      /* what happened rules out what did not, and sometimes rules out nothing at all */
+      unsigned cut = ru_saw(&RULES, kind, &now, &next);
+      ACTS_LEARNT++;
+      if (cut == 0u) ACTS_BARREN++;
+    }
     OBS.ended = (unsigned char)(outcome == 1 || outcome == 2);
     {
       /*
@@ -3574,6 +3611,14 @@ void ex_report(FILE *out, const ex_explorer_t *ex) {
             ex->runs_before, ex->runs_before == 1u ? "" : "s", ex->best_before, ex->recalled);
   }
   (void)ru_report(&RULES, out);
+  if (ACTS_LEARNT > 0u) {
+    fprintf(out, "  of %u acts it learned from, %u ruled nothing out at all\n",
+            ACTS_LEARNT, ACTS_BARREN);
+  }
+  if (ASKED_SHARP > 0u) {
+    fprintf(out, "  %u times it took the act that asks the most, bound to win %.0f bits in all\n",
+            ASKED_SHARP, SHARP_BITS);
+  }
   if (GOALS_SET > 0u) {
     fprintf(out, "  ambitions it set itself: %u; reached %u; ruled out %u as not what ends a level\n",
             GOALS_SET, GOALS_REACHED, GOALS_RULED_OUT);

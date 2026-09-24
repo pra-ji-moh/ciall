@@ -43,6 +43,8 @@
 /* the moves; gone; changed size; recoloured; then each move again as "unless something is in the way" */
 #define RU_WORDS ((2u * RU_MOVES + 3u + 63u) / 64u)
 #define RU_MAX_THINGS 256u
+#define RU_LOG 320u                    /* pictures kept: a whole game at the usual budget */
+#define RU_NO_ACT 255u                 /* this picture does not follow from the one before */
 
 typedef struct {
   unsigned colour, size, cells;
@@ -54,6 +56,20 @@ typedef struct {
   uint64_t left[RU_WAYS][RU_KINDS][RU_ACTS][RU_WORDS];   /* a bit per rule still possible */
   unsigned seen[RU_WAYS][RU_KINDS][RU_ACTS];             /* times an act was done with such a thing there */
   unsigned said, said_right, said_wrong, cannot_say, spared;
+  unsigned unsettled;                  /* times more than one rule was still possible: wait, and watch */
+  unsigned no_words;                   /* times the last rule went: the language itself is too small */
+  unsigned mute;                       /* acts met afterwards with nothing left to say of them */
+  /*
+   * The evidence, kept as it was seen.
+   *
+   * Ruling out is an AND, and an AND can only take bits away, so a word added to the
+   * language later has nothing to answer for unless the past is still here to answer
+   * to. These are the pictures themselves, not facts phrased in today's words, so a
+   * wider language can be put to them exactly as this one was.
+   */
+  pl_frame_t log[RU_LOG];
+  unsigned char log_act[RU_LOG];       /* the act leading from log[i] to log[i+1] */
+  unsigned logged, lost;
   uint16_t passable;                   /* colours a thing has been seen to move into */
   unsigned long long ruled_out;
 } ru_world_t;
@@ -97,6 +113,18 @@ void ru_imagine(const ru_world_t *w, unsigned act, const pl_frame_t *now, pl_fra
 
 /* how much it still does not know about acts and kinds, in bits */
 double ru_bits(const ru_world_t *w);
+
+/*
+ * The bits an act is guaranteed to win, whatever the world answers: the sharpest
+ * question it can ask from here. A worst case over outcomes, not an average.
+ */
+double ru_worst_bits(const ru_world_t *w, unsigned act, const pl_frame_t *now);
+
+/* times the language could not account for what happened at all */
+unsigned ru_no_words(const ru_world_t *w);
+
+/* forget what was ruled out and put the kept evidence to the language afresh */
+void ru_replay(ru_world_t *w);
 
 sm_status_t ru_report(const ru_world_t *w, FILE *out);
 

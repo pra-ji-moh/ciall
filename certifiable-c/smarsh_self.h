@@ -65,6 +65,7 @@
 #define SELF_OFF_WONAIM 0   /* self: 0 1 */
 #define SELF_OFF_RULES 0   /* self: 0 1 */
 #define SELF_OFF_GOALS 0   /* self: 0 1 */
+#define SELF_OFF_ASKBEST 1   /* self: 0 1 */
 /* act on the best theory it has, before an ending has proved it */
 #define SELF_BOLD 1   /* self: 0 1 */
 

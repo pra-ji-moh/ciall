@@ -24,11 +24,28 @@ import os
 import subprocess
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import light_start
+light_start.light()   # the drawing library and the web server are not needed to play
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CHILD = os.environ.get("CIALL_CHILD") or os.path.join(ROOT, ".build", "play_arc.exe")
 JOURNAL = os.path.join(ROOT, "child", "arc_journal.txt")
 
 STATE_PLAYING, STATE_WON, STATE_OVER = 0, 1, 2
+
+HEX = bytes.maketrans(bytes(range(16)), b"0123456789abcdef")
+
+
+def _rows(grid, h, w):
+    """The picture as lines of hex. A whole grid at a time: cell by cell was a third
+    of the time a turn took."""
+    try:
+        import numpy as np
+        flat = (np.asarray(grid, dtype=np.uint8) & 15).tobytes().translate(HEX)
+        return [flat[r * w:(r + 1) * w].decode("ascii") for r in range(h)]
+    except Exception:
+        return ["".join("%x" % (int(v) & 15) for v in row) for row in grid]
 
 
 def encode(state, levels, grid, actions):
@@ -36,7 +53,7 @@ def encode(state, levels, grid, actions):
     w = len(grid[0]) if h else 0
     head = "OBS %d %d %d %d %d %s" % (state, levels, h, w, len(actions),
                                       " ".join(str(a) for a in actions))
-    rows = ["".join("%x" % (int(v) & 15) for v in row) for row in grid]
+    rows = _rows(grid, h, w)
     return head.strip() + "\n" + "\n".join(rows) + "\n"
 
 
@@ -306,8 +323,15 @@ def main(argv):
         logging.disable(logging.WARNING)
         import arc_agi
         here = os.path.dirname(os.path.abspath(__file__))
+        # The games can be played where they stand, or over the network at
+        # three.arcprize.org. Over the network each act costs about 50 milliseconds of
+        # waiting, which is nearly all the time a run takes; played where they stand the
+        # child is not kept waiting at all. CIALL_ONLINE=1 uses the network, for a run
+        # that is to be reported to ARC Prize; otherwise the games are played here.
+        mode = arc_agi.OperationMode.ONLINE if os.environ.get("CIALL_ONLINE") else arc_agi.OperationMode.OFFLINE
         arcade = arc_agi.Arcade(environments_dir=os.path.join(here, "environment_files"),
-                                recordings_dir=os.path.join(here, "recordings"))
+                                recordings_dir=os.path.join(here, "recordings"),
+                                operation_mode=mode)
         known = public_games(arcade)
         chosen = [g for g in known if not games or g[0] in games or g[0][:4] in games]
         for gid, base, tags in chosen:
