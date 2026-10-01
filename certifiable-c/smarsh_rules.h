@@ -15,7 +15,11 @@
  *     go(dr, dc)         every cell of it moves by that much
  *     gone               it is no longer there
  *     grew / shrank      it has more or fewer cells
- *     recoloured(v)      its cells are colour v now
+ *     recoloured         some of its cells are one other colour now
+ *     becomes(v)         every cell of it is colour v now: what it turned INTO (the first
+ *                        word of transformation: a change it can imagine, not only notice)
+ *     to_point           it goes to where the act pointed, however far: a move that is
+ *                        not a fixed step but set by where one points
  *
  * and at the start every one of them is possible. An act is done; what actually
  * happened to each thing rules out every rule that says otherwise. What is left is
@@ -36,12 +40,22 @@
 
 #define RU_KINDS 1024u
 #define RU_WAYS 3u                     /* colour and shape; colour and size; colour */
-#define RU_ACTS 8u
+/*
+ * Pointing is two acts, not one: to the thing pointed AT, pointing is act 6; to every
+ * other thing on the board it is "a thing of colour c was pointed at", act 8 + c: what
+ * a click does to one thing depends on which thing was clicked (the button, not the
+ * door, turns the door), and one act for every other click would never settle. Where
+ * a point lands is set with ru_aim before the rules are asked.
+ */
+#define RU_POINT 6u
+#define RU_POINT_ELSE 8u               /* pointed at something else: 8 + the colour pointed at */
+#define RU_ACTS (RU_POINT_ELSE + PL_COLOURS)
 #define RU_REACH 8                     /* go(dr, dc), each -8..8: a thing in these games steps by a whole block */
 #define RU_SIDE (2u * RU_REACH + 1u)
 #define RU_MOVES (RU_SIDE * RU_SIDE)   /* go(0, 0) is "nothing" */
 /* the moves; gone; changed size; recoloured; then each move again as "unless something is in the way" */
-#define RU_WORDS ((2u * RU_MOVES + 3u + 63u) / 64u)
+#define RU_BECOMES 16u                 /* becomes(v), one word per colour */
+#define RU_WORDS ((2u * RU_MOVES + 3u + RU_BECOMES + 1u + 63u) / 64u)   /* the last: goes to where it was pointed */
 #define RU_MAX_THINGS 256u
 #define RU_LOG 320u                    /* pictures kept: a whole game at the usual budget */
 #define RU_NO_ACT 255u                 /* this picture does not follow from the one before */
@@ -183,6 +197,9 @@ double ru_bits(const ru_world_t *w);
  * question it can ask from here. A worst case over outcomes, not an average.
  */
 double ru_worst_bits(const ru_world_t *w, unsigned act, const pl_frame_t *now);
+
+/* where the act about to be learned from or imagined points, if it points: column x, row y */
+void ru_aim(int x, int y);
 
 /* times the language could not account for what happened at all */
 unsigned ru_no_words(const ru_world_t *w);

@@ -66,6 +66,8 @@ PRACTICE = os.path.join(HERE, "practice.tsv")
 REACH, SIDE = 8, 17
 MOVES = SIDE * SIDE
 GONE, SIZE, COLOUR = MOVES, MOVES + 1, MOVES + 2
+BECOME = 2 * MOVES + 3   # becomes(v): BECOME + v
+TOPOINT = BECOME + 16    # goes to where it was pointed
 NOTHING = REACH * SIDE + REACH
 CROP = 12
 MID = CROP // 2
@@ -82,6 +84,10 @@ def rule_words(r):
         return "change size"
     if r == COLOUR:
         return "change colour"
+    if r == TOPOINT:
+        return "go to where it was pointed"
+    if r >= BECOME:
+        return "become colour %d" % (r - BECOME)
     q = r - MOVES - 3
     return "move %d down and %d across unless something is in the way" % (q // SIDE - REACH, q % SIDE - REACH)
 
@@ -92,6 +98,11 @@ def seen_words(could):
     moves = [r for r in could if r < MOVES]
     if moves:
         return "it moved %d down and %d across" % (moves[0] // SIDE - REACH, moves[0] % SIDE - REACH)
+    if TOPOINT in could:
+        return "it went to where I pointed"
+    becomes = [r - BECOME for r in could if BECOME <= r < TOPOINT]
+    if becomes:
+        return "it turned colour %d" % becomes[0]
     if GONE in could:
         return "it went"
     if SIZE in could:

@@ -21,11 +21,11 @@
  */
 typedef enum {
   M_RESTLESS, M_CLOCK, M_STOOD, M_PANELS, M_NEAR, M_THEORY, M_SKIP,
-  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_CURIOUS, M_PLAN, M_WONAIM, M_RULES, M_GOALS, M_ASKBEST, M_CONDS, M_STATE, M_EARLY, M_CARRY, M_COUNT
+  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_CURIOUS, M_PLAN, M_WONAIM, M_RULES, M_GOALS, M_ASKBEST, M_CONDS, M_STATE, M_EARLY, M_CARRY, M_CLICKPLAN, M_COUNT
 } ex_mech_t;
 static const char *MECH_NAME[M_COUNT] = {
   "restless", "clock", "stood", "panels", "near", "theory", "skip",
-  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach", "curious", "plan", "wonaim", "rules", "goals", "askbest", "conds", "state", "early", "carry"
+  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach", "curious", "plan", "wonaim", "rules", "goals", "askbest", "conds", "state", "early", "carry", "clickplan"
 };
 static unsigned OFF_MASK;
 #define ON(m) ((OFF_MASK & (1u << (m))) == 0u)
@@ -36,20 +36,31 @@ static void read_off(void) {
   static const unsigned by_self[M_COUNT] = {
     SELF_OFF_RESTLESS, SELF_OFF_CLOCK, SELF_OFF_STOOD, SELF_OFF_PANELS, SELF_OFF_NEAR, SELF_OFF_THEORY,
     SELF_OFF_SKIP, SELF_OFF_DEATHS, SELF_OFF_UNMASK, SELF_OFF_WINDOW, SELF_OFF_REDRAW, SELF_OFF_RECALL,
-    SELF_OFF_REPLAY, SELF_OFF_REACH, SELF_OFF_CURIOUS, SELF_OFF_PLAN, SELF_OFF_WONAIM, SELF_OFF_RULES, SELF_OFF_GOALS, SELF_OFF_ASKBEST, SELF_OFF_CONDS, SELF_OFF_STATE, SELF_OFF_EARLY, SELF_OFF_CARRY
+    SELF_OFF_REPLAY, SELF_OFF_REACH, SELF_OFF_CURIOUS, SELF_OFF_PLAN, SELF_OFF_WONAIM, SELF_OFF_RULES, SELF_OFF_GOALS, SELF_OFF_ASKBEST, SELF_OFF_CONDS, SELF_OFF_STATE, SELF_OFF_EARLY, SELF_OFF_CARRY, SELF_OFF_CLICKPLAN
   };
   OFF_MASK = 0u;
   for (m = 0u; m < M_COUNT; m++) {
     if (by_self[m]) OFF_MASK |= 1u << m;   /* parts it has switched off in its own source */
   }
-  if (off == 0) return;
-  for (m = 0u; m < M_COUNT; m++) {
-    const char *hit;
-    size_t len = strlen(MECH_NAME[m]);
-    for (hit = strstr(off, MECH_NAME[m]); hit != 0; hit = strstr(hit + 1, MECH_NAME[m])) {
-      if ((hit == off || hit[-1] == ',') && (hit[len] == '\0' || hit[len] == ',')) {
-        OFF_MASK |= 1u << m;
-        break;
+  {
+    /* CIALL_OFF switches parts off; CIALL_ON switches on parts its own source has off (for trials) */
+    const char *lists[2];
+    unsigned li;
+    lists[0] = off;
+    lists[1] = getenv("CIALL_ON");
+    for (li = 0u; li < 2u; li++) {
+      const char *l = lists[li];
+      if (l == 0) continue;
+      for (m = 0u; m < M_COUNT; m++) {
+        const char *hit;
+        size_t len = strlen(MECH_NAME[m]);
+        for (hit = strstr(l, MECH_NAME[m]); hit != 0; hit = strstr(hit + 1, MECH_NAME[m])) {
+          if ((hit == l || hit[-1] == ',') && (hit[len] == '\0' || hit[len] == ',')) {
+            if (li == 0u) OFF_MASK |= 1u << m;
+            else OFF_MASK &= ~(1u << m);
+            break;
+          }
+        }
       }
     }
   }
@@ -2023,8 +2034,13 @@ static unsigned plan_from_theory(ex_explorer_t *ex, const pl_frame_t *f) {
 #define EX_MPLAN_DEPTH 24u
 #define EX_MPLAN_STATES 3000u
 
-static unsigned char MPLAN_ACT[EX_MPLAN_DEPTH];
+static unsigned short MPLAN_ACT[EX_MPLAN_DEPTH];   /* act codes: kind, and where it points */
+static uint64_t MPLAN_H[EX_MPLAN_DEPTH];          /* the board imagined after each step, ticking cells left out */
+#define EX_PLAN_ACTS 32u
+#define EX_PLAN_POINTS 24u
 static int MPLAN_STATE_GOAL;   /* the plan being laid walks to a state goal */
+/* where the planner stops, counted: asked, no goal, already there, searched, boards imagined, distinct */
+static unsigned PL_ASKED, PL_NOGOAL, PL_THERE, PL_SEARCHED, PL_BOARDS, PL_DISTINCT, PL_POINTS, PL_CHANGED;
 static unsigned short MPLAN_R[EX_MPLAN_DEPTH], MPLAN_C[EX_MPLAN_DEPTH];
 static unsigned MPLAN_LEN, MPLAN_POS, MPLAN_WAIT;
 static unsigned MPLAN_LAID, MPLAN_WALKED, MPLAN_BROKE, MPLAN_REACHED;
@@ -2279,6 +2295,25 @@ static uint64_t frame_hash(const pl_frame_t *f) {
   return h;
 }
 
+/* the same, leaving out the cells that tick by themselves: what a plan can be held to */
+static uint64_t steady_hash(const pl_frame_t *f) {
+  uint64_t h = 1469598103934665603ull;
+  unsigned r, c;
+  for (r = 0u; r < f->h; r++) {
+    for (c = 0u; c < f->w; c++) {
+      if (MASK[r][c]) continue;
+      h = (h ^ f->c[r][c]) * 1099511628211ull;
+    }
+  }
+  return h;
+}
+
+/* does this act, here, carry out that planned step (the same kind, and if it points, the same place)? */
+static int step_matches(unsigned short have, unsigned short planned) {
+  if (KIND(have) != KIND(planned)) return 0;
+  return KIND(have) != 6u || (PX(have) == PX(planned) && PY(have) == PY(planned));
+}
+
 /* where the body is in a picture: the middle of its cells */
 static int body_at(const pl_frame_t *f, int body, unsigned *br, unsigned *bc) {
   unsigned r, c, n = 0u;
@@ -2335,11 +2370,12 @@ static int plan_goal(int state_goal, const pl_frame_t *f, const pl_frame_t *star
   return goal_holds(f, start, body, onto, gone);
 }
 
-static unsigned mplan_lay(const pl_frame_t *now, const unsigned char *acts, unsigned n_acts) {
+static unsigned mplan_lay(const pl_frame_t *now, const unsigned short *acts, unsigned n_acts) {
   static pl_frame_t state[EX_MPLAN_STATES];
   static uint64_t seen[EX_MPLAN_STATES];
   static unsigned parent[EX_MPLAN_STATES];
-  static unsigned char via[EX_MPLAN_STATES], depth[EX_MPLAN_STATES];
+  static unsigned short via[EX_MPLAN_STATES];
+  static unsigned char depth[EX_MPLAN_STATES];
   /*
    * Which pictures it has already imagined: an open-addressed set, so each new one is
    * checked in a step or two rather than against every one before it (the same answer,
@@ -2370,12 +2406,22 @@ static unsigned mplan_lay(const pl_frame_t *now, const unsigned char *acts, unsi
     }
     if (onto != 0u) MPLAN_CURIOUS++;
   }
+  PL_ASKED++;
   {
     int state_goal = ON(M_STATE) && STATE_HAVE && go_standing(&GOALW, &STATE_GOAL);
-    if (n_acts == 0u || (!state_goal && (body < 0 || (onto == 0u && gone == 0u)))) return 0u;
+    unsigned a2;
+    for (a2 = 0u; a2 < n_acts; a2++) PL_POINTS += (KIND(acts[a2]) == 6u);
+    if (n_acts == 0u || (!state_goal && (body < 0 || (onto == 0u && gone == 0u)))) {
+      PL_NOGOAL++;
+      return 0u;
+    }
     if (body >= 0) onto &= ~(1u << body);
-    if (plan_goal(state_goal, now, now, body, onto, gone)) return 0u;
+    if (plan_goal(state_goal, now, now, body, onto, gone)) {
+      PL_THERE++;
+      return 0u;
+    }
     MPLAN_STATE_GOAL = state_goal;
+    PL_SEARCHED++;
   }
   SET_NOW++;
   state[tail] = *now;
@@ -2393,7 +2439,8 @@ static unsigned mplan_lay(const pl_frame_t *now, const unsigned char *acts, unsi
     for (a = 0u; a < n_acts && tail < EX_MPLAN_STATES; a++) {
       uint64_t h;
       int dup = 0;
-      ru_imagine(&RULES, acts[a], &state[at], &state[tail]);
+      if (KIND(acts[a]) == 6u) ru_aim((int)PX(acts[a]), (int)PY(acts[a]));
+      ru_imagine(&RULES, KIND(acts[a]), &state[at], &state[tail]);
       h = frame_hash(&state[tail]);
       {
         unsigned slot = (unsigned)(h % 8192u);
@@ -2404,7 +2451,10 @@ static unsigned mplan_lay(const pl_frame_t *now, const unsigned char *acts, unsi
           SET_KEY[slot] = h;
         }
       }
+      PL_BOARDS++;
       if (dup) continue;
+      PL_DISTINCT++;
+      if (h != seen[at]) PL_CHANGED++;
       seen[tail] = h;
       parent[tail] = at;
       via[tail] = acts[a];
@@ -2425,6 +2475,7 @@ static unsigned mplan_lay(const pl_frame_t *now, const unsigned char *acts, unsi
       unsigned br = 0u, bc = 0u;
       n--;
       MPLAN_ACT[n] = via[k];
+      MPLAN_H[n] = steady_hash(&state[k]);
       (void)body_at(&state[k], body, &br, &bc);
       MPLAN_R[n] = (unsigned short)br;
       MPLAN_C[n] = (unsigned short)bc;
@@ -3100,14 +3151,23 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
     /* a way it imagined, from its rules: lay one when it has a goal and none is laid */
     if (idx == EX_MAX_ACTS && ON(M_RULES) && ON(M_PLAN)) {
       if (MPLAN_POS >= MPLAN_LEN && MPLAN_WAIT == 0u) {
-        unsigned char acts[8];
-        unsigned n_acts = 0u, w2, j2;
-        for (w2 = 0u; w2 < N_NACT[cur]; w2++) {
-          unsigned k2 = KIND(N_ACT[cur][w2]);
-          if (k2 == 6u || k2 >= 8u || N_FLAG[cur][w2] == 1u) continue;
-          for (j2 = 0u; j2 < n_acts && acts[j2] != k2; j2++) {
+        unsigned short acts[EX_PLAN_ACTS];
+        unsigned n_acts = 0u, w2, j2, pointing = 0u;
+        for (w2 = 0u; w2 < N_NACT[cur] && n_acts < EX_PLAN_ACTS; w2++) {
+          unsigned short c2 = N_ACT[cur][w2];
+          unsigned k2 = KIND(c2);
+          if (k2 >= 8u || N_FLAG[cur][w2] == 1u) continue;
+          if (k2 == 6u) {
+            /* pointing, at each place it can point here: where is part of the act */
+            if (!ON(M_CLICKPLAN) || pointing >= EX_PLAN_POINTS) continue;
+            pointing++;
+            acts[n_acts++] = c2;
+            continue;
           }
-          if (j2 == n_acts) acts[n_acts++] = (unsigned char)k2;
+          c2 = (unsigned short)CODE(k2, 0u, 0u);
+          for (j2 = 0u; j2 < n_acts && acts[j2] != c2; j2++) {
+          }
+          if (j2 == n_acts) acts[n_acts++] = c2;
         }
         MPLAN_LEN = MPLAN_POS = 0u;
         if (mplan_lay(&now, acts, n_acts) == 0u) MPLAN_WAIT = 12u;   /* no way found: not again for a while */
@@ -3118,7 +3178,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       if (MPLAN_POS < MPLAN_LEN) {
         unsigned w2;
         for (w2 = 0u; w2 < N_NACT[cur]; w2++) {
-          if (KIND(N_ACT[cur][w2]) == MPLAN_ACT[MPLAN_POS] && N_FLAG[cur][w2] != 1u) {
+          if (step_matches(N_ACT[cur][w2], MPLAN_ACT[MPLAN_POS]) && N_FLAG[cur][w2] != 1u) {
             idx = w2;
             break;
           }
@@ -3151,7 +3211,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       for (spare = 1; spare >= 0 && idx == EX_MAX_ACTS; spare--)
       for (i = 0u; i < N_NACT[cur]; i++) {
         if (spare && ON(M_RULES) && KIND(N_ACT[cur][i]) != 6u &&
-            ru_changes_nothing(&RULES, KIND(N_ACT[cur][i]), &now)) {
+            (ru_aim((int)PX(N_ACT[cur][i]), (int)PY(N_ACT[cur][i])), ru_changes_nothing(&RULES, KIND(N_ACT[cur][i]), &now))) {
           RULES.spared++;
           continue;
         }
@@ -3226,6 +3286,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
           double bits[EX_MAX_ACTS], best = -1.0;
           unsigned a, keep[EX_MAX_ACTS], nk2 = 0u;
           for (a = 0u; a < nt; a++) {
+            ru_aim((int)PX(N_ACT[cur][tie[a]]), (int)PY(N_ACT[cur][tie[a]]));
             bits[a] = ru_worst_bits(&RULES, KIND(N_ACT[cur][tie[a]]), &now);
             if (bits[a] > best) best = bits[a];
           }
@@ -3506,8 +3567,11 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       unsigned br = 0u, bc = 0u;
       int body = body_colour();
       MPLAN_CHECK = 0;
-      if (outcome != 0 || body < 0 || !body_at(&next, body, &br, &bc) ||
-          br != MPLAN_R[MPLAN_POS] || bc != MPLAN_C[MPLAN_POS]) {
+      int as_imagined;
+      if (outcome != 0) as_imagined = 0;
+      else if (body >= 0 && body_at(&next, body, &br, &bc)) as_imagined = (br == MPLAN_R[MPLAN_POS] && bc == MPLAN_C[MPLAN_POS]);
+      else as_imagined = (steady_hash(&next) == MPLAN_H[MPLAN_POS]);   /* no body: the whole board as imagined */
+      if (!as_imagined) {
         if (outcome == 0) MPLAN_BROKE++;
         MPLAN_LEN = MPLAN_POS = 0u;   /* not where it imagined: the plan was wrong, and is dropped */
       } else if (++MPLAN_POS >= MPLAN_LEN) {
@@ -3529,6 +3593,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       const pl_frame_t *board = &FINAL;
       int seen_board = FINAL_FRESH;
       if (!FINAL_FRESH) {
+        ru_aim((int)PX(code), (int)PY(code));
         ru_imagine(&RULES, kind, &now, &imagined);
         board = &imagined;
       }
@@ -3551,7 +3616,9 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
     }
     if (outcome == 0) {
       /* what happened rules out what did not, and sometimes rules out nothing at all */
-      unsigned cut = ru_saw(&RULES, kind, &now, &next);
+      unsigned cut;
+      ru_aim((int)PX(code), (int)PY(code));
+      cut = ru_saw(&RULES, kind, &now, &next);
       ACTS_LEARNT++;
       if (cut == 0u) ACTS_BARREN++;
     }
@@ -3888,6 +3955,9 @@ void ex_report(FILE *out, const ex_explorer_t *ex) {
             ex->runs_before, ex->runs_before == 1u ? "" : "s", ex->best_before, ex->recalled);
   }
   (void)ru_report(&RULES, out);
+  fprintf(out, "  the planner: asked %u; with no goal %u; goal already met %u; searched %u, imagining %u boards "
+               "(%u new), pointing offered %u times\n",
+          PL_ASKED, PL_NOGOAL, PL_THERE, PL_SEARCHED, PL_BOARDS, PL_DISTINCT, PL_POINTS);
   go_report(&GOALW, out);
   if (STATE_PICKS > 0u) {
     fprintf(out, "  goals it went after, from what ends a level: %u; ways laid to them %u; reached without the "

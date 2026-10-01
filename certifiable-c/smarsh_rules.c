@@ -24,7 +24,9 @@
  * first time a thing moves into something or stays with nothing in its way.
  */
 #define R_BMOVE(dr, dc) (RU_MOVES + 3u + R_MOVE(dr, dc))
-#define R_ALL (2u * RU_MOVES + 3u)
+#define R_BECOME(v) (2u * RU_MOVES + 3u + (v))
+#define R_TOPOINT (2u * RU_MOVES + 3u + RU_BECOMES)
+#define R_ALL (R_TOPOINT + 1u)
 
 static unsigned GROUND;   /* the colour of the biggest thing in the picture being read */
 /*
@@ -92,6 +94,28 @@ static unsigned count(const uint64_t *b) {
     }
   }
   return n;
+}
+
+/* where the act in hand points, and which things it points at */
+static int POINT_X = -1, POINT_Y = -1;
+
+void ru_aim(int x, int y) {
+  POINT_X = x;
+  POINT_Y = y;
+}
+
+/* the act as this thing met it: pointing at it, or pointing at something else */
+static unsigned act_for(unsigned act, const ru_thing_t *t, const pl_frame_t *f) {
+  if (act != RU_POINT) return act;
+  if (POINT_X >= 0 && POINT_Y >= 0 && (unsigned)POINT_Y >= t->top && (unsigned)POINT_Y <= t->bottom &&
+      (unsigned)POINT_X >= t->left && (unsigned)POINT_X <= t->right && (unsigned)POINT_Y < f->h &&
+      (unsigned)POINT_X < f->w && f->c[POINT_Y][POINT_X] == t->colour) {
+    return RU_POINT;
+  }
+  if (POINT_X >= 0 && POINT_Y >= 0 && (unsigned)POINT_Y < f->h && (unsigned)POINT_X < f->w) {
+    return RU_POINT_ELSE + f->c[POINT_Y][POINT_X];   /* a thing of that colour was pointed at */
+  }
+  return RU_POINT_ELSE;
 }
 
 /* the one rule left, if one is */
@@ -194,6 +218,10 @@ static void rule_words(unsigned r, char *out) {
     sprintf(out, "change size");
   } else if (r == R_COLOUR) {
     sprintf(out, "change colour");
+  } else if (r == R_TOPOINT) {
+    sprintf(out, "go to where it was pointed");
+  } else if (r >= R_BECOME(0)) {
+    sprintf(out, "become colour %u", r - R_BECOME(0));
   } else {
     unsigned q = r - RU_MOVES - 3u;
     sprintf(out, "move %d down and %d across unless something is in the way",
@@ -211,6 +239,16 @@ static void seen_words(const uint64_t *could, char *out) {
   for (r = 0u; r < RU_MOVES; r++) {
     if (has(could, r)) {
       sprintf(out, "it moved %d down and %d across", (int)(r / RU_SIDE) - RU_REACH, (int)(r % RU_SIDE) - RU_REACH);
+      return;
+    }
+  }
+  if (has(could, R_TOPOINT)) {
+    sprintf(out, "it went to where I pointed");
+    return;
+  }
+  for (r = 0u; r < RU_BECOMES; r++) {
+    if (has(could, R_BECOME(r))) {
+      sprintf(out, "it turned colour %u", r);
       return;
     }
   }
@@ -268,6 +306,51 @@ static int cond_rule(const ru_world_t *w, unsigned way, unsigned k, unsigned act
   return 1;
 }
 
+/*
+ * Every rule still standing, asked what happens to this thing here: if they all say
+ * the same, that is what happens, though they would part somewhere else. "Moves one
+ * step right" and "moves one step right unless something is in the way" are two rules
+ * until the thing is once in the way, and one answer wherever it is not. Nothing is
+ * weighed: a single standing rule that says otherwise, and it cannot say.
+ */
+#define RU_AGREE_MAX 64u
+
+static int agreed_rule(const uint64_t *left, const ru_thing_t *t, const pl_frame_t *f, unsigned *rule) {
+  unsigned r, n = count(left), kind_of = 0u, arg = 0u, got = 0u;
+  if (n == 0u || n > RU_AGREE_MAX || f == 0) return 0;
+  for (r = 0u; r < R_ALL; r++) {
+    unsigned k, a;
+    if (!has(left, r)) continue;
+    if (r < RU_MOVES) {
+      k = 1u;
+      a = r;
+    } else if (r == R_TOPOINT) {
+      k = 4u;
+      a = r;
+    } else if (r >= R_BECOME(0)) {
+      k = 3u;
+      a = r;
+    } else if (r == R_GONE) {
+      k = 2u;
+      a = 0u;
+    } else if (r == R_SIZE || r == R_COLOUR) {
+      return 0;   /* it changes, but not into anything it can name: it cannot imagine it */
+    } else {
+      unsigned q = r - RU_MOVES - 3u;
+      int dr = (int)(q / RU_SIDE) - RU_REACH, dc = (int)(q % RU_SIDE) - RU_REACH;
+      k = 1u;
+      a = blocked(t, f, dr, dc) ? R_NOTHING : q;   /* here it is, or is not, in the way */
+    }
+    if (got && (k != kind_of || a != arg)) return 0;
+    kind_of = k;
+    arg = a;
+    got = 1u;
+  }
+  if (!got) return 0;
+  *rule = kind_of == 2u ? R_GONE : arg;
+  return 1;
+}
+
 /* the rule of the narrowest way of saying what it is that has settled to one */
 static int settled_rule_at(const ru_world_t *w, const ru_thing_t *t, unsigned act, const pl_frame_t *f,
                            unsigned *rule, int *which) {
@@ -279,6 +362,7 @@ static int settled_rule_at(const ru_world_t *w, const ru_thing_t *t, unsigned ac
     unsigned k = ru_kind_way(t, way);
     if (w->seen[way][k][act] == 0u) continue;
     if (only_rule(w->left[way][k][act], rule)) return 1;
+    if (agreed_rule(w->left[way][k][act], t, f, rule)) return 1;   /* not one rule, but one answer here */
     /* the rule for it is dead: what do the accounts of where it breaks say? */
     if (w->conds_on && f != 0 && w->chain[way][k][act] != 0u && count(w->left[way][k][act]) == 0u) {
       if (!touched) {
@@ -693,7 +777,8 @@ static unsigned cells_now(const ru_thing_t *t, const pl_frame_t *after) {
 }
 
 /* the rules that could be true of what happened to this thing */
-static void happened(const ru_thing_t *t, const pl_frame_t *before, const pl_frame_t *after, uint64_t *ok) {
+static void happened(const ru_thing_t *t, const pl_frame_t *before, const pl_frame_t *after, uint64_t *ok,
+                     int pointed) {
   int dr, dc;
   unsigned n = cells_now(t, after), i;
   for (i = 0u; i < RU_WORDS; i++) ok[i] = 0u;
@@ -721,29 +806,38 @@ static void happened(const ru_thing_t *t, const pl_frame_t *before, const pl_fra
       }
     }
   }
+  if (pointed && POINT_X >= 0 && POINT_Y >= 0) {
+    /* the whole of it, now centred where the act pointed */
+    int dr = POINT_Y - (int)t->row, dc = POINT_X - (int)t->col;
+    if ((dr != 0 || dc != 0) && moved_cells(t, after, dr, dc)) put(ok, R_TOPOINT);
+  }
   if (!still_there(t, after)) put(ok, R_GONE);
   if (n != t->cells && n > 0u) put(ok, R_SIZE);
   {
-    unsigned r, c, other = PL_COLOURS, one = 1u;
+    unsigned r, c, other = PL_COLOURS, one = 1u, all = 1u;
     for (r = t->top; r <= t->bottom && one; r++) {
       for (c = t->left; c <= t->right && one; c++) {
         if (before->c[r][c] != t->colour) continue;
-        if (after->c[r][c] == t->colour) continue;
+        if (after->c[r][c] == t->colour) {
+          all = 0u;
+          continue;
+        }
         if (other == PL_COLOURS) other = after->c[r][c];
         else if (other != after->c[r][c]) one = 0u;
       }
     }
-    if (one && other != PL_COLOURS) put(ok, R_COLOUR);
+    if (one && all && other != PL_COLOURS) put(ok, R_BECOME(other));   /* all of it is that colour now */
+    else if (one && other != PL_COLOURS) put(ok, R_COLOUR);            /* part of it is */
   }
 }
 
 /* ---- reading what an act did ------------------------------------------------------ */
 
 /* what was learned from one act, without keeping the picture: used live and in replay */
-static unsigned ru_learn(ru_world_t *w, unsigned act, const pl_frame_t *before, const pl_frame_t *after) {
+static unsigned ru_learn(ru_world_t *w, unsigned act_in, const pl_frame_t *before, const pl_frame_t *after) {
   static ru_thing_t things[RU_MAX_THINGS];
   unsigned n = ru_things(before, things, RU_MAX_THINGS), i, j, cut = 0u, most = 0u;
-  if (act >= RU_ACTS) return 0u;
+  if (act_in >= RU_ACTS) return 0u;
   for (i = 0u; i < n; i++) {
     if (things[i].cells > most) {
       most = things[i].cells;
@@ -773,13 +867,14 @@ static unsigned ru_learn(ru_world_t *w, unsigned act, const pl_frame_t *before, 
   w->passable = PASSABLE;
   for (i = 0u; i < n; i++) {
     unsigned rule, was, way;
+    unsigned act = act_for(act_in, &things[i], before);   /* pointed at, or not */
     uint64_t could[RU_WORDS];
     ru_ev_t *e = &w->ev[w->ev_next];
     uint16_t touch;
     beside(&things[i], before, e->ahead);
     touch = (uint16_t)(e->ahead[0] | e->ahead[1] | e->ahead[2] | e->ahead[3]);
     crop_of(&things[i], before, e->crop);
-    happened(&things[i], before, after, could);
+    happened(&things[i], before, after, could, act_in == RU_POINT);
     /* the sighting, kept: the newest, over the oldest */
     for (way = 0u; way < RU_WAYS; way++) {
       unsigned k0 = ru_kind_way(&things[i], way);
@@ -929,7 +1024,9 @@ static unsigned biggest_group(const uint64_t *left, const ru_thing_t *t, const p
       int dr = 0, dc = 0, off = 0;
       bits &= bits - 1u;
       m++;
-      if (r >= RU_MOVES + 3u) {   /* moves unless something is in the way: which it is, is known now */
+      if (r >= R_BECOME(0)) {
+        off = 16 + (int)(r - R_BECOME(0));   /* becomes a colour: each its own look */
+      } else if (r >= RU_MOVES + 3u) {   /* moves unless something is in the way: which it is, is known now */
         unsigned q = r - RU_MOVES - 3u;
         dr = (int)(q / RU_SIDE) - RU_REACH;
         dc = (int)(q % RU_SIDE) - RU_REACH;
@@ -963,11 +1060,11 @@ static unsigned biggest_group(const uint64_t *left, const ru_thing_t *t, const p
   return best;
 }
 
-double ru_worst_bits(const ru_world_t *w, unsigned act, const pl_frame_t *now) {
+double ru_worst_bits(const ru_world_t *w, unsigned act_in, const pl_frame_t *now) {
   static ru_thing_t things[RU_MAX_THINGS];
   unsigned n, i, way;
   double bits = 0.0;
-  if (act >= RU_ACTS) return 0.0;
+  if (act_in >= RU_ACTS) return 0.0;
   n = ru_things(now, things, RU_MAX_THINGS);
   PASSABLE = w->passable;
   for (i = 0u; i < n; i++) {
@@ -979,7 +1076,7 @@ double ru_worst_bits(const ru_world_t *w, unsigned act, const pl_frame_t *now) {
        * over those would have it favour the acts it has already asked, which is the
        * opposite of asking.
        */
-      big = biggest_group(w->left[way][k][act], &things[i], now, &standing);
+      big = biggest_group(w->left[way][k][act_for(act_in, &things[i], now)], &things[i], now, &standing);
       if (standing > 1u && big > 0u) bits += log2((double)standing) - log2((double)big);
     }
   }
@@ -1036,26 +1133,27 @@ void ru_replay(ru_world_t *w) {
 
 /* ---- saying and imagining ------------------------------------------------------------ */
 
-int ru_say(ru_world_t *w, unsigned act, const pl_frame_t *now, pl_frame_t *out) {
+int ru_say(ru_world_t *w, unsigned act_in, const pl_frame_t *now, pl_frame_t *out) {
   static ru_thing_t things[RU_MAX_THINGS];
   unsigned n = ru_things(now, things, RU_MAX_THINGS), i;
-  if (act >= RU_ACTS) return 0;
+  if (act_in >= RU_ACTS) return 0;
   for (i = 0u; i < n; i++) {
     unsigned rule;
-    if (!settled_rule(w, &things[i], act, now, &rule) || (rule >= RU_MOVES && rule < RU_MOVES + 3u)) return 0;
+    if (!settled_rule(w, &things[i], act_for(act_in, &things[i], now), now, &rule) ||
+        (rule >= RU_MOVES && rule < RU_MOVES + 3u)) return 0;
   }
-  ru_imagine(w, act, now, out);
+  ru_imagine(w, act_in, now, out);
   return 1;
 }
 
-int ru_changes_nothing(const ru_world_t *w, unsigned act, const pl_frame_t *now) {
+int ru_changes_nothing(const ru_world_t *w, unsigned act_in, const pl_frame_t *now) {
   static ru_thing_t things[RU_MAX_THINGS];
   unsigned n, i;
-  if (act >= RU_ACTS) return 0;
+  if (act_in >= RU_ACTS) return 0;
   n = ru_things(now, things, RU_MAX_THINGS);
   for (i = 0u; i < n; i++) {
     unsigned k = ru_kind(&things[i]), rule, a2, stirs = 0u, met = 0u;
-    if (settled_rule(w, &things[i], act, now, &rule)) {
+    if (settled_rule(w, &things[i], act_for(act_in, &things[i], now), now, &rule)) {
       if (rule == R_NOTHING) continue;
       return 0;
     }
@@ -1069,12 +1167,13 @@ int ru_changes_nothing(const ru_world_t *w, unsigned act, const pl_frame_t *now)
   return n > 0u;
 }
 
-void ru_imagine(const ru_world_t *w, unsigned act, const pl_frame_t *now, pl_frame_t *out) {
+void ru_imagine(const ru_world_t *w, unsigned act_in, const pl_frame_t *now, pl_frame_t *out) {
   static ru_thing_t things[RU_MAX_THINGS];
   static unsigned rule_of[RU_MAX_THINGS];
+  static int to_r[RU_MAX_THINGS], to_c[RU_MAX_THINGS];
   unsigned n = ru_things(now, things, RU_MAX_THINGS), i, r, c, ground = 0u, most = 0u;
   *out = *now;
-  if (act >= RU_ACTS) return;
+  if (act_in >= RU_ACTS) return;
   for (i = 0u; i < n; i++) {
     if (things[i].cells > most) {
       most = things[i].cells;
@@ -1085,11 +1184,31 @@ void ru_imagine(const ru_world_t *w, unsigned act, const pl_frame_t *now, pl_fra
   PASSABLE = w->passable;
   for (i = 0u; i < n; i++) {
     unsigned rule = R_NOTHING;
-    if (!settled_rule(w, &things[i], act, now, &rule)) {
+    if (!settled_rule(w, &things[i], act_for(act_in, &things[i], now), now, &rule)) {
       rule = R_NOTHING;   /* unsettled: imagined where it is -- a hypothesis, checked on the way */
     }
     if (rule == R_SIZE || rule == R_COLOUR) rule = R_NOTHING;   /* it changes, but it cannot say into what */
-    if (rule >= RU_MOVES + 3u) {   /* moves unless something is in the way */
+    if (rule == R_TOPOINT) {
+      /* it goes to where the act points: a move of its own length each time */
+      if (POINT_X < 0 || POINT_Y < 0) {
+        rule_of[i] = R_NOTHING;
+        continue;
+      }
+      to_r[i] = POINT_Y - (int)things[i].row;
+      to_c[i] = POINT_X - (int)things[i].col;
+      rule = R_TOPOINT;
+    } else if (rule >= R_BECOME(0) && rule < R_ALL) {
+      /* it becomes a colour it can name: painted where it stands */
+      unsigned v = rule - R_BECOME(0);
+      for (r = things[i].top; r <= things[i].bottom; r++) {
+        for (c = things[i].left; c <= things[i].right; c++) {
+          if (now->c[r][c] == things[i].colour) out->c[r][c] = (unsigned char)v;
+        }
+      }
+      rule_of[i] = R_NOTHING;
+      continue;
+    }
+    if (rule >= RU_MOVES + 3u && rule < R_BECOME(0)) {   /* moves unless something is in the way */
       int dr = (int)((rule - RU_MOVES - 3u) / RU_SIDE) - RU_REACH, dc = (int)((rule - RU_MOVES - 3u) % RU_SIDE) - RU_REACH;
       rule = blocked(&things[i], now, dr, dc) ? R_NOTHING : R_MOVE(dr, dc);
     }
@@ -1103,9 +1222,14 @@ void ru_imagine(const ru_world_t *w, unsigned act, const pl_frame_t *now, pl_fra
   }
   for (i = 0u; i < n; i++) {
     int dr, dc;
-    if (rule_of[i] == R_NOTHING || rule_of[i] >= RU_MOVES) continue;
-    dr = (int)(rule_of[i] / RU_SIDE) - RU_REACH;
-    dc = (int)(rule_of[i] % RU_SIDE) - RU_REACH;
+    if (rule_of[i] == R_TOPOINT) {
+      dr = to_r[i];
+      dc = to_c[i];
+    } else {
+      if (rule_of[i] == R_NOTHING || rule_of[i] >= RU_MOVES) continue;
+      dr = (int)(rule_of[i] / RU_SIDE) - RU_REACH;
+      dc = (int)(rule_of[i] % RU_SIDE) - RU_REACH;
+    }
     for (r = things[i].top; r <= things[i].bottom; r++) {
       for (c = things[i].left; c <= things[i].right; c++) {
         int nr = (int)r + dr, nc = (int)c + dc;
