@@ -21,11 +21,11 @@
  */
 typedef enum {
   M_RESTLESS, M_CLOCK, M_STOOD, M_PANELS, M_NEAR, M_THEORY, M_SKIP,
-  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_CURIOUS, M_PLAN, M_WONAIM, M_RULES, M_GOALS, M_ASKBEST, M_CONDS, M_STATE, M_EARLY, M_CARRY, M_CLICKPLAN, M_COUNT
+  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_CURIOUS, M_PLAN, M_WONAIM, M_RULES, M_GOALS, M_ASKBEST, M_CONDS, M_STATE, M_EARLY, M_CARRY, M_CLICKPLAN, M_LIFEPLAN, M_COUNT
 } ex_mech_t;
 static const char *MECH_NAME[M_COUNT] = {
   "restless", "clock", "stood", "panels", "near", "theory", "skip",
-  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach", "curious", "plan", "wonaim", "rules", "goals", "askbest", "conds", "state", "early", "carry", "clickplan"
+  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach", "curious", "plan", "wonaim", "rules", "goals", "askbest", "conds", "state", "early", "carry", "clickplan", "lifeplan"
 };
 static unsigned OFF_MASK;
 #define ON(m) ((OFF_MASK & (1u << (m))) == 0u)
@@ -36,7 +36,7 @@ static void read_off(void) {
   static const unsigned by_self[M_COUNT] = {
     SELF_OFF_RESTLESS, SELF_OFF_CLOCK, SELF_OFF_STOOD, SELF_OFF_PANELS, SELF_OFF_NEAR, SELF_OFF_THEORY,
     SELF_OFF_SKIP, SELF_OFF_DEATHS, SELF_OFF_UNMASK, SELF_OFF_WINDOW, SELF_OFF_REDRAW, SELF_OFF_RECALL,
-    SELF_OFF_REPLAY, SELF_OFF_REACH, SELF_OFF_CURIOUS, SELF_OFF_PLAN, SELF_OFF_WONAIM, SELF_OFF_RULES, SELF_OFF_GOALS, SELF_OFF_ASKBEST, SELF_OFF_CONDS, SELF_OFF_STATE, SELF_OFF_EARLY, SELF_OFF_CARRY, SELF_OFF_CLICKPLAN
+    SELF_OFF_REPLAY, SELF_OFF_REACH, SELF_OFF_CURIOUS, SELF_OFF_PLAN, SELF_OFF_WONAIM, SELF_OFF_RULES, SELF_OFF_GOALS, SELF_OFF_ASKBEST, SELF_OFF_CONDS, SELF_OFF_STATE, SELF_OFF_EARLY, SELF_OFF_CARRY, SELF_OFF_CLICKPLAN, SELF_OFF_LIFEPLAN
   };
   OFF_MASK = 0u;
   for (m = 0u; m < M_COUNT; m++) {
@@ -2072,6 +2072,18 @@ static unsigned GOALS_SET, GOALS_RULED_OUT, GOALS_REACHED;
 static unsigned ASKED_SHARP;      /* times it chose the act that asks the most */
 
 /*
+ * What it actually did in this life, act by act, said the way a plan is said (the
+ * kind of act, and for a point the colour and rank of what was pointed at). Its map of
+ * situations is drawn again whenever it finds more of the picture ticks by itself, and
+ * then no way can be traced on the map from where the level began to where it was won,
+ * though it walked one. So the walk itself is kept: when a level is won and the map has
+ * no way to show, what it did is the plan carried into the next.
+ */
+#define EX_LIFE 255u
+static unsigned char LIFE_KIND[EX_LIFE], LIFE_COLOUR[EX_LIFE], LIFE_RANK[EX_LIFE];
+static unsigned LIFE_N, LIFE_OVER, PLANS_FROM_LIFE;
+
+/*
  * What ends a level, said of the board (smarsh_goal.h), and the one goal among those
  * still standing that it is going after now.
  */
@@ -2867,6 +2879,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
   ru_begin(&RULES);
   go_begin(&GOALW);
   go_level(&GOALW, &now, 0u);
+  LIFE_N = LIFE_OVER = PLANS_FROM_LIFE = 0u;
   kinds_load();
   FINAL_FRESH = 0;
   STATE_HAVE = 0;
@@ -3562,6 +3575,14 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
     TOUCHED_EVER |= (uint16_t)(OBS.touch | OBS.onto);
     LAST_CODE = (unsigned short)code;
     PLAN_BLOCKED = 0u;
+    if (LIFE_N < EX_LIFE) {
+      LIFE_KIND[LIFE_N] = (unsigned char)kind;
+      LIFE_COLOUR[LIFE_N] = N_PCOL[cur][idx];
+      LIFE_RANK[LIFE_N] = N_PRANK[cur][idx];
+      LIFE_N++;
+    } else {
+      LIFE_OVER = 1u;   /* longer than it keeps: no plan from this life */
+    }
     outcome = g->act(g, kind, PX(code), PY(code), &next);
     if (MPLAN_CHECK) {
       unsigned br = 0u, bc = 0u;
@@ -3718,7 +3739,20 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
            where I won from, then the winning step: that is the plan to try next */
         unsigned len = route(start, cur), i, n = 0u;
         char a1[160];
-        if (len + 1u <= 256u && (len > 0u || cur == start)) {
+        if (getenv("CIALL_WINDBG")) fprintf(stderr, "WINDBG level %u won: start node %d, won from node %d, route %u steps, situations %u\n", ex->levels_done, start, cur, len, (unsigned)N_COUNT);
+        if (!(len > 0u || cur == start) && ON(M_LIFEPLAN) && !LIFE_OVER && LIFE_N > 0u) {
+          /* the map shows no way here from where the level began: what it did, then, is the plan */
+          for (i = 0u; i < LIFE_N; i++) {
+            ex->plan_kind[i] = LIFE_KIND[i];
+            ex->plan_colour[i] = LIFE_COLOUR[i];
+            ex->plan_rank[i] = LIFE_RANK[i];
+          }
+          ex->plan_len = LIFE_N;
+          PLANS_FROM_LIFE++;
+          sprintf(a1, "my map shows no way from the start to here, but I walked one: the %u acts I did. I keep those",
+                  LIFE_N);
+          think(ex, "what is the least I needed to win?", a1);
+        } else if (len + 1u <= 256u && (len > 0u || cur == start)) {
           for (i = 0u; i < len; i++) {
             int node = PATH_NODE[i];
             unsigned ai = PATH[i];
@@ -3772,6 +3806,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
       goals_begin(&now);
       ru_level(&RULES, ex->levels_done);   /* a level is one of the facts a rule can break at */
       go_level(&GOALW, &now, ex->levels_done);
+      LIFE_N = LIFE_OVER = 0u;
       PLAN_LEN = 0u;
       puzzles_begin();
       recalling = ON(M_RECALL) && ex->levels_done < EX_MAX_LEVELS && KNOWN_LEN[ex->levels_done] > 0u;
@@ -3800,6 +3835,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
     }
     if (outcome == 3) {
       /* it died and the level began again: that way is marked, not walked again */
+      LIFE_N = LIFE_OVER = 0u;
       if (N_NEXT[cur][idx] == EX_NONE && N_UNTRIED[cur] > 0u) N_UNTRIED[cur]--;
       N_FLAG[cur][idx] = 1u;
       N_NEXT[cur][idx] = start;

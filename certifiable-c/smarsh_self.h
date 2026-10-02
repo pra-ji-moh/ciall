@@ -71,6 +71,7 @@
 #define SELF_OFF_EARLY 1   /* self: 0 1 */
 #define SELF_OFF_CARRY 0   /* self: 0 1 */
 #define SELF_OFF_CLICKPLAN 0   /* self: 0 1 */
+#define SELF_OFF_LIFEPLAN 0   /* self: 0 1 */
 /* act on the best theory it has, before an ending has proved it */
 #define SELF_BOLD 1   /* self: 0 1 */
 
