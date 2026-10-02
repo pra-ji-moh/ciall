@@ -1,0 +1,409 @@
+diff --git a/certifiable-c/smarsh_explore.c b/certifiable-c/smarsh_explore.c
+index 817c2dd..749269c 100644
+--- a/certifiable-c/smarsh_explore.c
++++ b/certifiable-c/smarsh_explore.c
+@@ -21,11 +21,11 @@
+  */
+ typedef enum {
+   M_RESTLESS, M_CLOCK, M_STOOD, M_PANELS, M_NEAR, M_THEORY, M_SKIP,
+-  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_CURIOUS, M_PLAN, M_WONAIM, M_RULES, M_GOALS, M_ASKBEST, M_CONDS, M_STATE, M_EARLY, M_CARRY, M_CLICKPLAN, M_COUNT
++  M_DEATHS, M_UNMASK, M_WINDOW, M_REDRAW, M_RECALL, M_REPLAY, M_REACH, M_CURIOUS, M_PLAN, M_WONAIM, M_RULES, M_GOALS, M_ASKBEST, M_CONDS, M_STATE, M_EARLY, M_CARRY, M_CLICKPLAN, M_CLOCKDEATH, M_CLOCKTHINGS, M_CLICKSKIP, M_SETASIDE, M_COUNT
+ } ex_mech_t;
+ static const char *MECH_NAME[M_COUNT] = {
+   "restless", "clock", "stood", "panels", "near", "theory", "skip",
+-  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach", "curious", "plan", "wonaim", "rules", "goals", "askbest", "conds", "state", "early", "carry", "clickplan"
++  "deaths", "unmask", "window", "redraw", "recall", "replay", "reach", "curious", "plan", "wonaim", "rules", "goals", "askbest", "conds", "state", "early", "carry", "clickplan", "clockdeath", "clockthings", "clickskip", "setaside"
+ };
+ static unsigned OFF_MASK;
+ #define ON(m) ((OFF_MASK & (1u << (m))) == 0u)
+@@ -36,7 +36,7 @@ static void read_off(void) {
+   static const unsigned by_self[M_COUNT] = {
+     SELF_OFF_RESTLESS, SELF_OFF_CLOCK, SELF_OFF_STOOD, SELF_OFF_PANELS, SELF_OFF_NEAR, SELF_OFF_THEORY,
+     SELF_OFF_SKIP, SELF_OFF_DEATHS, SELF_OFF_UNMASK, SELF_OFF_WINDOW, SELF_OFF_REDRAW, SELF_OFF_RECALL,
+-    SELF_OFF_REPLAY, SELF_OFF_REACH, SELF_OFF_CURIOUS, SELF_OFF_PLAN, SELF_OFF_WONAIM, SELF_OFF_RULES, SELF_OFF_GOALS, SELF_OFF_ASKBEST, SELF_OFF_CONDS, SELF_OFF_STATE, SELF_OFF_EARLY, SELF_OFF_CARRY, SELF_OFF_CLICKPLAN
++    SELF_OFF_REPLAY, SELF_OFF_REACH, SELF_OFF_CURIOUS, SELF_OFF_PLAN, SELF_OFF_WONAIM, SELF_OFF_RULES, SELF_OFF_GOALS, SELF_OFF_ASKBEST, SELF_OFF_CONDS, SELF_OFF_STATE, SELF_OFF_EARLY, SELF_OFF_CARRY, SELF_OFF_CLICKPLAN, SELF_OFF_CLOCKDEATH, SELF_OFF_CLOCKTHINGS, SELF_OFF_CLICKSKIP, SELF_OFF_SETASIDE
+   };
+   OFF_MASK = 0u;
+   for (m = 0u; m < M_COUNT; m++) {
+@@ -2070,6 +2070,20 @@ static unsigned GOAL_KIND;                        /* 0: none; 1: be against a co
+ static unsigned GOAL_COLOUR, GOAL_SPENT;
+ static unsigned GOALS_SET, GOALS_RULED_OUT, GOALS_REACHED;
+ static unsigned ASKED_SHARP;      /* times it chose the act that asks the most */
++static unsigned SPENT_WALKING, SPENT_NEW, SPENT_NOTHING, SPENT_BACK;   /* where its acts went */
++static unsigned SET_ASIDE;   /* acts its rules said change nothing, not spent while anything else was untried */
++
++/*
++ * Why it died. Two accounts: the act it had just done killed it, or the level simply
++ * ends after so many acts whatever is done (a budget of moves, a bar that runs down).
++ * A death that comes at the same count of acts as the death before it rules out the
++ * first: the act was not to blame, and the way it had marked as fatal is opened again.
++ */
++static unsigned LIFE_BEGAN;                 /* acts taken when this life began */
++static unsigned LAST_DEATH_AFTER;           /* how many acts the last life lasted; 0: none yet */
++static int LAST_DEATH_NODE, LAST_DEATH_IDX; /* the way it marked fatal at that death */
++static unsigned DEATHS_BY_CLOCK, DEATHS_BY_ACT, LIFE_BUDGET;
++static unsigned LIFE_LONGEST;               /* the longest any life in this level has lasted */
+ 
+ /*
+  * What ends a level, said of the board (smarsh_goal.h), and the one goal among those
+@@ -2873,6 +2887,7 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
+   STATE_SPENT = STATE_PICKS = STATE_PLANS = STATE_ENDED_AFTER = STATE_REACHED_NOT = STATE_TRIGGERED = 0u;
+   STATE_PLANNED_AT = 0u;
+   ru_conds(&RULES, ON(M_CONDS));   /* when a rule dies, look for where it breaks */
++  ru_clock(ON(M_CLOCKTHINGS) ? (const unsigned char (*)[PL_SIZE])MASK : 0);   /* what ticks by itself is no act's doing */
+   {
+     /* where it says, in words, why it believes what it does, and why it stopped */
+     static FILE *reasons;
+@@ -2915,6 +2930,13 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
+   MPLAN_LAID = MPLAN_WALKED = MPLAN_BROKE = MPLAN_REACHED = MPLAN_CURIOUS = 0u;
+   GOALS_SET = GOALS_RULED_OUT = GOALS_REACHED = 0u;
+   ASKED_SHARP = 0u;
++  SPENT_WALKING = SPENT_NEW = SPENT_NOTHING = SPENT_BACK = 0u;
++  SET_ASIDE = 0u;
++  LIFE_BEGAN = 0u;
++  LAST_DEATH_AFTER = 0u;
++  LAST_DEATH_NODE = LAST_DEATH_IDX = -1;
++  DEATHS_BY_CLOCK = DEATHS_BY_ACT = LIFE_BUDGET = 0u;
++  LIFE_LONGEST = 0u;
+   ACTS_LEARNT = ACTS_BARREN = 0u;
+   SHARP_BITS = 0.0;
+   TOUCHED_EVER = 0u;
+@@ -3210,9 +3232,23 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
+        */
+       for (spare = 1; spare >= 0 && idx == EX_MAX_ACTS; spare--)
+       for (i = 0u; i < N_NACT[cur]; i++) {
+-        if (spare && ON(M_RULES) && KIND(N_ACT[cur][i]) != 6u &&
++        /* pointing too, now that the rules know what was pointed at (they did not, before) */
++        if (spare && ON(M_RULES) && (KIND(N_ACT[cur][i]) != 6u || ON(M_CLICKSKIP)) &&
+             (ru_aim((int)PX(N_ACT[cur][i]), (int)PY(N_ACT[cur][i])), ru_changes_nothing(&RULES, KIND(N_ACT[cur][i]), &now))) {
+           RULES.spared++;
++          /*
++           * Passing over it here is not saving it: with nothing else untried in this
++           * place it would be done on the next round all the same. So it is set aside,
++           * as a way that leads nowhere new, until nothing untried is left anywhere;
++           * then predictions are taken back and tried, since a prediction is not a proof.
++           */
++          if (ON(M_SETASIDE) && N_NEXT[cur][i] == EX_NONE && N_FLAG[cur][i] == 0u) {
++            N_NEXT[cur][i] = cur;
++            N_FLAG[cur][i] = EX_FLAG_PREDICTED;
++            if (N_UNTRIED[cur] > 0u) N_UNTRIED[cur]--;
++            ex->predicted++;
++            SET_ASIDE++;
++          }
+           continue;
+         }
+         if (N_NEXT[cur][i] == EX_NONE && N_FLAG[cur][i] == 0u) {
+@@ -3772,6 +3808,10 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
+       goals_begin(&now);
+       ru_level(&RULES, ex->levels_done);   /* a level is one of the facts a rule can break at */
+       go_level(&GOALW, &now, ex->levels_done);
++      LIFE_BEGAN = ex->actions;
++      LAST_DEATH_AFTER = 0u;
++      LIFE_LONGEST = 0u;
++      LAST_DEATH_NODE = LAST_DEATH_IDX = -1;
+       PLAN_LEN = 0u;
+       puzzles_begin();
+       recalling = ON(M_RECALL) && ex->levels_done < EX_MAX_LEVELS && KNOWN_LEN[ex->levels_done] > 0u;
+@@ -3800,8 +3840,35 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
+     }
+     if (outcome == 3) {
+       /* it died and the level began again: that way is marked, not walked again */
++      unsigned lasted = ex->actions - LIFE_BEGAN;
++      /* "it ends after N acts" is ruled out by any life in this level that lasted longer than N */
++      int by_clock = ON(M_CLOCKDEATH) && LAST_DEATH_AFTER != 0u && lasted == LAST_DEATH_AFTER &&
++                     lasted >= LIFE_LONGEST;
++      if (lasted > LIFE_LONGEST) LIFE_LONGEST = lasted;
+       if (N_NEXT[cur][idx] == EX_NONE && N_UNTRIED[cur] > 0u) N_UNTRIED[cur]--;
+-      N_FLAG[cur][idx] = 1u;
++      if (by_clock) {
++        /*
++         * As many acts as the life before: it was not this act, it was the count. This
++         * way is left open, and the way blamed for the death before it is opened again.
++         */
++        DEATHS_BY_CLOCK++;
++        LIFE_BUDGET = lasted;
++        if (LAST_DEATH_NODE >= 0 && N_FLAG[LAST_DEATH_NODE][LAST_DEATH_IDX] == 1u) {
++          N_FLAG[LAST_DEATH_NODE][LAST_DEATH_IDX] = 0u;
++          DEATHS_BY_CLOCK++;
++          DEATHS_BY_ACT--;
++          think(ex, "I died after as many acts as last time: was it what I did?",
++                "no: this level ends after that many acts, whatever I do. The ways I blamed are open again");
++        }
++        LAST_DEATH_NODE = LAST_DEATH_IDX = -1;
++      } else {
++        N_FLAG[cur][idx] = 1u;
++        DEATHS_BY_ACT++;
++        LAST_DEATH_NODE = cur;
++        LAST_DEATH_IDX = (int)idx;
++      }
++      LAST_DEATH_AFTER = lasted;
++      LIFE_BEGAN = ex->actions;
+       N_NEXT[cur][idx] = start;
+       ex->deaths++;
+       replaying = 0;
+@@ -3851,7 +3918,16 @@ sm_status_t ex_play(ex_explorer_t *ex, ex_game_t *g, const pl_frame_t *first, un
+       continue;
+     }
+     learn_moving(kind, &now, &next);
+-    nb = node_of(ex, g, &next);
++    {
++      /* what kind of act this was: new ground, or ground it knew */
++      unsigned had = N_COUNT;
++      int walked = (N_NEXT[cur][idx] != EX_NONE);
++      nb = node_of(ex, g, &next);
++      if (walked) SPENT_WALKING++;            /* an act it had already done here: going somewhere */
++      else if (N_COUNT > had) SPENT_NEW++;    /* tried for the first time, and it led somewhere new */
++      else if (nb == cur) SPENT_NOTHING++;    /* tried for the first time, and nothing changed */
++      else SPENT_BACK++;                      /* tried for the first time, and it led where it had been */
++    }
+     if (kind < 8u && ex->kind_tried[kind] == 1u) {
+       char q[64], a1[160];
+       unsigned r, c, n_changed = 0u;
+@@ -3955,6 +4031,12 @@ void ex_report(FILE *out, const ex_explorer_t *ex) {
+             ex->runs_before, ex->runs_before == 1u ? "" : "s", ex->best_before, ex->recalled);
+   }
+   (void)ru_report(&RULES, out);
++  if (DEATHS_BY_CLOCK + DEATHS_BY_ACT > 0u) {
++    fprintf(out, "  why it died: %u times the level ran out (it ends after %u acts whatever is done), %u times "
++                 "blamed on the act it had just done\n", DEATHS_BY_CLOCK, LIFE_BUDGET, DEATHS_BY_ACT);
++  }
++  fprintf(out, "  where its acts went: %u walking ground it knew; first tries: %u led somewhere new, %u changed "
++               "nothing, %u led back where it had been\n", SPENT_WALKING, SPENT_NEW, SPENT_NOTHING, SPENT_BACK);
+   fprintf(out, "  the planner: asked %u; with no goal %u; goal already met %u; searched %u, imagining %u boards "
+                "(%u new), pointing offered %u times\n",
+           PL_ASKED, PL_NOGOAL, PL_THERE, PL_SEARCHED, PL_BOARDS, PL_DISTINCT, PL_POINTS);
+diff --git a/certifiable-c/smarsh_rules.c b/certifiable-c/smarsh_rules.c
+index 13e1753..fc060dc 100644
+--- a/certifiable-c/smarsh_rules.c
++++ b/certifiable-c/smarsh_rules.c
+@@ -118,6 +118,29 @@ static unsigned act_for(unsigned act, const ru_thing_t *t, const pl_frame_t *f)
+   return RU_POINT_ELSE;
+ }
+ 
++static const unsigned char (*CLOCK)[PL_SIZE];   /* cells that tick by themselves, or none */
++
++void ru_clock(const unsigned char (*mask)[PL_SIZE]) {
++  CLOCK = mask;
++}
++
++/* is this thing the clock's: made of ticking cells, or lying against them? */
++static int clock_thing(const ru_thing_t *t, const pl_frame_t *f) {
++  unsigned r, c;
++  if (CLOCK == 0) return 0;
++  for (r = t->top; r <= t->bottom; r++) {
++    for (c = t->left; c <= t->right; c++) {
++      if (f->c[r][c] != t->colour) continue;
++      if (CLOCK[r][c]) return 1;
++      if (r > 0u && CLOCK[r - 1u][c]) return 1;
++      if (c > 0u && CLOCK[r][c - 1u]) return 1;
++      if (r + 1u < f->h && CLOCK[r + 1u][c]) return 1;
++      if (c + 1u < f->w && CLOCK[r][c + 1u]) return 1;
++    }
++  }
++  return 0;
++}
++
+ /* the one rule left, if one is */
+ static int only_rule(const uint64_t *b, unsigned *rule) {
+   unsigned i;
+@@ -313,11 +336,15 @@ static int cond_rule(const ru_world_t *w, unsigned way, unsigned k, unsigned act
+  * until the thing is once in the way, and one answer wherever it is not. Nothing is
+  * weighed: a single standing rule that says otherwise, and it cannot say.
+  */
+-#define RU_AGREE_MAX 64u
+-
+ static int agreed_rule(const uint64_t *left, const ru_thing_t *t, const pl_frame_t *f, unsigned *rule) {
+   unsigned r, n = count(left), kind_of = 0u, arg = 0u, got = 0u;
+-  if (n == 0u || n > RU_AGREE_MAX || f == 0) return 0;
++  int gathered = 0;
++  /*
++   * However many stand: a wide thing hemmed in on every side keeps every "moves unless
++   * something is in the way" rule it began with, and they all say it stays. The first
++   * two that differ end the asking, so a set that does not agree costs almost nothing.
++   */
++  if (n == 0u || f == 0) return 0;
+   for (r = 0u; r < R_ALL; r++) {
+     unsigned k, a;
+     if (!has(left, r)) continue;
+@@ -339,7 +366,11 @@ static int agreed_rule(const uint64_t *left, const ru_thing_t *t, const pl_frame
+       unsigned q = r - RU_MOVES - 3u;
+       int dr = (int)(q / RU_SIDE) - RU_REACH, dc = (int)(q % RU_SIDE) - RU_REACH;
+       k = 1u;
+-      a = blocked(t, f, dr, dc) ? R_NOTHING : q;   /* here it is, or is not, in the way */
++      if (!gathered) {
++        gather(t, f);   /* its cells, once, for every direction asked about */
++        gathered = 1;
++      }
++      a = blocked_cells(t, f, dr, dc) ? R_NOTHING : q;   /* here it is, or is not, in the way */
+     }
+     if (got && (k != kind_of || a != arg)) return 0;
+     kind_of = k;
+@@ -869,6 +900,7 @@ static unsigned ru_learn(ru_world_t *w, unsigned act_in, const pl_frame_t *befor
+     unsigned rule, was, way;
+     unsigned act = act_for(act_in, &things[i], before);   /* pointed at, or not */
+     uint64_t could[RU_WORDS];
++    if (clock_thing(&things[i], before)) continue;        /* the clock's doing, not the act's */
+     ru_ev_t *e = &w->ev[w->ev_next];
+     uint16_t touch;
+     beside(&things[i], before, e->ahead);
+@@ -1076,6 +1108,7 @@ double ru_worst_bits(const ru_world_t *w, unsigned act_in, const pl_frame_t *now
+        * over those would have it favour the acts it has already asked, which is the
+        * opposite of asking.
+        */
++      if (clock_thing(&things[i], now)) continue;
+       big = biggest_group(w->left[way][k][act_for(act_in, &things[i], now)], &things[i], now, &standing);
+       if (standing > 1u && big > 0u) bits += log2((double)standing) - log2((double)big);
+     }
+@@ -1139,6 +1172,7 @@ int ru_say(ru_world_t *w, unsigned act_in, const pl_frame_t *now, pl_frame_t *ou
+   if (act_in >= RU_ACTS) return 0;
+   for (i = 0u; i < n; i++) {
+     unsigned rule;
++    if (clock_thing(&things[i], now)) continue;
+     if (!settled_rule(w, &things[i], act_for(act_in, &things[i], now), now, &rule) ||
+         (rule >= RU_MOVES && rule < RU_MOVES + 3u)) return 0;
+   }
+@@ -1146,24 +1180,76 @@ int ru_say(ru_world_t *w, unsigned act_in, const pl_frame_t *now, pl_frame_t *ou
+   return 1;
+ }
+ 
++static unsigned WHY_NOT[4], WHY_COLOUR[PL_COLOURS];
++static unsigned BLOCK_SHOWN;
++
+ int ru_changes_nothing(const ru_world_t *w, unsigned act_in, const pl_frame_t *now) {
+   static ru_thing_t things[RU_MAX_THINGS];
+-  unsigned n, i;
++  unsigned n, i, ground_cells = 0u;
+   if (act_in >= RU_ACTS) return 0;
+   n = ru_things(now, things, RU_MAX_THINGS);
++  {
++    /* the ground is what things move over: what happens to it is only what happens to them */
++    unsigned most = 0u;
++    for (i = 0u; i < n; i++) {
++      if (things[i].cells > most) most = things[i].cells;
++    }
++    ground_cells = most;
++  }
+   for (i = 0u; i < n; i++) {
+     unsigned k = ru_kind(&things[i]), rule, a2, stirs = 0u, met = 0u;
++    if (clock_thing(&things[i], now)) continue;   /* it changes whatever is done: not this act's doing */
++    if (things[i].cells == ground_cells) continue;   /* the ground itself */
+     if (settled_rule(w, &things[i], act_for(act_in, &things[i], now), now, &rule)) {
+       if (rule == R_NOTHING) continue;
++      WHY_NOT[0]++;   /* something it knows this act changes */
+       return 0;
+     }
+-    for (a2 = 0u; a2 < RU_ACTS; a2++) {
+-      if (w->seen[0][k][a2] == 0u) continue;
+-      met++;
+-      if (!has(w->left[0][k][a2], R_NOTHING) || count(w->left[0][k][a2]) > 1u) stirs++;
++    /*
++     * Not met under this act. By the narrowest way of saying what it is that it HAS been
++     * met under any act: if every rule standing, for every act it was met under, agrees
++     * that it stays where it is, it is taken to stay under this one too (and that is
++     * taken back, and tried, when nothing else is left to try).
++     */
++    {
++      unsigned way2;
++      for (way2 = 0u; way2 < RU_WAYS && met == 0u; way2++) {
++        unsigned kk = ru_kind_way(&things[i], way2);
++        for (a2 = 0u; a2 < RU_ACTS; a2++) {
++          unsigned r2 = 0u;
++          if (w->seen[way2][kk][a2] == 0u) continue;
++          met++;
++          if (!(only_rule(w->left[way2][kk][a2], &r2) || agreed_rule(w->left[way2][kk][a2], &things[i], now, &r2)) ||
++              r2 != R_NOTHING) stirs++;
++        }
++      }
++    }
++    (void)k;
++    if (met == 0u || stirs > 0u) {
++      if (getenv("CIALL_BLOCKDBG") && BLOCK_SHOWN < 6u && met > 0u) {
++        unsigned way3, a3;
++        BLOCK_SHOWN++;
++        fprintf(stderr, "BLOCK act %u: colour %u, %u cells, rows %u-%u cols %u-%u\n", act_in, things[i].colour,
++                things[i].cells, things[i].top, things[i].bottom, things[i].left, things[i].right);
++        for (way3 = 0u; way3 < RU_WAYS; way3++) {
++          unsigned kk = ru_kind_way(&things[i], way3);
++          for (a3 = 0u; a3 < RU_ACTS; a3++) {
++            char words[160];
++            unsigned r3 = 0u, c3 = count(w->left[way3][kk][a3]);
++            if (w->seen[way3][kk][a3] == 0u) continue;
++            if (only_rule(w->left[way3][kk][a3], &r3) || agreed_rule(w->left[way3][kk][a3], &things[i], now, &r3)) rule_words(r3, words);
++            else sprintf(words, "CANNOT SAY");
++            fprintf(stderr, "    way %u act %2u: met %u times, %u rules standing -> %s\n", way3, a3,
++                    w->seen[way3][kk][a3], c3, words);
++          }
++        }
++      }
++      WHY_NOT[met == 0u ? 1 : 2]++;   /* a thing it has never met; a thing it cannot say stays still */
++      WHY_COLOUR[things[i].colour]++;
++      return 0;
+     }
+-    if (met == 0u || stirs > 0u) return 0;
+   }
++  WHY_NOT[3]++;
+   return n > 0u;
+ }
+ 
+@@ -1184,6 +1270,10 @@ void ru_imagine(const ru_world_t *w, unsigned act_in, const pl_frame_t *now, pl_
+   PASSABLE = w->passable;
+   for (i = 0u; i < n; i++) {
+     unsigned rule = R_NOTHING;
++    if (clock_thing(&things[i], now)) {
++      rule_of[i] = R_NOTHING;   /* the clock's: left as it stands */
++      continue;
++    }
+     if (!settled_rule(w, &things[i], act_for(act_in, &things[i], now), now, &rule)) {
+       rule = R_NOTHING;   /* unsettled: imagined where it is -- a hypothesis, checked on the way */
+     }
+@@ -1288,6 +1378,16 @@ sm_status_t ru_report(const ru_world_t *w, FILE *out) {
+             w->killed[RU_F_AHEAD], w->killed[RU_F_CYCLE], alive);
+     fprintf(out, "  said from those accounts: %u, right %u\n", w->cond_said, w->cond_right);
+   }
++  {
++    unsigned c2;
++    fprintf(out, "  asked whether an act changes nothing: yes %u; no, it knows it changes something %u; could not "
++                 "say, for a thing never met %u, for a thing it cannot say stays still %u (by colour:",
++            WHY_NOT[3], WHY_NOT[0], WHY_NOT[1], WHY_NOT[2]);
++    for (c2 = 0u; c2 < PL_COLOURS; c2++) {
++      if (WHY_COLOUR[c2]) fprintf(out, " %u:%u", c2, WHY_COLOUR[c2]);
++    }
++    fprintf(out, ")\n");
++  }
+   fprintf(out, "  pictures kept to put a wider language to: %u%s\n", w->logged,
+           w->lost > 0u ? " (and some let go)" : "");
+   fprintf(out, "  what each act does to each kind of thing: %u of %u settled to one rule (%.0f bits left); "
+diff --git a/certifiable-c/smarsh_rules.h b/certifiable-c/smarsh_rules.h
+index 4f9f5d5..4e75009 100644
+--- a/certifiable-c/smarsh_rules.h
++++ b/certifiable-c/smarsh_rules.h
+@@ -201,6 +201,14 @@ double ru_worst_bits(const ru_world_t *w, unsigned act, const pl_frame_t *now);
+ /* where the act about to be learned from or imagined points, if it points: column x, row y */
+ void ru_aim(int x, int y);
+ 
++/*
++ * The cells that tick by themselves (a clock, a bar that runs down). A thing made of
++ * such cells, or lying against them, changes whatever is done: that is the clock's
++ * doing and no act's, so it is left out of what acts are held to do. Without this every
++ * act "changes something", and no act can ever be said to change nothing.
++ */
++void ru_clock(const unsigned char (*mask)[PL_SIZE]);
++
+ /* times the language could not account for what happened at all */
+ unsigned ru_no_words(const ru_world_t *w);
+ 
+diff --git a/certifiable-c/smarsh_self.h b/certifiable-c/smarsh_self.h
+index 01eee20..c627072 100644
+--- a/certifiable-c/smarsh_self.h
++++ b/certifiable-c/smarsh_self.h
+@@ -71,6 +71,10 @@
+ #define SELF_OFF_EARLY 1   /* self: 0 1 */
+ #define SELF_OFF_CARRY 0   /* self: 0 1 */
+ #define SELF_OFF_CLICKPLAN 0   /* self: 0 1 */
++#define SELF_OFF_CLOCKDEATH 1   /* self: 0 1 */
++#define SELF_OFF_CLOCKTHINGS 1   /* self: 0 1 */
++#define SELF_OFF_CLICKSKIP 1   /* self: 0 1 */
++#define SELF_OFF_SETASIDE 1   /* self: 0 1 */
+ /* act on the best theory it has, before an ending has proved it */
+ #define SELF_BOLD 1   /* self: 0 1 */
+ 

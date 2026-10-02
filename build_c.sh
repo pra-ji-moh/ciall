@@ -110,6 +110,8 @@ build test_grow $C smarsh_core.c smarsh_play.c arc_worldgen.c smarsh_grow.c test
 build grow $C smarsh_core.c smarsh_play.c arc_worldgen.c smarsh_grow.c grow.c
 build test_ending $C smarsh_core.c smarsh_ending.c test_ending.c && run_test test_ending $C
 build test_guess $C smarsh_core.c smarsh_interval.c smarsh_space.c smarsh_frame.c smarsh_guess.c test_guess.c && run_test test_guess $C
+# the core with no domain in it, on three systems that have nothing to do with one another
+build test_general $C smarsh_core.c smarsh_general.c test_general.c && run_test test_general $C
 build self_map $C self_map.c
 build test_explore $C smarsh_core.c smarsh_interval.c smarsh_space.c smarsh_frame.c smarsh_guess.c smarsh_ending.c smarsh_rules.c smarsh_goal.c smarsh_explore.c test_explore.c && run_test test_explore $C
 build play_arc $C smarsh_core.c smarsh_interval.c smarsh_space.c smarsh_frame.c smarsh_guess.c smarsh_ending.c smarsh_rules.c smarsh_goal.c smarsh_explore.c play_arc.c
