@@ -2779,7 +2779,14 @@ sm_status_t ex_load(ex_explorer_t *ex, FILE *in) {
     } else if (strcmp(word, "best") == 0 && fscanf(in, "%u", &a) == 1) {
       BEST_BEFORE = a;
     } else if (strcmp(word, "mask") == 0 && fscanf(in, "%u %u %u", &a, &b, &c2) == 3) {
-      if (a < PL_SIZE && b < PL_SIZE) {
+      /*
+       * Which cells tick by themselves is not carried from run to run any more. Kept over
+       * many runs the list only grows, and it comes to cover cells the level turns on:
+       * a child that began by not looking at them could no longer win levels it wins
+       * when it comes to the game with nothing (sc25, r11l). It finds what ticks afresh
+       * each run, in a few acts. CIALL_KEEPMASKS=1 carries the list as before.
+       */
+      if (a < PL_SIZE && b < PL_SIZE && getenv("CIALL_KEEPMASKS") != 0) {
         MASK[a][b] = 1u;
         FROM_RESTLESS[a][b] = (unsigned char)(c2 != 0u);
       }
