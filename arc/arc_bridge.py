@@ -248,6 +248,42 @@ def families_elsewhere(mind_dir, game):
     return sorted(names)
 
 
+def _levels_of(text):
+    """levels completed, from the OBS line of what was sent to the child"""
+    for line in text.split("\n"):
+        if line.startswith("OBS "):
+            parts = line.split()
+            return int(parts[2]), int(parts[1])
+    return 0, 0
+
+
+def _load_solutions(folder, short):
+    import json
+    try:
+        with open(os.path.join(folder, short + ".json"), encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return {}
+
+
+def _save_solutions(folder, short, found):
+    """keep, for each level, the shortest sequence of acts known to win it from its start"""
+    import json
+    if not found:
+        return
+    os.makedirs(folder, exist_ok=True)
+    have = _load_solutions(folder, short)
+    for k, seq in found.items():
+        if k not in have or len(seq) < len(have[k]):
+            have[k] = seq
+    with open(os.path.join(folder, short + ".json"), "w", encoding="utf-8") as f:
+        json.dump(have, f)
+
+
+def _step(game, a):
+    return game.step(a[0], a[1], a[2]) if a[0] == 6 else game.step(a[0])
+
+
 def carry(game, label, budget, journal, mind_dir=None):
     # the child's account goes to a file as it is written, not a pipe read at the end:
     # a pipe that nobody reads fills up, and then the child waits to write while this
@@ -268,10 +304,41 @@ def carry(game, label, budget, journal, mind_dir=None):
         if os.environ.get(folder):
             os.makedirs(os.environ[folder], exist_ok=True)
             env[var] = os.path.join(os.environ[folder], short + (".jsonl" if var == "CIALL_DEADDUMP" else ".txt"))
-    child = subprocess.Popen([CHILD, str(budget)], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
-                             stderr=account, text=True, cwd=ROOT, env=env)
     obs = game.reset()
     base = getattr(game, "baseline", [])
+    # Practice: every winning life is kept, act by act, as the way to win that level from
+    # its start (CIALL_SOLUTIONS_DIR); and a practised run plays the ways it knows first
+    # (CIALL_PREFIX_DIR), level by level, before the child takes over where they end.
+    sol_dir = os.environ.get("CIALL_SOLUTIONS_DIR")
+    pre_dir = os.environ.get("CIALL_PREFIX_DIR")
+    level, _ = _levels_of(obs)
+    life, found, spent = [], {}, {}
+    replayed = 0
+    if pre_dir:
+        known = _load_solutions(pre_dir, short)
+        while str(level + 1) in known and replayed < budget:
+            seq, began = known[str(level + 1)], level
+            for a in seq:
+                obs = _step(game, a)
+                replayed += 1
+                spent[began] = spent.get(began, 0) + 1
+                life.append(list(a))
+                if _levels_of(obs)[0] > began or _levels_of(obs)[1] != 0:
+                    break
+            now, state = _levels_of(obs)
+            if now > began:
+                found[str(began + 1)] = life
+                life, level = [], now
+                if state != 0:   # the game is won, or over
+                    break
+            else:
+                obs = game.reset()   # the way it knew did not win here: the level from its start, for the child
+                level, _ = _levels_of(obs)
+                life = []
+                break
+    # the child plays what is left of the budget, from where the ways it knew ended
+    child = subprocess.Popen([CHILD, str(max(1, budget - replayed))], stdin=subprocess.PIPE, stdout=subprocess.PIPE,
+                             stderr=account, text=True, cwd=ROOT, env=env)
     child.stdin.write("BASE %d %s\n" % (len(base), " ".join(str(b) for b in base)))
     child.stdin.write(obs)
     child.stdin.flush()
@@ -287,13 +354,22 @@ def carry(game, label, budget, journal, mind_dir=None):
             break
         if cmd[0] == "RESET":
             obs = game.reset()
+            life = []   # the level begins again: a new life
         elif cmd[0] == "ACT" and len(cmd) == 2:
             obs = game.step(int(cmd[1]))
+            life.append([int(cmd[1]), 0, 0])
         elif cmd[0] == "ACT" and len(cmd) == 4:
             obs = game.step(int(cmd[1]), int(cmd[2]), int(cmd[3]))
+            life.append([int(cmd[1]), int(cmd[2]), int(cmd[3])])
         else:
             break
         actions += 1
+        if cmd[0] != "RESET":
+            spent[level] = spent.get(level, 0) + 1
+        now, _ = _levels_of(obs)
+        if now > level:
+            found[str(level + 1)] = life   # the life that won this level, from its start
+            life, level = [], now
         if trace is not None:   # every move and what came of it, for looking back
             trace.write("%s %s\n" % (line.strip(), obs.split("\n", 1)[0]))
         try:
@@ -311,8 +387,17 @@ def carry(game, label, budget, journal, mind_dir=None):
     account.seek(0)
     report = account.read()
     account.close()
+    if sol_dir:
+        _save_solutions(sol_dir, short, found)
+    if pre_dir:
+        # the levels as they were played, counted here: the ways replayed, then the child
+        parts = ["level %d took it %d, a person %d" % (k + 1, spent.get(k, 0), base[k])
+                 for k in range(level) if k < len(base)]
+        report += "  [practised] played first %d acts it knew\n" % replayed
+        report += "  against a person: %s;\n" % "; ".join(parts) if parts else ""
+        report += "  levels finished: %d of %d\n" % (level, len(base))
     stamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-    entry = "\n%s  %s  (%d actions carried)\n%s" % (stamp, label, actions, report)
+    entry = "\n%s  %s  (%d actions carried)\n%s" % (stamp, label, actions + replayed, report)
     journal.write(entry)
     journal.flush()
     print(entry)
