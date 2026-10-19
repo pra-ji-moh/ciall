@@ -441,7 +441,14 @@ def main(argv):
         # waiting, which is nearly all the time a run takes; played where they stand the
         # child is not kept waiting at all. CIALL_ONLINE=1 uses the network, for a run
         # that is to be reported to ARC Prize; otherwise the games are played here.
-        mode = arc_agi.OperationMode.ONLINE if os.environ.get("CIALL_ONLINE") else arc_agi.OperationMode.OFFLINE
+        # Offline only where the games are actually here. They are not kept in the
+        # repository, so a fresh checkout (the cloud) has none, and playing "offline"
+        # there plays nothing: that is what stopped the cloud child playing any game for
+        # four weeks from 2026-09-24. Without them it goes over the network, as before.
+        games_dir = os.path.join(here, "environment_files")
+        games_here = os.path.isdir(games_dir) and any(os.scandir(games_dir))
+        mode = (arc_agi.OperationMode.OFFLINE if games_here and not os.environ.get("CIALL_ONLINE")
+                else arc_agi.OperationMode.ONLINE)
         arcade = arc_agi.Arcade(environments_dir=os.path.join(here, "environment_files"),
                                 recordings_dir=os.path.join(here, "recordings"),
                                 operation_mode=mode)
