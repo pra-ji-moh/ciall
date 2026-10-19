@@ -616,3 +616,6 @@
   from version 71 (one of 9 still standing) it made version 81: combined 71 and 74
   development games, two seeds averaged: 11.0 levels, 0.786% (its parent: 14.5, 0.715%)
   kept in the archive (still standing); the child in use stays as it is
+
+2026-10-19 17:47  (building itself: one generation)
+  from version 81 it made a version it had already made (combined 81 and 61); it tries again next time
