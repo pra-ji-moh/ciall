@@ -142,9 +142,18 @@ def shorten(games, tries=400):
         if not ways:
             continue
         new_game = make_game(g)
+        done_path = os.path.join(SOL, g + ".shortened")
+        try:
+            with open(done_path, encoding="utf-8") as f:
+                done = json.load(f)
+        except (OSError, ValueError):
+            done = {}
         for lv in sorted(ways, key=int):
             before = len(ways[lv])
+            if done.get(lv) == before:
+                continue   # shortened already, and nothing shorter has been found since
             ways[lv], used = shorten_level(new_game, ways, int(lv), tries)
+            done[lv] = len(ways[lv])
             print("  %s level %s: %d acts -> %d (%d tries on the game)" % (g, lv, before, len(ways[lv]), used), flush=True)
         # merge with what is there now: collection may have added levels meanwhile
         try:
@@ -157,6 +166,8 @@ def shorten(games, tries=400):
                 now[lv] = seq
         with open(os.path.join(SOL, g + ".json"), "w", encoding="utf-8") as f:
             json.dump(now, f)
+        with open(done_path, "w", encoding="utf-8") as f:
+            json.dump(done, f)
 
 
 if __name__ == "__main__":
@@ -168,3 +179,11 @@ if __name__ == "__main__":
         shorten(sys.argv[2:] or sum(GROUPS, []))
     elif what == "summary":
         summary("known")
+    elif what == "loop":
+        rounds = int(sys.argv[2]) if len(sys.argv) > 2 else 4
+        budget = int(sys.argv[3]) if len(sys.argv) > 3 else 8000
+        first = int(sys.argv[4]) if len(sys.argv) > 4 else 2
+        for r in range(rounds):
+            collect(1, budget, first + r)
+            shorten(sum(GROUPS, []))
+            summary("after round and shortening (seed %d)" % (first + r))
