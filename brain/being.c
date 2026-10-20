@@ -4,7 +4,8 @@
  *   being [genome.txt] [dir]
  *
  * Grows its brain from the genome, then lives the womb, the senses coming
- * online in the order a fetus's do, and writes into dir:
+ * online in the order a fetus's do, is born, and lives its first months
+ * (serve and return: the mobile), and writes into dir:
  *
  *   diary.txt      its life so far, week by week, in its own words
  *   brain_map.txt  everything its brain is, and what each stage did to it
@@ -27,6 +28,7 @@ static ob_smell_stats_t SMELL;
 static ob_heart_stats_t HEART;
 static ob_vision_stats_t VISION;
 static ob_reflex_stats_t REFLEX;
+static ob_mobile_stats_t MOBILE, YOKED;
 
 /* dir/name, if it fits; 0 if it does not */
 static int join(char *out, size_t cap, const char *dir, const char *name) {
@@ -114,6 +116,30 @@ int main(int argc, char **argv) {
           REFLEX.mouth_before, REFLEX.mouth_after, REFLEX.body_before, REFLEX.body_after);
 
   fprintf(diary, "week 40     Born.\n");
+
+  /* infancy: serve and return */
+  {
+    static ob_brain_t twin;
+    static unsigned char sched[8u * 200u / 8u + 8u];
+    ob_mobile_stats_t yoked;
+    unsigned k;
+    double mid = 0.0, mid_y = 0.0;
+    memset(sched, 0, sizeof sched);
+    ob_infant_mobile(&BRAIN, 8u, 200u, 1, sched, &MOBILE);
+    /* a twin, from the same genes, answered at the same moments but not by its own kicks */
+    ob_grow(&twin, &g);
+    ob_infant_mobile(&twin, 8u, 200u, 0, sched, &yoked);
+    for (k = 2u; k <= 6u; k++) {
+      mid += MOBILE.kicks[k] / 5.0;
+      mid_y += yoked.kicks[k] / 5.0;
+    }
+    YOKED = yoked;
+    fprintf(diary, "month 3     A mobile hangs over me; a ribbon ties it to my leg. At first I kick %u times in a\n"
+                   "            while. When my kicks move it and her voice answers, I kick %.0f times. My twin, who\n"
+                   "            sees and hears the same but not because of anything it does, kicks %.0f. When it stops\n"
+                   "            answering, I kick %u. The world answers me.\n",
+            MOBILE.kicks[0], mid, mid_y, MOBILE.kicks[7]);
+  }
   fclose(diary);
 
   map = open_in(dir, "brain_map.txt", "w");
@@ -124,6 +150,7 @@ int main(int argc, char **argv) {
     ob_write_heart(&HEART, map);
     ob_write_vision(&VISION, map);
     ob_write_reflex(&REFLEX, map);
+    ob_write_mobile(&MOBILE, &YOKED, map);
     fclose(map);
   }
   picture(dir, "plate.png", ob_draw_plate);

@@ -79,6 +79,15 @@ go on after birth from exactly where it was born.
 **Stage 2, infancy**: birth into its worlds; serve and return with a
 caregiver; overgrowth then pruning; myelination; ripples and replay in sleep.
 
+- Serve and return: started, as Rovee-Collier's mobile. Its leg kicks of
+  itself; when a kick moves the mobile and the mother's voice answers, the
+  tegmentum's dopamine teaches the basal ganglia's connections to the kick
+  centre (learned from nothing: a critic for how good the place is, what each
+  choice adds, and a drive that can hold movement back as well as let it go).
+  It kicks about ten times more; a yoked twin, answered as often but not by its
+  own kicks, stays at its baseline; when the answers stop, kicking falls back.
+  The world answers it, and it can tell.
+
 **Stage 3, childhood**: the mind rebuilt on the brain's maps; the parietal
 lobe's numbers and symbols; the two hemispheres (exact and associative) and
 the corpus callosum between them; the limbic loop (the amygdala regulating how

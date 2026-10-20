@@ -408,6 +408,10 @@ static const ob_rule_t RULES[] = {
     {"frontal layer 5 to brainstem", OB_BRAINSTEM, OB_FRONTAL, ANY, L5, -1, SIDE_SAME, MAP_WIDE, 2.0},
     {"cortex layer 5 to basal ganglia", OB_BASAL_GANGLIA, OB_FRONTAL, ANY, L5, -1, SIDE_SAME, MAP_TOPO, 3.0},
     {"cortex layer 5 to basal ganglia", OB_BASAL_GANGLIA, OB_PARIETAL, ANY, L5, -1, SIDE_SAME, MAP_WIDE, 1.5},
+    /* action: the basal ganglia's output reaches the brainstem's movement
+       centres, choosing which movements happen more; learned, from nothing,
+       when dopamine says a movement brought something good */
+    {"action: basal ganglia to brainstem", OB_BRAINSTEM, OB_BASAL_GANGLIA, ANY, ANY, -1, SIDE_SAME, MAP_WIDE, 2.0},
     {"basal ganglia to thalamus (frontal nucleus)", OB_THALAMUS, OB_BASAL_GANGLIA, ANY, ANY, 0, SIDE_SAME, MAP_TOPO,
      4.0},
     {"cortex layer 5 to cerebellum (crossing)", OB_CEREBELLUM, OB_FRONTAL, ANY, L5, -1, SIDE_OTHER, MAP_WIDE, 2.0},
@@ -620,7 +624,8 @@ void ob_stage_wiring(ob_brain_t *b) {
       b->syn[b->n_syn].rule = (unsigned char)chosen;
       b->syn[b->n_syn].weight =
           (short)((100 + (int)(rnd() % 900u)) * (b->neuron[from].inhibitory ? -1 : 1));
-      if (strncmp(rule->name, "prediction:", 11) == 0 || strncmp(rule->name, "timing:", 7) == 0)
+      if (strncmp(rule->name, "prediction:", 11) == 0 || strncmp(rule->name, "timing:", 7) == 0 ||
+          strncmp(rule->name, "action:", 7) == 0)
         b->syn[b->n_syn].weight = 0;   /* learned, from nothing */
       b->n_syn++;
       b->rule_count[chosen]++;

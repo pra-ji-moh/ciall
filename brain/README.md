@@ -121,6 +121,20 @@ like any other connection.
 
 `test_womb.c` checks all of it (17 checks).
 
+## Infancy: serve and return
+
+After birth, the newborn lies under a mobile tied to its leg (Rovee-Collier's
+experiment with three-month-olds). Its leg kicks of itself; when a kick moves
+the mobile and the mother's voice answers, the tegmentum's dopamine teaches the
+basal ganglia's new connections to the brainstem's kick centre (they start at
+nothing). The dopamine signal is what the moment brought, against how good the
+place is anyway (a critic) and what this choice adds (one value for kicking,
+one for holding still); the basal ganglia can hold a movement back as well as
+let it go. It kicks about ten times more than at first; a yoked twin, answered
+at the same moments but not by its own kicks, stays at its baseline; when the
+answers stop, kicking falls back. It can tell the world answering it from the
+world simply doing things.
+
 ## The newborn
 
 ```

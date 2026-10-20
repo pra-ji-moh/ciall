@@ -98,11 +98,11 @@ callosum 0.15
    layer 6 540, layer 5 540, layer 4 540, layer 3 540, layer 2 540; inhibitory (migrated in) 674
 
 ## projections: connections grown by each rule, before any pruning
-      22505  column: layer 4 to layers 2/3
+      22457  column: layer 4 to layers 2/3
       27160  column: layers 2/3 to layer 5
       26920  column: layer 5 to layer 6
        8408  column: layer 6 to layer 4
-      12604  column: within the upper layers
+      12587  column: within the upper layers
        2555  retina to thalamus (visual nucleus)
        2507  retina to thalamus (visual nucleus)
        2064  retina to tectum
@@ -116,15 +116,16 @@ callosum 0.15
        1741  frontoparietal: frontal to parietal
        1007  temporal to frontal
         817  parietal and temporal
-       8037  corpus callosum
-      21438  motor: frontal layer 5 to spinal cord
-      26634  frontal layer 5 to brainstem
+       8076  corpus callosum
+      21721  motor: frontal layer 5 to spinal cord
+      17556  frontal layer 5 to brainstem
       27409  cortex layer 5 to basal ganglia
       13822  cortex layer 5 to basal ganglia
+      17553  action: basal ganglia to brainstem
        5860  basal ganglia to thalamus (frontal nucleus)
-       8574  cortex layer 5 to cerebellum (crossing)
-       8707  cortex layer 5 to cerebellum (crossing)
-       4219  touch to cerebellum
+       8593  cortex layer 5 to cerebellum (crossing)
+       8737  cortex layer 5 to cerebellum (crossing)
+       4211  touch to cerebellum
        4326  cerebellum to thalamus (frontal band, crossing)
        2919  to hippocampus from temporal
        1859  to hippocampus from parietal
@@ -136,7 +137,7 @@ callosum 0.15
         985  amygdala to frontal
         222  frontal to amygdala (regulation)
       14007  amygdala to hypothalamus
-      26166  hypothalamus to brainstem
+      17691  hypothalamus to brainstem
         827  smell: olfactory bulb to amygdala
         996  smell: olfactory bulb to hippocampus
         292  hearing: cochlea to tectum
@@ -144,42 +145,42 @@ callosum 0.15
         147  hearing: cochlea to tectum
         185  hearing: cochlea to tectum
        6669  hearing: tectum to thalamus (hearing nucleus)
-       4262  hearing: tectum to cerebellum
+       4237  hearing: tectum to cerebellum
        4461  timing: cerebellum to thalamus (hearing nucleus)
        1748  tectum to thalamus (visual nucleus)
        9159  tegmentum to basal ganglia (dopamine)
         510  tegmentum to frontal (dopamine)
-       9995  brainstem to spinal cord (motor)
-      11346  efference copy: brainstem to cerebellum
+       9816  brainstem to spinal cord (motor)
+      11335  efference copy: brainstem to cerebellum
        4443  prediction: cerebellum to thalamus (touch nucleus)
-      10968  spinal reflex: sensory to motor
+      10842  spinal reflex: sensory to motor
 
-## in all: 13260 neurons, 395981 connections
+## in all: 13260 neurons, 395938 connections
 
 ## the womb: touch, day by day
 ## share of touch still felt after the cerebellum's prediction: its own (from its twitches),
 ## the mother's (from outside), and hand-to-face; and the parietal response per unit of touch
    day   own    mother's  hand-to-face   parietal own / mother's
-     0   0.771  1.000     0.950          0.322 / 0.424
-     1   0.662  1.000     0.811          0.298 / 0.428
-     2   0.659  1.000     0.778          0.303 / 0.421
-     3   0.653  1.000     0.875          0.311 / 0.446
-     4   0.661  1.000     0.693          0.310 / 0.418
-     5   0.648  1.000     0.785          0.302 / 0.430
-     6   0.655  1.000     0.782          0.310 / 0.441
-     7   0.665  1.000     0.762          0.311 / 0.418
-     8   0.636  1.000     0.810          0.307 / 0.429
-     9   0.642  1.000     0.783          0.309 / 0.429
-    10   0.658  1.000     0.739          0.315 / 0.435
-    11   0.653  1.000     0.821          0.315 / 0.421
-    12   0.651  1.000     0.781          0.315 / 0.430
-    13   0.636  1.000     0.768          0.308 / 0.412
-    14   0.648  1.000     0.777          0.313 / 0.436
-    15   0.660  1.000     0.756          0.317 / 0.438
-    16   0.655  1.000     0.759          0.315 / 0.429
-    17   0.639  1.000     0.788          0.310 / 0.433
-    18   0.642  1.000     0.682          0.314 / 0.443
-    19   0.649  1.000     0.744          0.314 / 0.431
+     0   0.776  1.000     0.950          0.321 / 0.424
+     1   0.662  1.000     0.814          0.294 / 0.428
+     2   0.662  1.000     0.791          0.303 / 0.421
+     3   0.656  1.000     0.879          0.309 / 0.446
+     4   0.658  1.000     0.696          0.311 / 0.418
+     5   0.650  1.000     0.790          0.301 / 0.430
+     6   0.652  1.000     0.789          0.310 / 0.441
+     7   0.666  1.000     0.772          0.313 / 0.418
+     8   0.634  1.000     0.817          0.308 / 0.429
+     9   0.639  1.000     0.791          0.308 / 0.429
+    10   0.658  1.000     0.742          0.312 / 0.435
+    11   0.652  1.000     0.823          0.315 / 0.421
+    12   0.651  1.000     0.783          0.316 / 0.430
+    13   0.635  1.000     0.774          0.304 / 0.412
+    14   0.645  1.000     0.782          0.309 / 0.436
+    15   0.661  1.000     0.769          0.319 / 0.438
+    16   0.653  1.000     0.767          0.316 / 0.429
+    17   0.642  1.000     0.802          0.309 / 0.433
+    18   0.641  1.000     0.686          0.315 / 0.443
+    19   0.648  1.000     0.750          0.317 / 0.431
    it now feels 65% of its own touch and 100% of the mother's: what it learned to cancel is "me"
 
 ## the womb: smell, good or bad for me
@@ -203,5 +204,17 @@ callosum 0.15
    the eyes' connections to the thalamus: 2419 kept, 2643 pruned
 
 ## the womb: the reflex loop, practised
-   lips touched, mouth muscles' drive: 3.56 before, 19.52 after (practised: hand to mouth)
-   middle of the body touched, its muscles' drive: 2.70 before, 2.94 after (never paired)
+   lips touched, mouth muscles' drive: 3.43 before, 18.98 after (practised: hand to mouth)
+   middle of the body touched, its muscles' drive: 2.73 before, 2.97 after (never paired)
+
+## infancy: serve and return (the mobile)
+## kicks in each session: first a baseline, last an extinction; between, the world answers
+   session   its own kicks answered   a yoked twin (answered, not by its kicks)
+      0         10                       17
+      1        102                       15
+      2        138                       18
+      3        124                       14
+      4        132                       11
+      5        127                        7
+      6        125                       21
+      7         60                       18

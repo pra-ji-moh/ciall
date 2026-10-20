@@ -689,6 +689,101 @@ void ob_write_reflex(const ob_reflex_stats_t *st, FILE *out) {
           st->body_before, st->body_after);
 }
 
+/* ---- infancy: serve and return, the mobile -------------------------------------- */
+
+static unsigned ACTION_RULE = 0xFFu;
+
+static int leg_kick_centre(const ob_neuron_t *n) {
+  return n->region == OB_BRAINSTEM && n->side == OB_LEFT && n->sx >= 0.75f && n->sx < 0.95f;
+}
+
+void ob_infant_mobile(ob_brain_t *b, unsigned sessions, unsigned moments_per_session, int contingent,
+                      unsigned char *schedule, ob_mobile_stats_t *out) {
+  unsigned se, t, i, s, k, moment = 0u;
+  double place = 0.0, adds_kick = 0.0, adds_still = 0.0;   /* the critic, and what each choice adds */
+  if (b == 0 || out == 0) return;
+  memset(out, 0, sizeof(*out));
+  if (sessions > 32u) sessions = 32u;
+  RNG = b->genes.seed * 2246822507u + (contingent ? 19u : 23u);
+  prepare(b);
+  for (k = 0u; k < 64u; k++) {
+    if (strncmp(ob_rule_name(k), "action:", 7) == 0) ACTION_RULE = k;
+  }
+  for (se = 0u; se < sessions; se++) {
+    int answering = se > 0u && se + 1u < sessions;
+    for (t = 0u; t < moments_per_session; t++, moment++) {
+      double drive = 0.0, p_kick, reward;
+      int kick, answer;
+      unsigned n_centre = 0u;
+      /* the scene: the basal ganglia hear it (here, a context of their neurons
+         that the room with the mobile lights up) */
+      for (i = 0u; i < b->n_neurons; i++) {
+        const ob_neuron_t *n = &b->neuron[i];
+        ACT1[i] = (n->region == OB_BASAL_GANGLIA && n->side == OB_LEFT && n->sy < 0.5f) ? 1.0f : 0.0f;
+      }
+      /* what reaches the kick centre from the basal ganglia makes a kick likelier */
+      for (i = 0u; i < b->n_neurons; i++) {
+        const ob_neuron_t *n = &b->neuron[i];
+        if (!leg_kick_centre(n)) continue;
+        n_centre++;
+        for (s = n->syn_first; s < n->syn_first + n->syn_n; s++) {
+          if (b->syn[s].rule == ACTION_RULE) drive += W[s] * ACT1[b->syn[s].from];
+        }
+      }
+      drive = n_centre ? drive / n_centre : 0.0;
+      /* spontaneous kicks, and what learning adds (or takes away) */
+      p_kick = drive >= 0.0 ? 0.08 + 0.6 * (1.0 - exp(-drive)) : 0.08 * exp(drive);
+      kick = unit() < p_kick;
+      if (kick) out->kicks[se]++;
+      /* the world answers: the mobile moves, the mother's voice */
+      if (contingent) answer = answering && kick;
+      else answer = answering && schedule != 0 && (schedule[moment / 8u] >> (moment % 8u) & 1u);
+      if (contingent && schedule != 0 && answer) schedule[moment / 8u] |= (unsigned char)(1u << (moment % 8u));
+      if (answer) out->answered[se]++;
+      /* dopamine: what this moment brought, against what is expected of this
+         choice here: how good this place is anyway (the critic, learned every
+         moment), plus what this choice adds to it (learned only from moments
+         of this choice: one for kicking, one for holding still). Where the world
+         answers whatever it does, choices add nothing and nothing is learned;
+         where it answers kicks, kicks add; where it stops, kicks disappoint. */
+      reward = answer ? 1.0 : 0.0;
+      {
+        double delta = reward - place - (kick ? adds_kick : adds_still);
+        if (kick) adds_kick += 0.05 * delta;
+        else adds_still += 0.05 * delta;
+        place += 0.1 * (reward - place);
+        for (i = 0u; i < b->n_neurons; i++) {
+          const ob_neuron_t *n = &b->neuron[i];
+          if (!leg_kick_centre(n)) continue;
+          for (s = n->syn_first; s < n->syn_first + n->syn_n; s++) {
+            if (b->syn[s].rule != ACTION_RULE || ACT1[b->syn[s].from] <= 0.0f) continue;
+            W[s] += (float)((kick ? 0.02 : -0.02) * delta * ACT1[b->syn[s].from]);
+            /* the basal ganglia's output can hold a movement back as well as let
+               it go: below its spontaneous rate as well as above */
+            if (W[s] < -3.0f) W[s] = -3.0f;
+            if (W[s] > 3.0f) W[s] = 3.0f;
+          }
+        }
+      }
+    }
+  }
+  out->sessions = sessions;
+  for (s = 0u; s < b->n_syn; s++) {
+    if (b->syn[s].rule == ACTION_RULE) b->syn[s].weight = (short)lrint(W[s] * 1000.0f);
+  }
+}
+
+void ob_write_mobile(const ob_mobile_stats_t *real, const ob_mobile_stats_t *yoked, FILE *out) {
+  unsigned se;
+  if (real == 0 || out == 0 || real->sessions == 0u) return;
+  fprintf(out, "\n## infancy: serve and return (the mobile)\n");
+  fprintf(out, "## kicks in each session: first a baseline, last an extinction; between, the world answers\n");
+  fprintf(out, "   session   its own kicks answered   a yoked twin (answered, not by its kicks)\n");
+  for (se = 0u; se < real->sessions; se++) {
+    fprintf(out, "   %4u      %5u                    %5u\n", se, real->kicks[se], yoked ? yoked->kicks[se] : 0u);
+  }
+}
+
 /* ---- the picture: its body, and how much of each place's touch is its own ---- */
 
 int ob_draw_self(const ob_brain_t *b, const ob_womb_stats_t *st, const char *path) {

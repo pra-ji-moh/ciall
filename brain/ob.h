@@ -292,6 +292,35 @@ typedef struct {
 void ob_womb_reflex(ob_brain_t *b, unsigned days, unsigned moments_per_day, ob_reflex_stats_t *out);
 void ob_write_reflex(const ob_reflex_stats_t *st, FILE *out);
 
+/* ============================================================
+ * STAGE 2: INFANCY (ob_womb.c, after birth)
+ * ============================================================
+ * Serve and return: the world answering the baby. As in Rovee-Collier's
+ * mobile: the baby lies under a mobile; its leg kicks of itself (the
+ * brainstem); when a kick moves the mobile and the mother's voice answers, the
+ * tegmentum's dopamine says "good, more than expected", and the basal
+ * ganglia's connections to the brainstem's kick centre, active as it kicked,
+ * strengthen (three-factor learning: before, after, and dopamine). It comes to
+ * kick more. A yoked twin hears and sees the same answers at the same moments,
+ * but not because of its own kicks; it should not.
+ */
+typedef struct {
+  unsigned sessions;
+  unsigned kicks[32];          /* kicks in each session */
+  unsigned answered[32];       /* moments the world answered, in each session */
+} ob_mobile_stats_t;
+
+/*
+ * sessions: the first is a baseline (nothing answers), the last an extinction
+ * (nothing answers); between them the world answers. contingent: 1, the world
+ * answers its kicks; 0, yoked: it answers at the moments in `schedule` (one bit
+ * per moment, as recorded from a contingent baby), whatever this baby does.
+ * schedule may be 0 when contingent; when given and contingent, it is filled in.
+ */
+void ob_infant_mobile(ob_brain_t *b, unsigned sessions, unsigned moments_per_session, int contingent,
+                      unsigned char *schedule, ob_mobile_stats_t *out);
+void ob_write_mobile(const ob_mobile_stats_t *real, const ob_mobile_stats_t *yoked, FILE *out);
+
 /* The whole brain to a file and back: genes, neurons, connections. 0 on success. */
 int ob_save(const ob_brain_t *b, const char *path);
 int ob_load(ob_brain_t *b, const char *path);

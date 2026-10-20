@@ -3,7 +3,7 @@ the diary of the newborn: its life from its genes to its birth
 
 weeks 3-4   a flat sheet of 64 by 40 cells folds into a tube. Three signals, from the floor, the
             roof and the tail, tell each cell what to become.
-weeks 5-8   13260 neurons are born, in columns, the cortex inside out; 395981 connections grow, more than
+weeks 5-8   13260 neurons are born, in columns, the cortex inside out; 395938 connections grow, more than
             will be kept. My eyes are mapped onto my visual cortex before I have seen anything.
 weeks 8-14  I twitch. My body presses the wall, my hand brushes my face. Sometimes something presses
             me that I did not cause. I learn to expect the touch my own moves bring: now I feel 65%
@@ -18,5 +18,9 @@ weeks 28-36 No light yet, but waves sweep my eyes from inside. Where my eyes con
             fires together stays and the rest is let go: 2643 connections pruned, 2419 kept; each place in my
             seeing narrows from 3.4 to 2.2 cells across.
 weeks 36-40 My hand comes to my mouth and my mouth moves. The pull from my lips to my mouth grows from
-            3.6 to 19.5, ready for feeding. Elsewhere it stays as it was (2.7 to 2.9).
+            3.4 to 19.0, ready for feeding. Elsewhere it stays as it was (2.7 to 3.0).
 week 40     Born.
+month 3     A mobile hangs over me; a ribbon ties it to my leg. At first I kick 10 times in a
+            while. When my kicks move it and her voice answers, I kick 129 times. My twin, who
+            sees and hears the same but not because of anything it does, kicks 14. When it stops
+            answering, I kick 60. The world answers me.

@@ -22,6 +22,9 @@
  *                 noise of the same amount does far less
  *   the reflex    practised hand to mouth, the lips' reflex to the mouth
  *                 strengthens; a reflex never paired does not
+ *   infancy       serve and return: when its kicks move the mobile it kicks
+ *                 more; a yoked twin answered as often, not by its kicks, does
+ *                 not; when the answers stop, kicking falls back
  *   repeatable    the same genome lives the same womb
  */
 
@@ -111,6 +114,28 @@ int main(void) {
           rf.mouth_after > 2.0 * rf.mouth_before);
     check("and a reflex in the middle of the body, never paired, stays much as it was grown",
           rf.body_after < 1.3 * rf.body_before);
+  }
+  {
+    static unsigned char sched[200u * 8u / 8u + 8u];
+    ob_mobile_stats_t mr, my;
+    double base, mid_r = 0.0, mid_y = 0.0;
+    memset(sched, 0, sizeof sched);
+    ob_grow(&B, &g);
+    ob_infant_mobile(&B, 8u, 200u, 1, sched, &mr);
+    ob_grow(&B, &g);
+    ob_infant_mobile(&B, 8u, 200u, 0, sched, &my);
+    for (k = 2u; k <= 6u; k++) {
+      mid_r += mr.kicks[k] / 5.0;
+      mid_y += my.kicks[k] / 5.0;
+    }
+    base = mr.kicks[0];
+    printf("        (kicks per session: baseline %u; answered %.0f; yoked twin %.0f; extinction %u)\n", mr.kicks[0],
+           mid_r, mid_y, mr.kicks[7]);
+    check("infancy: when its kicks move the mobile and bring her voice, it kicks far more (at least 3x)",
+          mid_r > 3.0 * (base + 1.0));
+    check("a yoked twin, answered as often but not by its own kicks, does not learn to kick",
+          mid_y < 2.0 * (my.kicks[0] + 5.0) && mid_y * 2.0 < mid_r);
+    check("when the world stops answering, its kicking falls back", mr.kicks[7] < 0.7 * mid_r);
   }
   ob_grow(&B, &g);
   ob_womb_touch(&B, 12u, 300u, &s2);
