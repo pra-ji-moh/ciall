@@ -48,8 +48,11 @@ map already in order on the visual cortex.
    the cerebellum, from copies of its own commands, learns to cancel the touch
    they bring. After twenty days it feels about 65% of its own touch and all of
    the mother's: "me" and "not me", never told which was which.
-2. Chemical senses: is this place good or bad for me; the seed of the
-   amygdala's regulation.
+2. Chemical senses: done. An olfactory bulb at the front of the brain; the
+   amygdala's approach and avoid neurons learn from taste's innate value. The
+   mother's smell and the anise of her meals come to mean approach, her stress
+   avoid; smells with no taste of note stay neutral (newborns of mothers who ate
+   anise prefer anise: Schaal et al. 2000).
 3. Hearing: the heartbeat, a steady rhythm it habituates to; the baseline of
    safety, and of time.
 4. Vision in the dark: no light, but its visual sheets rehearse on their own

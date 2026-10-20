@@ -18,6 +18,7 @@
 
 static ob_brain_t BRAIN;
 static ob_womb_stats_t WOMB;
+static ob_smell_stats_t SMELL;
 
 int main(int argc, char **argv) {
   ob_genome_t g;
@@ -32,6 +33,7 @@ int main(int argc, char **argv) {
   if (strlen(dir) > 900u) return 2;
   ob_grow(&BRAIN, &g);
   ob_womb_touch(&BRAIN, 20u, 300u, &WOMB);
+  ob_womb_smell(&BRAIN, 20u, 50u, &SMELL);
   sprintf(path, "%s/brain_map.txt", dir);
   f = fopen(path, "w");
   if (f == 0) {
@@ -40,6 +42,7 @@ int main(int argc, char **argv) {
   }
   ob_write_map(&BRAIN, f);
   ob_write_womb(&WOMB, f);
+  ob_write_smell(&SMELL, f);
   fclose(f);
   sprintf(path, "%s/plate.png", dir);
   ob_draw_plate(&BRAIN, path);

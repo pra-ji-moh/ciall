@@ -8,6 +8,7 @@ plate_h 40
 shh_reach 0.35
 bmp_reach 0.35
 # along the head to tail axis (the Wnt level), where the tube divides
+olfactory_end 0.04
 tel_end 0.32
 die_end 0.42
 mes_end 0.52

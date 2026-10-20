@@ -19,6 +19,7 @@ void ob_genome_default(ob_genome_t *g) {
   g->plate_h = 40u;
   g->shh_reach = 0.35;
   g->bmp_reach = 0.35;
+  g->olfactory_end = 0.04;
   g->tel_end = 0.32;
   g->die_end = 0.42;
   g->mes_end = 0.52;
@@ -49,7 +50,7 @@ typedef struct {
 
 static const ob_gene_t GENES[] = {
     OB_GU(seed),          OB_GU(plate_w),        OB_GU(plate_h),           OB_GD(shh_reach),
-    OB_GD(bmp_reach),     OB_GD(tel_end),        OB_GD(die_end),           OB_GD(mes_end),
+    OB_GD(bmp_reach),     OB_GD(olfactory_end), OB_GD(tel_end),        OB_GD(die_end),           OB_GD(mes_end),
     OB_GD(rho_end),       OB_GD(cerebellum_end), OB_GD(frontal_end),       OB_GD(parietal_end),
     OB_GD(temporal_end),  OB_GD(hippocampus_edge), OB_GD(amygdala_band),   OB_GU(cortex_neurons),
     OB_GU(other_neurons), OB_GU(cerebellum_neurons), OB_GD(interneuron_fraction),
@@ -108,7 +109,7 @@ const char *ob_region_name(unsigned r) {
       "none",          "frontal cortex", "parietal cortex", "temporal cortex", "occipital cortex",
       "hippocampus",   "amygdala",       "basal ganglia",   "thalamus",        "hypothalamus",
       "tectum",        "tegmentum",      "cerebellum",      "brainstem",       "spinal cord (sensory)",
-      "spinal cord (motor)", "left retina", "right retina"};
+      "spinal cord (motor)", "left retina", "right retina", "olfactory bulb", "left cochlea", "right cochlea"};
   return r < OB_REGIONS ? N[r] : "?";
 }
 
@@ -157,7 +158,8 @@ void ob_stage_plate(ob_brain_t *b) {
           f = OB_BASAL_GANGLIA;
         } else {
           double u = t / g->tel_end;   /* along the cortex, front to back */
-          if (a > 1.0 - g->hippocampus_edge) f = OB_HIPPOCAMPUS;
+          if (t < g->olfactory_end) f = OB_OLFACTORY;
+          else if (a > 1.0 - g->hippocampus_edge) f = OB_HIPPOCAMPUS;
           else if (u < g->frontal_end) f = OB_FRONTAL;
           else if (u >= g->parietal_end) f = OB_OCCIPITAL;
           else if (a < g->amygdala_band && u < (g->frontal_end + g->parietal_end) / 2.0) f = OB_AMYGDALA;
@@ -299,6 +301,23 @@ void ob_stage_neurons(ob_brain_t *b) {
       b->count[f][s]++;
     }
   }
+  /* the ears: two otic vesicles form beside the hindbrain; each cochlea's hair
+     cells run from low pitch to high */
+  for (s = 0u; s < 2u; s++) {
+    unsigned r = s == OB_LEFT ? OB_COCHLEA_L : OB_COCHLEA_R;
+    for (x = 0u; x < OB_COCHLEA; x++) {
+      ob_neuron_t *nn = new_neuron(b);
+      if (nn == 0) break;
+      nn->region = (unsigned char)r;
+      nn->side = (unsigned char)s;
+      nn->birth = (unsigned short)x;
+      nn->px = (unsigned short)(g->mes_end * (p->w - 1u));
+      nn->py = (unsigned short)(s == OB_LEFT ? 0u : p->h - 1u);
+      nn->sx = (float)((x + 0.5) / OB_COCHLEA);
+      nn->sy = 0.5f;
+      b->count[r][s]++;
+    }
+  }
   /* the eyes: two optic vesicles grow out of the diencephalon's sides */
   for (s = 0u; s < 2u; s++) {
     unsigned r = s == OB_LEFT ? OB_RETINA_L : OB_RETINA_R, ox = 0u, oy = 0u, best = 0u;
@@ -407,6 +426,18 @@ static const ob_rule_t RULES[] = {
     {"frontal to amygdala (regulation)", OB_AMYGDALA, OB_FRONTAL, ANY, L5, -1, SIDE_SAME, MAP_WIDE, 1.0},
     {"amygdala to hypothalamus", OB_HYPOTHALAMUS, OB_AMYGDALA, ANY, ANY, -1, SIDE_SAME, MAP_WIDE, 3.0},
     {"hypothalamus to brainstem", OB_BRAINSTEM, OB_HYPOTHALAMUS, ANY, ANY, -1, SIDE_SAME, MAP_WIDE, 2.0},
+    /* smell: the olfactory bulb reaches the amygdala and hippocampus directly,
+       without passing the thalamus, as smell alone among the senses does */
+    {"smell: olfactory bulb to amygdala", OB_AMYGDALA, OB_OLFACTORY, ANY, ANY, -1, SIDE_SAME, MAP_WIDE, 4.0},
+    {"smell: olfactory bulb to hippocampus", OB_HIPPOCAMPUS, OB_OLFACTORY, ANY, ANY, -1, SIDE_SAME, MAP_WIDE, 1.0},
+    /* hearing: each cochlea reaches the midbrain (the inferior colliculus, in the
+       tectum) on both sides, and from there the thalamus's hearing nucleus, which
+       relays to the temporal cortex. Pitch keeps its order all the way */
+    {"hearing: cochlea to tectum", OB_TECTUM, OB_COCHLEA_L, ANY, ANY, -1, SIDE_OTHER, MAP_TOPO, 3.0},
+    {"hearing: cochlea to tectum", OB_TECTUM, OB_COCHLEA_R, ANY, ANY, -1, SIDE_OTHER, MAP_TOPO, 3.0},
+    {"hearing: cochlea to tectum", OB_TECTUM, OB_COCHLEA_L, ANY, ANY, -1, SIDE_SAME, MAP_TOPO, 1.5},
+    {"hearing: cochlea to tectum", OB_TECTUM, OB_COCHLEA_R, ANY, ANY, -1, SIDE_SAME, MAP_TOPO, 1.5},
+    {"hearing: tectum to thalamus (hearing nucleus)", OB_THALAMUS, OB_TECTUM, ANY, ANY, 2, SIDE_SAME, MAP_TOPO, 6.0},
     /* the midbrain */
     {"tectum to thalamus (visual nucleus)", OB_THALAMUS, OB_TECTUM, ANY, ANY, 3, SIDE_SAME, MAP_TOPO, 2.0},
     {"tegmentum to basal ganglia (dopamine)", OB_BASAL_GANGLIA, OB_TEGMENTUM, ANY, ANY, -1, SIDE_SAME, MAP_WIDE,

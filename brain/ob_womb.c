@@ -250,6 +250,99 @@ void ob_write_womb(const ob_womb_stats_t *st, FILE *out) {
   }
 }
 
+/* ---- smell: good or bad for me ------------------------------------------------ */
+
+static const char *const SMELL_NAME[OB_SMELLS] = {"the mother herself", "anise (in her meals)", "smell 2", "smell 3",
+                                                  "smell 4", "stress (her cortisol)", "smell 6", "smell 7"};
+
+/* the olfactory bulb's patch for a smell: its place across the bulb */
+static int smells(const ob_neuron_t *n, unsigned k) {
+  return n->region == OB_OLFACTORY && n->sy >= (float)k / OB_SMELLS && n->sy < (float)(k + 1u) / OB_SMELLS;
+}
+
+static int approach_neuron(const ob_neuron_t *n) { return n->region == OB_AMYGDALA && n->sy < 0.5f; }
+static int avoid_neuron(const ob_neuron_t *n) { return n->region == OB_AMYGDALA && n->sy >= 0.5f; }
+
+/* How the amygdala answers a smell: approach minus avoidance, by what reaches each */
+static double valence(const ob_brain_t *b, unsigned k) {
+  unsigned i, s;
+  double ap = 0.0, av = 0.0;
+  for (i = 0u; i < b->n_neurons; i++) {
+    const ob_neuron_t *n = &b->neuron[i];
+    double in = 0.0;
+    if (!approach_neuron(n) && !avoid_neuron(n)) continue;
+    for (s = n->syn_first; s < n->syn_first + n->syn_n; s++) {
+      if (smells(&b->neuron[b->syn[s].from], k)) in += W[s];
+    }
+    if (approach_neuron(n)) ap += in;
+    else av += in;
+  }
+  return ap + av > 0.0 ? (ap - av) / (ap + av) : 0.0;
+}
+
+void ob_womb_smell(ob_brain_t *b, unsigned days, unsigned moments_per_day, ob_smell_stats_t *out) {
+  unsigned d, t, k, i, s;
+  if (b == 0 || out == 0) return;
+  memset(out, 0, sizeof(*out));
+  if (days > 64u) days = 64u;
+  RNG = b->genes.seed * 3266489917u + 5u;
+  prepare(b);
+  for (k = 0u; k < OB_SMELLS; k++) out->before[k] = valence(b, k);
+  for (d = 0u; d < days; d++) {
+    for (t = 0u; t < moments_per_day; t++) {
+      /* what the amniotic fluid carries this moment, and the taste that comes with it */
+      double r = unit(), taste = 0.0;
+      unsigned smell;
+      if (r < 0.30) {
+        smell = 0u;   /* the mother's own smell, with the sweetness of her milk-to-be */
+        taste = 0.5;
+      } else if (r < 0.50) {
+        smell = 1u;   /* anise in her meal: sweet */
+        taste = 1.0;
+      } else if (r < 0.62) {
+        smell = 5u;   /* her stress: bitter */
+        taste = -1.0;
+      } else {
+        smell = 2u + rnd() % 6u;   /* everything else she eats or breathes: no taste of note */
+        if (smell == 5u) smell = 7u;
+      }
+      if (taste == 0.0) continue;   /* only a taste's value teaches */
+      /* three-factor learning: the smell's connections to the neurons of the
+         taste's kind strengthen; to the other kind, weaken a little */
+      for (i = 0u; i < b->n_neurons; i++) {
+        const ob_neuron_t *n = &b->neuron[i];
+        int ap = approach_neuron(n), av = avoid_neuron(n);
+        if (!ap && !av) continue;
+        for (s = n->syn_first; s < n->syn_first + n->syn_n; s++) {
+          if (!smells(&b->neuron[b->syn[s].from], smell)) continue;
+          if ((ap && taste > 0.0) || (av && taste < 0.0)) W[s] += (float)(0.02 * (taste < 0 ? -taste : taste));
+          else W[s] -= (float)(0.01 * (taste < 0 ? -taste : taste));
+          if (W[s] < 0.0f) W[s] = 0.0f;
+          if (W[s] > 3.0f) W[s] = 3.0f;
+        }
+      }
+    }
+    out->day_mother[d] = valence(b, 0u);
+    out->day_anise[d] = valence(b, 1u);
+    out->day_stress[d] = valence(b, 5u);
+  }
+  out->days = days;
+  for (k = 0u; k < OB_SMELLS; k++) out->after[k] = valence(b, k);
+  for (s = 0u; s < b->n_syn; s++) {
+    if (b->neuron[b->syn[s].from].region == OB_OLFACTORY) b->syn[s].weight = (short)lrint(W[s] * 1000.0f);
+  }
+}
+
+void ob_write_smell(const ob_smell_stats_t *st, FILE *out) {
+  unsigned k;
+  if (st == 0 || out == 0) return;
+  fprintf(out, "\n## the womb: smell, good or bad for me\n");
+  fprintf(out, "## the amygdala's answer to each smell, approach minus avoidance (-1 to 1), before and after\n");
+  for (k = 0u; k < OB_SMELLS; k++) {
+    fprintf(out, "   %-24s %+.3f  ->  %+.3f\n", SMELL_NAME[k], st->before[k], st->after[k]);
+  }
+}
+
 /* ---- the picture: its body, and how much of each place's touch is its own ---- */
 
 int ob_draw_self(const ob_brain_t *b, const ob_womb_stats_t *st, const char *path) {

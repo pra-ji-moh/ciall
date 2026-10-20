@@ -65,6 +65,7 @@
 #define OB_MAX_NEURONS 60000
 #define OB_MAX_SYN 2400000
 #define OB_RETINA 24          /* each retina is OB_RETINA x OB_RETINA */
+#define OB_COCHLEA 32         /* each cochlea: hair cells from low pitch to high */
 #define OB_LAYERS 5           /* cortex layers 6, 5, 4, 3, 2, deepest first */
 
 typedef enum {
@@ -82,6 +83,9 @@ typedef enum {
   OB_SPINAL_SENSORY, OB_SPINAL_MOTOR,
   /* outside the tube */
   OB_RETINA_L, OB_RETINA_R,
+  /* added for the womb's senses */
+  OB_OLFACTORY,             /* the olfactory bulb, at the very front of the forebrain */
+  OB_COCHLEA_L, OB_COCHLEA_R,   /* the ears, outside the tube like the retinas */
   OB_REGIONS
 } ob_region_t;
 
@@ -93,6 +97,7 @@ typedef struct {
   unsigned plate_w, plate_h;      /* plate size: head to tail, and across (both sides) */
   double shh_reach, bmp_reach;    /* how far the floor and roof signals reach, as a fraction of the half-width */
   /* along the head to tail axis, where the Wnt level divides the tube */
+  double olfactory_end;           /* the front tip of the forebrain's roof side becomes the olfactory bulb */
   double tel_end, die_end, mes_end, rho_end;
   double cerebellum_end;          /* the front part of the hindbrain's roof side */
   /* the cortex's areas: where the two opposed gradients cross, fractions of the cortex's length */
@@ -205,6 +210,29 @@ typedef struct {
  * into the brain's synapse weights, readable like any other).
  */
 void ob_womb_touch(ob_brain_t *b, unsigned days, unsigned moments_per_day, ob_womb_stats_t *out);
+
+/*
+ * Smell, and "is this good or bad for me". The amniotic fluid carries the
+ * mother's meals: smells arrive, and with some of them sweet (her meal) or
+ * bitter (her stress), whose value is innate (newborns smile at sweet and
+ * grimace at bitter before they have tasted anything). The olfactory bulb maps
+ * each smell to its own patch, as glomeruli do; the amygdala keeps two kinds of
+ * neuron, for approach and for avoidance (as it does: Namburi et al. 2015). A
+ * smell's connections to one kind strengthen when it comes with a value of
+ * that kind. Nobody labels the smells; only taste has a value of its own.
+ */
+#define OB_SMELLS 8u
+
+typedef struct {
+  unsigned days;
+  /* for each smell: approach minus avoidance in the amygdala, -1..1, before
+     the womb and after */
+  double before[OB_SMELLS], after[OB_SMELLS];
+  double day_mother[64], day_anise[64], day_stress[64];   /* three smells, day by day */
+} ob_smell_stats_t;
+
+void ob_womb_smell(ob_brain_t *b, unsigned days, unsigned moments_per_day, ob_smell_stats_t *out);
+void ob_write_smell(const ob_smell_stats_t *st, FILE *out);
 
 /* What the womb did, in words and numbers, for the map. */
 void ob_write_womb(const ob_womb_stats_t *st, FILE *out);

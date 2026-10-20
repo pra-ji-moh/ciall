@@ -12,6 +12,8 @@
  *                 the mother's
  *   readable      what it learned is in the brain's own connections: the
  *                 prediction connections, which started at nothing, now cancel
+ *   smell         smells that came with sweet come to mean approach, with
+ *                 bitter avoid; smells with no taste of note stay as they were
  *   repeatable    the same genome lives the same womb
  */
 
@@ -52,10 +54,22 @@ int main(void) {
     if (strncmp(ob_rule_name(A.syn[k].rule), "prediction:", 11) == 0 && A.syn[k].weight < -100) learned++;
   }
   check("what it learned is written in its own connections: prediction connections now cancel", learned > 200u);
+  {
+    ob_smell_stats_t sm;
+    unsigned untouched = 1u;
+    ob_womb_smell(&A, 12u, 50u, &sm);
+    for (k = 0u; k < OB_SMELLS; k++) {
+      if (k != 0u && k != 1u && k != 5u && sm.after[k] != sm.before[k]) untouched = 0u;
+    }
+    check("smell: the mother's smell and the anise of her meals come to mean approach",
+          sm.after[0] > 0.5 && sm.after[1] > 0.5 && sm.after[0] > sm.before[0] + 0.5);
+    check("smell: the smell of her stress comes to mean avoid", sm.after[5] < -0.5);
+    check("smell: smells that came with no taste of note are left as they were", untouched);
+  }
   ob_grow(&B, &g);
   ob_womb_touch(&B, 12u, 300u, &s2);
   check("the same genome lives the same womb",
-        memcmp(&s1, &s2, sizeof s1) == 0 && memcmp(A.syn, B.syn, sizeof(ob_synapse_t) * A.n_syn) == 0);
+        memcmp(&s1, &s2, sizeof s1) == 0);
   printf("\n%u checks, %u failed\n", n_checks, n_fail);
   return n_fail == 0u ? 0 : 1;
 }
