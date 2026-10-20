@@ -36,6 +36,7 @@ void ob_genome_default(ob_genome_t *g) {
   g->interneuron_fraction = 0.2;
   g->synapses_in = 40u;
   g->spread = 0.08;
+  g->sense_spread = 0.2;
   g->callosum = 0.15;
 }
 
@@ -54,7 +55,7 @@ static const ob_gene_t GENES[] = {
     OB_GD(rho_end),       OB_GD(cerebellum_end), OB_GD(frontal_end),       OB_GD(parietal_end),
     OB_GD(temporal_end),  OB_GD(hippocampus_edge), OB_GD(amygdala_band),   OB_GU(cortex_neurons),
     OB_GU(other_neurons), OB_GU(cerebellum_neurons), OB_GD(interneuron_fraction),
-    OB_GU(synapses_in),   OB_GD(spread),         OB_GD(callosum),
+    OB_GU(synapses_in),   OB_GD(spread),         OB_GD(sense_spread),      OB_GD(callosum),
 };
 
 int ob_genome_load(ob_genome_t *g, const char *path) {
@@ -605,7 +606,9 @@ void ob_stage_wiring(ob_brain_t *b) {
            the thalamus has the whole sheet, and serves one cortical area */
         unsigned layers = rule->src_layers;
         if (rule->src == OB_BAND_OF_AREA) layers = 1u << (n->region - OB_FRONTAL);
-        if (!pick_source(src_of[chosen], side, layers, n->sx, n->sy, g->spread, rule->map == MAP_WIDE, &from))
+        /* the eyes' first connections land broadly: waves before birth refine them */
+        double spread = (src_of[chosen] == OB_RETINA_L || src_of[chosen] == OB_RETINA_R) ? g->sense_spread : g->spread;
+        if (!pick_source(src_of[chosen], side, layers, n->sx, n->sy, spread, rule->map == MAP_WIDE, &from))
           continue;
       }
       if (from == i) continue;

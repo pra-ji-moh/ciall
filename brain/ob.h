@@ -110,6 +110,7 @@ typedef struct {
   double interneuron_fraction;    /* of cortical neurons, inhibitory, migrating in from below */
   unsigned synapses_in;           /* inputs grown per neuron, before pruning */
   double spread;                  /* how widely a projection lands, as a fraction of its target sheet */
+  double sense_spread;            /* how widely the eyes' first connections land: broad, before experience refines them */
   double callosum;                /* fraction of upper-layer cortical outputs that cross to the other side */
 } ob_genome_t;
 
@@ -253,6 +254,26 @@ typedef struct {
 
 void ob_womb_heartbeat(ob_brain_t *b, unsigned days, unsigned moments_per_day, ob_heart_stats_t *out);
 void ob_write_heart(const ob_heart_stats_t *st, FILE *out);
+
+/*
+ * Vision in the dark. Before the eyes open, waves of spontaneous activity sweep
+ * across the retina. The eyes' first connections to the thalamus land broadly;
+ * during the waves, a thalamic neuron's inputs that fire with it strengthen
+ * (Hebb), every neuron keeps the same total input (so its inputs compete), and
+ * those that fall below a floor are pruned. Its patch of the retina, its
+ * receptive field, narrows. With plain noise instead of waves (no neighbour
+ * fires with its neighbour), it should not.
+ */
+typedef struct {
+  unsigned days;
+  double field_before, field_after;   /* mean receptive field size, in retina cells */
+  double field_day[64];
+  unsigned pruned, kept;              /* the eyes' connections to the thalamus, after */
+} ob_vision_stats_t;
+
+/* waves: 1 for retinal waves, 0 for uncorrelated noise of the same amount (the control) */
+void ob_womb_vision(ob_brain_t *b, unsigned days, unsigned moments_per_day, int waves, ob_vision_stats_t *out);
+void ob_write_vision(const ob_vision_stats_t *st, FILE *out);
 
 /* What the womb did, in words and numbers, for the map. */
 void ob_write_womb(const ob_womb_stats_t *st, FILE *out);

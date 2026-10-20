@@ -479,6 +479,145 @@ void ob_write_heart(const ob_heart_stats_t *st, FILE *out) {
           100.0 * st->missed_beat, 100.0 * st->silence);
 }
 
+/* ---- vision in the dark: retinal waves ------------------------------------------ */
+
+static int retina(const ob_neuron_t *n) { return n->region == OB_RETINA_L || n->region == OB_RETINA_R; }
+static int visual_thalamus(const ob_neuron_t *n) { return n->region == OB_THALAMUS && n->layer == 3u; }
+
+/* Mean receptive field size of the visual thalamus: the weighted spread of the
+   retina cells each one hears from, in retina cells. */
+static double field_size(const ob_brain_t *b) {
+  unsigned i, s, n_cells = 0u;
+  double total = 0.0;
+  for (i = 0u; i < b->n_neurons; i++) {
+    const ob_neuron_t *n = &b->neuron[i];
+    double w = 0, mx = 0, my = 0, vx = 0, vy = 0;
+    if (!visual_thalamus(n)) continue;
+    for (s = n->syn_first; s < n->syn_first + n->syn_n; s++) {
+      const ob_neuron_t *src = &b->neuron[b->syn[s].from];
+      if (!retina(src) || W[s] <= 0.0f) continue;
+      w += W[s];
+      mx += W[s] * src->sx;
+      my += W[s] * src->sy;
+    }
+    if (w <= 0.0) continue;
+    mx /= w;
+    my /= w;
+    for (s = n->syn_first; s < n->syn_first + n->syn_n; s++) {
+      const ob_neuron_t *src = &b->neuron[b->syn[s].from];
+      if (!retina(src) || W[s] <= 0.0f) continue;
+      vx += W[s] * (src->sx - mx) * (src->sx - mx);
+      vy += W[s] * (src->sy - my) * (src->sy - my);
+    }
+    total += sqrt((vx + vy) / w) * OB_RETINA;
+    n_cells++;
+  }
+  return n_cells ? total / n_cells : 0.0;
+}
+
+void ob_womb_vision(ob_brain_t *b, unsigned days, unsigned moments_per_day, int waves, ob_vision_stats_t *out) {
+  static double total_in[OB_MAX_NEURONS];
+  unsigned d, t, i, s;
+  double cx[2] = {0, 0}, cy[2] = {0, 0}, vx[2] = {0, 0}, vy[2] = {0, 0};
+  unsigned life[2] = {0u, 0u};
+  if (b == 0 || out == 0) return;
+  memset(out, 0, sizeof(*out));
+  if (days > 64u) days = 64u;
+  RNG = b->genes.seed * 668265263u + 13u;
+  prepare(b);
+  DRIVE_REGION = OB_RETINA_L;
+  /* each visual-thalamus neuron's total input from the eye, kept constant */
+  for (i = 0u; i < b->n_neurons; i++) {
+    const ob_neuron_t *n = &b->neuron[i];
+    total_in[i] = 0.0;
+    if (!visual_thalamus(n)) continue;
+    for (s = n->syn_first; s < n->syn_first + n->syn_n; s++) {
+      if (retina(&b->neuron[b->syn[s].from])) total_in[i] += W[s];
+    }
+  }
+  out->field_before = field_size(b);
+  for (d = 0u; d < days; d++) {
+    for (t = 0u; t < moments_per_day; t++) {
+      unsigned e;
+      memset(ACT0, 0, sizeof(float) * b->n_neurons);
+      for (e = 0u; e < 2u; e++) {
+        /* each eye has its own waves: a patch that starts somewhere and travels */
+        if (life[e] == 0u) {
+          double a = unit() * 6.2831853;
+          cx[e] = unit();
+          cy[e] = unit();
+          vx[e] = cos(a) * 0.045;
+          vy[e] = sin(a) * 0.045;
+          life[e] = 6u + rnd() % 6u;
+        }
+        cx[e] += vx[e];
+        cy[e] += vy[e];
+        life[e]--;
+      }
+      for (i = 0u; i < b->n_neurons; i++) {
+        const ob_neuron_t *n = &b->neuron[i];
+        unsigned e2;
+        if (!retina(n)) continue;
+        e2 = n->region == OB_RETINA_L ? 0u : 1u;
+        if (waves) {
+          double dx = n->sx - cx[e2], dy = n->sy - cy[e2];
+          if (dx * dx + dy * dy < 0.011) ACT0[i] = 1.0f;   /* a patch about five cells across */
+        } else if (unit() < 0.06) {
+          ACT0[i] = 1.0f;   /* the control: the same amount of activity, no neighbour with its neighbour */
+        }
+      }
+      step(b, ACT0, ACT1);
+      /* Hebb, then each neuron's total from the eye scaled back to what it was */
+      for (i = 0u; i < b->n_neurons; i++) {
+        const ob_neuron_t *n = &b->neuron[i];
+        double post = ACT1[i], sum = 0.0;
+        if (!visual_thalamus(n) || post <= 0.0) continue;
+        for (s = n->syn_first; s < n->syn_first + n->syn_n; s++) {
+          if (!retina(&b->neuron[b->syn[s].from]) || W[s] <= 0.0f) continue;
+          W[s] += (float)(0.2 * post * ACT0[b->syn[s].from]);
+          sum += W[s];
+        }
+        if (sum <= 0.0) continue;
+        for (s = n->syn_first; s < n->syn_first + n->syn_n; s++) {
+          if (!retina(&b->neuron[b->syn[s].from]) || W[s] <= 0.0f) continue;
+          W[s] = (float)(W[s] * total_in[i] / sum);
+        }
+      }
+    }
+    /* what has fallen below a tenth of its neuron's average is pruned: gone */
+    for (i = 0u; i < b->n_neurons; i++) {
+      const ob_neuron_t *n = &b->neuron[i];
+      unsigned n_in = 0u;
+      if (!visual_thalamus(n)) continue;
+      for (s = n->syn_first; s < n->syn_first + n->syn_n; s++) {
+        if (retina(&b->neuron[b->syn[s].from]) && W[s] > 0.0f) n_in++;
+      }
+      for (s = n->syn_first; s < n->syn_first + n->syn_n; s++) {
+        if (retina(&b->neuron[b->syn[s].from]) && W[s] > 0.0f && n_in > 0u && W[s] < 0.25 * total_in[i] / n_in)
+          W[s] = 0.0f;
+      }
+    }
+    out->field_day[d] = field_size(b);
+  }
+  out->days = days;
+  out->field_after = field_size(b);
+  for (s = 0u; s < b->n_syn; s++) {
+    if (!retina(&b->neuron[b->syn[s].from]) || !visual_thalamus(&b->neuron[TARGET[s]])) continue;
+    b->syn[s].weight = (short)lrint(W[s] * 1000.0f);
+    if (b->syn[s].weight == 0) out->pruned++;
+    else out->kept++;
+  }
+  DRIVE_REGION = OB_SPINAL_SENSORY;
+}
+
+void ob_write_vision(const ob_vision_stats_t *st, FILE *out) {
+  if (st == 0 || out == 0 || st->days == 0u) return;
+  fprintf(out, "\n## the womb: vision in the dark, retinal waves\n");
+  fprintf(out, "   receptive field of the visual thalamus (retina cells across): %.2f before the waves, %.2f after\n",
+          st->field_before, st->field_after);
+  fprintf(out, "   the eyes' connections to the thalamus: %u kept, %u pruned\n", st->kept, st->pruned);
+}
+
 /* ---- the picture: its body, and how much of each place's touch is its own ---- */
 
 int ob_draw_self(const ob_brain_t *b, const ob_womb_stats_t *st, const char *path) {

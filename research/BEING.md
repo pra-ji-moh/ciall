@@ -59,9 +59,12 @@ map already in order on the visual cortex.
    to be expected (about 41% still heard); her irregular voice does not (about
    98%); a missed beat leaves a signal of absence as strong as a beat, plain
    silence none.
-4. Vision in the dark: no light, but its visual sheets rehearse on their own
-   spontaneous waves (as the retina's waves do before birth) and refine their
-   maps.
+4. Vision in the dark: done. The eyes' first connections land broadly; waves
+   of spontaneous activity sweep the retina; inputs that fire with their neuron
+   strengthen, each neuron's total stays fixed so they compete, and the weak are
+   pruned. Receptive fields narrow by about a third and about half the first
+   connections are pruned; noise of the same amount, with no neighbour firing
+   with its neighbour, barely refines them.
 5. The reflex loop, practised before birth so its first act is one it knows.
 
 **Stage 2, infancy**: birth into its worlds; serve and return with a

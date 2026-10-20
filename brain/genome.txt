@@ -29,4 +29,6 @@ interneuron_fraction 0.2
 # first wiring, before experience prunes it
 synapses_in 40
 spread 0.08
+# how widely the eyes' first connections land, before waves in the dark refine them
+sense_spread 0.2
 callosum 0.15

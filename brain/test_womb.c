@@ -17,6 +17,9 @@
  *   hearing       the heartbeat, regular, comes to be expected and is heard
  *                 less; the voice, irregular, does not; a missed beat leaves a
  *                 signal of absence, plain silence none
+ *   vision        retinal waves in the dark narrow the visual thalamus's
+ *                 receptive fields and prune the eyes' first connections;
+ *                 noise of the same amount does far less
  *   repeatable    the same genome lives the same womb
  */
 
@@ -82,6 +85,20 @@ int main(void) {
           h.voice_left[last_h] > 0.9);
     check("hearing: a beat that should come and does not leaves a signal of absence; silence does not",
           h.missed_beat > 0.3 && h.silence < 0.01);
+  }
+  {
+    ob_vision_stats_t vw, vn;
+    ob_grow(&B, &g);
+    ob_womb_vision(&B, 12u, 200u, 1, &vw);
+    ob_grow(&B, &g);
+    ob_womb_vision(&B, 12u, 200u, 0, &vn);
+    printf("        (receptive field: waves %.2f -> %.2f, %u pruned; noise %.2f -> %.2f)\n", vw.field_before,
+           vw.field_after, vw.pruned, vn.field_before, vn.field_after);
+    check("vision in the dark: retinal waves narrow the receptive fields by a quarter or more",
+          vw.field_after < 0.75 * vw.field_before);
+    check("and prune many of the eyes' first connections, as development does", vw.pruned * 4u > vw.kept);
+    check("noise of the same amount, with no neighbour firing with its neighbour, refines far less",
+          vn.field_after > vw.field_after + 0.5);
   }
   ob_grow(&B, &g);
   ob_womb_touch(&B, 12u, 300u, &s2);
