@@ -63,12 +63,13 @@ static const gw_field_t TOP[] = {
     GW_TOP(runs),        GW_TOP(worlds),      GW_TOP(finished), GW_TOP(finished_well),
     GW_TOP(next_seed),   GW_TOP(actions),     GW_TOP(shortest), GW_TOP(lost_itself),
     GW_TOP(mixed),       GW_TOP(unexplained), GW_TOP(cornered), GW_TOP(restarts),
+    GW_TOP(predictions), GW_TOP(mispredicted), GW_TOP(taught),
 };
 
 static const gw_field_t TRACK[] = {
     GW_TRK(unlocked, 1), GW_TRK(has_frontier, 1), GW_TRK(difficulty, 0), GW_TRK(frontier, 0),
     GW_TRK(streak, 0),   GW_TRK(stuck, 0),        GW_TRK(worlds, 0),     GW_TRK(finished, 0),
-    GW_TRK(finished_well, 0),
+    GW_TRK(finished_well, 0), GW_TRK(struggling, 0),
 };
 
 static void put(void *base, const gw_field_t *f, unsigned value) {
@@ -105,6 +106,7 @@ sm_status_t gw_load(gw_mind_t *m, const char *path) {
     unsigned value;
     char *dot;
     if (line[0] == '#') continue;
+    if (mi_library_line(&m->lib, line)) continue;
     if (sscanf(line, "%95s %u", key, &value) != 2) continue;
     dot = strchr(key, '.');
     if (dot != 0) {
@@ -123,7 +125,8 @@ sm_status_t gw_load(gw_mind_t *m, const char *path) {
     /* a mind from before the map: its progress was all in mazes */
     for (i = 0u; i < sizeof TRACK / sizeof TRACK[0]; i++) {
       if (strcmp(key, TRACK[i].name) == 0 && strcmp(key, "worlds") != 0 &&
-          strcmp(key, "finished") != 0 && strcmp(key, "finished_well") != 0) {
+          strcmp(key, "finished") != 0 && strcmp(key, "finished_well") != 0 &&
+          strcmp(key, "predictions") != 0) {
         put(&m->track[WG_MAZE], &TRACK[i], value);
       }
     }
@@ -152,6 +155,7 @@ sm_status_t gw_save(const gw_mind_t *m, const char *path) {
       fprintf(f, "%s.%s %u\n", KIND_KEY[k], TRACK[i].name, get(&m->track[k], &TRACK[i]));
     }
   }
+  mi_library_save(&m->lib, f);
   fclose(f);
   return SM_OK;
 }
@@ -228,68 +232,56 @@ static void open_gates(gw_mind_t *m, FILE *journal) {
   }
 }
 
-static void write_findings(FILE *j, const pl_child_t *ch, const pl_game_t *g) {
-  unsigned k, a, dead = 0u, moving = 0u, t;
-  int any;
-  fprintf(j, "    itself: ");
-  if (ch->have_body) {
-    fprintf(j, "%u cell%s that moved together", ch->body_n, ch->body_n == 1u ? "" : "s");
-  } else {
-    fprintf(j, "not held at the end");
+/* What the teacher knows and the child does not: what kind of idea ends a kind of world. */
+static unsigned teacher_says(unsigned kind) {
+  switch (kind) {
+    case WG_ODD: return MI_ODD;
+    case WG_ORDER: return MI_SEQ_LR;
+    default: return MI_COVER;
   }
-  for (a = 1u; a <= g->n_actions; a++) {
-    if (ch->effect[a] == PL_MOVES) moving++;
-    if (ch->effect[a] == PL_STILL) dead++;
+}
+
+static void write_findings(FILE *j, const mi_result_t *r) {
+  unsigned f, any = 0u;
+  fprintf(j, "    it saw: %u thing%s that move%s", r->movers, r->movers == 1u ? "" : "s",
+          r->movers == 1u ? "s" : "");
+  if (r->transform) {
+    fprintf(j, ", one stepping as another %s", r->transform == 1 ? "mirrored left to right"
+                                                  : r->transform == 2 ? "mirrored up and down"
+                                                                      : "reversed");
   }
-  fprintf(j, "; %u action%s that move it, %u that do nothing\n", moving, moving == 1u ? "" : "s",
-          dead);
-  fprintf(j, "    in the way:");
-  any = 0;
-  for (k = 0u; k < PL_COLOURS; k++) {
-    if (ch->wall_alive[k] && !ch->wall_ruled_out[k]) {
-      fprintf(j, " colour %u", k);
-      any = 1;
+  fprintf(j, "; this world was %s (novelty %u of %u)\n",
+          r->novelty == 0u ? "like ones it has met" : r->novelty >= 6u ? "new to it" : "partly familiar",
+          r->novelty, MI_FP_K);
+  fprintf(j, "    it predicted %u things and %u were wrong; %u puzzle%s nothing it believed explained\n",
+          r->predictions, r->errors, r->puzzles, r->puzzles == 1u ? "" : "s");
+  for (f = 0u; f < MI_FAMILIES; f++) {
+    if (r->invented & (1u << f)) {
+      fprintf(j, "%s%s", any ? ", " : "    it invented: ", mi_family_name(f));
+      any = 1u;
     }
   }
-  if (!any) fprintf(j, " nothing it can name");
-  fprintf(j, "; it ends a level by covering:");
-  any = 0;
-  for (k = 0u; k < PL_COLOURS; k++) {
-    if (ch->endings > 0u && ch->end_alive[k] && ch->end_seen[k]) {
-      fprintf(j, " colour %u", k);
-      any = 1;
-    }
+  if (any) fprintf(j, "\n");
+  fprintf(j, "    what ended it: %s", r->winner >= 0 ? mi_family_name((unsigned)r->winner) : "not settled");
+  if (r->intuition >= 0) {
+    fprintf(j, "; its intuition said %s%s", mi_family_name((unsigned)r->intuition),
+            r->trusted ? " (trusted)" : " (not yet trusted)");
   }
-  if (!any) fprintf(j, " nothing settled");
-  fprintf(j, "\n");
-  if (ch->causes_seen > 0u) {
-    fprintf(j, "    causes it found:");
-    any = 0;
-    for (k = 0u; k < PL_COLOURS; k++) {
-      for (t = 0u; t < PL_COLOURS; t++) {
-        if (ch->cause_to[k][t] >= 0 && t != k) {
-          fprintf(j, " covering colour %u turns colour %u into colour %d;", k, t,
-                  (int)ch->cause_to[k][t]);
-          any = 1;
-        }
-      }
-    }
-    if (!any) fprintf(j, " changes happened, but no single cause survived");
-    fprintf(j, "\n");
+  fprintf(j, "\n    how it spent its moves: explore %u, intuition %u, imagine %u, ask %u%s\n",
+          r->modes[MI_EXPLORE], r->modes[MI_INTUITION], r->modes[MI_IMAGINE], r->modes[MI_ASK],
+          r->hinted ? " (it was taught first)" : "");
+}
+
+/* The worlds it experiments on itself with: two of each open kind, at what it practises. */
+static gw_mind_t *PROBING;
+
+static void probe_world(pl_game_t *g, unsigned i) {
+  unsigned open[GW_KINDS], n = 0u, k;
+  for (k = 0u; k < GW_KINDS; k++) {
+    if (PROBING->track[k].unlocked) open[n++] = k;
   }
-  if (ch->push_known) {
-    fprintf(j, "    it pushes a thing of %u cell%s, %u times", ch->push_n,
-            ch->push_n == 1u ? "" : "s", ch->pushes);
-    any = 0;
-    for (k = 0u; k < PL_COLOURS; k++) {
-      if (ch->push_endings > 0u && ch->pend_alive[k] && ch->pend_seen[k]) {
-        if (!any) fprintf(j, "; a level ends when that thing covers");
-        fprintf(j, " colour %u", k);
-        any = 1;
-      }
-    }
-    fprintf(j, "\n");
-  }
+  k = open[(i / 2u) % n];
+  wg_make_kind(g, k, PROBING->track[k].difficulty, 1000000u + i);
 }
 
 sm_status_t gw_grow(gw_mind_t *m, unsigned worlds, FILE *journal) {
@@ -317,46 +309,53 @@ sm_status_t gw_grow(gw_mind_t *m, unsigned worlds, FILE *journal) {
 
   for (w = 0u; w < worlds; w++) {
     pl_game_t g;
-    pl_child_t ch;
+    mi_result_t res;
     sm_status_t st;
     unsigned kind = choose_kind(m), done_actions, best, later, later_best, seed = m->next_seed++;
+    unsigned hint = MI_FAMILIES;
     gw_track_t *t = &m->track[kind];
     wg_facts_t facts;
     int finished, well;
-    unsigned surprised;
 
     wg_make_kind(&g, kind, t->difficulty, seed);
     wg_facts(&g, &facts);
-    pl_child_init(&ch);   /* a new world: nothing about the last one applies to this one */
-    st = pl_play(&ch, &g, GW_BUDGET);
+    /* struggled long enough: the teacher names what kind of idea ends these */
+    if (t->struggling >= GW_STEP_BACK) {
+      hint = teacher_says(facts.kind);
+      t->struggling = 0u;
+      m->taught++;
+      if (journal != 0) {
+        fprintf(journal, "  a teacher, after five %s worlds not done well, says what kind of idea"
+                         " ends them: %s\n", wg_kind_name(kind), mi_family_name(hint));
+      }
+    }
+    st = mi_play(&m->lib, &g, GW_BUDGET, hint, &res);
 
-    finished = (st == SM_OK && ch.levels_done >= g.levels);
-    done_actions = sum(ch.level_actions, ch.levels_done);
-    best = sum(ch.level_shortest, ch.levels_done);
+    finished = (st == SM_OK && res.levels_done >= g.levels);
+    done_actions = sum(res.level_actions, res.levels_done);
+    best = sum(res.level_shortest, res.levels_done);
     /*
      * The first level of a world is where it finds out how that world works,
      * and that costs what it costs. Whether it learned shows on the levels
      * after: finished well means every level ended, and the later ones
      * within twice their shortest way.
      */
-    later = done_actions - (ch.levels_done > 0u ? ch.level_actions[0] : 0u);
-    later_best = best - (ch.levels_done > 0u ? ch.level_shortest[0] : 0u);
+    later = done_actions - (res.levels_done > 0u ? res.level_actions[0] : 0u);
+    later_best = best - (res.levels_done > 0u ? res.level_shortest[0] : 0u);
     well = finished && later_best > 0u && later <= 2u * later_best;
-    surprised = ch.lost_itself + ch.mixed + ch.unexplained_endings + ch.cornered;
 
     m->worlds++;
     t->worlds++;
-    m->lost_itself += ch.lost_itself;
-    m->mixed += ch.mixed;
-    m->unexplained += ch.unexplained_endings;
-    m->cornered += ch.cornered;
-    m->restarts += ch.restarts;
+    m->unexplained += res.puzzles;
+    m->predictions += res.predictions;
+    m->mispredicted += res.errors;
     if (finished) {
       m->finished++;
       t->finished++;
       m->actions += done_actions;
       m->shortest += best;
     }
+    t->struggling = well ? 0u : t->struggling + 1u;
 
     if (journal != 0) {
       fprintf(journal, "  world %u  %s  difficulty %u  seed %u\n", m->worlds, wg_kind_name(kind),
@@ -373,33 +372,10 @@ sm_status_t gw_grow(gw_mind_t *m, unsigned worlds, FILE *journal) {
         }
         fprintf(journal, "%s\n", well ? "" : ", too wasteful to count as learned");
       } else {
-        fprintf(journal, "    did not finish: %u of %u levels in %u actions\n", ch.levels_done,
-                g.levels, ch.actions_taken);
+        fprintf(journal, "    did not finish: %u of %u levels in %u actions\n", res.levels_done,
+                g.levels, res.actions);
       }
-      write_findings(journal, &ch, &g);
-      if (ch.restarts > 0u) {
-        fprintf(journal, "    it stranded itself and started a level again %u time%s\n",
-                ch.restarts, ch.restarts == 1u ? "" : "s");
-      }
-      if (surprised == 0u) {
-        fprintf(journal, "    nothing it could not explain\n");
-      } else {
-        fprintf(journal, "    what it could not explain:");
-        if (ch.lost_itself) {
-          fprintf(journal, " it lost its account of itself %u times;", ch.lost_itself);
-        }
-        if (ch.mixed) fprintf(journal, " an action moved it two different ways;");
-        if (ch.cornered) {
-          fprintf(journal, " %u time%s it had nowhere left to go, so something it had", ch.cornered,
-                  ch.cornered == 1u ? "" : "s");
-          fprintf(journal, " concluded was wrong;");
-        }
-        if (ch.unexplained_endings) {
-          fprintf(journal, " %u level%s ended for no reason it suspected;", ch.unexplained_endings,
-                  ch.unexplained_endings == 1u ? "" : "s");
-        }
-        fprintf(journal, "\n");
-      }
+      write_findings(journal, &res);
     }
 
     /* judging itself, and choosing what to practise next in this kind */
@@ -450,6 +426,13 @@ sm_status_t gw_grow(gw_mind_t *m, unsigned worlds, FILE *journal) {
     }
   }
 
+  mi_sleep(&m->lib, journal);
+  {
+    unsigned k, open = 0u;
+    for (k = 0u; k < GW_KINDS; k++) open += (unsigned)m->track[k].unlocked;
+    PROBING = m;
+    mi_probe(&m->lib, probe_world, 2u * open, GW_BUDGET, journal);
+  }
   if (journal != 0) {
     stamp(journal);
     fprintf(journal, "  the stretch ends: %u worlds in all\n", m->worlds);
@@ -484,4 +467,18 @@ void gw_report(const gw_mind_t *m) {
   printf("  surprises so far: lost itself %u, two-way actions %u, unexplained endings %u,",
          m->lost_itself, m->mixed, m->unexplained);
   printf(" cornered %u, restarts %u\n", m->cornered, m->restarts);
+  printf("  predictions: %u, of which wrong %u; taught %u time%s\n", m->predictions, m->mispredicted,
+         m->taught, m->taught == 1u ? "" : "s");
+  printf("  its library:");
+  for (k = 0u; k < MI_FAMILIES; k++) {
+    printf(" [%s: explained %u, in sleep %u%s]", mi_family_name(k), m->lib.wins[k], m->lib.dreamt[k],
+           m->lib.packed[k] ? ", packed" : "");
+  }
+  printf("\n  intuition right %u, wrong %u; worlds remembered %u\n", m->lib.intuition_right,
+         m->lib.intuition_wrong, m->lib.n_mem);
+  if (m->lib.probes > 0u) {
+    printf("  what its parts are worth (worlds finished well with it, minus without):");
+    for (k = 0u; k < MI_PARTS; k++) printf(" %s %+d", mi_part_name(k), m->lib.probe_delta[k]);
+    printf("\n");
+  }
 }

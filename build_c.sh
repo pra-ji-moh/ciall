@@ -106,9 +106,10 @@ build test_object $C smarsh_core.c smarsh_interval.c smarsh_space.c smarsh_objec
 build demo_object $C smarsh_core.c smarsh_interval.c smarsh_space.c smarsh_object.c demo_object.c && run_golden demo_object $C demo_object.txt
 build test_play $C smarsh_core.c smarsh_play.c arc_standin.c arc_worldgen.c test_play.c && run_test test_play $C
 build demo_play $C smarsh_core.c smarsh_play.c arc_standin.c demo_play.c && run_golden demo_play $C demo_play.txt
-build test_grow $C smarsh_core.c smarsh_play.c arc_worldgen.c smarsh_grow.c test_grow.c && run_test test_grow $C
+build test_grow $C smarsh_core.c smarsh_play.c smarsh_mind.c arc_worldgen.c smarsh_grow.c test_grow.c && run_test test_grow $C
 build test_worldgen $C smarsh_core.c test_worldgen.c && run_test test_worldgen $C
-build grow $C smarsh_core.c smarsh_play.c arc_worldgen.c smarsh_grow.c grow.c
+build test_mind $C smarsh_core.c smarsh_play.c smarsh_mind.c arc_worldgen.c test_mind.c && run_test test_mind $C
+build grow $C smarsh_core.c smarsh_play.c smarsh_mind.c arc_worldgen.c smarsh_grow.c grow.c
 build test_ending $C smarsh_core.c smarsh_ending.c test_ending.c && run_test test_ending $C
 build test_guess $C smarsh_core.c smarsh_interval.c smarsh_space.c smarsh_frame.c smarsh_guess.c test_guess.c && run_test test_guess $C
 # the core with no domain in it, on three systems that have nothing to do with one another
@@ -125,7 +126,7 @@ else
   echo "  skip  test_frontend (needs node and the Smarsh repo for the JavaScript side)"
 fi
 
-build test_null_args $C smarsh_core.c smarsh_reason.c smarsh_learner.c smarsh_concept.c smarsh_analogy.c smarsh_informant.c smarsh_law.c smarsh_proof.c smarsh_abstract.c smarsh_time.c smarsh_interval.c smarsh_space.c smarsh_frame.c smarsh_object.c smarsh_play.c arc_worldgen.c smarsh_grow.c smarsh_guess.c smarsh_ending.c smarsh_rules.c smarsh_goal.c smarsh_explore.c smarsh_child.c test_null_args.c \
+build test_null_args $C smarsh_core.c smarsh_reason.c smarsh_learner.c smarsh_concept.c smarsh_analogy.c smarsh_informant.c smarsh_law.c smarsh_proof.c smarsh_abstract.c smarsh_time.c smarsh_interval.c smarsh_space.c smarsh_frame.c smarsh_object.c smarsh_play.c smarsh_mind.c arc_worldgen.c smarsh_grow.c smarsh_guess.c smarsh_ending.c smarsh_rules.c smarsh_goal.c smarsh_explore.c smarsh_child.c test_null_args.c \
   && run_test test_null_args $C
 
 # C against the Python reference, without Python: these goldens ARE the

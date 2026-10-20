@@ -13,8 +13,10 @@
  *   memory         where it stands survives being written and read exactly,
  *                  and a mind written before the map existed is read as
  *                  progress in mazes
- *   resuming       growing in two stretches with the memory saved between
- *                  them ends exactly where one long stretch does
+ *   resuming       growing in two stretches with the memory saved and read
+ *                  back between them ends exactly where it does without
+ *   the library    the mind's library (ideas, worlds remembered, what its
+ *                  parts are worth) is carried from stretch to stretch
  *   repeatable     the same growth twice gives the same child
  *   the hardest    every maze at the hardest difficulty, over many seeds,
  *                  is finished
@@ -113,19 +115,26 @@ int main(void) {
               n.track[WG_ORDER].unlocked);
   }
 
+  /* two stretches (it sleeps after each), once with its memory only in
+     itself, once written down and read back between them */
   gw_mind_init(&one);
-  gw_grow(&one, 30u, 0);
+  gw_grow(&one, 15u, 0);
+  gw_grow(&one, 15u, 0);
   gw_mind_init(&two);
   gw_grow(&two, 15u, 0);
   gw_save(&two, TMP);
   gw_load(&two, TMP);
   gw_grow(&two, 15u, 0);
-  check("switched off halfway and started again, it ends where it would have anyway",
+  check("switched off between stretches and started again, it ends where it would have anyway",
         same_but_runs(&one, &two));
 
   gw_mind_init(&n);
-  gw_grow(&n, 30u, 0);
+  gw_grow(&n, 15u, 0);
+  gw_grow(&n, 15u, 0);
   check("the same growth twice gives the same child", memcmp(&one, &n, sizeof n) == 0);
+  check("its library is carried: ideas that explained worlds, and worlds remembered",
+        one.lib.worlds >= 30u && one.lib.n_mem >= 30u && one.lib.wins[MI_COVER] > 0u &&
+            one.lib.probes == 2u);
 
   for (seed = 1u; seed <= 20u; seed++) {
     pl_game_t g;

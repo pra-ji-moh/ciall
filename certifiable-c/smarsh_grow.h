@@ -50,7 +50,26 @@
  *
  * What a world is made of is never carried from one world to the next,
  * because in the next world it is different. What is carried is where it
- * stands on the map, and everything that surprised it.
+ * stands on the map, everything that surprised it, and its library: the
+ * ideas that have explained worlds, and a fingerprint of every world it has
+ * met, with what ended it (smarsh_mind.h).
+ *
+ * ============================================================
+ * THE MIND, AND WHAT HAPPENS AROUND IT
+ * ============================================================
+ * Each world is played by the mind (smarsh_mind.h): it sees things, predicts,
+ * invents, imagines and acts. Around it:
+ *
+ *   a teacher   five worlds of one kind in a row not finished well, and the
+ *               teacher names, before the next world of that kind, what kind
+ *               of idea ends it. Only the kind of idea: the child still has to
+ *               find which, and the idea still has to survive everything it
+ *               sees. Struggle first, then explanation.
+ *   sleep       at the end of every stretch, it replays the worlds it could
+ *               not explain and tries every block it has on them.
+ *   itself      at the end of every stretch it switches each of its parts off
+ *               in turn, plays the same worlds without it, and writes down what
+ *               each part is worth.
  *
  * ============================================================
  * WHEN NOBODY IS WATCHING
@@ -68,6 +87,7 @@
 #include <stdio.h>
 
 #include "smarsh_core.h"
+#include "smarsh_mind.h"
 
 #define GW_KINDS 6u
 
@@ -79,6 +99,7 @@ typedef struct {
   unsigned streak;          /* finished well in a row here */
   unsigned stuck;           /* not finished in a row here */
   unsigned worlds, finished, finished_well;
+  unsigned struggling;      /* not finished well in a row here: the teacher's cue */
 } gw_track_t;
 
 typedef struct {
@@ -87,7 +108,9 @@ typedef struct {
   unsigned next_seed;
   unsigned actions, shortest;   /* over worlds finished */
   unsigned lost_itself, mixed, unexplained, cornered, restarts;
+  unsigned predictions, mispredicted, taught;
   gw_track_t track[GW_KINDS];
+  mi_library_t lib;
 } gw_mind_t;
 
 void gw_mind_init(gw_mind_t *m);

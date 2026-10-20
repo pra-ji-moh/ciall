@@ -25,6 +25,7 @@
 #define MI_GIVE_UP 60u
 
 static int OFF[MI_PARTS];
+static int EXPERIMENTING;   /* playing for a self-experiment: nothing is kept for sleep */
 
 void mi_switch(mi_part_t part, int off) {
   if ((unsigned)part < MI_PARTS) OFF[part] = off ? 1 : 0;
@@ -1507,7 +1508,7 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
     memcpy(lib->mem_fp[slot], fp, MI_FP_K);
     lib->mem_family[slot] = (unsigned char)(res.winner >= 0 && w->endings >= 2u ? res.winner + 1 : 0);
   }
-  if (res.levels_done < g->levels || res.puzzles > 0u) keep_for_sleep();
+  if (!EXPERIMENTING && (res.levels_done < g->levels || res.puzzles > 0u)) keep_for_sleep();
   *out = res;
   return res.levels_done >= g->levels ? SM_OK : SM_ERR_EMPTY_DOMAIN;
 }
@@ -1585,6 +1586,7 @@ void mi_probe(mi_library_t *lib, void (*make)(pl_game_t *g, unsigned i), unsigne
   int was[MI_PARTS];
   if (lib == 0 || make == 0) return;
   for (p = 0u; p < MI_PARTS; p++) was[p] = OFF[p];
+  EXPERIMENTING = 1;
   copy = *lib;
   base = well_over(&copy, make, n, budget);
   if (journal != 0) {
@@ -1603,6 +1605,7 @@ void mi_probe(mi_library_t *lib, void (*make)(pl_game_t *g, unsigned i), unsigne
               (int)off - (int)base);
     }
   }
+  EXPERIMENTING = 0;
   lib->probes++;
 }
 
