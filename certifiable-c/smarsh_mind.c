@@ -278,25 +278,26 @@ static void read_relations(mi_world_t *w) {
   n = components(&gf, w->bg, g);
   w->odd = -1;
   w->n_legend = 0u;
-  /* the odd one: among patches of one shape, a colour found once where
-     another colour of that shape is found more than once */
-  for (i = 0u; i < n && w->odd < 0; i++) {
-    unsigned count[PL_COLOURS] = {0}, k, ones = 0u, many = 0u, total = 0u;
-    int one = -1;
-    if (g[i].n > 16u) continue;
-    for (j = 0u; j < n; j++) {
-      if (g[j].n == g[i].n && g[j].sig == g[i].sig && g[j].r1 - g[j].r0 == g[i].r1 - g[i].r0) {
-        count[g[j].col]++;
-        total++;
-      }
+  /* the odd one: among the colours of small things only, how much of each
+     there is. The smallest thing is one unit; the odd colour is the only one
+     that comes to exactly one unit, where another comes to several. (Counting
+     amounts, not patches: two tiles alike that touch are still two tiles.) */
+  {
+    unsigned cells[PL_COLOURS] = {0}, k, unit = 0u, ones = 0u, many = 0u;
+    int big[PL_COLOURS] = {0}, one = -1;
+    for (i = 0u; i < n; i++) {
+      if (g[i].n > 16u) big[g[i].col] = 1;
+      cells[g[i].col] += g[i].n;
+      if (g[i].n <= 16u && (unit == 0u || g[i].n < unit)) unit = g[i].n;
     }
-    if (total < 3u) continue;
-    for (k = 0u; k < PL_COLOURS; k++) {
-      if (count[k] == 1u) {
+    for (k = 0u; k < PL_COLOURS && unit > 0u; k++) {
+      if (big[k] || cells[k] == 0u) continue;
+      if (cells[k] == unit) {
         ones++;
         one = (int)k;
+      } else if (cells[k] >= 2u * unit && cells[k] % unit == 0u) {
+        many++;
       }
-      if (count[k] >= 2u) many++;
     }
     if (ones == 1u && many >= 1u) w->odd = one;
   }
@@ -370,7 +371,7 @@ static int part_of_known(const mi_world_t *w, const mi_comp_t *k) {
  * same step and touch are one thing. Each new thing becomes a mover.
  */
 static unsigned find_new_movers(mi_world_t *w, const pl_frame_t *a, const pl_frame_t *b,
-                                unsigned action) {
+                                unsigned action, const int *was_r, const int *was_c) {
   static mi_pair_t pairs[MI_COMPS];
   static unsigned group[MI_COMPS];
   unsigned na = components(a, w->bg, CA), nb, np = 0u, i, j, made = 0u;
@@ -393,6 +394,18 @@ static unsigned find_new_movers(mi_world_t *w, const pl_frame_t *a, const pl_fra
     for (j = 0u; j < nb; j++) {
       int dr, dc, d;
       if (still_b[j] || used_b[j] || !same_shape(&CA[i], &CB[j])) continue;
+      {
+        /* hidden where a mover just arrived and revealed where it just left:
+           nothing moved, a mover passed over two patches alike */
+        unsigned k;
+        int passed = 0;
+        for (k = 0u; k < w->n_mv; k++) {
+          if (w->mv[k].seen && in_template(&w->mv[k], w->mv[k].r, w->mv[k].c, CA[i].r0, CA[i].c0) &&
+              in_template(&w->mv[k], was_r[k], was_c[k], CB[j].r0, CB[j].c0))
+            passed = 1;
+        }
+        if (passed) continue;
+      }
       dr = CB[j].r0 - CA[i].r0;
       dc = CB[j].c0 - CA[i].c0;
       if (dr > MI_REACH || dr < -MI_REACH || dc > MI_REACH || dc < -MI_REACH) continue;
@@ -468,6 +481,10 @@ static unsigned find_new_movers(mi_world_t *w, const pl_frame_t *a, const pl_fra
       int rr = m->r + m->dr[k], cc = m->c + m->dc[k];
       if (rr >= 0 && cc >= 0 && rr < MI_W && cc < MI_W) w->ground[rr][cc] = w->bg;
     }
+#ifdef MI_DEBUG
+    fprintf(stderr, "NEW MOVER %u: %u cells at %d,%d step %d,%d col0 %u (pairs %u)\n", w->n_mv, m->n, m->r, m->c,
+            pairs[i].dr, pairs[i].dc, m->col[0], np);
+#endif
     w->n_mv++;
     made++;
   }
@@ -630,7 +647,13 @@ static int replay(unsigned f, unsigned m, unsigned *prog) {
       p = 0u;
     }
     end = says_ends(f, e, m, LEVEL_ODD[level], LEVEL_LEG[level], LEVEL_NLEG[level], &p);
-    if (end != (int)e->ended) return 0;
+    if (end != (int)e->ended) {
+#ifdef MI_DEBUG
+      fprintf(stderr, "  replay family %u mover %u fails at event %u (level %u, ended %u, covered %x, odd %d)\n",
+              f, m, i, level, e->ended, e->covered[m], LEVEL_ODD[level]);
+#endif
+      return 0;
+    }
     if (e->ended) p = 0u;
   }
   *prog = p;
@@ -647,6 +670,9 @@ static unsigned invent(mi_world_t *w, unsigned f) {
     w->prog[f][m] = p;
     if (w->fam_alive[f][m]) alive++;
   }
+  /* nothing it could say agreed with what was seen: back on the shelf, to be
+     tried again when there is more to go on */
+  if (alive == 0u) w->lang[f] = 0;
   return alive;
 }
 
@@ -926,6 +952,9 @@ static void start_level(mi_world_t *w, const pl_frame_t *f, unsigned level) {
     for (k = 0u; k < mv->n; k++) w->ground[mv->r + mv->dr[k]][mv->c + mv->dc[k]] = w->bg;
   }
   read_relations(w);
+#ifdef MI_DEBUG
+  fprintf(stderr, "LEVEL %u: odd %d legend %u bg %u\n", level, w->odd, w->n_legend, w->bg);
+#endif
   if (level < PL_MAX_LEVELS) {
     LEVEL_ODD[level] = w->odd;
     LEVEL_NLEG[level] = w->n_legend;
@@ -1136,6 +1165,21 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
     if (a == 0u && w->n_mv > 0u && !mi_switched_off(MI_PART_IMAGINATION)) {
       plan_len = make_plan(w, order, plan, 512u, &planned_family);
       plan_at = 0u;
+      if (plan_len == 0u && !mi_switched_off(MI_PART_INVENTOR)) {
+        /* nothing it believes can be tested from here: what is left is out of
+           reach, so the language is too small to say what ends this. The
+           inventor builds the next blocks, keeping what agrees with everything */
+        unsigned grew = 0u;
+        for (f = MI_ODD; f < MI_FAMILIES; f++) {
+          if (w->lang[f]) continue;
+          if (invent(w, f) > 0u) {
+            res.invented |= 1u << f;
+            lib->inventions++;
+            grew = 1u;
+          }
+        }
+        if (grew) plan_len = make_plan(w, order, plan, 512u, &planned_family);
+      }
       if (plan_len > 0u) {
         a = plan[plan_at++];
         mode = (trusted && planned_family == res.intuition) ? MI_INTUITION : MI_IMAGINE;
@@ -1296,9 +1340,17 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
         m->c = nc;
       }
       /* the ground and anything new that moved */
-      if (find_new_movers(w, &now, &next, a) > 0u) {
+      if (find_new_movers(w, &now, &next, a, r0, c0) > 0u) {
         res.puzzles += before > 0u ? 1u : 0u;
         plan_len = plan_at = 0u;
+        refresh_ground(w, &next);
+        /* now that it knows which things are movers, the rest is read again */
+        read_relations(w);
+        if (res.levels_done < PL_MAX_LEVELS) {
+          LEVEL_ODD[res.levels_done] = w->odd;
+          LEVEL_NLEG[res.levels_done] = w->n_legend;
+          memcpy(LEVEL_LEG[res.levels_done], w->legend, sizeof w->legend);
+        }
       }
       refresh_ground(w, &next);
       /* something changed beyond the movers: the world is not what its plan assumed */
@@ -1369,7 +1421,11 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
       if ((e.ended && explained == 0u) || hartley_bits(w) == 0u) {
         unsigned total = 0u;
         for (f = 0u; f < MI_FAMILIES; f++) total += alive_in(w, f);
-        if (total == 0u && !mi_switched_off(MI_PART_INVENTOR)) {
+#ifdef MI_DEBUG
+        fprintf(stderr, "  inventor? ended %u explained %u total %u lang %d%d%d%d alive %u %u %u %u\n", e.ended, explained, total,
+                w->lang[0], w->lang[1], w->lang[2], w->lang[3], alive_in(w, 0), alive_in(w, 1), alive_in(w, 2), alive_in(w, 3));
+#endif
+        if (total == 0u && w->n_mv > 0u && !mi_switched_off(MI_PART_INVENTOR)) {
           for (f = MI_ODD; f < MI_FAMILIES; f++) {
             if (w->lang[f]) continue;
             if (invent(w, f) > 0u) {
