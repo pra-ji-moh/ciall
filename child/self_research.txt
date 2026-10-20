@@ -628,3 +628,8 @@
 2026-10-20 08:18  (building itself: one generation)
   from version 71 (one of 10 still standing) it made version 83: SELF_OFF_CLOCK 0->1
   it does not pass its own checks (60 passed, 1 failed): kept on the record as a dead end
+
+2026-10-20 14:16  (building itself: one generation)
+  from version 61 (one of 10 still standing) it made version 84: SELF_KEEP_ACTS 40u->12u
+  development games, two seeds averaged: 2.5 levels, 0.804% (its parent: 11.5, 0.730%)
+  kept in the archive (still standing); the child in use stays as it is

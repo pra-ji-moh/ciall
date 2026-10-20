@@ -1,5 +1,5 @@
 ciall-explorer-mind 1
-runs 199
+runs 200
 best 1
 mask 61 13 0
 mask 61 14 0
@@ -96,40 +96,39 @@ mask 62 63 0
 colour 0 0 0 0
 colour 1 0 0 0
 colour 2 0 0 0
-colour 3 507805 763 0
-shift 1 3 125 0 26
-shift 2 3 -125 0 92
-shift 3 3 0 125 10
+colour 3 508383 764 0
+shift 1 3 125 0 33
+shift 2 3 -125 0 3
+shift 3 3 0 125 34
 shift 4 3 0 -125 25
-colour 4 0 1136 0
-colour 5 24608 739 0
-shift 1 5 0 -16 20
+colour 4 0 1138 0
+colour 5 24623 741 0
+shift 1 5 16 0 1
 shift 2 5 -16 0 1
-shift 3 5 16 0 1
-shift 4 5 -16 0 4
+shift 3 5 0 -16 2
+shift 4 5 16 0 1
 colour 6 0 0 0
 colour 7 0 0 0
 colour 8 0 0 0
-colour 9 552400 0 0
-shift 1 9 -75 0 27
-shift 2 9 75 0 98
-shift 3 9 0 -75 10
+colour 9 553025 0 0
+shift 1 9 -75 0 14
+shift 2 9 75 0 3
+shift 3 9 0 -75 34
 shift 4 9 0 75 26
 colour 10 0 0 0
 colour 11 0 0 0
-colour 12 552390 0 0
-shift 1 12 -50 0 27
-shift 2 12 50 0 98
-shift 3 12 0 -50 10
+colour 12 553015 0 0
+shift 1 12 -50 0 14
+shift 2 12 50 0 3
+shift 3 12 0 -50 34
 shift 4 12 0 50 26
 colour 13 0 0 0
 colour 14 0 0 0
 colour 15 0 0 0
-onto 1136 0 1
-family TOUCH_R+BODYAT 1
-widened 1
+onto 1138 0 1
+widened 2
 kind 536870914 1 1
 kind 536870916 1 1
 kind 536870913 1 1
 kind 536870915 1 1
-route 0 17 12288 12288 12288 4096 4096 4096 12288 8192 16384 16384 4096 4096 16384 16384 4096 4096 4096
+route 0 15 4096 4096 4096 4096 12288 12288 8192 12288 4096 16384 16384 16384 4096 4096 4096
