@@ -21,17 +21,24 @@ typedef struct {
   unsigned kind;
   int needs_nothing;
   unsigned needs_kind, needs_frontier;
+  int abstract;
   const char *why;
 } gw_gate_t;
 
 static const gw_gate_t MAP[GW_KINDS] = {
-    {WG_MAZE, 1, 0u, 0u, "where it began"},
-    {WG_KEYS, 0, WG_MAZE, 3u,
+    {WG_MAZE, 1, 0u, 0u, 0, "where it began"},
+    {WG_KEYS, 0, WG_MAZE, 3u, 0,
      "a door stands between it and the end, and only a cause it has never met opens it"},
-    {WG_PUSH, 0, WG_MAZE, 3u, "the end is about where something else is, not where it is"},
+    {WG_PUSH, 0, WG_MAZE, 3u, 0, "the end is about where something else is, not where it is"},
+    {WG_ODD, 0, WG_MAZE, 0u, 1,
+     "the end is the one thing that differs from the rest, and what differs changes every level"},
+    {WG_MIRROR, 0, WG_MAZE, 0u, 1,
+     "a twin moves whenever it moves, but transformed, and only the twin can end the level"},
+    {WG_ORDER, 0, WG_MAZE, 0u, 1,
+     "a legend shows an order, and the end is covering things in that order"},
 };
 
-static const char *const KIND_KEY[GW_KINDS] = {"maze", "keys", "push"};
+static const char *const KIND_KEY[GW_KINDS] = {"maze", "keys", "push", "odd", "mirror", "order"};
 
 void gw_mind_init(gw_mind_t *m) {
   unsigned k;
@@ -173,11 +180,26 @@ static unsigned standing(const gw_track_t *t) {
   return t->has_frontier ? t->frontier + 1u : 0u;
 }
 
-/* The kind to practise: of those open, the one it is least far along in. */
+/* The kind to practise. Once any abstract kind is open, worlds alternate
+   between the abstract kinds and the concrete ones; within the side whose
+   turn it is, the kind it is least far along in. */
 static unsigned choose_kind(const gw_mind_t *m) {
   unsigned k, best = WG_MAZE;
+  int any_abstract = 0, abstract_turn;
   for (k = 0u; k < GW_KINDS; k++) {
-    if (!m->track[k].unlocked) continue;
+    if (m->track[k].unlocked && MAP[k].abstract) any_abstract = 1;
+  }
+  abstract_turn = any_abstract && (m->worlds % 2u) == 1u;
+  if (abstract_turn) {
+    for (k = 0u; k < GW_KINDS; k++) {
+      if (m->track[k].unlocked && MAP[k].abstract) {
+        best = k;
+        break;
+      }
+    }
+  }
+  for (k = 0u; k < GW_KINDS; k++) {
+    if (!m->track[k].unlocked || MAP[k].abstract != abstract_turn) continue;
     if (standing(&m->track[k]) < standing(&m->track[best])) {
       best = k;
     } else if (standing(&m->track[k]) == standing(&m->track[best]) &&

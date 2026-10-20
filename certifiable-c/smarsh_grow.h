@@ -14,6 +14,19 @@
  *   pushing         opens once it handles mazes at difficulty 3. The end is
  *                   about where something else is, not where it is.
  *
+ * and three abstract kinds, whose ending is a relation, a transformation or
+ * a sequence rather than a colour or a place (see arc_worldgen.h):
+ *
+ *   odd one out     \
+ *   mirror twin      > open as soon as it has handled any maze at all
+ *   in order        /
+ *
+ * The abstract kinds are not held back until it is "ready". There is no
+ * right age for a hard idea: a mind meets it early, struggles, and the
+ * struggle is what builds the capacity. So once they open, every other world
+ * it plays is an abstract one, whether or not it is yet any good at them, and
+ * the concrete ladder carries on in the worlds between.
+ *
  * Nothing unlocks a kind except what the child has shown. It is not told
  * the new kind exists until the moment it has earned it, and then it is
  * told nothing about how that kind works: it meets it the way it met the
@@ -56,7 +69,7 @@
 
 #include "smarsh_core.h"
 
-#define GW_KINDS 3u
+#define GW_KINDS 6u
 
 typedef struct {
   int unlocked;

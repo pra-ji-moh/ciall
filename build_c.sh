@@ -107,6 +107,7 @@ build demo_object $C smarsh_core.c smarsh_interval.c smarsh_space.c smarsh_objec
 build test_play $C smarsh_core.c smarsh_play.c arc_standin.c arc_worldgen.c test_play.c && run_test test_play $C
 build demo_play $C smarsh_core.c smarsh_play.c arc_standin.c demo_play.c && run_golden demo_play $C demo_play.txt
 build test_grow $C smarsh_core.c smarsh_play.c arc_worldgen.c smarsh_grow.c test_grow.c && run_test test_grow $C
+build test_worldgen $C smarsh_core.c test_worldgen.c && run_test test_worldgen $C
 build grow $C smarsh_core.c smarsh_play.c arc_worldgen.c smarsh_grow.c grow.c
 build test_ending $C smarsh_core.c smarsh_ending.c test_ending.c && run_test test_ending $C
 build test_guess $C smarsh_core.c smarsh_interval.c smarsh_space.c smarsh_frame.c smarsh_guess.c test_guess.c && run_test test_guess $C

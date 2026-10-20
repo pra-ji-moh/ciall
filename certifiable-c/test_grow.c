@@ -5,6 +5,9 @@
  *   from nothing   with no memory, only mazes are open
  *   the map        the other kinds stay closed until mazes are handled at
  *                  difficulty 3, and then open without being asked for
+ *   the abstract   odd one out, mirror twin and in order open as soon as any
+ *                  maze has been handled, and from then on every other world
+ *                  is one of them
  *   growing        by its own judgement it moves up in every kind it has
  *                  opened
  *   memory         where it stands survives being written and read exactly,
@@ -51,7 +54,9 @@ int main(void) {
   remove(TMP);
   check("with no memory, only mazes are open",
         gw_load(&m, TMP) == SM_ERR_EMPTY_DOMAIN && m.track[WG_MAZE].unlocked &&
-            !m.track[WG_KEYS].unlocked && !m.track[WG_PUSH].unlocked && m.worlds == 0u);
+            !m.track[WG_KEYS].unlocked && !m.track[WG_PUSH].unlocked &&
+            !m.track[WG_ODD].unlocked && !m.track[WG_MIRROR].unlocked &&
+            !m.track[WG_ORDER].unlocked && m.worlds == 0u);
 
   /* grow one world at a time, and watch the gates */
   for (k = 0u; k < 80u; k++) {
@@ -64,7 +69,17 @@ int main(void) {
         closed_while_learning);
   check("and then they open, without being asked for",
         m.track[WG_KEYS].unlocked && m.track[WG_PUSH].unlocked);
-  check("it moves itself up in every kind it has opened",
+  check("the abstract kinds open once any maze has been handled",
+        m.track[WG_ODD].unlocked && m.track[WG_MIRROR].unlocked && m.track[WG_ORDER].unlocked);
+  {
+    unsigned before = m.track[WG_ODD].worlds + m.track[WG_MIRROR].worlds +
+                      m.track[WG_ORDER].worlds;
+    gw_grow(&m, 20u, 0);
+    check("and from then on every other world is an abstract one",
+          m.track[WG_ODD].worlds + m.track[WG_MIRROR].worlds + m.track[WG_ORDER].worlds ==
+              before + 10u);
+  }
+  check("it moves itself up in every concrete kind it has opened",
         m.track[WG_MAZE].has_frontier && m.track[WG_KEYS].has_frontier &&
             m.track[WG_PUSH].has_frontier);
 
@@ -81,6 +96,21 @@ int main(void) {
           gw_load(&n, TMP) == SM_OK && n.track[WG_MAZE].difficulty == 5u &&
               n.track[WG_MAZE].frontier == 4u && n.track[WG_MAZE].has_frontier &&
               n.worlds == 24u && n.next_seed == 25u);
+  }
+
+  {
+    FILE *f = fopen(TMP, "w");
+    if (f != 0) {
+      fprintf(f, "worlds 100\nnext_seed 101\nmaze.unlocked 1\nmaze.has_frontier 1\n"
+                 "maze.frontier 9\nmaze.difficulty 9\nkeys.unlocked 1\npush.unlocked 1\n");
+      fclose(f);
+    }
+    gw_load(&n, TMP);
+    k = !n.track[WG_ODD].unlocked && n.track[WG_KEYS].unlocked;
+    gw_grow(&n, 2u, 0);
+    check("a mind written before the abstract kinds meets them closed, and they open as it grows",
+          k && n.track[WG_ODD].unlocked && n.track[WG_MIRROR].unlocked &&
+              n.track[WG_ORDER].unlocked);
   }
 
   gw_mind_init(&one);
