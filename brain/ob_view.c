@@ -372,3 +372,7 @@ int ob_draw_retinotopy(const ob_brain_t *b, const char *path) {
   free(img);
   return rc;
 }
+
+int ob_write_png_rgb(const char *path, const unsigned char *rgb, unsigned w, unsigned h) {
+  return write_png(path, rgb, w, h);
+}

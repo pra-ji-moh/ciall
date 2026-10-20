@@ -6,7 +6,9 @@
  * Writes into out_dir: brain_map.txt (everything it is, in words and numbers),
  * plate.png (the folded plate's fates), morphogens.png (the three signals),
  * cortex.png (both hemispheres and the corpus callosum), retinotopy.png (the
- * retina's map, as it lands on the visual cortex before anything is seen).
+ * retina's map, as it lands on the visual cortex before anything is seen),
+ * and then, after twenty days in the womb learning touch, self.png (its body,
+ * by how much of each place's touch it has learned is its own, and the days).
  */
 
 #include <stdio.h>
@@ -15,6 +17,7 @@
 #include "ob.h"
 
 static ob_brain_t BRAIN;
+static ob_womb_stats_t WOMB;
 
 int main(int argc, char **argv) {
   ob_genome_t g;
@@ -28,6 +31,7 @@ int main(int argc, char **argv) {
   }
   if (strlen(dir) > 900u) return 2;
   ob_grow(&BRAIN, &g);
+  ob_womb_touch(&BRAIN, 20u, 300u, &WOMB);
   sprintf(path, "%s/brain_map.txt", dir);
   f = fopen(path, "w");
   if (f == 0) {
@@ -35,6 +39,7 @@ int main(int argc, char **argv) {
     return 2;
   }
   ob_write_map(&BRAIN, f);
+  ob_write_womb(&WOMB, f);
   fclose(f);
   sprintf(path, "%s/plate.png", dir);
   ob_draw_plate(&BRAIN, path);
@@ -44,7 +49,11 @@ int main(int argc, char **argv) {
   ob_draw_cortex(&BRAIN, path);
   sprintf(path, "%s/retinotopy.png", dir);
   ob_draw_retinotopy(&BRAIN, path);
-  printf("grew %u neurons and %u connections; wrote %s/brain_map.txt and four pictures\n", BRAIN.n_neurons,
-         BRAIN.n_syn, dir);
+  sprintf(path, "%s/self.png", dir);
+  ob_draw_self(&BRAIN, &WOMB, path);
+  printf("grew %u neurons and %u connections, lived %u days in the womb (now feels %.0f%% of its own touch,"
+         " %.0f%% of the mother's); wrote %s/brain_map.txt and five pictures\n",
+         BRAIN.n_neurons, BRAIN.n_syn, WOMB.days, 100.0 * WOMB.self_left[WOMB.days - 1u],
+         100.0 * WOMB.other_left[WOMB.days - 1u], dir);
   return 0;
 }

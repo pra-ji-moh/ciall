@@ -187,7 +187,8 @@ fi
 echo
 echo "brain/"
 build test_brain brain ob_grow.c ob_view.c test_brain.c && run_test test_brain brain
-build grow_brain brain ob_grow.c ob_view.c grow_brain.c
+build test_womb brain ob_grow.c ob_view.c ob_womb.c test_womb.c && run_test test_womb brain
+build grow_brain brain ob_grow.c ob_view.c ob_womb.c grow_brain.c
 echo
 echo "native/"
 N=native

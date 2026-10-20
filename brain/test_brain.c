@@ -135,13 +135,12 @@ int main(void) {
     for (s = n->syn_first; s < n->syn_first + n->syn_n; s++) {
       const ob_neuron_t *src = &A.neuron[A.syn[s].from];
       int retina = src->region == OB_RETINA_L || src->region == OB_RETINA_R;
-      if (retina && !((n->region == OB_THALAMUS && n->sx >= 0.75f) || n->region == OB_TECTUM)) senses = 0;
+      if (retina && !((n->region == OB_THALAMUS && n->layer == 3u) || n->region == OB_TECTUM)) senses = 0;
       if (retina && n->side == src->side) senses = 0;
-      if (src->region == OB_SPINAL_SENSORY && n->region == OB_THALAMUS && (n->sx < 0.25f || n->sx >= 0.5f))
-        senses = 0;
+      if (src->region == OB_SPINAL_SENSORY && n->region == OB_THALAMUS && n->layer != 1u) senses = 0;
     }
   }
-  check("the retina wires only to the visual band and the tectum, crossing; touch only to the touch band",
+  check("the retina wires only to the visual nucleus and the tectum, crossing; touch only to the touch nucleus",
         senses);
 
   {

@@ -238,6 +238,10 @@ void ob_stage_neurons(ob_brain_t *b) {
       double sy = norm(depth_of(p, y), BOX_D0[f][side], BOX_D1[f][side]);
       if (f == OB_NONE) continue;
       n = is_cortex(f) ? g->cortex_neurons : f == OB_CEREBELLUM ? g->cerebellum_neurons : g->other_neurons;
+      /* the thalamus grows four nuclei from every column, each with the whole
+         map: one for each cortical area it relays to (frontal, parietal or touch,
+         temporal or hearing, occipital or vision) */
+      if (f == OB_THALAMUS) n = 4u * g->other_neurons;
       for (i = 0u; i < n; i++) {
         ob_neuron_t *nn = new_neuron(b);
         if (nn == 0) break;
@@ -249,7 +253,7 @@ void ob_stage_neurons(ob_brain_t *b) {
         nn->sx = (float)sx;
         nn->sy = (float)sy;
         /* inside out: the first born settle deepest, each later one climbs past */
-        nn->layer = is_cortex(f) ? (unsigned char)((i * OB_LAYERS) / n) : 0u;
+        nn->layer = is_cortex(f) ? (unsigned char)((i * OB_LAYERS) / n) : f == OB_THALAMUS ? (unsigned char)(i % 4u) : 0u;
         b->count[f][side]++;
         if (is_cortex(f)) cortical[side]++;
       }
@@ -362,11 +366,11 @@ static const ob_rule_t RULES[] = {
     {"column: layer 6 to layer 4", OB_ANY_CORTEX, OB_SAME, L4, L6, -1, SIDE_SAME, MAP_TOPO, 1.0},
     {"column: within the upper layers", OB_ANY_CORTEX, OB_SAME, L23, L23, -1, SIDE_SAME, MAP_TOPO, 2.0},
     /* the senses arrive */
-    {"retina to thalamus (visual band)", OB_THALAMUS, OB_RETINA_L, ANY, ANY, 3, SIDE_OTHER, MAP_TOPO, 6.0},
-    {"retina to thalamus (visual band)", OB_THALAMUS, OB_RETINA_R, ANY, ANY, 3, SIDE_OTHER, MAP_TOPO, 6.0},
+    {"retina to thalamus (visual nucleus)", OB_THALAMUS, OB_RETINA_L, ANY, ANY, 3, SIDE_OTHER, MAP_TOPO, 6.0},
+    {"retina to thalamus (visual nucleus)", OB_THALAMUS, OB_RETINA_R, ANY, ANY, 3, SIDE_OTHER, MAP_TOPO, 6.0},
     {"retina to tectum", OB_TECTUM, OB_RETINA_L, ANY, ANY, -1, SIDE_OTHER, MAP_TOPO, 6.0},
     {"retina to tectum", OB_TECTUM, OB_RETINA_R, ANY, ANY, -1, SIDE_OTHER, MAP_TOPO, 6.0},
-    {"touch: spinal cord to thalamus (touch band)", OB_THALAMUS, OB_SPINAL_SENSORY, ANY, ANY, 1, SIDE_OTHER,
+    {"touch: spinal cord to thalamus (touch nucleus)", OB_THALAMUS, OB_SPINAL_SENSORY, ANY, ANY, 1, SIDE_OTHER,
      MAP_TOPO, 6.0},
     {"thalamus to cortex layer 4, by area", OB_ANY_CORTEX, OB_BAND_OF_AREA, L4, ANY, -1, SIDE_SAME, MAP_TOPO, 6.0},
     {"cortex layer 6 back to thalamus", OB_THALAMUS, OB_AREA_OF_BAND, ANY, L6, -1, SIDE_SAME, MAP_TOPO, 3.0},
@@ -384,7 +388,7 @@ static const ob_rule_t RULES[] = {
     {"frontal layer 5 to brainstem", OB_BRAINSTEM, OB_FRONTAL, ANY, L5, -1, SIDE_SAME, MAP_WIDE, 2.0},
     {"cortex layer 5 to basal ganglia", OB_BASAL_GANGLIA, OB_FRONTAL, ANY, L5, -1, SIDE_SAME, MAP_TOPO, 3.0},
     {"cortex layer 5 to basal ganglia", OB_BASAL_GANGLIA, OB_PARIETAL, ANY, L5, -1, SIDE_SAME, MAP_WIDE, 1.5},
-    {"basal ganglia to thalamus (frontal band)", OB_THALAMUS, OB_BASAL_GANGLIA, ANY, ANY, 0, SIDE_SAME, MAP_TOPO,
+    {"basal ganglia to thalamus (frontal nucleus)", OB_THALAMUS, OB_BASAL_GANGLIA, ANY, ANY, 0, SIDE_SAME, MAP_TOPO,
      4.0},
     {"cortex layer 5 to cerebellum (crossing)", OB_CEREBELLUM, OB_FRONTAL, ANY, L5, -1, SIDE_OTHER, MAP_WIDE, 2.0},
     {"cortex layer 5 to cerebellum (crossing)", OB_CEREBELLUM, OB_PARIETAL, ANY, L5, -1, SIDE_OTHER, MAP_WIDE, 2.0},
@@ -404,11 +408,20 @@ static const ob_rule_t RULES[] = {
     {"amygdala to hypothalamus", OB_HYPOTHALAMUS, OB_AMYGDALA, ANY, ANY, -1, SIDE_SAME, MAP_WIDE, 3.0},
     {"hypothalamus to brainstem", OB_BRAINSTEM, OB_HYPOTHALAMUS, ANY, ANY, -1, SIDE_SAME, MAP_WIDE, 2.0},
     /* the midbrain */
-    {"tectum to thalamus (visual band)", OB_THALAMUS, OB_TECTUM, ANY, ANY, 3, SIDE_SAME, MAP_TOPO, 2.0},
+    {"tectum to thalamus (visual nucleus)", OB_THALAMUS, OB_TECTUM, ANY, ANY, 3, SIDE_SAME, MAP_TOPO, 2.0},
     {"tegmentum to basal ganglia (dopamine)", OB_BASAL_GANGLIA, OB_TEGMENTUM, ANY, ANY, -1, SIDE_SAME, MAP_WIDE,
      1.0},
     {"tegmentum to frontal (dopamine)", OB_FRONTAL, OB_TEGMENTUM, L23, ANY, -1, SIDE_SAME, MAP_WIDE, 0.5},
-    {"brainstem to spinal cord (motor)", OB_SPINAL_MOTOR, OB_BRAINSTEM, ANY, ANY, -1, SIDE_SAME, MAP_WIDE, 2.0},
+    /* the brainstem drives the body's muscles in a map of the body, and sends a
+       copy of every command to the cerebellum (the efference copy), which can
+       learn what touch that movement will bring, and cancel it in the thalamus.
+       The prediction's connections start at nothing: they are learned. */
+    {"brainstem to spinal cord (motor)", OB_SPINAL_MOTOR, OB_BRAINSTEM, ANY, ANY, -1, SIDE_SAME, MAP_TOPO, 2.0},
+    {"efference copy: brainstem to cerebellum", OB_CEREBELLUM, OB_BRAINSTEM, ANY, ANY, -1, SIDE_SAME, MAP_TOPO, 3.0},
+    /* the cerebellum serves its own side of the body and projects across, to the
+       thalamus of the other side, where that side's touch arrives */
+    {"prediction: cerebellum to thalamus (touch nucleus)", OB_THALAMUS, OB_CEREBELLUM, ANY, ANY, 1, SIDE_OTHER, MAP_TOPO,
+     4.0},
     {"spinal reflex: sensory to motor", OB_SPINAL_MOTOR, OB_SPINAL_SENSORY, ANY, ANY, -1, SIDE_SAME, MAP_TOPO, 2.0},
 };
 
@@ -417,11 +430,6 @@ typedef char ob_rules_fit[(N_RULES <= 64u) ? 1 : -1];   /* rule_count has room f
 
 const char *ob_rule_name(unsigned rule) { return rule < N_RULES ? RULES[rule].name : "?"; }
 
-/* The thalamus's four bands, front to back: which area each serves. */
-static unsigned band_of(double sx) {
-  unsigned k = (unsigned)(sx * 4.0);
-  return k > 3u ? 3u : k;
-}
 
 /* Sources, grouped by region, side and layer, and by an 8x8 grid of their sheet. */
 #define OB_GRID 8u
@@ -495,13 +503,13 @@ static int applies(const ob_brain_t *b, const ob_rule_t *r, const ob_neuron_t *n
     return 0;
   }
   if (r->dst_layers != ANY && is_cortex(dst) && !(r->dst_layers & (1u << n->layer))) return 0;
-  if (r->dst_band >= 0 && dst == OB_THALAMUS && band_of(n->sx) != (unsigned)r->dst_band) return 0;
+  if (r->dst_band >= 0 && dst == OB_THALAMUS && n->layer != (unsigned)r->dst_band) return 0;
   if (r->src == OB_SAME) {
     *src = dst;
   } else if (r->src == OB_BAND_OF_AREA) {
     *src = OB_THALAMUS;
   } else if (r->src == OB_AREA_OF_BAND) {
-    *src = OB_FRONTAL + band_of(n->sx);
+    *src = OB_FRONTAL + n->layer;   /* the thalamic nucleus: which area it serves */
   } else {
     *src = r->src;
   }
@@ -555,13 +563,11 @@ void ob_stage_wiring(ob_brain_t *b) {
       if (callosal) src_of[chosen] = n->region;
       side = rule->side == SIDE_OTHER ? 1u - n->side : n->side;
       {
-        /* where to look: the same place in the source's sheet, except that a
-           band of the thalamus maps onto its whole area, and back */
-        double sx = n->sx, sy = n->sy;
-        if (rule->src == OB_AREA_OF_BAND) sx = n->sx * 4.0 - (double)band_of(n->sx);
-        if (rule->src == OB_BAND_OF_AREA) sx = ((double)(n->region - OB_FRONTAL) + n->sx) / 4.0;
-        if (rule->dst_band >= 0 && n->region == OB_THALAMUS) sx = n->sx * 4.0 - (double)band_of(n->sx);
-        if (!pick_source(src_of[chosen], side, rule->src_layers, sx, sy, g->spread, rule->map == MAP_WIDE, &from))
+        /* where to look: the same place in the source's sheet. Each nucleus of
+           the thalamus has the whole sheet, and serves one cortical area */
+        unsigned layers = rule->src_layers;
+        if (rule->src == OB_BAND_OF_AREA) layers = 1u << (n->region - OB_FRONTAL);
+        if (!pick_source(src_of[chosen], side, layers, n->sx, n->sy, g->spread, rule->map == MAP_WIDE, &from))
           continue;
       }
       if (from == i) continue;
@@ -573,6 +579,7 @@ void ob_stage_wiring(ob_brain_t *b) {
       b->syn[b->n_syn].rule = (unsigned char)chosen;
       b->syn[b->n_syn].weight =
           (short)((100 + (int)(rnd() % 900u)) * (b->neuron[from].inhibitory ? -1 : 1));
+      if (strncmp(rule->name, "prediction:", 11) == 0) b->syn[b->n_syn].weight = 0;   /* learned, from nothing */
       b->n_syn++;
       b->rule_count[chosen]++;
       made++;

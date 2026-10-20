@@ -11,7 +11,7 @@ cc -std=c99 -O2 ob_grow.c ob_view.c grow_brain.c -o grow_brain -lm
 ```
 
 `out/` then holds `brain_map.txt` (everything the brain is, in words and
-numbers) and four pictures. Growing takes a twentieth of a second. No library
+numbers, and what twenty days in the womb did to it) and five pictures. Growing takes a twentieth of a second. No library
 is needed for anything, not even to write the pictures.
 
 ## How it grows
@@ -31,7 +31,8 @@ is needed for anything, not even to write the pictures.
 What forms, on each side: frontal, parietal, temporal and occipital cortex,
 hippocampus, amygdala, basal ganglia, thalamus, hypothalamus, tectum,
 tegmentum, cerebellum, brainstem, spinal cord (sensory and motor), and a
-retina. They are wired by 44 rules: the cortical column, the senses arriving
+retina. The thalamus grows four nuclei, each with the whole map, one for each
+cortical area it relays to. They are wired by 46 rules: the cortical column, the senses arriving
 through the thalamus, the areas talking (including the frontoparietal network),
 the corpus callosum, the loops through the basal ganglia and cerebellum, and
 the limbic loop (hippocampus binding pairs, amygdala regulating, regulated in
@@ -72,10 +73,46 @@ correlation between where a visual-cortex neuron sits and where on the retina
 it hears from is 0.998 (`test_brain.c`). This is how real brains lay down
 their first visual map, before experience refines it.
 
+## Stage 1: the womb, touch first
+
+`ob_womb.c`. Neurons now fire: each one's activity, between 0 and 1, is what
+its inputs carry, clipped. Its body is its spinal cord: the sensory neurons are
+its skin, the motor neurons its muscles, each at the place its segment serves.
+In the womb it lives moment by moment:
+
+1. A **twitch** starts in the brainstem (fetal twitches do, above all in
+   sleep, and are how the body's map is built). It drives the muscles it maps
+   to, and a copy of the command (the **efference copy**) reaches the
+   cerebellum.
+2. The **body moves**: a muscle that contracts presses the womb wall there; an
+   arm that moves brushes the face (hand to mouth). Now and then the **mother
+   presses** from outside, which no twitch caused. The skin's touch reaches the
+   thalamus (crossing to the other side), and the cerebellum's prediction with
+   it (also crossing, as the cerebellum's output does).
+3. The thalamus reaches the parietal cortex.
+
+The cerebellum learns, by the delta rule (the way its climbing fibres teach
+it), to make its prediction cancel the touch that comes with it. Nobody tells
+it which touch was its own. After twenty days it still feels about 65% of its
+own touch and all of the mother's: what it learned to cancel is "me", what it
+cannot cancel is "not me". This is the same mechanism by which a person cannot
+tickle themself (Blakemore, Wolpert and Frith, 1998). Hand-to-face touch, one
+movement touching a far part of the body, is learned more slowly. The parietal
+cortex responds less to its own touch than to the mother's.
+
+`self.png`: top, day by day, the share still felt of its own touch (blue), the
+mother's (red), hand-to-face (yellow); bottom, its body on both sides, head to
+tail, each place coloured from red (not yet known as its own) to blue (known
+as its own). The map is patchy where the cerebellum's reach is.
+
+The learned prediction connections are written back into the brain, readable
+like any other connection.
+
 ## What it is not
 
 Not a model of 86 billion neurons or of any one animal: about 12,500 neurons
 and 385,000 connections, a scaffold built on biology's principles, simplified.
 The regions and wiring rules are a plausible plan, written down so they can be
-argued with and changed. Nothing in it is active yet: no neuron fires. That
-comes next, with the senses, in the order a child's come.
+argued with and changed. Activity is a rate between 0 and 1, not spikes; and
+only the touch pathway learns so far. The other senses come next, in the order
+a child's come.

@@ -109,7 +109,7 @@ typedef struct {
 } ob_genome_t;
 
 typedef struct {
-  unsigned char region, side, layer;   /* layer 0..4 = cortex 6..2; 0 elsewhere */
+  unsigned char region, side, layer;   /* layer 0..4 = cortex 6..2; in the thalamus its nucleus 0..3; 0 elsewhere */
   unsigned char inhibitory;
   unsigned short birth;                /* birth order within its column */
   unsigned short px, py;               /* where its progenitor sat on the plate */
@@ -166,5 +166,51 @@ int ob_draw_plate(const ob_brain_t *b, const char *path);        /* fates on the
 int ob_draw_morphogens(const ob_brain_t *b, const char *path);   /* SHH, BMP, Wnt */
 int ob_draw_cortex(const ob_brain_t *b, const char *path);       /* both hemispheres, by area and layer */
 int ob_draw_retinotopy(const ob_brain_t *b, const char *path);   /* the retina's map, as it lands on the visual cortex */
+/* Any picture: w*h*3 bytes of red, green, blue. */
+int ob_write_png_rgb(const char *path, const unsigned char *rgb, unsigned w, unsigned h);
+
+/* ============================================================
+ * STAGE 1: LIFE IN THE WOMB (ob_womb.c)
+ * ============================================================
+ * Neurons fire: each neuron's activity is between 0 and 1, the sum of what its
+ * inputs carry (activity times weight), clipped. One moment of life is three
+ * steps of the whole brain at once:
+ *
+ *   1. what started this moment acts: a twitch, generated in the brainstem
+ *      (as fetal twitches are, especially in sleep), drives the muscles it maps
+ *      to, and its copy (the efference copy) reaches the cerebellum
+ *   2. the body moves: a muscle that contracts presses the womb wall there; an
+ *      arm that moves brushes the face (hand to mouth); and now and then the
+ *      mother presses from outside, which no twitch caused. The skin's touch
+ *      reaches the thalamus, and with it the cerebellum's prediction
+ *   3. the thalamus reaches the parietal cortex
+ *
+ * The cerebellum learns, by the delta rule (as its climbing fibres teach it),
+ * to make its prediction cancel the touch that arrives with it: what is left in
+ * the thalamus is touch nothing predicted. Nobody tells it which touch was its
+ * own. Touch it learns to cancel is "me"; touch that stays is "not me".
+ */
+
+typedef struct {
+  unsigned days;                       /* epochs of womb life measured */
+  double self_left[64], other_left[64];      /* share of touch left after prediction */
+  double double_left[64];                    /* the same, for hand-to-face touch */
+  double parietal_self[64], parietal_other[64];   /* parietal response per unit of touch */
+  unsigned self_n[64], other_n[64];
+} ob_womb_stats_t;
+
+/*
+ * Live in the womb for `days` epochs of `moments_per_day` moments each,
+ * learning the touch-prediction connections in place (they are written back
+ * into the brain's synapse weights, readable like any other).
+ */
+void ob_womb_touch(ob_brain_t *b, unsigned days, unsigned moments_per_day, ob_womb_stats_t *out);
+
+/* What the womb did, in words and numbers, for the map. */
+void ob_write_womb(const ob_womb_stats_t *st, FILE *out);
+
+/* After the womb: a map of the body on the parietal cortex, each place
+   coloured by how much of its own touch it has learned to predict. */
+int ob_draw_self(const ob_brain_t *b, const ob_womb_stats_t *st, const char *path);
 
 #endif /* OB_H */

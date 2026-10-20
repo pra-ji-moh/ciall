@@ -44,8 +44,10 @@ out; inhibitory neurons migrate in; first wiring by chemoaffinity, the retina's
 map already in order on the visual cortex.
 
 **Stage 1, the womb**, in the order a fetus's senses come:
-1. Touch: the flinch loop, and the first map of "me" against "not me" on the
-   parietal map.
+1. Touch: done (`brain/ob_womb.c`). Twitches from the brainstem move the body;
+   the cerebellum, from copies of its own commands, learns to cancel the touch
+   they bring. After twenty days it feels about 65% of its own touch and all of
+   the mother's: "me" and "not me", never told which was which.
 2. Chemical senses: is this place good or bad for me; the seed of the
    amygdala's regulation.
 3. Hearing: the heartbeat, a steady rhythm it habituates to; the baseline of
