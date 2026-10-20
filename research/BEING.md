@@ -87,6 +87,11 @@ caregiver; overgrowth then pruning; myelination; ripples and replay in sleep.
   It kicks about ten times more; a yoked twin, answered as often but not by its
   own kicks, stays at its baseline; when the answers stop, kicking falls back.
   The world answers it, and it can tell.
+  Three simpler rules were tried first and failed, and are worth knowing: a
+  value learned only from kicks let early coincidences teach the yoked twin;
+  comparing each choice with its usual rate (an actor-critic) fixed the twin but
+  never extinguished; a value per choice without a critic, and a drive that
+  could not go below zero, let the twin drift up again.
 
 **Stage 3, childhood**: the mind rebuilt on the brain's maps; the parietal
 lobe's numbers and symbols; the two hemispheres (exact and associative) and
