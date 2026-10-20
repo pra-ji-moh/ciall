@@ -283,12 +283,16 @@ static void read_relations(mi_world_t *w) {
      that comes to exactly one unit, where another comes to several. (Counting
      amounts, not patches: two tiles alike that touch are still two tiles.) */
   {
-    unsigned cells[PL_COLOURS] = {0}, k, unit = 0u, ones = 0u, many = 0u;
+    unsigned cells[PL_COLOURS] = {0}, k, unit = 0u, ones = 0u, many = 0u, total = 0u;
     int big[PL_COLOURS] = {0}, one = -1;
     for (i = 0u; i < n; i++) {
-      if (g[i].n > 16u) big[g[i].col] = 1;
       cells[g[i].col] += g[i].n;
-      if (g[i].n <= 16u && (unit == 0u || g[i].n < unit)) unit = g[i].n;
+      total += g[i].n;
+    }
+    /* the colours that make up much of the picture (walls, floor) are not things */
+    for (k = 0u; k < PL_COLOURS; k++) big[k] = 5u * cells[k] > total;
+    for (i = 0u; i < n; i++) {
+      if (!big[g[i].col] && (unit == 0u || g[i].n < unit)) unit = g[i].n;
     }
     for (k = 0u; k < PL_COLOURS && unit > 0u; k++) {
       if (big[k] || cells[k] == 0u) continue;
@@ -300,6 +304,11 @@ static void read_relations(mi_world_t *w) {
       }
     }
     if (ones == 1u && many >= 1u) w->odd = one;
+#ifdef MI_DEBUG
+    fprintf(stderr, "  relations: unit %u ones %u many %u cells", unit, ones, many);
+    for (k = 0u; k < PL_COLOURS; k++) if (cells[k]) fprintf(stderr, " %u:%u%s", k, cells[k], big[k] ? "B" : "");
+    fprintf(stderr, "\n");
+#endif
   }
   /* a legend: a row of small patches of one shape and distinct colours, each
      colour also found somewhere off that row */
@@ -1199,6 +1208,23 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
     if (a == 0u) {
       /* nothing left to imagine: it is stuck */
       stuck++;
+      if (stuck == 1u && w->n_mv > 0u) {
+        /* the weakest thing it holds is that an action does nothing: that was
+           only ever inferred from moves that went nowhere. Given up first */
+        unsigned b, forgot = 0u;
+        for (b = 1u; b <= g->n_actions; b++) {
+          if (w->mv[0].known[b] && w->mv[0].sr[b] == 0 && w->mv[0].sc[b] == 0) {
+            w->mv[0].known[b] = 0;
+            w->stayed[b] = 0u;
+            forgot++;
+          }
+        }
+        if (forgot > 0u) {
+          memset(w->failed, 0, sizeof w->failed);
+          stuck = 0u;
+          continue;
+        }
+      }
       if (stuck >= MI_STRANDED && changed_here > 0u && g->restart != 0) {
         g->restart(g, &now);
         res.actions++;
