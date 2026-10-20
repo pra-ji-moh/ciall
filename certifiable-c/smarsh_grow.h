@@ -20,6 +20,8 @@
  *   odd one out     \
  *   mirror twin      > open as soon as it has handled any maze at all
  *   in order        /
+ *   reverse order   opens once it handles in-order worlds at difficulty 3
+ *   odd twin        opens once it handles mirror twins at difficulty 3
  *
  * The abstract kinds are not held back until it is "ready". There is no
  * right age for a hard idea: a mind meets it early, struggles, and the
@@ -89,7 +91,7 @@
 #include "smarsh_core.h"
 #include "smarsh_mind.h"
 
-#define GW_KINDS 6u
+#define GW_KINDS 8u
 
 typedef struct {
   int unlocked;

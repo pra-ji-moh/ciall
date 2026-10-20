@@ -39,6 +39,11 @@ static void check(const char *name, int ok) {
 
 static const char *TMP = "test_grow_mind.tmp";
 
+static unsigned abstract_worlds(const gw_mind_t *m) {
+  return m->track[WG_ODD].worlds + m->track[WG_MIRROR].worlds + m->track[WG_ORDER].worlds +
+         m->track[WG_REVERSE].worlds + m->track[WG_ODDTWIN].worlds;
+}
+
 static int same_but_runs(const gw_mind_t *a, const gw_mind_t *b) {
   gw_mind_t x = *a, y = *b;
   x.runs = 0u;
@@ -74,12 +79,9 @@ int main(void) {
   check("the abstract kinds open once any maze has been handled",
         m.track[WG_ODD].unlocked && m.track[WG_MIRROR].unlocked && m.track[WG_ORDER].unlocked);
   {
-    unsigned before = m.track[WG_ODD].worlds + m.track[WG_MIRROR].worlds +
-                      m.track[WG_ORDER].worlds;
+    unsigned before = abstract_worlds(&m);
     gw_grow(&m, 20u, 0);
-    check("and from then on every other world is an abstract one",
-          m.track[WG_ODD].worlds + m.track[WG_MIRROR].worlds + m.track[WG_ORDER].worlds ==
-              before + 10u);
+    check("and from then on every other world is an abstract one", abstract_worlds(&m) == before + 10u);
   }
   check("it moves itself up in every concrete kind it has opened",
         m.track[WG_MAZE].has_frontier && m.track[WG_KEYS].has_frontier &&

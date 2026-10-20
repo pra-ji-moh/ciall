@@ -12,7 +12,12 @@
  *   prediction     it predicts every mover and every ending, and is mostly
  *                  right once it knows a world
  *   optogenetics   with the inventor switched off, the worlds that need an
- *                  invented idea are no longer finished well
+ *                  invented idea are no longer finished well; and switching
+ *                  its own parts off in pairs, it finds that its inventor and
+ *                  packing stand in for each other
+ *   harder         reverse order (the legend read the other way) and odd twin
+ *                  (the twin must cover the odd tile) are finished well
+ *   the score      ARC-AGI-3's way, every level counting
  *   intuition      a world like ones it has met has low novelty; after enough
  *                  worlds, intuition names what ends them (for worlds with a
  *                  legend, which look like nothing else)
@@ -65,6 +70,14 @@ static unsigned play_kind(mi_library_t *lib, unsigned kind, unsigned diff, unsig
 
 static const char *TMP = "test_mind_lib.tmp";
 
+static unsigned PROBE_KIND_BASE;
+
+/* the self-experiment's worlds: odd one out and in order, two of each, and two mirrors */
+static void probe_world(pl_game_t *g, unsigned i) {
+  static const unsigned kinds[3] = {WG_ODD, WG_ORDER, WG_MIRROR};
+  wg_make_kind(g, kinds[i % 3u], 4u, PROBE_KIND_BASE + i);
+}
+
 int main(void) {
   static mi_library_t lib, lib2, fresh;
   mi_result_t r, r2;
@@ -112,8 +125,28 @@ int main(void) {
   w = play_kind(&lib, WG_ODD, 9u, 800u, 8u, &fin, &r);
   check("and finishes odd-one-out worlds well: at least 7 of 8, hardest", w >= 7u);
 
+  {
+    mi_result_t odd_last = r;
+  mi_library_init(&lib);
+  w = play_kind(&lib, WG_REVERSE, 5u, 1100u, 8u, &fin, &r);
+  check("reverse order: it reads the legend the other way, at least 7 of 8 finished well",
+        w >= 7u && lib.wins[MI_SEQ_RL] > 0u);
+  mi_library_init(&lib);
+  w = play_kind(&lib, WG_ODDTWIN, 5u, 1200u, 8u, &fin, &r);
+  check("odd twin: two ideas at once, the twin on the odd tile, at least 6 of 8 finished well",
+        w >= 6u && r.transform != 0 && r.winner == MI_ODD);
+  {
+    mi_result_t perfect;
+    memset(&perfect, 0, sizeof perfect);
+    perfect.levels_done = 3u;
+    for (k = 0u; k < 3u; k++) perfect.level_actions[k] = perfect.level_shortest[k] = 10u;
+    perfect.level_actions[2] = 20u;   /* the last level at twice the shortest: a quarter */
+    check("scored as ARC-AGI-3 does: (1*1 + 2*1 + 3*0.25) / 6 = 62.5%", mi_score(&perfect, 3u) == 625u);
+  }
+
   check("it predicts, and once it knows a world it is mostly right",
-        r.predictions > 0u && r.errors * 4u < r.predictions);
+        odd_last.predictions > 0u && odd_last.errors * 4u < odd_last.predictions);
+  }
 
   /* optogenetics */
   mi_library_init(&lib);
@@ -149,6 +182,23 @@ int main(void) {
   check("and its intuition names what ended those: the legend in order", r.intuition == MI_SEQ_LR);
   check("ideas that kept explaining worlds are packed into blocks it starts with",
         lib.packed[MI_COVER] && lib.packed[MI_ODD] && lib.packed[MI_SEQ_LR]);
+
+  /* optogenetics on itself, in pairs: a grown library, where packing gives what
+     the inventor would build, so each alone costs little and both cost much */
+  {
+    static mi_library_t grown;
+    mi_library_init(&grown);
+    for (k = 0u; k < 4u; k++) {
+      unsigned kind;
+      for (kind = WG_ODD; kind <= WG_ORDER; kind++) play_kind(&grown, kind, 4u, 3000u + 10u * k, 1u, &fin, &r);
+    }
+    PROBE_KIND_BASE = 4000u;
+    mi_probe(&grown, probe_world, 6u, 4000u, 0);
+    check("switching its parts off in pairs, it finds the inventor and packing stand in for each other",
+          grown.probe_pair[MI_PART_INVENTOR][MI_PART_PACKING] >
+              grown.probe_delta[MI_PART_INVENTOR] + grown.probe_delta[MI_PART_PACKING] + 20 &&
+              grown.probe_delta[MI_PART_IMAGINATION] > 200 && grown.probes == 1u);
+  }
 
   /* memory */
   {

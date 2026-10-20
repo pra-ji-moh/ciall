@@ -33,6 +33,18 @@
  *          out of turn puts every pad back. The order differs each level.
  *          Needs: reading a symbol as an instruction, and a sequence
  *
+ * And kinds that combine what came before, so that guessing costs real moves:
+ *
+ *   reverse   in order, but the legend is to be read from right to left. A
+ *             small mark sits at the right-hand end of the legend, where the
+ *             reading starts. A mind that has only ever read left to right
+ *             will try that first and be wrong; one that has learned what the
+ *             mark means will not. Needs: a cue read as an instruction about
+ *             another instruction
+ *   odd twin  the mirror twin, and odd-one-out tiles: the level ends when the
+ *             twin, not the body, covers the tile that differs. Needs: two
+ *             ideas at once, a transformation and a relation
+ *
  * What changes as difficulty rises, so that nothing can be carried in as an
  * assumption: the size of the world, the body's size and colours, how far a
  * step goes, which action goes which way, actions that do nothing, and every
@@ -49,7 +61,8 @@
 typedef enum {
   WG_MAZE = 0, WG_KEYS = 1, WG_PUSH = 2,
   WG_ODD = 3, WG_MIRROR = 4, WG_ORDER = 5,
-  WG_KINDS = 6
+  WG_REVERSE = 6, WG_ODDTWIN = 7,
+  WG_KINDS = 8
 } wg_kind_t;
 
 #define WG_MAX_PADS 4u

@@ -36,9 +36,14 @@ static const gw_gate_t MAP[GW_KINDS] = {
      "a twin moves whenever it moves, but transformed, and only the twin can end the level"},
     {WG_ORDER, 0, WG_MAZE, 0u, 1,
      "a legend shows an order, and the end is covering things in that order"},
+    {WG_REVERSE, 0, WG_ORDER, 3u, 1,
+     "the legend is to be read the other way, and a mark at one end says where to start"},
+    {WG_ODDTWIN, 0, WG_MIRROR, 3u, 1,
+     "the twin, not itself, must cover the one tile that differs"},
 };
 
-static const char *const KIND_KEY[GW_KINDS] = {"maze", "keys", "push", "odd", "mirror", "order"};
+static const char *const KIND_KEY[GW_KINDS] = {"maze", "keys", "push", "odd",
+                                                "mirror", "order", "reverse", "oddtwin"};
 
 void gw_mind_init(gw_mind_t *m) {
   unsigned k;
@@ -236,7 +241,9 @@ static void open_gates(gw_mind_t *m, FILE *journal) {
 static unsigned teacher_says(unsigned kind) {
   switch (kind) {
     case WG_ODD: return MI_ODD;
+    case WG_ODDTWIN: return MI_ODD;
     case WG_ORDER: return MI_SEQ_LR;
+    case WG_REVERSE: return MI_SEQ_RL;
     default: return MI_COVER;
   }
 }
@@ -371,6 +378,8 @@ sm_status_t gw_grow(gw_mind_t *m, unsigned worlds, FILE *journal) {
                   (unsigned)((100u * (later % later_best)) / later_best));
         }
         fprintf(journal, "%s\n", well ? "" : ", too wasteful to count as learned");
+        fprintf(journal, "    scored as ARC-AGI-3 would, every level counting: %u.%u%%\n",
+                mi_score(&res, g.levels) / 10u, mi_score(&res, g.levels) % 10u);
       } else {
         fprintf(journal, "    did not finish: %u of %u levels in %u actions\n", res.levels_done,
                 g.levels, res.actions);
@@ -477,8 +486,15 @@ void gw_report(const gw_mind_t *m) {
   printf("\n  intuition right %u, wrong %u; worlds remembered %u\n", m->lib.intuition_right,
          m->lib.intuition_wrong, m->lib.n_mem);
   if (m->lib.probes > 0u) {
-    printf("  what its parts are worth (worlds finished well with it, minus without):");
-    for (k = 0u; k < MI_PARTS; k++) printf(" %s %+d", mi_part_name(k), m->lib.probe_delta[k]);
+    unsigned q;
+    printf("  what its parts are worth (score points with it, minus without):");
+    for (k = 0u; k < MI_PARTS; k++) printf(" %s %+.1f", mi_part_name(k), m->lib.probe_delta[k] / 10.0);
+    printf("\n  and in pairs (both off together):");
+    for (k = 0u; k < MI_PARTS; k++) {
+      for (q = k + 1u; q < MI_PARTS; q++) {
+        printf(" %s+%s %+.1f", mi_part_name(k), mi_part_name(q), m->lib.probe_pair[k][q] / 10.0);
+      }
+    }
     printf("\n");
   }
 }

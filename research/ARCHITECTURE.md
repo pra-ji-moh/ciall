@@ -49,6 +49,40 @@ the inventor off loses the abstract worlds, that sleep finds the idea that fits
 a world it could not explain, that intuition names what ends worlds with a
 legend, that packing happens, and that it is deterministic.
 
+## Harder worlds, and what each part is worth
+
+Two kinds combine what came before, so that guessing costs real moves:
+**reverse order** (the legend read right to left, with a mark at the end where
+reading starts) and **odd twin** (the mirrored twin must cover the tile that
+differs). They open once in-order and mirror worlds are handled at difficulty 3.
+
+"Finished well" ignores the first level, which is exactly where knowing what
+to try first saves moves, so the parts that help there looked worthless. The
+self-experiments now use ARC-AGI-3's score (`mi_score`): every level counts,
+(shortest / actions)² each, later levels weighing more.
+
+A fresh mind growing over 160 mixed worlds of all eight kinds at difficulty 3,
+scored on the second half, with parts switched off:
+
+| Switched off | Score | Where it shows |
+|---|---|---|
+| nothing | 77.2% | |
+| intuition | 74.7% | pushing −8, odd twin −10 |
+| packing | 74.9% | odd twin −10 |
+| inventor | 45.8% | in order 88 → 2, reverse 89 → 1, odd twin 72 → 22 |
+| imagination | 0.0% | everything |
+
+And in a grown child, switching parts off one at a time misses parts that do
+each other's work. The self-experiment now also switches them off in pairs.
+Over 16 simulated hours of a fresh child, it wrote in 15 of them: *its inventor
+and its packing stand in for each other* (each alone costs about nothing; both
+together cost 28 points). Sleep found, 17 times, that a world it could not
+explain fits the odd one out.
+
+The fresh child reached the top difficulty in every kind, including the two new
+ones, in about 14 hours (it took about 8 before them). The teacher never had
+to speak: the child never failed five worlds of a kind in a row.
+
 ## What it is not, yet
 
 - **It plays the practice worlds, not ARC-AGI-3.** The ARC games still go to
@@ -59,6 +93,9 @@ legend, that packing happens, and that it is deterministic.
   "the one that differs" and "the legend, in order or reversed". It does not
   yet build new blocks out of old ones; that would be the step from invention
   to open-ended invention.
+- **The playground still tops out.** Even with the two harder kinds, a fresh
+  child masters every kind in about 14 hours, and the teacher is never needed.
+  The worlds have to keep getting harder, or the child has to meet ARC.
 - **Intuition sees only the first frame.** Worlds that look alike (a maze and an
   odd-one-out world are both mazes with tiles) get the same intuition. A person
   would guess the same way, but would also revise the guess after a few moves.

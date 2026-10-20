@@ -23,6 +23,7 @@ typedef struct {
   unsigned char pad_col[WG_LEVELS][WG_MAX_PADS];         /* order: pad colours, in order */
   unsigned n_pads[WG_LEVELS];
   unsigned pool[16], n_pool;                /* colours nothing else in the world uses */
+  unsigned marker;                          /* reverse: the mark where the legend starts */
   int tw_sr, tw_sc;                         /* mirror: how the twin's step is transformed */
   unsigned level, next;
   int pr, pc, br, bc;
@@ -45,6 +46,12 @@ static unsigned below(uint32_t *s, unsigned n) {
   return n == 0u ? 0u : next_rand(s) % n;
 }
 
+static int is_order(unsigned kind) { return kind == WG_ORDER || kind == WG_REVERSE; }
+static int has_twin(unsigned kind) { return kind == WG_MIRROR || kind == WG_ODDTWIN; }
+static int has_pair(unsigned kind) { return kind == WG_PUSH || has_twin(kind); }
+/* what the second thing (box or twin) must cover to end the level */
+static char pair_goal(unsigned kind) { return kind == WG_ODDTWIN ? 'B' : 'X'; }
+
 static char cell(const wg_state_t *w, unsigned lv, int r, int c) {
   if (r < 0 || c < 0 || r >= (int)w->f.rows || c >= (int)w->f.cols) return 'W';
   return w->grid[lv][r][c];
@@ -58,6 +65,8 @@ const char *wg_kind_name(unsigned kind) {
     case WG_ODD: return "odd one out";
     case WG_MIRROR: return "mirror twin";
     case WG_ORDER: return "in order";
+    case WG_REVERSE: return "reverse order";
+    case WG_ODDTWIN: return "odd twin";
     default: return "?";
   }
 }
@@ -128,14 +137,14 @@ static unsigned pair_shortest(const wg_state_t *w, unsigned lv, int pr, int pc, 
     int r = (int)((st >> 15) & 31u), c = (int)((st >> 10) & 31u);
     int xr = (int)((st >> 5) & 31u), xc = (int)(st & 31u);
     head++;
-    if (cell(w, lv, xr, xc) == 'X') {
+    if (cell(w, lv, xr, xc) == pair_goal(w->f.kind)) {
       answer = d;
       break;
     }
     for (k = 0u; k < 4u; k++) {
       int nr = r + dr[k], nc = c + dc[k], nxr = xr, nxc = xc;
       unsigned key;
-      if (w->f.kind == WG_MIRROR) {
+      if (has_twin(w->f.kind)) {
         /* each moves unless a wall stops it; the twin by the transformed step */
         if (cell(w, lv, nr, nc) == 'W') {
           nr = r;
@@ -380,6 +389,16 @@ static unsigned pick_colour(const wg_state_t *w, uint32_t *rng, int not) {
   return w->pool[0] == (unsigned)not ? w->pool[1] : w->pool[0];
 }
 
+/* Each level, the colour that was odd before becomes the common one. */
+static void odd_colours(wg_state_t *w, unsigned lv, uint32_t *rng) {
+  if (lv == 0u) {
+    w->common[lv] = (unsigned char)pick_colour(w, rng, -1);
+  } else {
+    w->common[lv] = w->odd[lv - 1u];
+  }
+  w->odd[lv] = (unsigned char)pick_colour(w, rng, w->common[lv]);
+}
+
 /* Odd one out: a maze with loops, tiles of one colour scattered in it, and
    one tile of another colour that ends the level. Each level the colour that
    was odd in the level before becomes the common one, so no colour can be
@@ -394,12 +413,7 @@ static int build_odd(wg_state_t *w, unsigned lv, uint32_t *rng) {
     if (!random_floor(w, lv, rng, &r, &c)) return 0;
     w->grid[lv][r][c] = i == 0u ? 'B' : 'A';
   }
-  if (lv == 0u) {
-    w->common[lv] = (unsigned char)pick_colour(w, rng, -1);
-  } else {
-    w->common[lv] = w->odd[lv - 1u];
-  }
-  w->odd[lv] = (unsigned char)pick_colour(w, rng, w->common[lv]);
+  odd_colours(w, lv, rng);
   spread(w, lv, sr, sc, 0, 0, &far_r, &far_c);
   for (r = 0; r < (int)w->f.rows; r++) {
     for (c = 0; c < (int)w->f.cols; c++) {
@@ -426,6 +440,30 @@ static int build_mirror(wg_state_t *w, unsigned lv, uint32_t *rng) {
   if (!random_floor(w, lv, rng, &xr, &xc)) return 0;
   if (xr == tr && xc == tc) return 0;
   w->grid[lv][xr][xc] = 'X';
+  len = pair_shortest(w, lv, pr, pc, tr, tc);
+  return len >= 3u + w->f.difficulty / 2u;
+}
+
+/* Odd twin: the mirror's room, body and twin, and odd-one-out tiles; the
+   twin covering the tile that differs ends the level. */
+static int build_oddtwin(wg_state_t *w, unsigned lv, uint32_t *rng) {
+  int pr, pc, tr, tc, r, c;
+  unsigned n = 3u + w->f.difficulty / 2u, i, len;
+  room(w, lv, rng, w->f.difficulty);
+  if (!random_floor(w, lv, rng, &pr, &pc)) return 0;
+  tr = w->tw_sr < 0 ? (int)w->f.rows - 1 - pr : pr;
+  tc = (int)w->f.cols - 1 - pc;
+  if (w->grid[lv][tr][tc] != '.' || (tr == pr && tc == pc)) return 0;
+  w->grid[lv][pr][pc] = 'P';
+  w->grid[lv][tr][tc] = 'Q';   /* held while the tiles are placed */
+  for (i = 0u; i < n; i++) {
+    if (!random_floor(w, lv, rng, &r, &c)) return 0;
+    w->grid[lv][r][c] = i == 0u ? 'B' : 'A';
+  }
+  w->grid[lv][tr][tc] = '.';
+  w->box_r[lv] = tr;
+  w->box_c[lv] = tc;
+  odd_colours(w, lv, rng);
   len = pair_shortest(w, lv, pr, pc, tr, tc);
   return len >= 3u + w->f.difficulty / 2u;
 }
@@ -488,15 +526,17 @@ static void render(const wg_state_t *w, pl_frame_t *f) {
       if (ch >= '1' && ch <= '9') paint(f, w, r, c, w->pad_col[w->level][ch - '1']);
     }
   }
-  if (w->f.kind == WG_PUSH || w->f.kind == WG_MIRROR) paint(f, w, w->br, w->bc, w->f.box);
-  if (w->f.kind == WG_ORDER) {
+  if (has_pair(w->f.kind)) paint(f, w, w->br, w->bc, w->f.box);
+  if (is_order(w->f.kind)) {
     /* the legend: the pads' colours in the order they are to be covered,
-       in the strip above the room */
-    for (i = 0u; i < w->n_pads[w->level]; i++) {
-      for (j = 0u; j < 4u; j++) {
-        f->c[1u + j / 2u][WG_OFF + 3u * i + j % 2u] = w->pad_col[w->level][i];
-      }
+       in the strip above the room; reversed, with a mark at the right-hand
+       end where the reading starts */
+    unsigned n = w->n_pads[w->level];
+    for (i = 0u; i < n; i++) {
+      unsigned col = w->f.kind == WG_REVERSE ? w->pad_col[w->level][n - 1u - i] : w->pad_col[w->level][i];
+      for (j = 0u; j < 4u; j++) f->c[1u + j / 2u][WG_OFF + 3u * i + j % 2u] = (unsigned char)col;
     }
+    if (w->f.kind == WG_REVERSE) f->c[1][WG_OFF + 3u * n] = (unsigned char)w->marker;
   }
   for (i = 0u; i < w->f.scale; i++) {
     for (j = 0u; j < w->f.scale; j++) {
@@ -521,7 +561,7 @@ static void start_level(wg_state_t *w) {
   w->opened = 0;
   w->next = 0u;
   /* every pad back where it was, whatever was covered before */
-  if (w->f.kind == WG_ORDER) memcpy(w->grid[w->level], w->orig[w->level], sizeof w->grid[w->level]);
+  if (is_order(w->f.kind)) memcpy(w->grid[w->level], w->orig[w->level], sizeof w->grid[w->level]);
 }
 
 static void wg_reset(pl_game_t *g, pl_frame_t *out) {
@@ -564,14 +604,14 @@ static int wg_act(pl_game_t *g, unsigned action, pl_frame_t *out) {
     w->pr = nr;
     w->pc = nc;
   }
-  if (w->f.kind == WG_MIRROR) {
+  if (has_twin(w->f.kind)) {
     int tr = w->br + w->tw_sr * w->dr[action], tc = w->bc + w->tw_sc * w->dc[action];
     if (cell(w, w->level, tr, tc) != 'W') {
       w->br = tr;
       w->bc = tc;
     }
   }
-  if (w->f.kind == WG_ORDER) {
+  if (is_order(w->f.kind)) {
     char ch = cell(w, w->level, w->pr, w->pc);
     if (ch >= '1' && ch <= '9') {
       if ((unsigned)(ch - '1') == w->next) {
@@ -595,9 +635,9 @@ static int wg_act(pl_game_t *g, unsigned action, pl_frame_t *out) {
       }
     }
   }
-  if (w->f.kind == WG_PUSH || w->f.kind == WG_MIRROR) ended = cell(w, w->level, w->br, w->bc) == 'X';
+  if (has_pair(w->f.kind)) ended = cell(w, w->level, w->br, w->bc) == pair_goal(w->f.kind);
   else if (w->f.kind == WG_ODD) ended = cell(w, w->level, w->pr, w->pc) == 'B';
-  else if (w->f.kind == WG_ORDER) ended = w->next >= w->n_pads[w->level];
+  else if (is_order(w->f.kind)) ended = w->next >= w->n_pads[w->level];
   else ended = cell(w, w->level, w->pr, w->pc) == 'T';
 
   if (ended) {
@@ -618,10 +658,8 @@ static int wg_act(pl_game_t *g, unsigned action, pl_frame_t *out) {
 static unsigned wg_shortest(pl_game_t *g) {
   wg_state_t *w = (wg_state_t *)g->state;
   int r, c, far_r, far_c, kr = -1, kc = -1, tr = -1, tc = -1;
-  if (w->f.kind == WG_PUSH || w->f.kind == WG_MIRROR) {
-    return pair_shortest(w, w->level, w->pr, w->pc, w->br, w->bc);
-  }
-  if (w->f.kind == WG_ORDER) return order_shortest(w, w->level, w->pr, w->pc, w->next);
+  if (has_pair(w->f.kind)) return pair_shortest(w, w->level, w->pr, w->pc, w->br, w->bc);
+  if (is_order(w->f.kind)) return order_shortest(w, w->level, w->pr, w->pc, w->next);
   for (r = 0; r < (int)w->f.rows; r++) {
     for (c = 0; c < (int)w->f.cols; c++) {
       if (w->grid[w->level][r][c] == 'T' || w->grid[w->level][r][c] == 'B') { tr = r; tc = c; }
@@ -716,7 +754,8 @@ void wg_make_kind(pl_game_t *g, unsigned kind, unsigned difficulty, unsigned see
       else if (kind == WG_PUSH) ok = build_push(w, lv, &rng);
       else if (kind == WG_ODD) ok = build_odd(w, lv, &rng);
       else if (kind == WG_MIRROR) ok = build_mirror(w, lv, &rng);
-      else if (kind == WG_ORDER) ok = build_order(w, lv, &rng);
+      else if (is_order(kind)) ok = build_order(w, lv, &rng);
+      else if (kind == WG_ODDTWIN) ok = build_oddtwin(w, lv, &rng);
       else ok = build_maze(w, lv, &rng);
     }
     if (!ok) {
@@ -728,8 +767,20 @@ void wg_make_kind(pl_game_t *g, unsigned kind, unsigned difficulty, unsigned see
     }
   }
 
-  if (w->f.kind == WG_ODD) w->f.n_parts = 3u + difficulty / 2u;
-  if (w->f.kind == WG_ORDER) w->f.n_parts = w->n_pads[0];
+  if (w->f.kind == WG_ODD || w->f.kind == WG_ODDTWIN) w->f.n_parts = 3u + difficulty / 2u;
+  if (is_order(w->f.kind)) w->f.n_parts = w->n_pads[0];
+  if (w->f.kind == WG_REVERSE) {
+    /* a colour no pad has, at any level */
+    unsigned tries, l2, j2;
+    for (tries = 0u; tries < 64u; tries++) {
+      int clash = 0;
+      w->marker = pick_colour(w, &rng, -1);
+      for (l2 = 0u; l2 < WG_LEVELS; l2++) {
+        for (j2 = 0u; j2 < w->n_pads[l2]; j2++) clash |= w->pad_col[l2][j2] == w->marker;
+      }
+      if (!clash) break;
+    }
+  }
   memcpy(w->orig, w->grid, sizeof w->orig);
   g->state = w;
   g->n_actions = w->f.n_actions;

@@ -9,7 +9,8 @@
  * of actions the world reported. To try an action and take it back, it
  * includes arc_worldgen.c itself and copies the world's state.
  *
- * Checked, for odd one out, mirror twin and in order, at every difficulty,
+ * Checked, for odd one out, mirror twin, in order, reverse order and odd twin,
+ * at every difficulty,
  * over forty seeds each:
  *   made       the kind asked for is the kind given, never a maze instead
  *   fair       the oracle finishes all three levels
@@ -58,13 +59,13 @@ static unsigned oracle(pl_game_t *g, unsigned *reported) {
 }
 
 int main(void) {
-  static const unsigned KINDS[3] = {WG_ODD, WG_MIRROR, WG_ORDER};
+  static const unsigned KINDS[5] = {WG_ODD, WG_MIRROR, WG_ORDER, WG_REVERSE, WG_ODDTWIN};
   unsigned k, d, seed;
   int made = 1, fair = 1, honest = 1, odd_moves = 1, same = 1;
 
   printf("THE ABSTRACT WORLDS ARE FAIR\n\n");
 
-  for (k = 0u; k < 3u; k++) {
+  for (k = 0u; k < 5u; k++) {
     for (d = 0u; d <= WG_MAX_DIFFICULTY; d++) {
       for (seed = 1u; seed <= 40u; seed++) {
         pl_game_t g;
@@ -77,7 +78,7 @@ int main(void) {
           made = 0;
           continue;
         }
-        if (KINDS[k] == WG_ODD) {
+        if (KINDS[k] == WG_ODD || KINDS[k] == WG_ODDTWIN) {
           unsigned lv;
           for (lv = 1u; lv < WG_LEVELS; lv++) {
             if (WG.common[lv] != WG.odd[lv - 1u] || WG.common[lv] == WG.odd[lv]) odd_moves = 0;
@@ -94,7 +95,7 @@ int main(void) {
   check("and the shortest way each reports is exactly the real one", honest);
   check("odd one out: each level's common colour is the one that was odd before", odd_moves);
 
-  for (k = 0u; k < 3u; k++) {
+  for (k = 0u; k < 5u; k++) {
     pl_game_t g;
     static pl_frame_t a, b;
     wg_make_kind(&g, KINDS[k], 6u, 77u);

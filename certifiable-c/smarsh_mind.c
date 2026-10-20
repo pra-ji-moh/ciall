@@ -19,7 +19,7 @@
 #define MI_LEGEND 6u
 #define MI_HISTORY 4096u     /* actions remembered from one world, for the inventor */
 #define MI_DREAMS 6u         /* unexplained worlds kept for sleep */
-#define MI_FEATURES 10u
+#define MI_FEATURES 11u
 #define MI_UNITS 128u
 #define MI_STRANDED 6u
 #define MI_GIVE_UP 60u
@@ -199,6 +199,7 @@ typedef struct {
   int odd;                            /* the odd colour, or -1 */
   unsigned n_legend;
   unsigned char legend[MI_LEGEND];
+  int legend_mark;                    /* a mark at an end of the legend: 0 none, 1 left, 2 right */
   /* the language and what is still possible in it */
   int lang[MI_FAMILIES];
   int cover[MI_MAX_MOVERS][PL_COLOURS];
@@ -279,6 +280,7 @@ static void read_relations(mi_world_t *w) {
   n = components(&gf, w->bg, g);
   w->odd = -1;
   w->n_legend = 0u;
+  w->legend_mark = 0;
   /* the odd one: among the colours of small things only, how much of each
      there is. The smallest thing is one unit; the odd colour is the only one
      that comes to exactly one unit, where another comes to several. (Counting
@@ -342,6 +344,15 @@ static void read_relations(mi_world_t *w) {
     if (!ok) continue;
     for (j = 0u; j < nr; j++) w->legend[j] = g[row[j]].col;
     w->n_legend = nr;
+    /* a small thing of another shape just off one end of the legend, in its rows */
+    w->legend_mark = 0;
+    for (j = 0u; j < n; j++) {
+      const mi_comp_t *x = &g[j], *first = &g[row[0]], *last = &g[row[nr - 1u]];
+      if (x->n > 4u || (x->n == first->n && x->sig == first->sig)) continue;
+      if (x->r0 < first->r0 || x->r0 > first->r1) continue;
+      if (x->c0 > last->c1 && x->c0 <= last->c1 + 3) w->legend_mark = 2;
+      if (x->c1 < first->c0 && x->c1 >= first->c0 - 3) w->legend_mark = 1;
+    }
   }
 }
 
@@ -883,6 +894,7 @@ static void features(const pl_frame_t *f, const mi_world_t *w, unsigned *x) {
   x[7] = small >= 3u ? 4u : 0u;
   x[8] = big == 1u ? 5u : 0u;
   x[9] = (small + big) > 3u ? 3u : 0u;
+  x[10] = w->legend_mark == 2 ? 7u : w->legend_mark == 1 ? 3u : 0u;
 }
 
 /* A sparse random expansion of the features, and the strongest units kept. */
@@ -1064,6 +1076,32 @@ static int find_transform(const mi_world_t *w) {
   return 0;
 }
 
+/* A fingerprint of everything a plan is made from: beliefs, ground, where the
+   movers are. A search that found nothing is not repeated until this changes. */
+static unsigned long long belief_key(const mi_world_t *w) {
+  unsigned long long h = 1469598103934665603ull;
+  const unsigned char *p;
+  size_t i, n;
+#define MI_MIX(ptr, len)                                     \
+  do {                                                       \
+    p = (const unsigned char *)(ptr);                        \
+    n = (len);                                               \
+    for (i = 0u; i < n; i++) h = (h ^ p[i]) * 1099511628211ull; \
+  } while (0)
+  MI_MIX(w->ground, sizeof w->ground);
+  MI_MIX(w->visited, sizeof w->visited);
+  MI_MIX(w->mv, sizeof w->mv);
+  MI_MIX(w->wall_alive, sizeof w->wall_alive);
+  MI_MIX(w->wall_out, sizeof w->wall_out);
+  MI_MIX(w->lang, sizeof w->lang);
+  MI_MIX(w->cover, sizeof w->cover);
+  MI_MIX(w->fam_alive, sizeof w->fam_alive);
+  MI_MIX(w->prog, sizeof w->prog);
+  MI_MIX(&w->transform, sizeof w->transform);
+#undef MI_MIX
+  return h;
+}
+
 static void note_mode(mi_result_t *res, unsigned mode) {
   res->modes[mode]++;
 }
@@ -1077,6 +1115,7 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
   unsigned votes[MI_FAMILIES] = {0}, order[MI_FAMILIES];
   unsigned char fp[MI_FP_K];
   int planned_family = -1, trusted;
+  unsigned long long no_plan_at = 0ull, no_way_at = 0ull, key = 0ull;
   mi_world_t *w = &W;
   mi_result_t res;
 
@@ -1137,8 +1176,9 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
       }
     }
   }
-  trusted = res.intuition >= 0 && lib->intuition_right >= 2u &&
-            lib->intuition_right >= 3u * lib->intuition_wrong;
+  trusted = res.intuition >= 0 && lib->intuition_hit[res.intuition] >= 2u &&
+            lib->intuition_hit[res.intuition] >=
+                3u * (lib->intuition_named[res.intuition] - lib->intuition_hit[res.intuition]);
   res.trusted = trusted;
   /* a trusted intuition can bring back an idea it has had before, from the start */
   if (trusted && (lib->wins[res.intuition] > 0u || lib->dreamt[res.intuition] > 0u)) {
@@ -1172,7 +1212,8 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
       a = plan[plan_at++];
       mode = (trusted && planned_family == res.intuition) ? MI_INTUITION : MI_IMAGINE;
     }
-    if (a == 0u && w->n_mv > 0u && !mi_switched_off(MI_PART_IMAGINATION)) {
+    if (a == 0u && w->n_mv > 0u) key = belief_key(w);
+    if (a == 0u && w->n_mv > 0u && !mi_switched_off(MI_PART_IMAGINATION) && key != no_plan_at) {
       plan_len = make_plan(w, order, plan, 512u, &planned_family);
       plan_at = 0u;
       if (plan_len == 0u && !mi_switched_off(MI_PART_INVENTOR)) {
@@ -1190,12 +1231,13 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
         }
         if (grew) plan_len = make_plan(w, order, plan, 512u, &planned_family);
       }
+      if (plan_len == 0u) no_plan_at = belief_key(w);
       if (plan_len > 0u) {
         a = plan[plan_at++];
         mode = (trusted && planned_family == res.intuition) ? MI_INTUITION : MI_IMAGINE;
       }
     }
-    if (a == 0u && w->n_mv > 0u && !mi_switched_off(MI_PART_IMAGINATION)) {
+    if (a == 0u && w->n_mv > 0u && !mi_switched_off(MI_PART_IMAGINATION) && key != no_way_at) {
       mi_goal_t gl;
       gl.family = -1;
       gl.m = 0u;
@@ -1204,6 +1246,7 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
       plan_at = 0u;
       planned_family = -1;
       if (plan_len > 0u) a = plan[plan_at++];
+      else no_way_at = key;
       mode = MI_EXPLORE;
     }
     if (a == 0u) {
@@ -1500,8 +1543,13 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
   }
   if (res.transform) lib->mirror_wins++;
   if (res.intuition >= 0 && res.winner >= 0) {
-    if (res.intuition == res.winner) lib->intuition_right++;
-    else lib->intuition_wrong++;
+    lib->intuition_named[res.intuition]++;
+    if (res.intuition == res.winner) {
+      lib->intuition_right++;
+      lib->intuition_hit[res.intuition]++;
+    } else {
+      lib->intuition_wrong++;
+    }
   }
   {
     unsigned slot = lib->n_mem < MI_MEMORY ? lib->n_mem++ : (lib->worlds % MI_MEMORY);
@@ -1511,6 +1559,21 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
   if (!EXPERIMENTING && (res.levels_done < g->levels || res.puzzles > 0u)) keep_for_sleep();
   *out = res;
   return res.levels_done >= g->levels ? SM_OK : SM_ERR_EMPTY_DOMAIN;
+}
+
+unsigned mi_score(const mi_result_t *r, unsigned levels) {
+  unsigned i, weight = 0u;
+  double total = 0.0;
+  if (r == 0 || levels == 0u) return 0u;
+  for (i = 0u; i < levels && i < PL_MAX_LEVELS; i++) {
+    weight += i + 1u;
+    if (i < r->levels_done && r->level_actions[i] > 0u && r->level_shortest[i] > 0u) {
+      double e = (double)r->level_shortest[i] / (double)r->level_actions[i];
+      if (e > 1.0) e = 1.0;
+      total += (double)(i + 1u) * e * e;
+    }
+  }
+  return (unsigned)(1000.0 * total / (double)weight + 0.5);
 }
 
 /* ============================================================================
@@ -1561,48 +1624,64 @@ void mi_sleep(mi_library_t *lib, FILE *journal) {
  * OPTOGENETICS ON ITSELF
  * ==========================================================================*/
 
-static unsigned well_over(mi_library_t *lib, void (*make)(pl_game_t *g, unsigned i), unsigned n,
-                          unsigned budget) {
-  unsigned i, well = 0u;
+static unsigned score_over(mi_library_t *lib, void (*make)(pl_game_t *g, unsigned i), unsigned n,
+                           unsigned budget) {
+  unsigned i, total = 0u;
   for (i = 0u; i < n; i++) {
     pl_game_t g;
     mi_result_t r;
-    unsigned k, later = 0u, best = 0u;
     make(&g, i);
     mi_play(lib, &g, budget, MI_FAMILIES, &r);
-    for (k = 1u; k < r.levels_done && k < PL_MAX_LEVELS; k++) {
-      later += r.level_actions[k];
-      best += r.level_shortest[k];
-    }
-    if (r.levels_done >= g.levels && best > 0u && later <= 2u * best) well++;
+    total += mi_score(&r, g.levels);
   }
-  return well;
+  return total / (n > 0u ? n : 1u);
 }
 
 void mi_probe(mi_library_t *lib, void (*make)(pl_game_t *g, unsigned i), unsigned n,
               unsigned budget, FILE *journal) {
   static mi_library_t copy;
-  unsigned p, base;
+  unsigned p, q, base;
+  unsigned alone[MI_PARTS];
   int was[MI_PARTS];
   if (lib == 0 || make == 0) return;
   for (p = 0u; p < MI_PARTS; p++) was[p] = OFF[p];
   EXPERIMENTING = 1;
   copy = *lib;
-  base = well_over(&copy, make, n, budget);
+  base = score_over(&copy, make, n, budget);
   if (journal != 0) {
-    fprintf(journal, "  it experiments on itself: %u of %u worlds finished well with every part on\n",
-            base, n);
+    fprintf(journal, "  it experiments on itself, over %u worlds: score %u.%u%% with every part on\n", n,
+            base / 10u, base % 10u);
   }
   for (p = 0u; p < MI_PARTS; p++) {
-    unsigned off;
     OFF[p] = 1;
     copy = *lib;
-    off = well_over(&copy, make, n, budget);
+    alone[p] = score_over(&copy, make, n, budget);
     OFF[p] = was[p];
-    lib->probe_delta[p] = (int)base - (int)off;
+    lib->probe_delta[p] = (int)base - (int)alone[p];
     if (journal != 0) {
-      fprintf(journal, "    without its %s: %u of %u (%+d)\n", mi_part_name(p), off, n,
-              (int)off - (int)base);
+      fprintf(journal, "    without its %s: %u.%u%% (%+.1f)\n", mi_part_name(p), alone[p] / 10u,
+              alone[p] % 10u, ((double)alone[p] - (double)base) / 10.0);
+    }
+  }
+  for (p = 0u; p < MI_PARTS; p++) {
+    for (q = p + 1u; q < MI_PARTS; q++) {
+      unsigned both;
+      int lost_both, lost_each;
+      OFF[p] = 1;
+      OFF[q] = 1;
+      copy = *lib;
+      both = score_over(&copy, make, n, budget);
+      OFF[p] = was[p];
+      OFF[q] = was[q];
+      lib->probe_pair[p][q] = lib->probe_pair[q][p] = (int)base - (int)both;
+      lost_both = (int)base - (int)both;
+      lost_each = ((int)base - (int)alone[p]) + ((int)base - (int)alone[q]);
+      /* both together cost clearly more than each alone added up: each was
+         doing the other's work */
+      if (journal != 0 && lost_both >= 20 && lost_both > lost_each + 20) {
+        fprintf(journal, "    its %s and its %s stand in for each other: without both, %u.%u%%\n",
+                mi_part_name(p), mi_part_name(q), both / 10u, both % 10u);
+      }
     }
   }
   EXPERIMENTING = 0;
@@ -1624,6 +1703,12 @@ void mi_library_save(const mi_library_t *lib, FILE *out) {
   fprintf(out, "lib.intuition %u %u\n", lib->intuition_right, lib->intuition_wrong);
   fprintf(out, "lib.counts %u %u %u\n", lib->puzzles, lib->inventions, lib->probes);
   for (i = 0u; i < MI_PARTS; i++) fprintf(out, "lib.probe %u %d\n", i, lib->probe_delta[i]);
+  for (i = 0u; i < MI_PARTS; i++) {
+    for (k = i + 1u; k < MI_PARTS; k++) fprintf(out, "lib.pair %u %u %d\n", i, k, lib->probe_pair[i][k]);
+  }
+  for (i = 0u; i < MI_FAMILIES; i++) {
+    fprintf(out, "lib.trust %u %u %u\n", i, lib->intuition_named[i], lib->intuition_hit[i]);
+  }
   for (i = 0u; i < lib->n_mem; i++) {
     fprintf(out, "lib.mem %u %u", i, lib->mem_family[i]);
     for (k = 0u; k < MI_FP_K; k++) fprintf(out, " %u", lib->mem_fp[i][k]);
@@ -1652,6 +1737,11 @@ int mi_library_line(mi_library_t *lib, const char *line) {
     lib->probes = c;
   } else if (sscanf(line, "lib.probe %u %d", &a, &d) == 2 && a < MI_PARTS) {
     lib->probe_delta[a] = d;
+  } else if (sscanf(line, "lib.pair %u %u %d", &a, &b, &d) == 3 && a < MI_PARTS && b < MI_PARTS) {
+    lib->probe_pair[a][b] = lib->probe_pair[b][a] = d;
+  } else if (sscanf(line, "lib.trust %u %u %u", &a, &b, &c) == 3 && a < MI_FAMILIES) {
+    lib->intuition_named[a] = b;
+    lib->intuition_hit[a] = c;
   } else if (sscanf(line, "lib.mem %u %u %u %u %u %u %u %u %u %u", &a, &b, &v[0], &v[1], &v[2],
                     &v[3], &v[4], &v[5], &v[6], &v[7]) == 10 &&
              a < MI_MEMORY) {

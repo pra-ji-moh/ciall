@@ -112,10 +112,16 @@ typedef struct {
   unsigned char mem_fp[MI_MEMORY][MI_FP_K];
   unsigned char mem_family[MI_MEMORY];   /* winning family + 1; 0 when none was found */
   unsigned intuition_right, intuition_wrong;
+  /* per idea: how often intuition named it, and was right. It is trusted
+     about an idea it has been right about, not about every idea at once */
+  unsigned intuition_named[MI_FAMILIES], intuition_hit[MI_FAMILIES];
   unsigned puzzles, inventions;
-  /* what it found out about itself by switching parts off: levels finished
-     well with the part on, minus with it off, over the same worlds */
+  /* what it found out about itself by switching parts off: its score (see
+     mi_score) over the same worlds with the part on, minus with it off; and
+     with each pair of parts off together, which shows parts that stand in for
+     each other (each alone costs little, both together cost much) */
   int probe_delta[MI_PARTS];
+  int probe_pair[MI_PARTS][MI_PARTS];
   unsigned probes;
 } mi_library_t;
 
@@ -149,6 +155,15 @@ void mi_library_init(mi_library_t *lib);
  */
 sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned hint,
                     mi_result_t *out);
+
+/*
+ * How well a world went, the way ARC-AGI-3 scores it, in thousandths: each
+ * level scores (shortest / actions taken) squared, at most 1, and 0 if not
+ * finished; later levels weigh more (level i weighs i). Unlike "finished
+ * well", the first level counts: that is where knowing what to try first
+ * saves moves.
+ */
+unsigned mi_score(const mi_result_t *r, unsigned levels);
 
 /* Between stretches: try every block on the worlds it could not explain. */
 void mi_sleep(mi_library_t *lib, FILE *journal);
