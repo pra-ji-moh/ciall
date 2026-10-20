@@ -269,6 +269,23 @@ static void write_findings(FILE *j, const mi_result_t *r) {
     }
   }
   if (any) fprintf(j, "\n");
+  if (r->corrected_endings + r->corrected_walls + r->corrected_actions > 0u) {
+    fprintf(j, "    it corrected itself:");
+    if (r->corrected_endings) {
+      fprintf(j, " %u idea%s about endings brought back (what ruled %s out had only been inferred);",
+              r->corrected_endings, r->corrected_endings == 1u ? "" : "s",
+              r->corrected_endings == 1u ? "it" : "them");
+    }
+    if (r->corrected_walls) {
+      fprintf(j, " doubted %u conclusion%s that a colour blocks it, one at a time;", r->corrected_walls,
+              r->corrected_walls == 1u ? "" : "s");
+    }
+    if (r->corrected_actions) {
+      fprintf(j, " doubted %u conclusion%s that an action does nothing;", r->corrected_actions,
+              r->corrected_actions == 1u ? "" : "s");
+    }
+    fprintf(j, "\n");
+  }
   fprintf(j, "    what ended it: %s", r->winner >= 0 ? mi_family_name((unsigned)r->winner) : "not settled");
   if (r->intuition >= 0) {
     fprintf(j, "; its intuition said %s%s", mi_family_name((unsigned)r->intuition),
@@ -483,8 +500,8 @@ void gw_report(const gw_mind_t *m) {
     printf(" [%s: explained %u, in sleep %u%s]", mi_family_name(k), m->lib.wins[k], m->lib.dreamt[k],
            m->lib.packed[k] ? ", packed" : "");
   }
-  printf("\n  intuition right %u, wrong %u; worlds remembered %u\n", m->lib.intuition_right,
-         m->lib.intuition_wrong, m->lib.n_mem);
+  printf("\n  intuition right %u, wrong %u; worlds remembered %u; corrected itself %u times\n",
+         m->lib.intuition_right, m->lib.intuition_wrong, m->lib.n_mem, m->lib.corrections);
   if (m->lib.probes > 0u) {
     unsigned q;
     printf("  what its parts are worth (score points with it, minus without):");

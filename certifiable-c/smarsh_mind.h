@@ -57,8 +57,17 @@
  *                   remembered as candidates.
  *   sleep           between stretches, it replays the worlds it could not
  *                   explain and tries every block on them, offline.
- *   switches        any part can be switched off, so it can find out what
- *   (optogenetics)  each of its parts does by playing without it.
+ *   self-correction when something it believes leads it wrong, it finds which
+ *   (the leverage   belief, the way optogenetics finds which cells cause a
+ *   of optogenetics) behaviour: precisely (one belief, one remembered moment),
+ *                   in both directions (silence the evidence against an idea,
+ *                   or switch the idea back on), reversibly, and in its head
+ *                   before in the world. It corrects only the culprit, and the
+ *                   world then confirms or refutes the correction.
+ *   switches        any part can be switched off whole, so it can find out what
+ *   (lesions)       each of its parts is worth by playing without it. This is
+ *                   the coarse method optogenetics replaced in neuroscience; it
+ *                   measures, it does not correct.
  *
  * Deterministic: the same library and the same world give the same play.
  */
@@ -98,7 +107,8 @@ typedef enum {
   MI_PART_INVENTOR = 1,
   MI_PART_IMAGINATION = 2,
   MI_PART_PACKING = 3,
-  MI_PARTS = 4
+  MI_PART_CORRECTION = 4,
+  MI_PARTS = 5
 } mi_part_t;
 
 /* What it carries from world to world. */
@@ -115,7 +125,7 @@ typedef struct {
   /* per idea: how often intuition named it, and was right. It is trusted
      about an idea it has been right about, not about every idea at once */
   unsigned intuition_named[MI_FAMILIES], intuition_hit[MI_FAMILIES];
-  unsigned puzzles, inventions;
+  unsigned puzzles, inventions, corrections;
   /* what it found out about itself by switching parts off: its score (see
      mi_score) over the same worlds with the part on, minus with it off; and
      with each pair of parts off together, which shows parts that stand in for
@@ -135,6 +145,9 @@ typedef struct {
   unsigned predictions, errors;    /* things predicted, and how many were wrong */
   unsigned puzzles;                /* endings nothing it believed explained */
   unsigned invented;               /* families it built during this world (bit per family) */
+  unsigned corrected_endings;      /* ideas about endings brought back: the moment that ruled them out was a guess */
+  unsigned corrected_walls;        /* colours it had concluded block it, doubted one at a time */
+  unsigned corrected_actions;      /* actions it had concluded do nothing, doubted one at a time */
   int winner;                      /* simplest family alive at the end, or -1 */
   unsigned movers;
   int transform;                   /* a mover moved as another, transformed: 0 none, else 1..3 */

@@ -61,6 +61,7 @@ const char *mi_part_name(unsigned part) {
     case MI_PART_INVENTOR: return "inventor";
     case MI_PART_IMAGINATION: return "imagination";
     case MI_PART_PACKING: return "packing";
+    case MI_PART_CORRECTION: return "self-correction";
     default: return "?";
   }
 }
@@ -207,6 +208,14 @@ typedef struct {
   unsigned prog[MI_FAMILIES][MI_MAX_MOVERS];   /* progress along the legend */
   unsigned endings;
   int transform;                      /* 0 none; 1 mirror left-right; 2 up-down; 3 both */
+  /* for self-correction: which remembered moment ruled each idea out, and how
+     much evidence each conclusion that something blocks rests on */
+  int cover_by[MI_MAX_MOVERS][PL_COLOURS];
+  int fam_by[MI_FAMILIES][MI_MAX_MOVERS];
+  unsigned wall_fails[PL_COLOURS];
+  int wall_doubted[PL_COLOURS];       /* doubted once, so it was tested in the world */
+  int wall_confirmed[PL_COLOURS];     /* doubted, and the world blocked it again: settled */
+  int action_doubted[PL_MAX_ACTIONS + 1u];
 } mi_world_t;
 
 static mi_world_t W;
@@ -617,6 +626,8 @@ typedef struct {
   unsigned level;      /* which level: what the relations were */
   unsigned seg;        /* which attempt at it: progress starts over with each */
   unsigned char ended;
+  unsigned char guessed;   /* where things were at this moment was inferred, not seen */
+  unsigned char doubted;   /* set aside by a self-correction: no longer evidence */
   unsigned char moved[MI_MAX_MOVERS];
   unsigned short covered[MI_MAX_MOVERS];
 } mi_event_t;
@@ -667,6 +678,7 @@ static int replay(unsigned f, unsigned m, unsigned *prog) {
       seg = e->seg;
       p = 0u;
     }
+    if (e->doubted) continue;
     end = says_ends(f, e, m, LEVEL_ODD[level], LEVEL_LEG[level], LEVEL_NLEG[level], &p);
     if (end != (int)e->ended) {
 #ifdef MI_DEBUG
@@ -699,22 +711,30 @@ static unsigned invent(mi_world_t *w, unsigned f) {
 
 /* Rule out, by one event, everything that said otherwise. Returns how many
    of its beliefs about endings predicted this ending (or 1 if none ended). */
-static unsigned judge(mi_world_t *w, const mi_event_t *e) {
+static unsigned judge(mi_world_t *w, const mi_event_t *e, int at) {
   unsigned m, k, f, explained = 0u;
   for (m = 0u; m < w->n_mv && m < MI_MAX_MOVERS; m++) {
     for (k = 0u; k < PL_COLOURS; k++) {
       int says;
       if (!w->cover[m][k]) continue;
       says = (e->covered[m] & (1u << k)) != 0u;
-      if (says != (int)e->ended) w->cover[m][k] = 0;
-      else if (e->ended) explained++;
+      if (says != (int)e->ended) {
+        w->cover[m][k] = 0;
+        w->cover_by[m][k] = at;
+      } else if (e->ended) {
+        explained++;
+      }
     }
     for (f = MI_ODD; f < MI_FAMILIES; f++) {
       int says;
       if (!w->lang[f] || !w->fam_alive[f][m]) continue;
       says = says_ends(f, e, m, w->odd, w->legend, w->n_legend, &w->prog[f][m]);
-      if (says != (int)e->ended) w->fam_alive[f][m] = 0;
-      else if (e->ended) explained++;
+      if (says != (int)e->ended) {
+        w->fam_alive[f][m] = 0;
+        w->fam_by[f][m] = at;
+      } else if (e->ended) {
+        explained++;
+      }
       if (e->ended) w->prog[f][m] = 0u;
     }
   }
@@ -740,6 +760,84 @@ static unsigned hartley_bits(const mi_world_t *w) {
   for (f = 0u; f < MI_FAMILIES; f++) n += alive_in(w, f);
   while ((1u << bits) < n && bits < 31u) bits++;
   return bits;
+}
+
+/* ============================================================================
+ * SELF-CORRECTION: finding the culprit, the way optogenetics finds a cause
+ * ==========================================================================*/
+
+/* Does "mover m covering colour k ends a level" agree with every moment not
+   set aside, and explain at least one ending? */
+static int cover_holds(unsigned m, unsigned k) {
+  unsigned i, explains = 0u;
+  for (i = 0u; i < N_HIST; i++) {
+    const mi_event_t *e = &HIST[i];
+    int says;
+    if (e->doubted) continue;
+    says = (e->covered[m] & (1u << k)) != 0u;
+    if (says != (int)e->ended) return 0;
+    if (e->ended) explains++;
+  }
+  return explains > 0u;
+}
+
+static int fam_holds(unsigned f, unsigned m, unsigned *prog) {
+  unsigned i, endings = 0u;
+  for (i = 0u; i < N_HIST; i++) endings += !HIST[i].doubted && HIST[i].ended;
+  return endings > 0u && replay(f, m, prog);
+}
+
+/*
+ * Nothing it believes about endings is left standing (or an ending came that
+ * nothing explained). Before concluding it needs a new idea, it asks whether an
+ * idea it already had was ruled out wrongly: by a moment whose evidence was
+ * inferred rather than seen (where things were when a level ended is never
+ * seen). One such moment at a time, the most recent first, it sets the moment
+ * aside (silences that evidence) and switches each idea that moment ruled out
+ * back on, replaying everything else it has seen through it. If an idea then
+ * agrees with everything and explains an ending, the moment is set aside for
+ * good and the idea comes back. Only that moment and the ideas it ruled out are
+ * touched. Returns how many ideas came back.
+ */
+static unsigned correct_endings(mi_world_t *w) {
+  int at;
+  for (at = (int)N_HIST - 1; at >= 0; at--) {
+    unsigned m, k, f, back = 0u;
+    mi_event_t *e = &HIST[at];
+    if (!e->guessed || e->doubted) continue;
+    e->doubted = 1u;
+    for (m = 0u; m < w->n_mv && m < MI_MAX_MOVERS; m++) {
+      for (k = 0u; k < PL_COLOURS; k++) {
+        if (!w->cover[m][k] && w->cover_by[m][k] == at && cover_holds(m, k)) back++;
+      }
+      for (f = MI_ODD; f < MI_FAMILIES; f++) {
+        unsigned p;
+        if (w->lang[f] && !w->fam_alive[f][m] && w->fam_by[f][m] == at && fam_holds(f, m, &p)) back++;
+      }
+    }
+    if (back == 0u) {
+      e->doubted = 0u;   /* nothing it ruled out comes back: the moment stands */
+      continue;
+    }
+    for (m = 0u; m < w->n_mv && m < MI_MAX_MOVERS; m++) {
+      for (k = 0u; k < PL_COLOURS; k++) {
+        if (!w->cover[m][k] && w->cover_by[m][k] == at && cover_holds(m, k)) {
+          w->cover[m][k] = 1;
+          w->cover_by[m][k] = -1;
+        }
+      }
+      for (f = MI_ODD; f < MI_FAMILIES; f++) {
+        unsigned p;
+        if (w->lang[f] && !w->fam_alive[f][m] && w->fam_by[f][m] == at && fam_holds(f, m, &p)) {
+          w->fam_alive[f][m] = 1;
+          w->fam_by[f][m] = -1;
+          w->prog[f][m] = p;
+        }
+      }
+    }
+    return back;
+  }
+  return 0u;
 }
 
 /* ============================================================================
@@ -784,13 +882,21 @@ static int seen_or_add(unsigned long long k, unsigned *n_slots) {
 
 /* What the plan is for. */
 typedef struct {
-  int family;      /* -1: somewhere its first mover has not been */
+  int family;      /* -1: somewhere its first mover has not been; -2: somewhere an
+                      action it doubts has not yet failed (to test the doubt) */
   unsigned m;      /* for the families of one mover */
   int reverse;
 } mi_goal_t;
 
 static int goal_met(const mi_world_t *w, const mi_goal_t *g, const mi_state_t *s) {
   unsigned m, k;
+  if (g->family == -2) {
+    unsigned b, r = (unsigned char)s->r[0], c = (unsigned char)s->c[0];
+    for (b = 1u; b <= w->n_actions; b++) {
+      if (!w->mv[0].known[b] && w->tried[b] > 0u && !(w->failed[r][c] & (1u << b))) return 1;
+    }
+    return 0;
+  }
   if (g->family < 0) return !w->visited[(unsigned char)s->r[0]][(unsigned char)s->c[0]];
   if (g->family == MI_COVER) {
     for (m = 0u; m < w->n_mv; m++) {
@@ -1045,6 +1151,74 @@ static unsigned make_plan(const mi_world_t *w, const unsigned *order, unsigned *
   return 0u;
 }
 
+/* Any plan at all: to test what could end the level, or else to go somewhere new. */
+static unsigned find_way(const mi_world_t *w, const unsigned *order, unsigned *plan, int *planned_family) {
+  mi_goal_t gl;
+  unsigned len = make_plan(w, order, plan, 512u, planned_family);
+  if (len > 0u) return len;
+  gl.family = -1;
+  gl.m = 0u;
+  gl.reverse = 0;
+  *planned_family = -1;
+  len = imagine(w, &gl, plan, 512u);
+  if (len > 0u) return len;
+  gl.family = -2;
+  return imagine(w, &gl, plan, 512u);
+}
+
+/*
+ * Stuck: nowhere its beliefs let it go. Rather than give up every conclusion of
+ * a kind at once, it doubts one at a time, in its head: an action it concluded
+ * does nothing, or a colour it concluded blocks it, the one resting on the least
+ * evidence first. If with that one conclusion silenced a way opens, that
+ * conclusion is the culprit: it is dropped, and the way is taken, so the world
+ * says whether the doubt was right (if the colour blocks after all, it will be
+ * found blocking again). Returns 1 when a way opened; *what says which kind.
+ */
+static int doubt_one(mi_world_t *w, const unsigned *order, unsigned *plan, unsigned *len,
+                     int *planned_family, unsigned *what) {
+  unsigned b, k;
+  if (w->n_mv == 0u) return 0;
+  for (b = 1u; b <= w->n_actions; b++) {
+    if (!(w->mv[0].known[b] && w->mv[0].sr[b] == 0 && w->mv[0].sc[b] == 0)) continue;
+    w->mv[0].known[b] = 0;
+    *len = find_way(w, order, plan, planned_family);
+    if (*len > 0u || w->tried[b] < 6u) {
+      /* a way opens, or it has too little evidence to keep: tried again, but
+         only where it has not already failed (where it failed is kept: the
+         doubt is tested somewhere new, not in the dead end that raised it) */
+      w->action_doubted[b]++;
+      w->stayed[b] = 0u;
+      *what = 1u;
+      return 1;
+    }
+    w->mv[0].known[b] = 1;
+  }
+  for (;;) {
+    int best = -1;
+    for (k = 0u; k < PL_COLOURS; k++) {
+      if (!is_wall(w, k) || w->wall_confirmed[k] || w->wall_fails[k] == 0xFFFFFFFFu) continue;
+      if (best < 0 || w->wall_fails[k] < w->wall_fails[best]) best = (int)k;
+    }
+    if (best < 0) break;
+    w->wall_alive[best] = 0;
+    *len = find_way(w, order, plan, planned_family);
+    if (*len > 0u) {
+      w->wall_fails[best] = 0u;
+      w->wall_doubted[best] = 1;
+      memset(w->failed, 0, sizeof w->failed);
+      *what = 2u;
+      return 1;
+    }
+    w->wall_alive[best] = 1;
+    w->wall_fails[best] = 0xFFFFFFFFu;   /* tried: not doubted again this time */
+  }
+  for (k = 0u; k < PL_COLOURS; k++) {
+    if (w->wall_fails[k] == 0xFFFFFFFFu) w->wall_fails[k] = 1u;
+  }
+  return 0;
+}
+
 /* Does one mover step as another, transformed, on every action seen for both? */
 static int find_transform(const mi_world_t *w) {
   unsigned i, a;
@@ -1143,7 +1317,14 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
   if (hint < MI_FAMILIES) w->lang[hint] = 1;
   for (f = 0u; f < MI_FAMILIES; f++) {
     unsigned m;
-    for (m = 0u; m < MI_MAX_MOVERS; m++) w->fam_alive[f][m] = 1;
+    for (m = 0u; m < MI_MAX_MOVERS; m++) {
+      w->fam_alive[f][m] = 1;
+      w->fam_by[f][m] = -1;
+    }
+  }
+  for (i = 0u; i < MI_MAX_MOVERS; i++) {
+    unsigned k;
+    for (k = 0u; k < PL_COLOURS; k++) w->cover_by[i][k] = -1;
   }
 
   g->reset(g, &now);
@@ -1243,6 +1424,11 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
       gl.m = 0u;
       gl.reverse = 0;
       plan_len = imagine(w, &gl, plan, 512u);
+      if (plan_len == 0u && !mi_switched_off(MI_PART_CORRECTION)) {
+        /* nowhere new: go and test a doubt, somewhere it has not been tested */
+        gl.family = -2;
+        plan_len = imagine(w, &gl, plan, 512u);
+      }
       plan_at = 0u;
       planned_family = -1;
       if (plan_len > 0u) a = plan[plan_at++];
@@ -1252,6 +1438,18 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
     if (a == 0u) {
       /* nothing left to imagine: it is stuck */
       stuck++;
+      if (stuck == 1u && w->n_mv > 0u && !mi_switched_off(MI_PART_CORRECTION)) {
+        unsigned what = 0u;
+        if (doubt_one(w, order, plan, &plan_len, &planned_family, &what)) {
+          lib->corrections++;
+          if (what == 1u) res.corrected_actions++;
+          else res.corrected_walls++;
+          plan_at = 0u;
+          stuck = 0u;
+          no_plan_at = no_way_at = 0ull;
+          continue;
+        }
+      }
       if (stuck == 1u && w->n_mv > 0u) {
         /* the weakest thing it holds is that an action does nothing: that was
            only ever inferred from moves that went nowhere. Given up first */
@@ -1325,6 +1523,7 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
 
     /* ---- compare: where every mover is, against where it was predicted ---- */
     memset(&e, 0, sizeof e);
+    if (!sure) e.guessed = 0xFFu;
     e.level = res.levels_done;
     e.seg = seg;
     e.ended = outcome != 0;
@@ -1341,6 +1540,7 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
         if (!locate(m, &next, r1[i], c1[i], &nr, &nc)) {
           /* hidden or gone: it trusts its prediction for now */
           res.errors++;
+          e.guessed |= (unsigned char)(1u << i);
           m->r = r1[i];
           m->c = c1[i];
           continue;
@@ -1357,8 +1557,12 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
               unsigned c2;
               for (c2 = 0u; c2 < m->n; c2++) {
                 int rr = r0[i] + sr + m->dr[c2], cc = c0[i] + sc + m->dc[c2];
-                if (rr >= 0 && cc >= 0 && rr < MI_W && cc < MI_W && !in_template(m, r0[i], c0[i], rr, cc))
+                if (rr >= 0 && cc >= 0 && rr < MI_W && cc < MI_W && !in_template(m, r0[i], c0[i], rr, cc)) {
                   w->wall_alive[w->ground[rr][cc]] = 1;
+                  w->wall_fails[w->ground[rr][cc]]++;
+                  /* it had doubted this, and the world answered: it blocks */
+                  if (w->wall_doubted[w->ground[rr][cc]]) w->wall_confirmed[w->ground[rr][cc]] = 1;
+                }
               }
             } else if (m->may_table && !m->known[a] && !m->may_pushed && i == 0u) {
               /* it did not move it from here: weak, since a wall may have stopped it.
@@ -1457,7 +1661,8 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
       }
     } else {
       /* the level ended: the frame shown is the next one, so where things were
-         at the ending is what it predicted */
+         at the ending is what it predicted, not what it saw */
+      e.guessed = 0xFFu;
       for (i = 0u; i < w->n_mv; i++) {
         w->mv[i].r = r1[i];
         w->mv[i].c = c1[i];
@@ -1481,7 +1686,7 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
         }
       }
       res.predictions++;
-      explained = judge(w, &e);
+      explained = judge(w, &HIST[N_HIST - 1u], (int)N_HIST - 1);
       if (e.ended && explained == 0u) {
         res.puzzles++;
         lib->puzzles++;
@@ -1495,6 +1700,15 @@ sm_status_t mi_play(mi_library_t *lib, pl_game_t *g, unsigned budget, unsigned h
         fprintf(stderr, "  inventor? ended %u explained %u total %u lang %d%d%d%d alive %u %u %u %u\n", e.ended, explained, total,
                 w->lang[0], w->lang[1], w->lang[2], w->lang[3], alive_in(w, 0), alive_in(w, 1), alive_in(w, 2), alive_in(w, 3));
 #endif
+        if (total == 0u && w->n_mv > 0u && !mi_switched_off(MI_PART_CORRECTION)) {
+          /* first: was an idea it had ruled out wrongly, by a moment it only inferred? */
+          unsigned back = correct_endings(w);
+          if (back > 0u) {
+            res.corrected_endings += back;
+            lib->corrections++;
+            total = back;
+          }
+        }
         if (total == 0u && w->n_mv > 0u && !mi_switched_off(MI_PART_INVENTOR)) {
           for (f = MI_ODD; f < MI_FAMILIES; f++) {
             if (w->lang[f]) continue;
@@ -1701,7 +1915,7 @@ void mi_library_save(const mi_library_t *lib, FILE *out) {
   }
   fprintf(out, "lib.mirror %u\n", lib->mirror_wins);
   fprintf(out, "lib.intuition %u %u\n", lib->intuition_right, lib->intuition_wrong);
-  fprintf(out, "lib.counts %u %u %u\n", lib->puzzles, lib->inventions, lib->probes);
+  fprintf(out, "lib.counts %u %u %u %u\n", lib->puzzles, lib->inventions, lib->probes, lib->corrections);
   for (i = 0u; i < MI_PARTS; i++) fprintf(out, "lib.probe %u %d\n", i, lib->probe_delta[i]);
   for (i = 0u; i < MI_PARTS; i++) {
     for (k = i + 1u; k < MI_PARTS; k++) fprintf(out, "lib.pair %u %u %d\n", i, k, lib->probe_pair[i][k]);
@@ -1732,9 +1946,11 @@ int mi_library_line(mi_library_t *lib, const char *line) {
     lib->intuition_right = a;
     lib->intuition_wrong = b;
   } else if (sscanf(line, "lib.counts %u %u %u", &a, &b, &c) == 3) {
+    unsigned corr = 0u;
     lib->puzzles = a;
     lib->inventions = b;
     lib->probes = c;
+    if (sscanf(line, "lib.counts %*u %*u %*u %u", &corr) == 1) lib->corrections = corr;
   } else if (sscanf(line, "lib.probe %u %d", &a, &d) == 2 && a < MI_PARTS) {
     lib->probe_delta[a] = d;
   } else if (sscanf(line, "lib.pair %u %u %d", &a, &b, &d) == 3 && a < MI_PARTS && b < MI_PARTS) {
