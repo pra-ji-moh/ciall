@@ -14,6 +14,9 @@
  *                 prediction connections, which started at nothing, now cancel
  *   smell         smells that came with sweet come to mean approach, with
  *                 bitter avoid; smells with no taste of note stay as they were
+ *   hearing       the heartbeat, regular, comes to be expected and is heard
+ *                 less; the voice, irregular, does not; a missed beat leaves a
+ *                 signal of absence, plain silence none
  *   repeatable    the same genome lives the same womb
  */
 
@@ -65,6 +68,20 @@ int main(void) {
           sm.after[0] > 0.5 && sm.after[1] > 0.5 && sm.after[0] > sm.before[0] + 0.5);
     check("smell: the smell of her stress comes to mean avoid", sm.after[5] < -0.5);
     check("smell: smells that came with no taste of note are left as they were", untouched);
+  }
+  {
+    ob_heart_stats_t h;
+    unsigned last_h;
+    ob_womb_heartbeat(&A, 10u, 400u, &h);
+    last_h = h.days - 1u;
+    printf("        (heartbeat heard: day 0 %.3f, last %.3f; voice %.3f, %.3f; a missed beat %.0f%%)\n",
+           h.beat_left[0], h.beat_left[last_h], h.voice_left[0], h.voice_left[last_h], 100.0 * h.missed_beat);
+    check("hearing: the heartbeat comes to be expected, and is heard less",
+          h.beat_left[last_h] < h.beat_left[0] - 0.1 && h.beat_left[last_h] < 0.6);
+    check("hearing: the mother's voice, irregular, cannot be expected, and is still heard",
+          h.voice_left[last_h] > 0.9);
+    check("hearing: a beat that should come and does not leaves a signal of absence; silence does not",
+          h.missed_beat > 0.3 && h.silence < 0.01);
   }
   ob_grow(&B, &g);
   ob_womb_touch(&B, 12u, 300u, &s2);

@@ -234,6 +234,26 @@ typedef struct {
 void ob_womb_smell(ob_brain_t *b, unsigned days, unsigned moments_per_day, ob_smell_stats_t *out);
 void ob_write_smell(const ob_smell_stats_t *st, FILE *out);
 
+/*
+ * Hearing, and the heartbeat. Each low sound starts a wave that crosses the
+ * cerebellum one step a moment, so its cells hold how long ago the sound came
+ * (a travelling wave as a memory of the recent past). From the wave, the
+ * cerebellum learns when the next sound comes, and cancels it in the thalamus's
+ * hearing nucleus. The mother's heart, lub then dub, every eight moments, comes
+ * to be expected; her voice, irregular, cannot be. A beat that should come and
+ * does not leaves a prediction with nothing to meet it: a signal of absence.
+ */
+typedef struct {
+  unsigned days;
+  double beat_left[64], voice_left[64];   /* share still heard, day by day */
+  double expected_beat_left;              /* after: a beat that comes when expected */
+  double missed_beat;                     /* after: the signal when an expected beat does not come, as a share of a beat */
+  double silence;                         /* after: the same, in silence with nothing expected */
+} ob_heart_stats_t;
+
+void ob_womb_heartbeat(ob_brain_t *b, unsigned days, unsigned moments_per_day, ob_heart_stats_t *out);
+void ob_write_heart(const ob_heart_stats_t *st, FILE *out);
+
 /* What the womb did, in words and numbers, for the map. */
 void ob_write_womb(const ob_womb_stats_t *st, FILE *out);
 

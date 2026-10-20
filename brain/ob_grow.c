@@ -438,6 +438,13 @@ static const ob_rule_t RULES[] = {
     {"hearing: cochlea to tectum", OB_TECTUM, OB_COCHLEA_L, ANY, ANY, -1, SIDE_SAME, MAP_TOPO, 1.5},
     {"hearing: cochlea to tectum", OB_TECTUM, OB_COCHLEA_R, ANY, ANY, -1, SIDE_SAME, MAP_TOPO, 1.5},
     {"hearing: tectum to thalamus (hearing nucleus)", OB_THALAMUS, OB_TECTUM, ANY, ANY, 2, SIDE_SAME, MAP_TOPO, 6.0},
+    /* timing: a sound's echo crosses the cerebellum as a travelling wave, one
+       step further each moment, so its cells hold how long ago a sound came; from
+       them the cerebellum learns when the next sound will come, and cancels it.
+       Like the touch prediction, these connections start at nothing */
+    {"hearing: tectum to cerebellum", OB_CEREBELLUM, OB_TECTUM, ANY, ANY, -1, SIDE_SAME, MAP_WIDE, 1.0},
+    {"timing: cerebellum to thalamus (hearing nucleus)", OB_THALAMUS, OB_CEREBELLUM, ANY, ANY, 2, SIDE_SAME, MAP_WIDE,
+     4.0},
     /* the midbrain */
     {"tectum to thalamus (visual nucleus)", OB_THALAMUS, OB_TECTUM, ANY, ANY, 3, SIDE_SAME, MAP_TOPO, 2.0},
     {"tegmentum to basal ganglia (dopamine)", OB_BASAL_GANGLIA, OB_TEGMENTUM, ANY, ANY, -1, SIDE_SAME, MAP_WIDE,
@@ -610,7 +617,8 @@ void ob_stage_wiring(ob_brain_t *b) {
       b->syn[b->n_syn].rule = (unsigned char)chosen;
       b->syn[b->n_syn].weight =
           (short)((100 + (int)(rnd() % 900u)) * (b->neuron[from].inhibitory ? -1 : 1));
-      if (strncmp(rule->name, "prediction:", 11) == 0) b->syn[b->n_syn].weight = 0;   /* learned, from nothing */
+      if (strncmp(rule->name, "prediction:", 11) == 0 || strncmp(rule->name, "timing:", 7) == 0)
+        b->syn[b->n_syn].weight = 0;   /* learned, from nothing */
       b->n_syn++;
       b->rule_count[chosen]++;
       made++;

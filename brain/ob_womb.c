@@ -17,7 +17,8 @@ static float INPUT[OB_MAX_NEURONS], DRIVE[OB_MAX_NEURONS], PRED[OB_MAX_NEURONS];
 static float W[OB_MAX_SYN];                 /* weights while it lives; written back after */
 static unsigned TARGET[OB_MAX_SYN];
 static unsigned OUT_FIRST[OB_MAX_NEURONS + 1u], OUT_SYN[OB_MAX_SYN];
-static unsigned PRED_RULE = 0xFFu;
+static unsigned PRED_RULE = 0xFFu, TIMING_RULE = 0xFFu;
+static unsigned DRIVE_REGION = OB_SPINAL_SENSORY;   /* whose arrivals count as the sense's drive */
 
 static unsigned RNG;
 
@@ -42,6 +43,7 @@ static void prepare(const ob_brain_t *b) {
   memset(OUT_FIRST, 0, sizeof OUT_FIRST);
   for (k = 0u; k < 64u; k++) {
     if (strncmp(ob_rule_name(k), "prediction:", 11) == 0) PRED_RULE = k;
+    if (strncmp(ob_rule_name(k), "timing:", 7) == 0) TIMING_RULE = k;
   }
   for (i = 0u; i < b->n_neurons; i++) {
     const ob_neuron_t *n = &b->neuron[i];
@@ -75,8 +77,8 @@ static void step(const ob_brain_t *b, const float *in, float *out) {
       unsigned s = OUT_SYN[k], t = TARGET[s];
       float v = W[s] * a;
       INPUT[t] += v;
-      if (b->syn[s].rule == PRED_RULE) PRED[t] += v;
-      else if (b->neuron[j].region == OB_SPINAL_SENSORY) DRIVE[t] += v;
+      if (b->syn[s].rule == PRED_RULE || b->syn[s].rule == TIMING_RULE) PRED[t] += v;
+      else if (b->neuron[j].region == DRIVE_REGION) DRIVE[t] += v;
     }
   }
   for (i = 0u; i < b->n_neurons; i++) out[i] = INPUT[i] < 0.0f ? 0.0f : INPUT[i] > 1.0f ? 1.0f : INPUT[i];
@@ -194,6 +196,7 @@ void ob_womb_touch(ob_brain_t *b, unsigned days, unsigned moments_per_day, ob_wo
   if (days > 64u) days = 64u;
   RNG = b->genes.seed * 1597334677u + 3u;
   prepare(b);
+  DRIVE_REGION = OB_SPINAL_SENSORY;
   for (d = 0u; d < days; d++) {
     double sd = 0, sl = 0, od = 0, ol = 0, fd = 0, fl = 0, sp = 0, op = 0;
     for (t = 0u; t < moments_per_day; t++) {
@@ -341,6 +344,139 @@ void ob_write_smell(const ob_smell_stats_t *st, FILE *out) {
   for (k = 0u; k < OB_SMELLS; k++) {
     fprintf(out, "   %-24s %+.3f  ->  %+.3f\n", SMELL_NAME[k], st->before[k], st->after[k]);
   }
+}
+
+/* ---- hearing: the heartbeat ---------------------------------------------------- */
+
+#define OB_WAVE 12u   /* how many moments back the wave across the cerebellum reaches */
+
+static int hearing_thalamus(const ob_neuron_t *n) { return n->region == OB_THALAMUS && n->layer == 2u; }
+
+/* One moment of hearing. heard: which sounds reach the ears now (bit 0 low,
+   the heartbeat; bit 1 middle, the voice). ages: for each moment back, whether
+   a low sound came then (the wave). Returns how much of what arrived is left
+   after the prediction, how much arrived, and how much prediction met nothing. */
+static void hear(ob_brain_t *b, unsigned heard, const unsigned char *ages, int learn, double *arrived,
+                 double *left, double *unmet) {
+  unsigned i, s;
+  *arrived = *left = *unmet = 0.0;
+  memset(ACT0, 0, sizeof(float) * b->n_neurons);
+  for (i = 0u; i < b->n_neurons; i++) {
+    const ob_neuron_t *n = &b->neuron[i];
+    if (n->region == OB_COCHLEA_L || n->region == OB_COCHLEA_R) {
+      if ((heard & 1u) && n->sx < 0.15f) ACT0[i] = 1.0f;
+      if ((heard & 2u) && n->sx > 0.35f && n->sx < 0.65f) ACT0[i] = 1.0f;
+    }
+  }
+  /* the cochlea reaches the tectum; then the tectum, the thalamus. The wave is
+     on the cerebellum throughout: granule cell k of each column fires k moments
+     after a low sound (a column's cells are its birth order: one per moment) */
+  DRIVE_REGION = OB_TECTUM;
+  step(b, ACT0, ACT1);
+  for (i = 0u; i < b->n_neurons; i++) {
+    const ob_neuron_t *n = &b->neuron[i];
+    if (n->region == OB_CEREBELLUM) ACT1[i] = (n->birth < OB_WAVE && ages[n->birth]) ? 1.0f : 0.0f;
+  }
+  step(b, ACT1, ACT2);
+  for (i = 0u; i < b->n_neurons; i++) {
+    const ob_neuron_t *n = &b->neuron[i];
+    double sent, l;
+    if (!hearing_thalamus(n)) continue;
+    sent = DRIVE[i] > 1.0f ? 1.0 : DRIVE[i];
+    l = DRIVE[i] + PRED[i];
+    if (l < -1.0) l = -1.0;
+    if (l < 0.0) *unmet += -l;
+    *left += l < 0.0 ? 0.0 : l > 1.0 ? 1.0 : l;
+    *arrived += sent;
+  }
+  if (learn) {
+    for (i = 0u; i < b->n_neurons; i++) {
+      const ob_neuron_t *n = &b->neuron[i];
+      double err, norm = 0.01;
+      if (!hearing_thalamus(n)) continue;
+      for (s = n->syn_first; s < n->syn_first + n->syn_n; s++) {
+        float a = ACT1[b->syn[s].from];
+        if (b->syn[s].rule == TIMING_RULE && a > 0.0f) norm += (double)a * a;
+      }
+      if (norm <= 0.01) continue;
+      err = (double)DRIVE[i] + (double)PRED[i];
+      if (err > 1.0) err = 1.0;   /* a sound's drive counts up to its ceiling */
+      for (s = n->syn_first; s < n->syn_first + n->syn_n; s++) {
+        float a = ACT1[b->syn[s].from];
+        if (b->syn[s].rule != TIMING_RULE || a <= 0.0f) continue;
+        W[s] -= (float)(0.2 * err * a / norm);
+        if (W[s] < -5.0f) W[s] = -5.0f;
+        if (W[s] > 1.0f) W[s] = 1.0f;
+      }
+    }
+  }
+}
+
+void ob_womb_heartbeat(ob_brain_t *b, unsigned days, unsigned moments_per_day, ob_heart_stats_t *out) {
+  unsigned char ages[OB_WAVE];
+  unsigned d, t, k, s, clock = 0u;
+  if (b == 0 || out == 0) return;
+  memset(out, 0, sizeof(*out));
+  if (days > 64u) days = 64u;
+  RNG = b->genes.seed * 2654435789u + 9u;
+  prepare(b);
+  memset(ages, 0, sizeof ages);
+  for (d = 0u; d < days; d++) {
+    double ha = 0, hl = 0, va = 0, vl = 0;
+    for (t = 0u; t < moments_per_day; t++, clock++) {
+      /* the mother's heart: lub, then dub two moments later, every eight moments */
+      unsigned beat = (clock % 8u == 0u || clock % 8u == 2u) ? 1u : 0u;
+      unsigned voice = unit() < 0.15 ? 2u : 0u;
+      double ar, le, un;
+      hear(b, beat | voice, ages, 1, &ar, &le, &un);
+      if (beat && !voice) {
+        ha += ar;
+        hl += le;
+      } else if (voice && !beat) {
+        va += ar;
+        vl += le;
+      }
+      /* the wave moves on one step; a low sound now starts it again at the beginning */
+      for (k = OB_WAVE - 1u; k > 0u; k--) ages[k] = ages[k - 1u];
+      ages[0] = (unsigned char)(beat ? 1u : 0u);
+    }
+    out->beat_left[d] = ha > 0 ? hl / ha : 0;
+    out->voice_left[d] = va > 0 ? vl / va : 0;
+  }
+  out->days = days;
+  /* after: a beat that should come and does not; and the same moment with the beat */
+  {
+    double ar, le, un, ar2, le2, un2;
+    unsigned char a2[OB_WAVE];
+    /* ages as they are just before a lub: the last lub 8 moments ago, the dub 6 */
+    memset(a2, 0, sizeof a2);
+    a2[7] = 1u;
+    a2[5] = 1u;
+    hear(b, 0u, a2, 0, &ar, &le, &un);
+    hear(b, 1u, a2, 0, &ar2, &le2, &un2);
+    /* both as a share of what a real beat brings */
+    out->missed_beat = ar2 > 0 ? un / ar2 : 0;
+    out->expected_beat_left = ar2 > 0 ? le2 / ar2 : 0;
+    memset(a2, 0, sizeof a2);
+    hear(b, 0u, a2, 0, &ar, &le, &un);
+    out->silence = ar2 > 0 ? un / ar2 : 0;
+  }
+  for (s = 0u; s < b->n_syn; s++) {
+    if (b->syn[s].rule == TIMING_RULE) b->syn[s].weight = (short)lrint(W[s] * 1000.0f);
+  }
+  DRIVE_REGION = OB_SPINAL_SENSORY;
+}
+
+void ob_write_heart(const ob_heart_stats_t *st, FILE *out) {
+  if (st == 0 || out == 0 || st->days == 0u) return;
+  fprintf(out, "\n## the womb: hearing the heartbeat\n");
+  fprintf(out, "   share of the heartbeat still heard after the cerebellum's timing: day 0 %.3f, last %.3f\n",
+          st->beat_left[0], st->beat_left[st->days - 1u]);
+  fprintf(out, "   share of the mother's voice (irregular) still heard: day 0 %.3f, last %.3f\n", st->voice_left[0],
+          st->voice_left[st->days - 1u]);
+  fprintf(out, "   a beat that should come and does not: a signal %.0f%% as strong as a beat, where there is nothing"
+               " (in plain silence: %.0f%%)\n",
+          100.0 * st->missed_beat, 100.0 * st->silence);
 }
 
 /* ---- the picture: its body, and how much of each place's touch is its own ---- */

@@ -53,8 +53,12 @@ map already in order on the visual cortex.
    mother's smell and the anise of her meals come to mean approach, her stress
    avoid; smells with no taste of note stay neutral (newborns of mothers who ate
    anise prefer anise: Schaal et al. 2000).
-3. Hearing: the heartbeat, a steady rhythm it habituates to; the baseline of
-   safety, and of time.
+3. Hearing: done. Two cochleas; each low sound starts a travelling wave across
+   the cerebellum (the "rippling": a memory of how long ago), from which it
+   learns when the next beat comes and cancels it. The mother's heartbeat comes
+   to be expected (about 41% still heard); her irregular voice does not (about
+   98%); a missed beat leaves a signal of absence as strong as a beat, plain
+   silence none.
 4. Vision in the dark: no light, but its visual sheets rehearse on their own
    spontaneous waves (as the retina's waves do before birth) and refine their
    maps.
