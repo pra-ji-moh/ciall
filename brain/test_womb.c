@@ -20,6 +20,8 @@
  *   vision        retinal waves in the dark narrow the visual thalamus's
  *                 receptive fields and prune the eyes' first connections;
  *                 noise of the same amount does far less
+ *   the reflex    practised hand to mouth, the lips' reflex to the mouth
+ *                 strengthens; a reflex never paired does not
  *   repeatable    the same genome lives the same womb
  */
 
@@ -99,6 +101,16 @@ int main(void) {
     check("and prune many of the eyes' first connections, as development does", vw.pruned * 4u > vw.kept);
     check("noise of the same amount, with no neighbour firing with its neighbour, refines far less",
           vn.field_after > vw.field_after + 0.5);
+  }
+  {
+    ob_reflex_stats_t rf;
+    ob_womb_reflex(&A, 12u, 100u, &rf);
+    printf("        (reflex: mouth %.2f -> %.2f; middle of the body %.2f -> %.2f)\n", rf.mouth_before,
+           rf.mouth_after, rf.body_before, rf.body_after);
+    check("the reflex loop: practised hand to mouth, the lips' reflex to the mouth is ready, at least doubled",
+          rf.mouth_after > 2.0 * rf.mouth_before);
+    check("and a reflex in the middle of the body, never paired, stays much as it was grown",
+          rf.body_after < 1.3 * rf.body_before);
   }
   ob_grow(&B, &g);
   ob_womb_touch(&B, 12u, 300u, &s2);

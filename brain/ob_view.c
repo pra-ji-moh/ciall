@@ -377,3 +377,39 @@ int ob_draw_retinotopy(const ob_brain_t *b, const char *path) {
 int ob_write_png_rgb(const char *path, const unsigned char *rgb, unsigned w, unsigned h) {
   return write_png(path, rgb, w, h);
 }
+
+/* ---- the brain to a file and back ----------------------------------------------- */
+
+static const char OB_MAGIC[8] = {'O', 'B', 'R', 'A', 'I', 'N', '0', '1'};
+
+int ob_save(const ob_brain_t *b, const char *path) {
+  FILE *f;
+  int bad;
+  if (b == 0 || path == 0 || (f = fopen(path, "wb")) == 0) return 1;
+  bad = fwrite(OB_MAGIC, 1, 8, f) != 8u || fwrite(&b->genes, sizeof b->genes, 1, f) != 1u ||
+        fwrite(&b->plate, sizeof b->plate, 1, f) != 1u || fwrite(&b->n_neurons, sizeof b->n_neurons, 1, f) != 1u ||
+        fwrite(&b->n_syn, sizeof b->n_syn, 1, f) != 1u ||
+        fwrite(b->neuron, sizeof(ob_neuron_t), b->n_neurons, f) != b->n_neurons ||
+        fwrite(b->syn, sizeof(ob_synapse_t), b->n_syn, f) != b->n_syn ||
+        fwrite(b->count, sizeof b->count, 1, f) != 1u || fwrite(b->rule_count, sizeof b->rule_count, 1, f) != 1u;
+  return (fclose(f) != 0) || bad;
+}
+
+int ob_load(ob_brain_t *b, const char *path) {
+  FILE *f;
+  char magic[8];
+  int bad;
+  if (b == 0 || path == 0 || (f = fopen(path, "rb")) == 0) return 1;
+  bad = fread(magic, 1, 8, f) != 8u || memcmp(magic, OB_MAGIC, 8) != 0 ||
+        fread(&b->genes, sizeof b->genes, 1, f) != 1u || fread(&b->plate, sizeof b->plate, 1, f) != 1u ||
+        fread(&b->n_neurons, sizeof b->n_neurons, 1, f) != 1u || fread(&b->n_syn, sizeof b->n_syn, 1, f) != 1u;
+  if (!bad && (b->n_neurons > OB_MAX_NEURONS || b->n_syn > OB_MAX_SYN)) bad = 1;
+  if (!bad) {
+    bad = fread(b->neuron, sizeof(ob_neuron_t), b->n_neurons, f) != b->n_neurons ||
+          fread(b->syn, sizeof(ob_synapse_t), b->n_syn, f) != b->n_syn ||
+          fread(b->count, sizeof b->count, 1, f) != 1u || fread(b->rule_count, sizeof b->rule_count, 1, f) != 1u;
+  }
+  b->dropped = 0u;
+  fclose(f);
+  return bad;
+}

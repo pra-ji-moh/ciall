@@ -618,6 +618,77 @@ void ob_write_vision(const ob_vision_stats_t *st, FILE *out) {
   fprintf(out, "   the eyes' connections to the thalamus: %u kept, %u pruned\n", st->kept, st->pruned);
 }
 
+/* ---- the reflex loop: practised before birth ------------------------------------ */
+
+static unsigned REFLEX_RULE = 0xFFu;
+
+/* The drive that reaches muscles near `at` (along the body) when the skin near
+   `at` is touched, through the reflex connections alone. */
+static double reflex_drive(const ob_brain_t *b, double at) {
+  unsigned i, s, n = 0u;
+  double total = 0.0;
+  for (i = 0u; i < b->n_neurons; i++) {
+    const ob_neuron_t *m = &b->neuron[i];
+    if (m->region != OB_SPINAL_MOTOR || fabs(m->sx - at) > 0.06) continue;
+    for (s = m->syn_first; s < m->syn_first + m->syn_n; s++) {
+      const ob_neuron_t *src = &b->neuron[b->syn[s].from];
+      if (b->syn[s].rule == REFLEX_RULE && src->region == OB_SPINAL_SENSORY && fabs(src->sx - at) < 0.06)
+        total += W[s];
+    }
+    n++;
+  }
+  return n ? total / n : 0.0;
+}
+
+void ob_womb_reflex(ob_brain_t *b, unsigned days, unsigned moments_per_day, ob_reflex_stats_t *out) {
+  unsigned d, t, i, s, k;
+  if (b == 0 || out == 0) return;
+  memset(out, 0, sizeof(*out));
+  if (days > 64u) days = 64u;
+  RNG = b->genes.seed * 374761393u + 17u;
+  prepare(b);
+  for (k = 0u; k < 64u; k++) {
+    if (strncmp(ob_rule_name(k), "spinal reflex", 13) == 0) REFLEX_RULE = k;
+  }
+  out->mouth_before = reflex_drive(b, 0.04);
+  out->body_before = reflex_drive(b, 0.5);
+  for (d = 0u; d < days; d++) {
+    for (t = 0u; t < moments_per_day; t++) {
+      /* hand to mouth, and the mouth moving: lips and mouth muscles active together.
+         Elsewhere on the body, touch and muscle come at different moments */
+      int hand_to_mouth = unit() < 0.4;
+      double at = hand_to_mouth ? 0.04 : unit();
+      int muscle_too = hand_to_mouth ? unit() < 0.8 : unit() < 0.05;
+      for (i = 0u; i < b->n_neurons; i++) {
+        const ob_neuron_t *m = &b->neuron[i];
+        if (m->region != OB_SPINAL_MOTOR || !muscle_too || fabs(m->sx - at) > 0.06) continue;
+        for (s = m->syn_first; s < m->syn_first + m->syn_n; s++) {
+          const ob_neuron_t *src = &b->neuron[b->syn[s].from];
+          if (b->syn[s].rule != REFLEX_RULE || src->region != OB_SPINAL_SENSORY || fabs(src->sx - at) > 0.06)
+            continue;
+          W[s] += 0.01f;   /* skin and muscle active together */
+          if (W[s] > 3.0f) W[s] = 3.0f;
+        }
+      }
+    }
+  }
+  out->days = days;
+  out->mouth_after = reflex_drive(b, 0.04);
+  out->body_after = reflex_drive(b, 0.5);
+  for (s = 0u; s < b->n_syn; s++) {
+    if (b->syn[s].rule == REFLEX_RULE) b->syn[s].weight = (short)lrint(W[s] * 1000.0f);
+  }
+}
+
+void ob_write_reflex(const ob_reflex_stats_t *st, FILE *out) {
+  if (st == 0 || out == 0 || st->days == 0u) return;
+  fprintf(out, "\n## the womb: the reflex loop, practised\n");
+  fprintf(out, "   lips touched, mouth muscles' drive: %.2f before, %.2f after (practised: hand to mouth)\n",
+          st->mouth_before, st->mouth_after);
+  fprintf(out, "   middle of the body touched, its muscles' drive: %.2f before, %.2f after (never paired)\n",
+          st->body_before, st->body_after);
+}
+
 /* ---- the picture: its body, and how much of each place's touch is its own ---- */
 
 int ob_draw_self(const ob_brain_t *b, const ob_womb_stats_t *st, const char *path) {

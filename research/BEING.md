@@ -65,7 +65,16 @@ map already in order on the visual cortex.
    pruned. Receptive fields narrow by about a third and about half the first
    connections are pruned; noise of the same amount, with no neighbour firing
    with its neighbour, barely refines them.
-5. The reflex loop, practised before birth so its first act is one it knows.
+5. The reflex loop: done. Hand to mouth, lips and mouth muscles active
+   together: the lips-to-mouth reflex grows about fivefold; a reflex in the
+   middle of the body, never paired, stays as grown.
+
+All of it runs on its own: `brain/being.c` grows the newborn from its genome
+and lives the womb, the senses coming online in a fetus's order (touch from
+week 8, taste and smell from 14, hearing from 20, vision in the dark from 28,
+the reflex practised to 40), and writes `newborn/diary.txt` in its own words,
+its brain map, its pictures, and its whole brain (`brain.bin`), so its life can
+go on after birth from exactly where it was born.
 
 **Stage 2, infancy**: birth into its worlds; serve and return with a
 caregiver; overgrowth then pruning; myelination; ripples and replay in sleep.

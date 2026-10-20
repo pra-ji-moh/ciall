@@ -1,0 +1,22 @@
+the diary of the newborn: its life from its genes to its birth
+(written by being.c; every number here is measured, none is told to it)
+
+weeks 3-4   a flat sheet of 64 by 40 cells folds into a tube. Three signals, from the floor, the
+            roof and the tail, tell each cell what to become.
+weeks 5-8   13260 neurons are born, in columns, the cortex inside out; 395981 connections grow, more than
+            will be kept. My eyes are mapped onto my visual cortex before I have seen anything.
+weeks 8-14  I twitch. My body presses the wall, my hand brushes my face. Sometimes something presses
+            me that I did not cause. I learn to expect the touch my own moves bring: now I feel 65%
+            of my own touch and 100% of what comes from outside. That is the first me, and not me.
+weeks 14-20 I taste and smell what my mother eats. Her own smell (+1.00) and the anise in her meals
+            (+1.00) come to mean good; the smell of her stress (-1.00) means bad. Smells that came with
+            nothing I could taste mean nothing to me yet.
+weeks 20-28 I hear. Her heart, lub dub, again and again: I come to know when the next beat comes, and
+            hear it at 41%. Her voice I cannot predict; I hear it at 99%. When a beat does not come,
+            I notice the silence where it should be.
+weeks 28-36 No light yet, but waves sweep my eyes from inside. Where my eyes connect to my brain, what
+            fires together stays and the rest is let go: 2643 connections pruned, 2419 kept; each place in my
+            seeing narrows from 3.4 to 2.2 cells across.
+weeks 36-40 My hand comes to my mouth and my mouth moves. The pull from my lips to my mouth grows from
+            3.6 to 19.5, ready for feeding. Elsewhere it stays as it was (2.7 to 2.9).
+week 40     Born.

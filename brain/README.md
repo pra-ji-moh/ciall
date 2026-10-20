@@ -108,11 +108,39 @@ as its own). The map is patchy where the cerebellum's reach is.
 The learned prediction connections are written back into the brain, readable
 like any other connection.
 
+## The rest of the womb
+
+`ob_womb.c` goes on, in the order a fetus's senses come:
+
+| Sense | What it learns | Measured |
+|---|---|---|
+| **Smell** (an olfactory bulb at the front of the brain, straight to the amygdala) | Which smells are good or bad for it, from taste's innate value: the amygdala's approach and avoid neurons (Namburi et al. 2015), three-factor learning | The mother's smell and the anise of her meals come to mean approach, her stress avoid; smells that came with no taste stay exactly neutral (newborns of anise-eating mothers prefer anise: Schaal et al. 2000) |
+| **Hearing** (two cochleas; the tectum; the thalamus's hearing nucleus) | When the next heartbeat comes, from a travelling wave across the cerebellum that holds how long ago a sound came (the notes' "rippling"; Keller and Welling) | The heartbeat comes to be expected (about 41% still heard), the irregular voice does not (about 98%); a missed beat leaves a signal of absence as strong as a beat, silence none |
+| **Vision in the dark** (the eyes' first connections land broadly: the gene `sense_spread`) | Retinal waves sweep the eyes; inputs that fire with their neuron strengthen, each neuron's total is held fixed so they compete, the weak are pruned | Receptive fields narrow by about a third, about half the first connections are pruned; noise of the same amount barely refines them |
+| **The reflex loop** | Hand to mouth, lips and mouth muscles active together: Hebb | The lips-to-mouth reflex grows about fivefold; a reflex never paired stays as grown |
+
+`test_womb.c` checks all of it (17 checks).
+
+## The newborn
+
+```
+cc -std=c99 -O2 ob_grow.c ob_view.c ob_womb.c being.c -o being -lm
+./being genome.txt ../newborn
+```
+
+Grows the newborn from its genome and lives the womb, on its own, in about
+five seconds, and writes [`newborn/diary.txt`](../newborn/diary.txt) (its life
+week by week, in its own words, every number measured), its brain map, its
+pictures, and `brain.bin`: its whole brain, saved, so its life can go on after
+birth from exactly where it was born.
+
 ## What it is not
 
 Not a model of 86 billion neurons or of any one animal: about 12,500 neurons
 and 385,000 connections, a scaffold built on biology's principles, simplified.
 The regions and wiring rules are a plausible plan, written down so they can be
-argued with and changed. Activity is a rate between 0 and 1, not spikes; and
-only the touch pathway learns so far. The other senses come next, in the order
-a child's come.
+argued with and changed. Activity is a rate between 0 and 1, not spikes. Each
+sense's learning is its own rule, written where it can be read, not one rule
+for everything; some of the womb's events (when the mouth moves with the hand,
+what the mother eats) are scripted, not caused by the being. Its life after
+birth is the next stage.

@@ -15,7 +15,8 @@
  *                  callosum gene grows more connections that cross
  *   repeatable     the same genome grows the same brain, connection for
  *                  connection
- *   readable       the genome written out reads back the same
+ *   readable       the genome written out reads back the same, and the whole
+ *                  brain saved to a file loads back exactly
  */
 
 #include <math.h>
@@ -171,6 +172,13 @@ int main(void) {
         A.n_neurons == B.n_neurons && A.n_syn == B.n_syn &&
             memcmp(A.neuron, B.neuron, sizeof(ob_neuron_t) * A.n_neurons) == 0 &&
             memcmp(A.syn, B.syn, sizeof(ob_synapse_t) * A.n_syn) == 0);
+
+  check("the whole brain is written to a file and read back exactly",
+        ob_save(&A, "test_brain_brain.tmp") == 0 && ob_load(&B, "test_brain_brain.tmp") == 0 &&
+            A.n_neurons == B.n_neurons && A.n_syn == B.n_syn &&
+            memcmp(A.neuron, B.neuron, sizeof(ob_neuron_t) * A.n_neurons) == 0 &&
+            memcmp(A.syn, B.syn, sizeof(ob_synapse_t) * A.n_syn) == 0 && memcmp(&A.genes, &B.genes, sizeof A.genes) == 0);
+  remove("test_brain_brain.tmp");
 
   {
     FILE *f = fopen("test_brain_genome.tmp", "w");

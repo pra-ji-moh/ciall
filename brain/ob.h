@@ -275,6 +275,27 @@ typedef struct {
 void ob_womb_vision(ob_brain_t *b, unsigned days, unsigned moments_per_day, int waves, ob_vision_stats_t *out);
 void ob_write_vision(const ob_vision_stats_t *st, FILE *out);
 
+/*
+ * The reflex loop, practised. In the womb the hand comes to the mouth and the
+ * mouth moves: lip touched and mouth muscle active at once. The spinal (here,
+ * the lowest) reflex connections from skin to muscle strengthen where skin and
+ * muscle are active together (Hebb). Practised at the mouth, the sucking
+ * reflex is ready at birth; a reflex in the middle of the body, never paired,
+ * stays as it was grown.
+ */
+typedef struct {
+  unsigned days;
+  double mouth_before, mouth_after;   /* mouth muscles' drive when the lips are touched */
+  double body_before, body_after;     /* the same, for the middle of the body */
+} ob_reflex_stats_t;
+
+void ob_womb_reflex(ob_brain_t *b, unsigned days, unsigned moments_per_day, ob_reflex_stats_t *out);
+void ob_write_reflex(const ob_reflex_stats_t *st, FILE *out);
+
+/* The whole brain to a file and back: genes, neurons, connections. 0 on success. */
+int ob_save(const ob_brain_t *b, const char *path);
+int ob_load(ob_brain_t *b, const char *path);
+
 /* What the womb did, in words and numbers, for the map. */
 void ob_write_womb(const ob_womb_stats_t *st, FILE *out);
 
