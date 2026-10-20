@@ -1,0 +1,31 @@
+# The genome of the first open brain. Every number development reads, by name.
+# Change one and grow again: a different brain.
+seed 1
+# the neural plate: head to tail, and across (both sides)
+plate_w 64
+plate_h 40
+# how far the floor's signal (SHH) and the roof's (BMP) reach, as a share of the half-width
+shh_reach 0.35
+bmp_reach 0.35
+# along the head to tail axis (the Wnt level), where the tube divides
+tel_end 0.32
+die_end 0.42
+mes_end 0.52
+rho_end 0.72
+cerebellum_end 0.58
+# the cortex's areas, front to back; temporal_end is the share of the middle of the cortex,
+# on its floor side, that becomes temporal (the rest of the middle is parietal)
+frontal_end 0.35
+parietal_end 0.72
+temporal_end 0.45
+hippocampus_edge 0.14
+amygdala_band 0.3
+# neurons per progenitor column
+cortex_neurons 10
+other_neurons 3
+cerebellum_neurons 12
+interneuron_fraction 0.2
+# first wiring, before experience prunes it
+synapses_in 40
+spread 0.08
+callosum 0.15

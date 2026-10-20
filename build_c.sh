@@ -185,6 +185,10 @@ if build stack_depth $C stack_depth.c; then
 fi
 
 echo
+echo "brain/"
+build test_brain brain ob_grow.c ob_view.c test_brain.c && run_test test_brain brain
+build grow_brain brain ob_grow.c ob_view.c grow_brain.c
+echo
 echo "native/"
 N=native
 build test_native $N pyrand.c native_reasoner.c test_native.c && run_test test_native $N
