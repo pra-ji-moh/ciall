@@ -271,6 +271,38 @@ the second time (surprise 2.35, then 0.95; without memory, 2.35 then 2.27). Its
 mother's answers surprise it a little more with memory than without (0.15
 against 0.08): it has not wholly learned where memory misleads.
 
+## Its cortex learns what it sees
+
+After birth its cortex's feedforward pathways learn: the thalamus into layer
+4, layer 4 up to layers 2/3, the visual cortex on into the temporal ("what")
+and parietal ("where") lobes, and on through the entorhinal cortex (grown as
+the strip of the temporal lobe beside the hippocampus, its gateway) into the
+hippocampus. Within each area the most strongly driven tenth fire, and each
+that fires moves its synapses towards what drove it (competitive Hebbian
+learning). Where moments must be kept apart (temporal lobe, entorhinal
+cortex, hippocampus), homeostasis raises the threshold of a neuron that fires
+too often, so the same few cannot answer everything; without it the temporal
+lobe collapsed onto one pattern for every view.
+
+`test_cortex.c` (5 checks, three brains averaged; `--slow`): moments well apart
+in time are compared, when its eyes were on the same view, one eye-step away,
+or far.
+
+| | no learning | learning |
+|---|---|---|
+| visual cortex: selectivity / invariance | 0.42 / 0.46 | 0.55 / 0.56 |
+| temporal lobe: selectivity / invariance | 0.13 / 0.35 | 0.32 / 0.69 |
+
+Learning makes both areas selective for what is seen, and, as along the real
+ventral stream, the temporal lobe holds its pattern across eye movements better
+than the visual cortex (on average; in four brains of six). Each temporal
+neuron pools widely over the visual cortex, and pooling gives that. Foldiak's
+trace rule (learning from a neuron's recent firing, so that what stays while
+the eyes move is answered as one thing) looked decisive in one brain and did
+worse than none over six: it is off, and still measured (0.62 with it, 0.69
+without). The hippocampus now has patterns of its own for what it sees (about
+0.5 alike for the same view, 0.25 for a far one, where before it was noise).
+
 ## The newborn
 
 ```

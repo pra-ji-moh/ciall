@@ -3,7 +3,7 @@ the diary of the newborn: its life from its genes to its birth
 
 weeks 3-4   a flat sheet of 64 by 40 cells folds into a tube. Three signals, from the floor, the
             roof and the tail, tell each cell what to become.
-weeks 5-8   13284 neurons are born, in columns, the cortex inside out; 562452 connections grow, more than
+weeks 5-8   13284 neurons are born, in columns, the cortex inside out; 561742 connections grow, more than
             will be kept. My eyes are mapped onto my visual cortex before I have seen anything.
 weeks 8-14  I twitch. My body presses the wall, my hand brushes my face. Sometimes something presses
             me that I did not cause. I learn to expect the touch my own moves bring: now I feel 54%
@@ -15,28 +15,28 @@ weeks 20-28 I hear. Her heart, lub dub, again and again: I come to know when the
             hear it at 1%. Her voice I cannot predict; I hear it at 91%. When a beat does not come,
             I notice the silence where it should be.
 weeks 28-36 No light yet, but waves sweep my eyes from inside. Where my eyes connect to my brain, what
-            fires together stays and the rest is let go: 2139 connections pruned, 2007 kept; each place in my
-            seeing narrows from 3.3 to 2.0 cells across.
+            fires together stays and the rest is let go: 2132 connections pruned, 1983 kept; each place in my
+            seeing narrows from 3.4 to 2.0 cells across.
 weeks 36-40 I twitch of myself; my arms brush my face, my body presses the wall. Where skin and muscle
-            go together the pull between them grows: lips to mouth from 3.5 to 18.4, ready for feeding;
-            the middle of my body from 2.7 to 14.5.
+            go together the pull between them grows: lips to mouth from 3.8 to 18.9, ready for feeding;
+            the middle of my body from 2.7 to 14.3.
 week 40     Born.
 month 3     A mobile hangs over me; a ribbon ties it to my leg. At first I kick 7 times in a
-            while. When my kicks move it and her voice answers, I kick 176 times. My twin, who
-            sees and hears the same but not because of anything it does, kicks 8. When it stops
+            while. When my kicks move it and her voice answers, I kick 179 times. My twin, who
+            sees and hears the same but not because of anything it does, kicks 9. When it stops
             answering, I kick 12. The world answers me.
 
 months 3-6  Nobody tells me what to do. My brainstem is restless; when it fires I look, or make a
             sound, or jerk. I like what I am getting better at predicting, and I get bored of
             what I know. What I did most, in each tenth of these months:
-            look left, look right, look left, look down, make a sound,
-            jerk, make a sound, make a sound, make a sound, make a sound.
-            In the end I look at the snow on the television 2% of the time, and at each other
-            corner 16%: it never gets any easier, so it holds nothing for me.
-            Still surprising: my own voice 1%, my mother talking 48%, her answering me 16%;
-            my own jerks 2%, being rocked 13%; her touch 78%.
+            look up, look up, make a sound, make a sound, make a sound,
+            make a sound, make a sound, jerk, make a sound, make a sound.
+            In the end I look at the snow on the television 8% of the time, and at each other
+            corner 14%: it never gets any easier, so it holds nothing for me.
+            Still surprising: my own voice 1%, my mother talking 54%, her answering me 17%;
+            my own jerks 3%, being rocked 65%; her touch 94%.
             I know my own voice from hers. I know my own jerks from her rocking.
             All of it in my own brain: my cerebellum's synapses to my thalamus learned what to
             expect, my basal ganglia's synapses to my brainstem what to want. And I keep every
-            moment: when now is one I have lived, I expect what came next then (27324 times, in
+            moment: when now is one I have lived, I expect what came next then (28256 times, in
             what I heard).

@@ -71,12 +71,12 @@ callosum 0.15
    oooFFFFFPPPPPPPOOOOOOttttttccccccCCCCSSSSSSSSSssssssssssssssssss
    oooHHHHHHHHHHHHHHHHHHttttttccccccCCCCSSSSSSSSSssssssssssssssssss
    oooHHHHHHHHHHHHHHHHHHttttttccccccCCCCSSSSSSSSSssssssssssssssssss
-   key: F frontal cortex; P parietal cortex; T temporal cortex; O occipital cortex; H hippocampus; A amygdala; B basal ganglia; t thalamus; h hypothalamus; c tectum; g tegmentum; C cerebellum; S brainstem; s spinal cord (sensory); m spinal cord (motor); L left retina; R right retina; o olfactory bulb; l left cochlea; r right cochlea; v left vestibule; w right vestibule; i inferior colliculus;
+   key: F frontal cortex; P parietal cortex; T temporal cortex; O occipital cortex; H hippocampus; A amygdala; B basal ganglia; t thalamus; h hypothalamus; c tectum; g tegmentum; C cerebellum; S brainstem; s spinal cord (sensory); m spinal cord (motor); L left retina; R right retina; o olfactory bulb; l left cochlea; r right cochlea; v left vestibule; w right vestibule; i inferior colliculus; e entorhinal cortex;
 
 ## regions: neurons on the left and right
    frontal cortex              490    505
    parietal cortex             345    350
-   temporal cortex             242    235
+   temporal cortex             172    165
    occipital cortex            610    597
    hippocampus                 108    108
    amygdala                     27     27
@@ -97,111 +97,114 @@ callosum 0.15
    left vestibule               12      0
    right vestibule               0     12
    inferior colliculus          90     90
+   entorhinal cortex            70     70
 
 ## the cortex: excitatory neurons by layer (born inside out: first born deepest, yes), and inhibitory ones
-   layer 6 540, layer 5 540, layer 4 540, layer 3 540, layer 2 540; inhibitory (migrated in) 674
+   layer 6 512, layer 5 512, layer 4 512, layer 3 512, layer 2 512; inhibitory (migrated in) 674
 
 ## projections: connections grown by each rule, before any pruning
-      22520  column: layer 4 to layers 2/3
-      27160  column: layers 2/3 to layer 5
-      26920  column: layer 5 to layer 6
-       8408  column: layer 6 to layer 4
-      12517  column: within the upper layers
-       2100  retina to thalamus (visual nucleus)
-       2046  retina to thalamus (visual nucleus)
-       1813  retina to tectum
-       1869  retina to tectum
-       4517  touch: spinal cord to thalamus (touch nucleus)
-      17079  thalamus to cortex layer 4, by area
-      10597  cortex layer 6 back to thalamus
-       1019  occipital to parietal
-        650  occipital to temporal
-       2070  frontoparietal: parietal to frontal
-       1741  frontoparietal: frontal to parietal
-       1007  temporal to frontal
-        817  parietal and temporal
-       8056  corpus callosum
-      21640  motor: frontal layer 5 to spinal cord
-      17408  frontal layer 5 to brainstem
-      27409  cortex layer 5 to basal ganglia
-      13822  cortex layer 5 to basal ganglia
-      17681  action: basal ganglia to brainstem
-       5724  basal ganglia to thalamus (frontal nucleus)
-       6922  cortex layer 5 to cerebellum (crossing)
-       6968  cortex layer 5 to cerebellum (crossing)
-       3477  touch to cerebellum
-       4274  cerebellum to thalamus (frontal band, crossing)
-       2919  to hippocampus from temporal
-       1859  to hippocampus from parietal
-       2834  hippocampus within (pairs)
-        983  hippocampus to frontal
-        310  hippocampus to amygdala
-        442  to amygdala from temporal
-        358  to amygdala from thalamus (fast path)
-        985  amygdala to frontal
-        222  frontal to amygdala (regulation)
-      14043  amygdala to hypothalamus
-      17711  hypothalamus to brainstem
-        827  smell: olfactory bulb to amygdala
-        996  smell: olfactory bulb to hippocampus
-       1188  hearing: cochlea to inferior colliculus
-       1197  hearing: cochlea to inferior colliculus
-        567  hearing: cochlea to inferior colliculus
-        588  hearing: cochlea to inferior colliculus
-       3940  hearing: inferior colliculus to thalamus (hearing nucleus)
-       3529  hearing: inferior colliculus to cerebellum
-      61957  timing: cerebellum to thalamus (hearing nucleus)
-        773  tectum to thalamus (visual nucleus)
-       9159  tegmentum to basal ganglia (dopamine)
-        510  tegmentum to frontal (dopamine)
-       9947  brainstem to spinal cord (motor)
-       9368  efference copy: brainstem to cerebellum
-      60507  prediction: cerebellum to thalamus (touch nucleus)
-      10800  spinal reflex: sensory to motor
-       1603  balance: vestibule to cerebellum
-       1704  balance: vestibule to cerebellum
-       1067  balance: vestibule to thalamus (touch nucleus)
-       1066  balance: vestibule to thalamus (touch nucleus)
-      60262  prediction: cerebellum to thalamus (visual nucleus)
+      21159  column: layer 4 to layers 2/3
+      25760  column: layers 2/3 to layer 5
+      25600  column: layer 5 to layer 6
+       8318  column: layer 6 to layer 4
+      11995  column: within the upper layers
+       2044  retina to thalamus (visual nucleus)
+       2071  retina to thalamus (visual nucleus)
+       1835  retina to tectum
+       1815  retina to tectum
+       4525  touch: spinal cord to thalamus (touch nucleus)
+      16297  thalamus to cortex layer 4, by area
+      10225  cortex layer 6 back to thalamus
+        963  occipital to parietal
+        422  occipital to temporal
+       2022  frontoparietal: parietal to frontal
+       1749  frontoparietal: frontal to parietal
+       1075  temporal to frontal
+        548  parietal and temporal
+       7729  corpus callosum
+      21574  motor: frontal layer 5 to spinal cord
+      17402  frontal layer 5 to brainstem
+      27594  cortex layer 5 to basal ganglia
+      13745  cortex layer 5 to basal ganglia
+      17716  action: basal ganglia to brainstem
+       5741  basal ganglia to thalamus (frontal nucleus)
+       7043  cortex layer 5 to cerebellum (crossing)
+       7030  cortex layer 5 to cerebellum (crossing)
+       3379  touch to cerebellum
+       4329  cerebellum to thalamus (frontal band, crossing)
+       2798  to entorhinal from temporal
+       1858  to entorhinal from parietal
+       4023  perforant path: entorhinal to hippocampus
+        940  hippocampus back to entorhinal
+       3149  hippocampus within (pairs)
+       1028  hippocampus to frontal
+        333  hippocampus to amygdala
+        433  to amygdala from temporal
+        328  to amygdala from thalamus (fast path)
+        990  amygdala to frontal
+        211  frontal to amygdala (regulation)
+      14032  amygdala to hypothalamus
+      17682  hypothalamus to brainstem
+        853  smell: olfactory bulb to amygdala
+       1151  smell: olfactory bulb to hippocampus
+       1186  hearing: cochlea to inferior colliculus
+       1207  hearing: cochlea to inferior colliculus
+        572  hearing: cochlea to inferior colliculus
+        580  hearing: cochlea to inferior colliculus
+       3898  hearing: inferior colliculus to thalamus (hearing nucleus)
+       3576  hearing: inferior colliculus to cerebellum
+      62061  timing: cerebellum to thalamus (hearing nucleus)
+        811  tectum to thalamus (visual nucleus)
+       9055  tegmentum to basal ganglia (dopamine)
+        508  tegmentum to frontal (dopamine)
+       9996  brainstem to spinal cord (motor)
+       9371  efference copy: brainstem to cerebellum
+      60606  prediction: cerebellum to thalamus (touch nucleus)
+      10832  spinal reflex: sensory to motor
+       1684  balance: vestibule to cerebellum
+       1666  balance: vestibule to cerebellum
+       1097  balance: vestibule to thalamus (touch nucleus)
+       1120  balance: vestibule to thalamus (touch nucleus)
+      60402  prediction: cerebellum to thalamus (visual nucleus)
 
-## in all: 13284 neurons, 562452 connections
+## in all: 13284 neurons, 561742 connections
 
 ## the womb: touch, day by day
 ## share of touch still felt after the cerebellum's prediction: its own (from its twitches),
 ## the mother's (from outside), and hand-to-face; and the parietal response per unit of touch
    day   own    mother's  hand-to-face   parietal own / mother's
-     0   0.654  1.000     0.763          0.292 / 0.441
-     1   0.559  1.000     0.685          0.277 / 0.460
-     2   0.583  1.000     0.789          0.291 / 0.434
-     3   0.559  1.000     0.757          0.289 / 0.470
-     4   0.555  1.000     0.747          0.290 / 0.476
-     5   0.548  1.000     0.676          0.296 / 0.477
-     6   0.549  1.000     0.727          0.295 / 0.434
-     7   0.536  1.000     0.779          0.292 / 0.434
-     8   0.567  1.000     0.790          0.306 / 0.475
-     9   0.531  1.000     0.720          0.292 / 0.437
-    10   0.536  1.000     0.728          0.291 / 0.472
-    11   0.554  1.000     0.708          0.298 / 0.424
-    12   0.551  1.000     0.736          0.302 / 0.428
-    13   0.538  1.000     0.708          0.292 / 0.458
-    14   0.542  1.000     0.697          0.294 / 0.433
-    15   0.549  1.000     0.694          0.302 / 0.454
-    16   0.522  1.000     0.610          0.292 / 0.451
-    17   0.552  1.000     0.735          0.304 / 0.468
-    18   0.540  1.000     0.740          0.295 / 0.471
-    19   0.536  1.000     0.726          0.293 / 0.438
+     0   0.652  1.000     0.769          0.289 / 0.449
+     1   0.553  1.000     0.687          0.273 / 0.458
+     2   0.580  1.000     0.785          0.285 / 0.443
+     3   0.556  1.000     0.754          0.289 / 0.480
+     4   0.554  1.000     0.751          0.292 / 0.471
+     5   0.535  1.000     0.669          0.286 / 0.483
+     6   0.544  1.000     0.731          0.289 / 0.436
+     7   0.531  1.000     0.779          0.292 / 0.435
+     8   0.557  1.000     0.789          0.300 / 0.471
+     9   0.535  1.000     0.718          0.291 / 0.453
+    10   0.533  1.000     0.722          0.292 / 0.482
+    11   0.556  1.000     0.702          0.294 / 0.426
+    12   0.550  1.000     0.738          0.295 / 0.443
+    13   0.534  1.000     0.705          0.291 / 0.458
+    14   0.546  1.000     0.690          0.294 / 0.440
+    15   0.544  1.000     0.692          0.300 / 0.451
+    16   0.523  1.000     0.608          0.290 / 0.450
+    17   0.556  1.000     0.726          0.307 / 0.472
+    18   0.534  1.000     0.735          0.292 / 0.479
+    19   0.541  1.000     0.723          0.293 / 0.434
    it now feels 54% of its own touch and 100% of the mother's: what it learned to cancel is "me"
 
 ## the womb: smell, good or bad for me
 ## the amygdala's answer to each smell, approach minus avoidance (-1 to 1), before and after
-   the mother herself       -0.490  ->  +1.000
-   anise (in her meals)     -0.433  ->  +1.000
-   smell 2                  -0.349  ->  -0.349
-   smell 3                  -0.245  ->  -0.245
-   smell 4                  -0.417  ->  -0.417
-   stress (her cortisol)    -0.247  ->  -1.000
-   smell 6                  -0.405  ->  -0.405
-   smell 7                  +0.099  ->  +0.099
+   the mother herself       -0.454  ->  +1.000
+   anise (in her meals)     -0.385  ->  +1.000
+   smell 2                  -0.406  ->  -0.406
+   smell 3                  -0.247  ->  -0.247
+   smell 4                  -0.363  ->  -0.363
+   stress (her cortisol)    -0.422  ->  -1.000
+   smell 6                  -0.338  ->  -0.338
+   smell 7                  -0.253  ->  -0.253
 
 ## the womb: hearing the heartbeat
    share of the heartbeat still heard after the cerebellum's timing: day 0 0.109, last 0.013
@@ -209,21 +212,21 @@ callosum 0.15
    a beat that should come and does not: a signal 129% as strong as a beat, where there is nothing (in plain silence: 0%)
 
 ## the womb: vision in the dark, retinal waves
-   receptive field of the visual thalamus (retina cells across): 3.33 before the waves, 2.01 after
-   the eyes' connections to the thalamus: 2007 kept, 2139 pruned
+   receptive field of the visual thalamus (retina cells across): 3.41 before the waves, 1.99 after
+   the eyes' connections to the thalamus: 1983 kept, 2132 pruned
 
 ## the womb: the reflex loop, practised
-   lips touched, mouth muscles' drive: 3.55 before, 18.37 after (its own hand to its mouth, and its twitches)
-   middle of the body touched, its muscles' drive: 2.67 before, 14.51 after (its twitches pressing the womb wall)
+   lips touched, mouth muscles' drive: 3.76 before, 18.95 after (its own hand to its mouth, and its twitches)
+   middle of the body touched, its muscles' drive: 2.66 before, 14.29 after (its twitches pressing the womb wall)
 
 ## infancy: serve and return (the mobile)
 ## kicks in each session: first a baseline, last an extinction; between, the world answers
    session   its own kicks answered   a yoked twin (answered, not by its kicks)
       0          7                        9
       1         35                        5
-      2        163                        6
-      3        177                       13
-      4        182                        9
-      5        183                        7
-      6        176                        4
-      7         12                        5
+      2        163                        7
+      3        179                       13
+      4        185                        9
+      5        188                        9
+      6        180                        8
+      7         12                        6

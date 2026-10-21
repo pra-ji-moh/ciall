@@ -51,6 +51,10 @@ filing its own: filing moments under the hippocampus's own neurons waits for a
 cortex whose patterns repeat when the world does, which is phase 2's first job
 too (the mind's object map needs the same).
 
+**Phase 2, step 1, done:** its cortex learns what it sees (`test_cortex.c`); the
+entorhinal cortex is grown as the hippocampus's gateway; its hippocampus has
+patterns of its own. Next: its memory filed under those patterns.
+
 The life brain (`ob_life.c`) stays as the sketch it was: smaller, faster, and
 the thing to compare the one brain against. Where the one brain does worse
 than the sketch, that is a result, written down.
