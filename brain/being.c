@@ -195,7 +195,10 @@ int main(int argc, char **argv) {
             x[OC_JERK] < 0.8 * x[OC_ROCKED] ? "I know my own jerks from her rocking."
                                              : "I cannot yet tell my jerks from her rocking.");
     fprintf(diary, "            All of it in my own brain: my cerebellum's synapses to my thalamus learned what to\n"
-                   "            expect, my basal ganglia's synapses to my brainstem what to want.\n");
+                   "            expect, my basal ganglia's synapses to my brainstem what to want. And I keep every\n"
+                   "            moment: when now is one I have lived, I expect what came next then (%lu times, in\n"
+                   "            what I heard).\n",
+            ONE.recalls[OL_HEAR]);
   }
   fclose(diary);
 

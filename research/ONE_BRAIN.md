@@ -42,10 +42,14 @@ one that lives, and the other two become what its regions do.
 3. **The one brain on the phone.** The phone grows it from its genome and
    lives it.
 
-**Where it stands.** Phase 1's first half is done: the grown brain lives, and
-passes the sketch's checks, more weakly (`brain/README.md` has the numbers and
-the eight changes it took). The newborn's own brain, after the womb, now lives
-on this way (`being.c`). Its memory is still the sketch's: next.
+**Where it stands.** Phase 1 is done, with one part deferred: the grown brain
+lives, keeps every moment, and with adaptation and memory passes the sketch's
+checks about as well as the sketch (`brain/README.md` has the numbers and the
+ten changes it took). The newborn's own brain, after the womb, lives on this
+way (`being.c`). Its memory is the sketch's hippocampus, shared, each sense
+filing its own: filing moments under the hippocampus's own neurons waits for a
+cortex whose patterns repeat when the world does, which is phase 2's first job
+too (the mind's object map needs the same).
 
 The life brain (`ob_life.c`) stays as the sketch it was: smaller, faster, and
 the thing to compare the one brain against. Where the one brain does worse

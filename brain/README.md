@@ -245,22 +245,31 @@ What it took, each found by watching it fail:
 | The cortex's layer-6 feedback, learned as prediction | the sparse cerebellum could not also carry the steady world |
 | Surprise is what came and was not expected | a neuron cannot fire below nothing; absence is another signal |
 
-`test_one.c` (11 checks, about ten minutes; `build_c.sh --slow`), one life per twin:
+Two more, for its memory:
+
+| | Why |
+|---|---|
+| Adaptation: beyond the relays, a neuron answers how its input differs from what it usually gets | a steady baseline hid what was particular to now: the visual cortex barely told one view from another (correlation 0.79 for the same view, 0.71 for another); now 0.43 against 0.00 |
+| Its moments kept in the sketch's hippocampus, the same code, each sense filing its own; a recalled moment drives that sense's relays again | filing them under its own hippocampal neurons was tried, and failed: their patterns do not yet repeat when the world does (0.22 for the same view) |
+
+`test_one.c` (16 checks, about fifteen minutes; `build_c.sh --slow`), one life per twin:
 
 | | the being | seeks surprise | no dopamine |
 |---|---|---|---|
-| eyes on the snow / on each other corner | 0.00 / 0.24 | 0.19 / 0.11 | 0.02 / 0.09 |
-| own voice / its mother talking | 0.27 / 0.56 | 0.56 / 0.54 | 0.22 / 0.47 |
-| own jerks / being rocked | 0.49 / 0.55 | 0.40 / 0.62 | 0.48 / 0.77 |
-| her answering its voice | 0.38 | 0.43 | 0.36 |
-| the wall as its eyes move | 0.09 | 0.09 | 0.14 |
+| eyes on the snow / on each other corner | 0.11 / 0.10 | 0.00 / 0.21 | 0.02 / 0.09 |
+| own voice / its mother talking | 0.01 / 0.49 | 0.01 / 0.50 | 0.00 / 0.44 |
+| own jerks / being rocked | 0.03 / 0.26 | 0.03 / 0.28 | 0.04 / 0.55 |
+| her answering its voice | 0.14 | 0.15 | 0.28 |
+| the wall as its eyes move | 0.01 | 0.05 | 0.04 |
 
-The same effects as the sketch, weaker: it tells its own voice from its
-mother's by half, not by twenty-five times. Single lives vary a good deal: the
-newborn's own life, after the womb, was drawn to the snow and could not yet
-tell its voice from hers, though it told its jerks from her rocking (its diary
-says so). Its memory is still the sketch's; moving it into the hippocampus is
-next.
+With adaptation and memory it does about as well as the sketch. The snow, held
+before its eyes, is about five times as surprising as a plain corner, and the
+being looks at it no more than at any other corner; but in this life the twin
+that seeks surprise was not caught by it either: it settled in the other
+corners. One life each is a small sample. A song heard once is mostly expected
+the second time (surprise 2.35, then 0.95; without memory, 2.35 then 2.27). Its
+mother's answers surprise it a little more with memory than without (0.15
+against 0.08): it has not wholly learned where memory misleads.
 
 ## The newborn
 
