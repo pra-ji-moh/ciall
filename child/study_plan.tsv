@@ -1,5 +1,7 @@
 game	cases	unexplained	difficulty_bits	newly_playable	practice_runs
-g50t	96	84	300.4	3	2
-ar25	59	57	248.5	0	0
-tr87	42	18	177.4	5	2
-re86	43	34	163.5	2	2
+re86	146	127	563.0	8	2
+tr87	129	98	433.7	10	2
+g50t	54	44	181.2	1	1
+m0r0	52	44	168.5	2	1
+ar25	26	23	123.4	1	1
+ls20	30	26	118.0	2	1
