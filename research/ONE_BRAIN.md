@@ -53,7 +53,9 @@ too (the mind's object map needs the same).
 
 **Phase 2, step 1, done:** its cortex learns what it sees (`test_cortex.c`); the
 entorhinal cortex is grown as the hippocampus's gateway; its hippocampus has
-patterns of its own. Next: its memory filed under those patterns.
+patterns of its own, and it recalls episodes through them (a little help, so
+far; the per-sense memory still does most). Next: the frontal areas, from the
+user's research, and the mind's parts on them.
 
 The life brain (`ob_life.c`) stays as the sketch it was: smaller, faster, and
 the thing to compare the one brain against. Where the one brain does worse

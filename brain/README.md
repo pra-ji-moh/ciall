@@ -303,6 +303,17 @@ worse than none over six: it is off, and still measured (0.62 with it, 0.69
 without). The hippocampus now has patterns of its own for what it sees (about
 0.5 alike for the same view, 0.25 for a far one, where before it was noise).
 
+So it now has two memories, as a brain does. One knows things: this sense's
+pattern, lived before (the perirhinal cortex's way, the sketch's code). The
+other recalls episodes: whole moments filed under which of its own hippocampal
+neurons fired, recalled when now's pattern shares half its firing with a lived
+one. Trust in either is earned, situation by situation; given freely, a wrong
+episode overrode the cerebellum's prediction of its own voice. Measured alone,
+one life each: episodes help a little (a song's second hearing 2.36 to 1.78,
+against 1.94 with no memory; her answers 0.10 against 0.15); the memory of
+things does most (the song 1.99 to 0.03). Its hippocampal patterns mean
+something now, but not yet precisely enough to bring back an exact moment.
+
 ## The newborn
 
 ```
