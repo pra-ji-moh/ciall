@@ -10,7 +10,7 @@
 
 /* ---- its anatomy, read once: who sends to whom, and what each rule is for ---- */
 
-enum { C_OTHER, C_SENSE, C_PRED, C_ACTION };   /* what a synapse is, by the rule that grew it */
+enum { C_OTHER, C_SENSE, C_PRED, C_ACTION, C_LEARN };   /* what a synapse is, by the rule that grew it */
 
 static unsigned char CLASS[64];
 static unsigned TARGET[OB_MAX_SYN];
@@ -81,6 +81,15 @@ static void read_anatomy(const ob_brain_t *b) {
         strcmp(nm, "cortex layer 6 back to thalamus") == 0)
       CLASS[k] = C_PRED;
     else if (strncmp(nm, "action:", 7) == 0) CLASS[k] = C_ACTION;
+    /* the cortex's feedforward pathways learn, after birth: the thalamus into
+       layer 4, layer 4 up to layers 2/3, and the visual cortex on into the
+       temporal ("what") and parietal ("where") lobes */
+    else if (strcmp(nm, "thalamus to cortex layer 4, by area") == 0 ||
+             strcmp(nm, "column: layer 4 to layers 2/3") == 0 || strcmp(nm, "occipital to temporal") == 0 ||
+             strcmp(nm, "occipital to parietal") == 0 || strcmp(nm, "to entorhinal from temporal") == 0 ||
+             strcmp(nm, "to entorhinal from parietal") == 0 ||
+             strcmp(nm, "perforant path: entorhinal to hippocampus") == 0)
+      CLASS[k] = C_LEARN;
     else if (strcmp(nm, "retina to thalamus (visual nucleus)") == 0 ||
              strcmp(nm, "touch: spinal cord to thalamus (touch nucleus)") == 0 ||
              strcmp(nm, "hearing: inferior colliculus to thalamus (hearing nucleus)") == 0 ||
@@ -278,7 +287,7 @@ static void step_only(ob_one_t *O, float gx, float gy, int only) {
   /* each neuron gathers what its inputs carry (its inputs lie together) */
   for (i = 0u; i < b->n_neurons; i++) {
     const ob_neuron_t *n = &b->neuron[i];
-    float acc[4] = {0.0f, 0.0f, 0.0f, 0.0f};   /* by class: other, sense, prediction, action */
+    float acc[5] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};   /* by class: other, sense, prediction, action, learned */
     unsigned s, end = n->syn_first + n->syn_n;
     if (FIXED[i] || (only >= 0 && n->region != (unsigned)only) || (only < 0 && n->region == OB_CEREBELLUM)) continue;
     for (s = n->syn_first; s < end; s++) {
@@ -292,7 +301,7 @@ static void step_only(ob_one_t *O, float gx, float gy, int only) {
       PRED_CB[i] = cb;
     }
     /* (the basal ganglia's say on the brainstem is read as an urge, not here) */
-    INPUT[i] = acc[C_OTHER] + acc[C_SENSE];
+    INPUT[i] = acc[C_OTHER] + acc[C_SENSE] + acc[C_LEARN];
     DRIVE[i] = acc[C_SENSE];
     PRED[i] = acc[C_PRED];
   }
@@ -320,7 +329,7 @@ static void step_only(ob_one_t *O, float gx, float gy, int only) {
     if (!RELAY[n->region] && n->region != OB_CEREBELLUM) {
       float d = x - O->usual_in[i];
       O->usual_in[i] += (O->moments < 200u ? 0.05f : 0.0005f) * (x - O->usual_in[i]);
-      x = d;
+      x = d - O->threshold[i];   /* and a neuron that fires too often raises its threshold */
     }
     RAW[i] = x;
     NEXT[i] = x < 0.0f ? 0.0f : x > 1.0f ? 1.0f : x;
@@ -329,7 +338,16 @@ static void step_only(ob_one_t *O, float gx, float gy, int only) {
      strongly driven fifth fire; the hippocampus's dentate gyrus, a tenth, to
      keep moments apart */
   if (only == OB_CEREBELLUM) sparse(b, OB_CEREBELLUM, 0.2f);
-  if (only < 0) sparse(b, OB_HIPPOCAMPUS, 0.1f);
+  if (only < 0) {
+    sparse(b, OB_HIPPOCAMPUS, 0.1f);
+    /* the cortex too: within each area, inhibition lets the most strongly
+       driven tenth fire, so they compete */
+    sparse(b, OB_FRONTAL, 0.1f);
+    sparse(b, OB_PARIETAL, 0.1f);
+    sparse(b, OB_TEMPORAL, 0.1f);
+    sparse(b, OB_OCCIPITAL, 0.1f);
+    sparse(b, OB_ENTORHINAL, 0.1f);
+  }
   for (i = 0u; i < b->n_neurons; i++) {
     const ob_neuron_t *n = &b->neuron[i];
     if (FIXED[i] || (only >= 0 && n->region != (unsigned)only) || (only < 0 && n->region == OB_CEREBELLUM)) continue;
@@ -392,6 +410,8 @@ void ob_one_born(ob_one_t *O, const ob_brain_t *grown, unsigned seed, unsigned c
   O->curiosity = curiosity;
   O->learning = 1u;
   O->remembers = 1u;
+  O->cortex_learns = 1u;
+  O->trace_rule = 0u;   /* Foldiak's trace rule: tried, and it did not help here (see test_cortex.c) */
   for (i = 0u; i < OL_GROUPS; i++) {
     O->recalled[i] = -1;
     O->recalled_moment[i] = -1;
@@ -405,6 +425,34 @@ void ob_one_settle(ob_one_t *O) {
     if (w > 32000.0f) w = 32000.0f;
     if (w < -32000.0f) w = -32000.0f;
     O->brain.syn[s].weight = (short)lrintf(w);
+  }
+}
+
+/* ---- the cortex learns -------------------------------------------------------------- */
+
+#define CORTEX_RATE 0.02f
+
+static void learn_cortex(ob_one_t *O) {
+  const ob_brain_t *b = &O->brain;
+  unsigned i, s;
+  for (i = 0u; i < b->n_neurons; i++) {
+    const ob_neuron_t *n = &b->neuron[i];
+    float y;
+    if (!((n->region >= OB_FRONTAL && n->region <= OB_OCCIPITAL) || n->region == OB_ENTORHINAL ||
+          n->region == OB_HIPPOCAMPUS))
+      continue;
+    O->trace[i] = 0.6f * O->trace[i] + 0.4f * O->act[i];
+    /* homeostasis, where moments must be kept apart (the entorhinal cortex and
+       the hippocampus): each aims to fire a tenth of the time, so the same few
+       cannot answer everything */
+    if (n->region == OB_TEMPORAL || n->region == OB_ENTORHINAL || n->region == OB_HIPPOCAMPUS)
+      O->threshold[i] += 0.002f * ((O->act[i] > 0.0f ? 1.0f : 0.0f) - 0.1f);
+    y = (n->region == OB_TEMPORAL || n->region == OB_ENTORHINAL) && O->trace_rule ? O->trace[i] : O->act[i];
+    if (y <= 0.0f) continue;
+    for (s = n->syn_first; s < n->syn_first + n->syn_n; s++) {
+      if (SCLASS[s] != C_LEARN) continue;
+      O->w[s] += CORTEX_RATE * y * (O->act[FROM[s]] - O->w[s]);
+    }
   }
 }
 
@@ -495,6 +543,14 @@ unsigned ob_one_live(ob_one_t *O, const float *in) {
     O->err[g] = n_err[g] ? err[g] / (float)n_err[g] : 0.0f;
     O->energy[g] = n_err[g] ? energy[g] / (float)n_err[g] : 0.0f;
   }
+  /* 2b. the cortex learns: each neuron that fired moves its learned synapses
+         towards what its inputs carried (competitive Hebbian learning: the
+         winners become templates of what drove them). In the temporal lobe the
+         rule uses the neuron's recent firing, not just now's (Foldiak's trace
+         rule): what stays while the eyes move is one thing, and its neurons
+         learn to keep answering it */
+  if (O->learning && O->cortex_learns) learn_cortex(O);
+
   /* 2. (activity flows on through the cortex to the basal ganglia from moment
         to moment, so what reaches them is a moment or two old) */
 

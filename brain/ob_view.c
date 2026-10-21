@@ -14,7 +14,7 @@
 void ob_write_map(const ob_brain_t *b, FILE *out) {
   unsigned r, k, x, y, layer_n[OB_LAYERS] = {0}, inhib = 0u, deepest_first = 1u;
   static const char LETTER[OB_REGIONS] = {'.', 'F', 'P', 'T', 'O', 'H', 'A', 'B', 't', 'h',
-                                          'c', 'g', 'C', 'S', 's', 'm', 'L', 'R', 'o', 'l', 'r', 'v', 'w', 'i'};
+                                          'c', 'g', 'C', 'S', 's', 'm', 'L', 'R', 'o', 'l', 'r', 'v', 'w', 'i', 'e'};
   if (b == 0 || out == 0) return;
   fprintf(out, "# open brain map\n# grown from the genome below; every number here can be checked against it\n\n");
   fprintf(out, "## genome\n");
@@ -165,7 +165,7 @@ static const unsigned char REGION_RGB[OB_REGIONS][3] = {
     {20, 20, 24},    {230, 120, 60},  {70, 140, 230}, {240, 200, 70}, {120, 200, 110}, {200, 90, 200},
     {220, 60, 80},   {150, 110, 80},  {90, 210, 210}, {170, 150, 220}, {250, 160, 190}, {120, 120, 150},
     {110, 170, 60},  {140, 140, 140}, {240, 240, 240}, {180, 180, 120}, {255, 255, 255}, {255, 255, 255},
-    {255, 230, 120}, {255, 255, 255}, {255, 255, 255}, {255, 255, 255}, {255, 255, 255}, {250, 160, 190}};
+    {255, 230, 120}, {255, 255, 255}, {255, 255, 255}, {255, 255, 255}, {255, 255, 255}, {250, 160, 190}, {200, 130, 60}};
 
 static void fill_rect(unsigned char *img, unsigned w, unsigned x0, unsigned y0, unsigned rw, unsigned rh,
                       const unsigned char *c) {

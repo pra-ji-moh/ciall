@@ -112,7 +112,7 @@ const char *ob_region_name(unsigned r) {
       "hippocampus",   "amygdala",       "basal ganglia",   "thalamus",        "hypothalamus",
       "tectum",        "tegmentum",      "cerebellum",      "brainstem",       "spinal cord (sensory)",
       "spinal cord (motor)", "left retina", "right retina", "olfactory bulb", "left cochlea", "right cochlea",
-      "left vestibule", "right vestibule", "inferior colliculus"};
+      "left vestibule", "right vestibule", "inferior colliculus", "entorhinal cortex"};
   return r < OB_REGIONS ? N[r] : "?";
 }
 
@@ -278,6 +278,16 @@ void ob_stage_neurons(ob_brain_t *b) {
     } else {
       nn->sx *= 2.0f;
     }
+  }
+  /* the entorhinal cortex: the strip of the temporal lobe beside the
+     hippocampus (its roof-side edge), through which the cortex reaches it */
+  for (i = 0u; i < b->n_neurons; i++) {
+    ob_neuron_t *nn = &b->neuron[i];
+    if (nn->region != OB_TEMPORAL || nn->sy < 0.8f) continue;
+    nn->region = OB_ENTORHINAL;
+    nn->sy = (nn->sy - 0.8f) / 0.2f;
+    b->count[OB_TEMPORAL][nn->side]--;
+    b->count[OB_ENTORHINAL][nn->side]++;
   }
   /* inhibitory neurons: born in the ganglionic eminences (here, the basal
      ganglia's progenitors), they migrate sideways into the cortex of their side */
@@ -454,8 +464,13 @@ static const ob_rule_t RULES[] = {
     {"cerebellum to thalamus (frontal band, crossing)", OB_THALAMUS, OB_CEREBELLUM, ANY, ANY, 0, SIDE_OTHER,
      MAP_WIDE, 3.0},
     /* the limbic loop */
-    {"to hippocampus from temporal", OB_HIPPOCAMPUS, OB_TEMPORAL, ANY, L23, -1, SIDE_SAME, MAP_WIDE, 3.0},
-    {"to hippocampus from parietal", OB_HIPPOCAMPUS, OB_PARIETAL, ANY, L23, -1, SIDE_SAME, MAP_WIDE, 2.0},
+    /* the cortex reaches the hippocampus through the entorhinal cortex: the
+       temporal lobe's "what", the parietal lobe's "where"; the perforant path
+       on into the hippocampus, and back */
+    {"to entorhinal from temporal", OB_ENTORHINAL, OB_TEMPORAL, ANY, L23, -1, SIDE_SAME, MAP_WIDE, 3.0},
+    {"to entorhinal from parietal", OB_ENTORHINAL, OB_PARIETAL, ANY, L23, -1, SIDE_SAME, MAP_WIDE, 2.0},
+    {"perforant path: entorhinal to hippocampus", OB_HIPPOCAMPUS, OB_ENTORHINAL, ANY, ANY, -1, SIDE_SAME, MAP_WIDE, 4.0},
+    {"hippocampus back to entorhinal", OB_ENTORHINAL, OB_HIPPOCAMPUS, ANY, ANY, -1, SIDE_SAME, MAP_WIDE, 1.0},
     {"hippocampus within (pairs)", OB_HIPPOCAMPUS, OB_HIPPOCAMPUS, ANY, ANY, -1, SIDE_SAME, MAP_WIDE, 3.0},
     {"hippocampus to frontal", OB_FRONTAL, OB_HIPPOCAMPUS, L23, ANY, -1, SIDE_SAME, MAP_WIDE, 1.0},
     {"hippocampus to amygdala", OB_AMYGDALA, OB_HIPPOCAMPUS, ANY, ANY, -1, SIDE_SAME, MAP_WIDE, 1.5},

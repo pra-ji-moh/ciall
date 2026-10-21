@@ -89,6 +89,7 @@ typedef enum {
   OB_COCHLEA_L, OB_COCHLEA_R,   /* the ears, outside the tube like the retinas */
   OB_VESTIBULE_L, OB_VESTIBULE_R, /* the inner ears' sense of being moved, beside the cochleas */
   OB_COLLICULUS_INF,            /* the tectum's back half, for hearing (its front half, OB_TECTUM, sees) */
+  OB_ENTORHINAL,                /* the temporal lobe's strip beside the hippocampus: its gateway */
   OB_REGIONS
 } ob_region_t;
 

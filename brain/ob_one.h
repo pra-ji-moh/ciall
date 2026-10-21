@@ -47,6 +47,10 @@ typedef struct {
 
   float act[OB_MAX_NEURONS];          /* every neuron's activity, now */
   float usual_in[OB_MAX_NEURONS];     /* each neuron's usual input: it adapts to it, and answers what differs */
+  float trace[OB_MAX_NEURONS];        /* each cortical neuron's recent firing */
+  float threshold[OB_MAX_NEURONS];    /* and its threshold, raised when it fires too often (homeostasis) */
+  unsigned cortex_learns;             /* 1: its cortex learns (after birth); 0: a twin whose cortex does not */
+  unsigned trace_rule;                /* 1: its temporal lobe learns from its recent firing (0: from now's only) */
   float held[OL_WAVE][4096];          /* the cerebellum's delay lines: what reached each of its cells, lately */
   float w[OB_MAX_SYN];                /* every synapse's weight, while it lives */
   float restless[OB_MAX_NEURONS];     /* the brainstem's own activity */
