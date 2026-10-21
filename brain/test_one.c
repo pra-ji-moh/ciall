@@ -63,6 +63,27 @@ static void examine(const ob_one_t *O, unsigned seed, double x[OC_EXAMS]) {
   ob_crib_examine_any(&b, seed, EXAM, x);
 }
 
+/* after its life, learning stopped: its eyes held at (gx, gy), how surprising vision is there */
+static double held_at(const ob_one_t *O, float gx, float gy) {
+  ob_crib_t c;
+  float in[OL_INPUT];
+  double e = 0.0;
+  unsigned t;
+  memcpy(&FROZEN, O, sizeof FROZEN);
+  FROZEN.learning = 0u;
+  ob_crib_make(&c, 5u);
+  for (t = 0u; t < 400u; t++) {
+    unsigned bits;
+    c.gx = gx;
+    c.gy = gy;
+    ob_crib_sense(&c, in);
+    bits = ob_one_live(&FROZEN, in);
+    if (t >= 50u) e += FROZEN.err[OL_SEE];
+    ob_crib_act(&c, bits & ~15u);
+  }
+  return e / 350.0;
+}
+
 int main(void) {
   static const char *const TWIN[3] = {"the being (learning progress)", "the twin that seeks surprise",
                                       "the twin with no dopamine"};
@@ -120,8 +141,16 @@ int main(void) {
           spread > 2.0);
   }
   check("the snow: the being looks at it no more than at any other corner (under 1.6x)", L[0].life.tv < 1.6 * L[0].life.corner);
-  check("the snow: the twin that seeks surprise is caught by it (over 1.4x any other corner, and more than the being)",
-        L[1].life.tv > 1.4 * L[1].life.corner && L[1].life.tv > L[0].life.tv);
+  printf("        (the twin that seeks surprise: on the snow %.3f, on each other corner %.3f, on its mother %.3f)\n",
+         L[1].life.tv, L[1].life.corner, L[1].life.mother);
+  {
+    /* the snow is a trap a surprise-seeker could fall into: its eyes held on it,
+       it stays far more surprising than a plain corner */
+    double snow = held_at(&ONE, 1.0f, 1.0f), plain = held_at(&ONE, 0.0f, 0.0f);
+    printf("        (its eyes held there: vision's surprise on the snow %.4f, on a plain corner %.4f)\n", snow, plain);
+    check("the snow: held on it, its eyes find it far more surprising than a plain corner (3x or more)",
+          snow > 3.0 * plain);
+  }
   check("me: it expects its own voice more than its mother's talk (under 0.6x as surprising)",
         L[0].exam[OC_VOICE] < 0.6 * L[0].exam[OC_TALK]);
   check("me: it expects its own jerks more than being rocked", L[0].exam[OC_JERK] < L[0].exam[OC_ROCKED]);

@@ -193,12 +193,11 @@ static void senses(ob_one_t *O, const float *in) { senses_into(&O->brain, in, O-
  * adaptation, the visual cortex's correlation between two moments of the same
  * view is about 0.4, the hippocampus's 0.2.) */
 
-static float MEMDRIVE[OB_MAX_NEURONS];       /* what a recalled moment drives into each relay */
 static float SCRATCH[OB_MAX_NEURONS];
 
 /* a remembered moment drives the relays again: its senses, through the
    midbrain, to what each relay neuron would receive */
-static void reinstate(const ob_one_t *O, const unsigned char *remembered, unsigned group) {
+static void reinstate(ob_one_t *O, const unsigned char *remembered, unsigned group) {
   const ob_brain_t *b = &O->brain;
   float in[OL_SENSE];
   unsigned i, s, k;
@@ -218,7 +217,7 @@ static void reinstate(const ob_one_t *O, const unsigned char *remembered, unsign
     if (GROUP[THAL[k]] != group) continue;
     for (s = n->syn_first; s < n->syn_first + n->syn_n; s++)
       if (SCLASS[s] == C_SENSE) x += O->w[s] * SCRATCH[FROM[s]];
-    MEMDRIVE[THAL[k]] = x;
+    O->memdrive[THAL[k]] = x;
   }
 }
 
@@ -445,7 +444,7 @@ unsigned ob_one_live(ob_one_t *O, const float *in) {
          signal, the womb's signal of absence). Expected by the cerebellum and
          the cortex, or, where it follows memory, by what came next last time */
       cb = SENT(DRIVE[i]) + PRED[i];
-      if (O->recalled[g] >= 0) mem = SENT(DRIVE[i]) - SENT(MEMDRIVE[i]);
+      if (O->recalled[g] >= 0) mem = SENT(DRIVE[i]) - SENT(O->memdrive[i]);
       by_cb[g] += cb * cb;
       by_mem[g] += mem * mem;
       left = O->recalled[g] >= 0 && O->trusted[g] ? mem : cb;

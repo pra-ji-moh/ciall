@@ -76,6 +76,7 @@ typedef struct {
   int recalled[OL_GROUPS];            /* the key each sense recalled under, for the coming moment (-1 none) */
   int trusted[OL_GROUPS];             /* and whether it follows memory there */
   long recalled_moment[OL_GROUPS];
+  float memdrive[OB_MAX_NEURONS];     /* what a recalled moment drives into each relay */
   unsigned long recalls[OL_GROUPS];
   ol_hippocampus_t hip;               /* last: it is much of its size */
 } ob_one_t;
