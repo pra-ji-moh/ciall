@@ -7,7 +7,12 @@
  * the checks hold it to what it does now, and the numbers it prints say how
  * far it is from the sketch.
  *
- *   test_one            three twins, a life each (about five minutes)
+ * Then its memory (the sketch's hippocampus, the same code, its recalled
+ * moments driving the grown brain's relays): a lit moment comes back exact,
+ * lighting changes nothing, a song heard once is expected the second time, and
+ * where the world is random it learns not to trust memory.
+ *
+ *   test_one            three twins, a life each (about ten minutes)
  */
 
 #include <stdio.h>
@@ -28,7 +33,7 @@ static void check(const char *name, int ok) {
 #define EXAM 20000ul
 
 static ob_brain_t GROWN;
-static ob_one_t ONE, FROZEN;
+static ob_one_t ONE, FROZEN, TWIN_B;
 
 typedef struct {
   ob_crib_life_t life;
@@ -125,6 +130,76 @@ int main(void) {
         L[0].exam[OC_ANSWER] < 0.8 * L[0].exam[OC_TALK]);
   check("its world: it predicts how the wall moves as its eyes move (under 0.2 left)",
         L[0].exam[OC_EYES] >= 0.0 && L[0].exam[OC_EYES] < 0.2);
+
+  /* its memory, after a life (the being's) */
+  {
+    float got[OL_SENSE], song[30][OL_EAR];
+    unsigned rng = 77u, i, j;
+    ob_crib_t c, keep;
+    double first = 0.0, second = 0.0, first_t = 0.0, second_t = 0.0, with[OC_EXAMS], without[OC_EXAMS];
+    ob_crib_being_t b;
+    int lit;
+    ob_one_born(&ONE, &GROWN, 1u, OL_PROGRESS);
+    live(&ONE, 1u, &L[0]);
+    lit = ob_one_light(&ONE, 1000u, got) && ob_one_light(&ONE, LIFE - 10u, got) && !ob_one_light(&ONE, LIFE + 5u, got);
+    memcpy(&FROZEN, &ONE, sizeof FROZEN);
+    for (i = 0u; i < 500u; i++) ob_one_light(&ONE, i * 70u, got);
+    check("eidetic: its every moment can be lit, and only those it has lived", lit);
+    check("unseen: lighting its memories changes nothing in it", memcmp(&FROZEN, &ONE, sizeof FROZEN) == 0);
+    /* a song, heard once, then again; and a twin, the same in all but memory */
+    for (i = 0u; i < 30u; i++) {
+      for (j = 0u; j < OL_EAR; j++) {
+        rng ^= rng << 13;
+        rng ^= rng >> 17;
+        rng ^= rng << 5;
+        song[i][j] = 0.2f + 0.8f * (float)(rng >> 8) / 16777216.0f;
+      }
+    }
+    memcpy(&TWIN_B, &ONE, sizeof TWIN_B);
+    TWIN_B.remembers = 0u;
+    ob_crib_make(&c, 9u);
+    memcpy(&keep, &c, sizeof keep);
+    {
+      ob_one_t *who[2] = {&ONE, &TWIN_B};
+      double *res[2][2] = {{&first, &second}, {&first_t, &second_t}};
+      unsigned w, pass, t;
+      for (w = 0u; w < 2u; w++) {
+        memcpy(&c, &keep, sizeof c);
+        for (pass = 0u; pass < 2u; pass++) {
+          for (t = 0u; t < 30u + (pass == 0u ? 2000u : 0u); t++) {
+            float in[OL_INPUT];
+            unsigned bits;
+            ob_crib_sense(&c, in);
+            if (t < 30u) memcpy(in + OL_VIS, song[t], sizeof song[t]);
+            bits = ob_one_live(who[w], in);
+            if (t >= 3u && t < 30u) *res[w][pass] += who[w]->err[OL_HEAR];
+            ob_crib_act(&c, bits);
+          }
+        }
+      }
+    }
+    printf("        (surprise through the song: with memory %.2f, then %.2f; without, %.2f, then %.2f)\n", first, second,
+           first_t, second_t);
+    check("once: a song heard once, it expects much of it the second time (half the surprise or less)",
+          second < 0.5 * first);
+    check("once: a twin without the memory expects far less of it (1.5x the surprise or more)", second_t > 1.5 * second);
+    /* Funes: where the world is random, memory is no guide */
+    memcpy(&FROZEN, &ONE, sizeof FROZEN);
+    FROZEN.learning = 0u;
+    b.self = &FROZEN;
+    b.live = live_one;
+    b.err = FROZEN.err;
+    b.energy = FROZEN.energy;
+    ob_crib_examine_any(&b, 99u, EXAM, with);
+    memcpy(&FROZEN, &ONE, sizeof FROZEN);
+    FROZEN.learning = 0u;
+    FROZEN.remembers = 0u;
+    ob_crib_examine_any(&b, 99u, EXAM, without);
+    printf("        (its mother's answers still surprise it %.2f with its memory, %.2f without)\n", with[OC_ANSWER],
+           without[OC_ANSWER]);
+    check("Funes: where the world is random it learns not to trust memory (her answers no more surprising for it)",
+          with[OC_ANSWER] < without[OC_ANSWER] + 0.1);
+  }
   {
     static ob_one_t again;
     float in[OL_INPUT];

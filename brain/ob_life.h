@@ -160,4 +160,12 @@ int ol_light(const ol_life_t *L, unsigned long moment, float *senses);
    ago, for the last three); -1 if none */
 long ol_complete(const ol_life_t *L, const float *cue, unsigned acts);
 
+/* its hippocampus, for another brain to use (ob_one.c): the moment nearest to
+   now in sense g, if near enough (-1 none); the key now is filed under; keep a
+   moment; whether a moment is still held. `lately` as in ol_complete. */
+long ol_hip_recall(const ol_hippocampus_t *h, const float *s, unsigned g, unsigned lately, float *how_near);
+unsigned ol_hip_key(const float *s, unsigned g, unsigned lately);
+void ol_hip_keep(ol_hippocampus_t *h, unsigned long moment, const float *s, unsigned lately);
+int ol_hip_held(const ol_hippocampus_t *h, unsigned long moment);
+
 #endif

@@ -24,6 +24,7 @@ static unsigned THAL[OB_MAX_NEURONS], N_THAL;                /* the thalamic neu
 static unsigned STEM[OB_MAX_NEURONS], N_STEM;                /* the brainstem's neurons */
 static float DRIVE[OB_MAX_NEURONS], PRED[OB_MAX_NEURONS], INPUT[OB_MAX_NEURONS], PRED_CB[OB_MAX_NEURONS];
 static float NEXT[OB_MAX_NEURONS];
+static float RAW[OB_MAX_NEURONS];                 /* each neuron's drive before clipping: what ranks it */
 static float BEFORE[OB_MAX_NEURONS];              /* activity before the last step: what predicted */
 static unsigned FROM[OB_MAX_SYN];                 /* each synapse's source, and what it is for */
 static unsigned char SCLASS[OB_MAX_SYN];
@@ -150,37 +151,85 @@ static float gauss(ob_one_t *O) { return (unit(O) + unit(O) + unit(O) + unit(O) 
 
 /* ---- the world arrives ----------------------------------------------------------- */
 
-static void senses(ob_one_t *O, const float *in) {
-  const ob_brain_t *b = &O->brain;
+static void senses_into(const ob_brain_t *b, const float *in, float *act) {
   unsigned i;
-  float gx = in[OL_SENSE], gy = in[OL_SENSE + 1];
   for (i = 0u; i < b->n_neurons; i++) {
     const ob_neuron_t *n = &b->neuron[i];
     switch (n->region) {
     case OB_RETINA_L:
     case OB_RETINA_R: {
       unsigned x = (unsigned)(n->sx * OL_EYE), y = (unsigned)(n->sy * OL_EYE);
-      O->act[i] = in[y * OL_EYE + x];
+      act[i] = in[y * OL_EYE + x];
       break;
     }
     case OB_COCHLEA_L:
-    case OB_COCHLEA_R: O->act[i] = in[OL_VIS + (unsigned)(n->sx * OL_EAR)]; break;
+    case OB_COCHLEA_R: act[i] = in[OL_VIS + (unsigned)(n->sx * OL_EAR)]; break;
     case OB_VESTIBULE_L:
-    case OB_VESTIBULE_R: O->act[i] = in[OL_VIS + OL_EAR + OL_SKIN + (unsigned)(n->sx * OL_MOVE)]; break;
+    case OB_VESTIBULE_R: act[i] = in[OL_VIS + OL_EAR + OL_SKIN + (unsigned)(n->sx * OL_MOVE)]; break;
     case OB_SPINAL_SENSORY: {
       /* its skin: eight places, four down each side of its body (its face, the
          first tenth, is left to the womb's hand and mouth) */
       int place = n->sx < 0.1f ? -1 : (int)((n->sx - 0.1f) / 0.225f);
       if (place > 3) place = 3;
-      O->act[i] = place < 0 ? 0.0f : in[OL_VIS + OL_EAR + (unsigned)place + 4u * n->side];
+      act[i] = place < 0 ? 0.0f : in[OL_VIS + OL_EAR + (unsigned)place + 4u * n->side];
       break;
     }
     default: break;
     }
   }
-  (void)gx;
-  (void)gy;
 }
+
+static void senses(ob_one_t *O, const float *in) { senses_into(&O->brain, in, O->act); }
+
+/* ---- the hippocampus --------------------------------------------------------------
+ * The sketch's hippocampus (ob_life.c), the same code: each sense files every
+ * moment under its own pattern and what it did lately. When now is a moment
+ * it has lived, what came next then drives that sense's relays again, as
+ * recall reactivates the senses' own areas: an expectation in each relay
+ * neuron, followed where memory has earned trust.
+ *
+ * (It does not yet file moments under its own hippocampal neurons' activity:
+ * its cortex's patterns do not repeat when the world does, not yet; with
+ * adaptation, the visual cortex's correlation between two moments of the same
+ * view is about 0.4, the hippocampus's 0.2.) */
+
+static float MEMDRIVE[OB_MAX_NEURONS];       /* what a recalled moment drives into each relay */
+static float SCRATCH[OB_MAX_NEURONS];
+
+/* a remembered moment drives the relays again: its senses, through the
+   midbrain, to what each relay neuron would receive */
+static void reinstate(const ob_one_t *O, const unsigned char *remembered, unsigned group) {
+  const ob_brain_t *b = &O->brain;
+  float in[OL_SENSE];
+  unsigned i, s, k;
+  for (i = 0u; i < OL_SENSE; i++) in[i] = (float)remembered[i] / 255.0f;
+  memset(SCRATCH, 0, sizeof(float) * b->n_neurons);
+  senses_into(b, in, SCRATCH);
+  for (i = 0u; i < b->n_neurons; i++) {
+    const ob_neuron_t *n = &b->neuron[i];
+    float x = 0.0f;
+    if (n->region != OB_COLLICULUS_INF) continue;
+    for (s = n->syn_first; s < n->syn_first + n->syn_n; s++) x += O->w[s] * SCRATCH[FROM[s]];
+    SCRATCH[i] = x < 0.0f ? 0.0f : x > 1.0f ? 1.0f : x;
+  }
+  for (k = 0u; k < N_THAL; k++) {
+    const ob_neuron_t *n = &b->neuron[THAL[k]];
+    float x = 0.0f;
+    if (GROUP[THAL[k]] != group) continue;
+    for (s = n->syn_first; s < n->syn_first + n->syn_n; s++)
+      if (SCLASS[s] == C_SENSE) x += O->w[s] * SCRATCH[FROM[s]];
+    MEMDRIVE[THAL[k]] = x;
+  }
+}
+
+int ob_one_light(const ob_one_t *O, unsigned long moment, float *out) {
+  unsigned i, slot = (unsigned)(moment % OL_MEMORY);
+  if (moment >= O->moments || !ol_hip_held(&O->hip, moment)) return 0;
+  for (i = 0u; i < OL_SENSE; i++) out[i] = (float)O->hip.senses[slot][i] / 255.0f;
+  return 1;
+}
+
+long ob_one_reminded(const ob_one_t *O, unsigned g) { return g < OL_GROUPS ? O->recalled_moment[g] : -1; }
 
 /* ---- one step of the whole brain --------------------------------------------------
  * Every neuron takes what its inputs carry. The senses are held to what the
@@ -203,13 +252,14 @@ static void sparse(const ob_brain_t *b, unsigned region, float share) {
     float cut;
     n = 0u;
     for (i = 0u; i < b->n_neurons; i++) {
-      if (b->neuron[i].region == region && b->neuron[i].side == side) vals[n++] = NEXT[i];
+      if (b->neuron[i].region == region && b->neuron[i].side == side) vals[n++] = RAW[i];
     }
     if (n == 0u) continue;
     qsort(vals, n, sizeof(float), by_value);
     cut = vals[(unsigned)(share * n)];
     for (i = 0u; i < b->n_neurons; i++) {
-      if (b->neuron[i].region == region && b->neuron[i].side == side && NEXT[i] <= cut) NEXT[i] = 0.0f;
+      if (b->neuron[i].region == region && b->neuron[i].side == side && (RAW[i] <= cut || RAW[i] <= 0.0f))
+        NEXT[i] = 0.0f;
     }
   }
 }
@@ -232,7 +282,10 @@ static void step_only(ob_one_t *O, float gx, float gy, int only) {
     float acc[4] = {0.0f, 0.0f, 0.0f, 0.0f};   /* by class: other, sense, prediction, action */
     unsigned s, end = n->syn_first + n->syn_n;
     if (FIXED[i] || (only >= 0 && n->region != (unsigned)only) || (only < 0 && n->region == OB_CEREBELLUM)) continue;
-    for (s = n->syn_first; s < end; s++) acc[SCLASS[s]] += O->w[s] * O->act[FROM[s]];
+    for (s = n->syn_first; s < end; s++) {
+      if (n->region == OB_HIPPOCAMPUS && O->brain.neuron[FROM[s]].region == OB_HIPPOCAMPUS) continue;
+      acc[SCLASS[s]] += O->w[s] * O->act[FROM[s]];
+    }
     if (n->region == OB_THALAMUS) {
       float cb = 0.0f;
       for (s = n->syn_first; s < end; s++)
@@ -263,7 +316,24 @@ static void step_only(ob_one_t *O, float gx, float gy, int only) {
       x = O->held[(O->moments + OL_WAVE - d) % OL_WAVE][CB_INDEX[i]];
     }
     if (n->region == OB_TECTUM && fabsf(n->sx - gx) < 0.125f && fabsf(n->sy - gy) < 0.125f) x += 0.8f;
+    /* adaptation: beyond the relays and the cerebellum, a neuron answers how
+       its input differs from what it usually gets */
+    if (!RELAY[n->region] && n->region != OB_CEREBELLUM) {
+      float d = x - O->usual_in[i];
+      O->usual_in[i] += (O->moments < 200u ? 0.05f : 0.0005f) * (x - O->usual_in[i]);
+      x = d;
+    }
+    RAW[i] = x;
     NEXT[i] = x < 0.0f ? 0.0f : x > 1.0f ? 1.0f : x;
+  }
+  /* the cerebellum's granule cells are sparse: of each side, only the most
+     strongly driven fifth fire; the hippocampus's dentate gyrus, a tenth, to
+     keep moments apart */
+  if (only == OB_CEREBELLUM) sparse(b, OB_CEREBELLUM, 0.2f);
+  if (only < 0) sparse(b, OB_HIPPOCAMPUS, 0.1f);
+  for (i = 0u; i < b->n_neurons; i++) {
+    const ob_neuron_t *n = &b->neuron[i];
+    if (FIXED[i] || (only >= 0 && n->region != (unsigned)only) || (only < 0 && n->region == OB_CEREBELLUM)) continue;
     sum[n->region][n->side] += NEXT[i];
     cnt[n->region][n->side]++;
   }
@@ -280,9 +350,6 @@ static void step_only(ob_one_t *O, float gx, float gy, int only) {
       NEXT[i] *= (float)sum[n->region][n->side];
     if (NEXT[i] < 0.05f) NEXT[i] = 0.0f;   /* too weak to fire */
   }
-  /* the cerebellum's granule cells are sparse: of each side, only the most
-     strongly driven fifth fire */
-  if (only == OB_CEREBELLUM) sparse(b, OB_CEREBELLUM, 0.2f);
   memcpy(BEFORE, O->act, sizeof(float) * b->n_neurons);
   memcpy(O->act, NEXT, sizeof(float) * b->n_neurons);
 }
@@ -325,6 +392,11 @@ void ob_one_born(ob_one_t *O, const ob_brain_t *grown, unsigned seed, unsigned c
   if (O->rng == 0u) O->rng = 1u;
   O->curiosity = curiosity;
   O->learning = 1u;
+  O->remembers = 1u;
+  for (i = 0u; i < OL_GROUPS; i++) {
+    O->recalled[i] = -1;
+    O->recalled_moment[i] = -1;
+  }
 }
 
 void ob_one_settle(ob_one_t *O) {
@@ -360,17 +432,39 @@ unsigned ob_one_live(ob_one_t *O, const float *in) {
   memset(err, 0, sizeof err);
   memset(energy, 0, sizeof energy);
   memset(n_err, 0, sizeof n_err);
-  for (k = 0u; k < N_THAL; k++) {
-    float left;
-    i = THAL[k];
-    /* what it passes on is what came and was not expected: a neuron cannot fire
-       below nothing (expected sounds that did not come are another signal, the
-       womb's signal of absence) */
-    left = SENT(DRIVE[i]) + PRED[i];
-    if (left < 0.0f) left = 0.0f;
-    err[GROUP[i]] += left * left;
-    energy[GROUP[i]] += SENT(DRIVE[i]) * SENT(DRIVE[i]);
-    n_err[GROUP[i]]++;
+  {
+    float by_cb[OL_GROUPS], by_mem[OL_GROUPS];
+    memset(by_cb, 0, sizeof by_cb);
+    memset(by_mem, 0, sizeof by_mem);
+    for (k = 0u; k < N_THAL; k++) {
+      float left, cb, mem = 0.0f;
+      i = THAL[k];
+      g = GROUP[i];
+      /* what it passes on is what came and was not expected: a neuron cannot
+         fire below nothing (expected sounds that did not come are another
+         signal, the womb's signal of absence). Expected by the cerebellum and
+         the cortex, or, where it follows memory, by what came next last time */
+      cb = SENT(DRIVE[i]) + PRED[i];
+      if (O->recalled[g] >= 0) mem = SENT(DRIVE[i]) - SENT(MEMDRIVE[i]);
+      by_cb[g] += cb * cb;
+      by_mem[g] += mem * mem;
+      left = O->recalled[g] >= 0 && O->trusted[g] ? mem : cb;
+      if (left < 0.0f) left = 0.0f;
+      err[g] += left * left;
+      energy[g] += SENT(DRIVE[i]) * SENT(DRIVE[i]);
+      n_err[g]++;
+    }
+    /* where memory can be trusted: has what came next last time predicted this
+       better than the cerebellum and the cortex, on average? */
+    if (O->learning) {
+      for (g = 0u; g < OL_GROUPS; g++) {
+        float *t;
+        if (n_err[g] == 0u || O->recalled[g] < 0) continue;
+        t = &O->hip.trust[g][O->recalled[g]];
+        *t += 0.2f * ((by_cb[g] - by_mem[g]) / (float)n_err[g] - *t);
+        if (*t == 0.0f) *t = by_cb[g] >= by_mem[g] ? 1e-9f : -1e-9f;
+      }
+    }
   }
   /* the delta rule: each prediction synapse moves to cancel what its neuron
      was left with, in proportion to the activity of its source when the
@@ -524,6 +618,33 @@ unsigned ob_one_live(ob_one_t *O, const float *in) {
     }
     O->place[OL_SEE] = gaze_bin(gx, gy) * 2u + (O->gaze_move != 0u);
     O->place[OL_HEAR] = O->place[OL_FEEL] = O->place[OL_MOVED] = last_act;
+  }
+
+  /* 7. the hippocampus: has each sense lived this before? Then what came next
+        then drives its relays as an expectation for the coming moment; and
+        this moment is kept */
+  {
+    unsigned lately = 0u;
+    for (m = 0u; m < OL_MOTORS; m++) {
+      if (O->ago[m] < 3u) lately |= 1u << (3u * m + O->ago[m]);
+    }
+    for (g = 0u; g < OL_GROUPS; g++) {
+      long then = -1;
+      float near = 1.0f;
+      O->recalled[g] = -1;
+      O->recalled_moment[g] = -1;
+      if (O->remembers) then = ol_hip_recall(&O->hip, in, g, lately, &near);
+      if (then >= 0 && ol_hip_held(&O->hip, (unsigned long)then + 1u)) {
+        unsigned key = ol_hip_key(in, g, lately);
+        float t = O->hip.trust[g][key];
+        reinstate(O, O->hip.senses[((unsigned long)then + 1u) % OL_MEMORY], g);
+        O->recalled[g] = (int)key;
+        O->recalled_moment[g] = then;
+        O->trusted[g] = t > 0.0f || (t == 0.0f && near < OL_EXACT);
+        if (O->trusted[g]) O->recalls[g]++;
+      }
+    }
+    if (O->remembers) ol_hip_keep(&O->hip, O->moments, in, lately);
   }
   O->moments++;
   return bits;

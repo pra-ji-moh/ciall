@@ -225,6 +225,14 @@ int ol_light(const ol_life_t *L, unsigned long moment, float *senses) {
 
 long ol_complete(const ol_life_t *L, const float *cue, unsigned acts) { return recall(&L->hip, cue, OL_SEE, acts, 0); }
 
+/* the same hippocampus, for another brain to keep its moments in (ob_one.c) */
+long ol_hip_recall(const ol_hippocampus_t *h, const float *s, unsigned g, unsigned lately, float *how_near) {
+  return recall(h, s, g, lately, how_near);
+}
+unsigned ol_hip_key(const float *s, unsigned g, unsigned lately) { return key(s, g, lately); }
+void ol_hip_keep(ol_hippocampus_t *h, unsigned long moment, const float *s, unsigned lately) { keep(h, moment, s, lately); }
+int ol_hip_held(const ol_hippocampus_t *h, unsigned long moment) { return held(h, moment); }
+
 void ol_born(ol_life_t *L, unsigned seed, unsigned curiosity) {
   unsigned g;
   zero(L, sizeof(*L));

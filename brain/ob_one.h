@@ -46,6 +46,7 @@ typedef struct {
   unsigned long moments;
 
   float act[OB_MAX_NEURONS];          /* every neuron's activity, now */
+  float usual_in[OB_MAX_NEURONS];     /* each neuron's usual input: it adapts to it, and answers what differs */
   float held[OL_WAVE][4096];          /* the cerebellum's delay lines: what reached each of its cells, lately */
   float w[OB_MAX_SYN];                /* every synapse's weight, while it lives */
   float restless[OB_MAX_NEURONS];     /* the brainstem's own activity */
@@ -67,6 +68,16 @@ typedef struct {
   unsigned place[OL_GROUPS];
   float dopamine, before;             /* this moment's, and the critic's last estimate */
   unsigned long acts[OL_MOTORS];
+
+  /* hippocampus: the sketch's (ob_life.c), the same code; each sense files
+     its moments under its own pattern, and a recalled moment drives that
+     sense's relays again */
+  unsigned remembers;                 /* 1: it keeps every moment (0: a twin without) */
+  int recalled[OL_GROUPS];            /* the key each sense recalled under, for the coming moment (-1 none) */
+  int trusted[OL_GROUPS];             /* and whether it follows memory there */
+  long recalled_moment[OL_GROUPS];
+  unsigned long recalls[OL_GROUPS];
+  ol_hippocampus_t hip;               /* last: it is much of its size */
 } ob_one_t;
 
 /* Its life begins from a grown brain (copied in, with whatever the womb taught it). */
@@ -86,5 +97,13 @@ unsigned ob_one_zone(const ob_neuron_t *n);
 const float *ob_one_drive(void);
 const float *ob_one_pred(void);
 const float *ob_one_pred_cerebellum(void);   /* the cerebellum's part of it (the rest is the cortex's) */
+
+/*
+ * Coded optogenetics, for us (as for the sketch): what moment `moment` brought
+ * it (OL_SENSE floats), 0 if it no longer holds it. And which moment sense g
+ * is reminded of now (-1: none).
+ */
+int ob_one_light(const ob_one_t *O, unsigned long moment, float *senses);
+long ob_one_reminded(const ob_one_t *O, unsigned g);
 
 #endif
