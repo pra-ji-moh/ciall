@@ -33,6 +33,48 @@ static unsigned rnd(void) {
 
 static double unit(void) { return (double)(rnd() >> 8) / 16777216.0; }
 
+/* near enough to a normal deviate */
+static double gauss(void) { return (unit() + unit() + unit() + unit() - 2.0) * 1.7320508; }
+
+/* ---- the brainstem, restless of itself ------------------------------------------
+ * Nobody decides where it moves. Each brainstem neuron's activity wanders of
+ * itself; when one's crosses threshold it fires, and its burst spreads through
+ * its near neighbours on the same side, which is a twitch. Where and when the
+ * twitches come is wherever the neurons' own activity takes them. */
+
+static float RESTLESS[OB_MAX_NEURONS];
+#define IGNITE 2.9
+
+static unsigned ignite(const ob_brain_t *b, float *act) {
+  unsigned i, j, n = 0u;
+  memset(act, 0, sizeof(float) * b->n_neurons);
+  for (i = 0u; i < b->n_neurons; i++) {
+    const ob_neuron_t *a = &b->neuron[i];
+    if (a->region != OB_BRAINSTEM) continue;
+    RESTLESS[i] = (float)(0.8 * RESTLESS[i] + 0.6 * gauss());
+    if (RESTLESS[i] < IGNITE) continue;
+    for (j = 0u; j < b->n_neurons; j++) {
+      const ob_neuron_t *c = &b->neuron[j];
+      if (c->region == OB_BRAINSTEM && c->side == a->side && fabs(c->sx - a->sx) < 0.12 && fabs(c->sy - a->sy) < 0.3) {
+        act[j] = 1.0f;
+        RESTLESS[j] = 0.0f;   /* a burst spends it */
+      }
+    }
+    n++;
+  }
+  return n;
+}
+
+/* for examining it afterwards only: a twitch set off at (tx, ty) on side ts,
+   the way a neuroscientist stimulates a spot of the brainstem */
+static void probe_twitch(const ob_brain_t *b, double tx, double ty, unsigned ts) {
+  unsigned i;
+  for (i = 0u; i < b->n_neurons; i++) {
+    const ob_neuron_t *n = &b->neuron[i];
+    ACT0[i] = n->region == OB_BRAINSTEM && n->side == ts && fabs(n->sx - tx) < 0.12 && fabs(n->sy - ty) < 0.3;
+  }
+}
+
 static int is_touch_thalamus(const ob_neuron_t *n) { return n->region == OB_THALAMUS && n->layer == 1u; }
 
 /* where on the body a touch-thalamus neuron's skin is: along the body */
@@ -90,22 +132,13 @@ typedef struct {
 } ob_moment_t;
 
 /*
- * One moment of life. twitch: a twitch starts in the brainstem at (tx, ty) on
- * side ts. poke: the mother presses at (px, py) on side ps. learn: the
- * cerebellum learns from it.
+ * One moment of life. ACT0 holds what its brainstem did of itself (ignite).
+ * poke: the mother presses at (px, py) on side ps. learn: the cerebellum
+ * learns from it.
  */
-static void moment(ob_brain_t *b, int twitch, double tx, double ty, unsigned ts, int poke, double px, double py,
-                   unsigned ps, int learn, ob_moment_t *m) {
+static void moment(ob_brain_t *b, int poke, double px, double py, unsigned ps, int learn, ob_moment_t *m) {
   unsigned i;
   memset(m, 0, sizeof(*m));
-  memset(ACT0, 0, sizeof(float) * b->n_neurons);
-  if (twitch) {
-    for (i = 0u; i < b->n_neurons; i++) {
-      const ob_neuron_t *n = &b->neuron[i];
-      if (n->region == OB_BRAINSTEM && n->side == ts && fabs(n->sx - tx) < 0.12 && fabs(n->sy - ty) < 0.3)
-        ACT0[i] = 1.0f;
-    }
-  }
   /* 1: the twitch reaches the muscles, and its copy the cerebellum */
   step(b, ACT0, ACT1);
   /* 2: the body: what the muscles press, what the arm brushes, what the mother presses */
@@ -195,18 +228,19 @@ void ob_womb_touch(ob_brain_t *b, unsigned days, unsigned moments_per_day, ob_wo
   memset(out, 0, sizeof(*out));
   if (days > 64u) days = 64u;
   RNG = b->genes.seed * 1597334677u + 3u;
+  memset(RESTLESS, 0, sizeof RESTLESS);
   prepare(b);
   DRIVE_REGION = OB_SPINAL_SENSORY;
   for (d = 0u; d < days; d++) {
     double sd = 0, sl = 0, od = 0, ol = 0, fd = 0, fl = 0, sp = 0, op = 0;
     for (t = 0u; t < moments_per_day; t++) {
       ob_moment_t m;
-      double r = unit();
-      int twitch = r < 0.6, poke = r >= 0.6 && r < 0.95;
-      double tx = unit(), ty = unit(), px = unit(), py = unit();
-      unsigned ts = rnd() & 1u, ps = rnd() & 1u;
-      moment(b, twitch, tx, ty, ts, poke, px, py, ps, 1, &m);
-      if (m.drive <= 0.0) continue;
+      /* it twitches when its brainstem does; its mother presses when she does */
+      int twitch = ignite(b, ACT0) > 0u, poke = unit() < 0.35;
+      double px = unit(), py = unit();
+      unsigned ps = rnd() & 1u;
+      moment(b, poke, px, py, ps, 1, &m);
+      if (m.drive <= 0.0 || (twitch && poke)) continue;   /* both at once: lived, not counted */
       if (twitch) {
         sd += m.drive;
         sl += m.left;
@@ -640,12 +674,14 @@ static double reflex_drive(const ob_brain_t *b, double at) {
   return n ? total / n : 0.0;
 }
 
-void ob_womb_reflex(ob_brain_t *b, unsigned days, unsigned moments_per_day, ob_reflex_stats_t *out) {
-  unsigned d, t, i, s, k;
+void ob_womb_reflex(ob_brain_t *b, unsigned days, unsigned moments_per_day, int arms_free, ob_reflex_stats_t *out) {
+  static float touch[OB_MAX_NEURONS], muscle[OB_MAX_NEURONS];
+  unsigned d, t, i, j, s, k;
   if (b == 0 || out == 0) return;
   memset(out, 0, sizeof(*out));
   if (days > 64u) days = 64u;
   RNG = b->genes.seed * 374761393u + 17u;
+  memset(RESTLESS, 0, sizeof RESTLESS);
   prepare(b);
   for (k = 0u; k < 64u; k++) {
     if (strncmp(ob_rule_name(k), "spinal reflex", 13) == 0) REFLEX_RULE = k;
@@ -654,19 +690,37 @@ void ob_womb_reflex(ob_brain_t *b, unsigned days, unsigned moments_per_day, ob_r
   out->body_before = reflex_drive(b, 0.5);
   for (d = 0u; d < days; d++) {
     for (t = 0u; t < moments_per_day; t++) {
-      /* hand to mouth, and the mouth moving: lips and mouth muscles active together.
-         Elsewhere on the body, touch and muscle come at different moments */
-      int hand_to_mouth = unit() < 0.4;
-      double at = hand_to_mouth ? 0.04 : unit();
-      int muscle_too = hand_to_mouth ? unit() < 0.8 : unit() < 0.05;
+      /* its brainstem twitches, of itself, and the twitch reaches its muscles */
+      if (ignite(b, ACT0) == 0u) continue;
+      step(b, ACT0, ACT1);
+      /* the body: a contracting muscle presses the wall there; a moving arm
+         (if free) brushes the face */
+      memset(touch, 0, sizeof(float) * b->n_neurons);
+      for (j = 0u; j < b->n_neurons; j++) {
+        const ob_neuron_t *mus = &b->neuron[j];
+        if (mus->region != OB_SPINAL_MOTOR || ACT1[j] < 0.3f) continue;
+        for (i = 0u; i < b->n_neurons; i++) {
+          const ob_neuron_t *sk = &b->neuron[i];
+          if (sk->region != OB_SPINAL_SENSORY || sk->side != mus->side) continue;
+          if (fabs(sk->sx - mus->sx) < 0.07 && fabs(sk->sy - mus->sy) < 0.2) touch[i] = 1.0f;
+          if (arms_free && mus->sx > 0.15 && mus->sx < 0.35 && sk->sx < 0.1 && fabs(sk->sy - mus->sy) < 0.25)
+            touch[i] = 1.0f;
+        }
+      }
+      /* the touched skin drives the muscles back, through the reflex: each
+         muscle is what its twitch and its reflex bring together */
+      step(b, touch, ACT2);
+      for (i = 0u; i < b->n_neurons; i++) {
+        float m = ACT1[i] + ACT2[i];
+        muscle[i] = b->neuron[i].region == OB_SPINAL_MOTOR ? (m > 1.0f ? 1.0f : m) : 0.0f;
+      }
+      /* Hebb: skin and muscle active together, the reflex between them grows */
       for (i = 0u; i < b->n_neurons; i++) {
         const ob_neuron_t *m = &b->neuron[i];
-        if (m->region != OB_SPINAL_MOTOR || !muscle_too || fabs(m->sx - at) > 0.06) continue;
+        if (m->region != OB_SPINAL_MOTOR || muscle[i] < 0.3f) continue;
         for (s = m->syn_first; s < m->syn_first + m->syn_n; s++) {
-          const ob_neuron_t *src = &b->neuron[b->syn[s].from];
-          if (b->syn[s].rule != REFLEX_RULE || src->region != OB_SPINAL_SENSORY || fabs(src->sx - at) > 0.06)
-            continue;
-          W[s] += 0.01f;   /* skin and muscle active together */
+          if (b->syn[s].rule != REFLEX_RULE || touch[b->syn[s].from] <= 0.0f) continue;
+          W[s] += 0.01f * muscle[i];
           if (W[s] > 3.0f) W[s] = 3.0f;
         }
       }
@@ -683,9 +737,9 @@ void ob_womb_reflex(ob_brain_t *b, unsigned days, unsigned moments_per_day, ob_r
 void ob_write_reflex(const ob_reflex_stats_t *st, FILE *out) {
   if (st == 0 || out == 0 || st->days == 0u) return;
   fprintf(out, "\n## the womb: the reflex loop, practised\n");
-  fprintf(out, "   lips touched, mouth muscles' drive: %.2f before, %.2f after (practised: hand to mouth)\n",
+  fprintf(out, "   lips touched, mouth muscles' drive: %.2f before, %.2f after (its own hand to its mouth, and its twitches)\n",
           st->mouth_before, st->mouth_after);
-  fprintf(out, "   middle of the body touched, its muscles' drive: %.2f before, %.2f after (never paired)\n",
+  fprintf(out, "   middle of the body touched, its muscles' drive: %.2f before, %.2f after (its twitches pressing the womb wall)\n",
           st->body_before, st->body_after);
 }
 
@@ -701,6 +755,7 @@ void ob_infant_mobile(ob_brain_t *b, unsigned sessions, unsigned moments_per_ses
                       unsigned char *schedule, ob_mobile_stats_t *out) {
   unsigned se, t, i, s, k, moment = 0u;
   double place = 0.0, adds_kick = 0.0, adds_still = 0.0;   /* the critic, and what each choice adds */
+  double centre = 0.0;                                      /* the kick centre's own restless activity */
   if (b == 0 || out == 0) return;
   memset(out, 0, sizeof(*out));
   if (sessions > 32u) sessions = 32u;
@@ -712,7 +767,7 @@ void ob_infant_mobile(ob_brain_t *b, unsigned sessions, unsigned moments_per_ses
   for (se = 0u; se < sessions; se++) {
     int answering = se > 0u && se + 1u < sessions;
     for (t = 0u; t < moments_per_session; t++, moment++) {
-      double drive = 0.0, p_kick, reward;
+      double drive = 0.0, reward;
       int kick, answer;
       unsigned n_centre = 0u;
       /* the scene: the basal ganglia hear it (here, a context of their neurons
@@ -731,9 +786,12 @@ void ob_infant_mobile(ob_brain_t *b, unsigned sessions, unsigned moments_per_ses
         }
       }
       drive = n_centre ? drive / n_centre : 0.0;
-      /* spontaneous kicks, and what learning adds (or takes away) */
-      p_kick = drive >= 0.0 ? 0.08 + 0.6 * (1.0 - exp(-drive)) : 0.08 * exp(drive);
-      kick = unit() < p_kick;
+      /* the kick centre's neurons, coupled, wander together of themselves; the
+         leg kicks when their activity, with what the basal ganglia add (or
+         take away), crosses threshold */
+      centre = 0.8 * centre + 0.6 * gauss();
+      kick = centre + drive > 1.4;
+      if (kick) centre = 0.0;   /* a kick spends it */
       if (kick) out->kicks[se]++;
       /* the world answers: the mobile moves, the mother's voice */
       if (contingent) answer = answering && kick;
@@ -819,8 +877,10 @@ int ob_draw_self(const ob_brain_t *b, const ob_womb_stats_t *st, const char *pat
       ob_moment_t self, other;
       double pos = (k + 0.5) / BINS, own;
       unsigned char c[3];
-      moment((ob_brain_t *)b, 1, pos, 0.5, side, 0, 0, 0, 0u, 0, &self);
-      moment((ob_brain_t *)b, 0, 0, 0, 0u, 1, pos, 0.5, side, 0, &other);
+      probe_twitch(b, pos, 0.5, side);
+      moment((ob_brain_t *)b, 0, 0, 0, 0u, 0, &self);
+      memset(ACT0, 0, sizeof(float) * b->n_neurons);
+      moment((ob_brain_t *)b, 1, pos, 0.5, side, 0, &other);
       own = self.drive > 0 ? 1.0 - self.left / self.drive : 0.0;
       if (own < 0.0) own = 0.0;
       if (own > 1.0) own = 1.0;

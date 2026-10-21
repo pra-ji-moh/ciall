@@ -276,12 +276,13 @@ void ob_womb_vision(ob_brain_t *b, unsigned days, unsigned moments_per_day, int 
 void ob_write_vision(const ob_vision_stats_t *st, FILE *out);
 
 /*
- * The reflex loop, practised. In the womb the hand comes to the mouth and the
- * mouth moves: lip touched and mouth muscle active at once. The spinal (here,
- * the lowest) reflex connections from skin to muscle strengthen where skin and
- * muscle are active together (Hebb). Practised at the mouth, the sucking
- * reflex is ready at birth; a reflex in the middle of the body, never paired,
- * stays as it was grown.
+ * The reflex loop, practised, of itself. Its brainstem twitches when its own
+ * neurons do; a muscle that contracts presses the womb wall there, and an arm
+ * that moves brushes the face. Touched skin drives its muscles through the
+ * spinal (here, the lowest) reflex connections, which strengthen where skin
+ * and muscle are active together (Hebb). Nothing makes the hand go to the
+ * mouth: its arms do, when they twitch. arms_free 0 binds its arms (they
+ * still twitch but cannot reach the face), to see what its hands did.
  */
 typedef struct {
   unsigned days;
@@ -289,7 +290,7 @@ typedef struct {
   double body_before, body_after;     /* the same, for the middle of the body */
 } ob_reflex_stats_t;
 
-void ob_womb_reflex(ob_brain_t *b, unsigned days, unsigned moments_per_day, ob_reflex_stats_t *out);
+void ob_womb_reflex(ob_brain_t *b, unsigned days, unsigned moments_per_day, int arms_free, ob_reflex_stats_t *out);
 void ob_write_reflex(const ob_reflex_stats_t *st, FILE *out);
 
 /* ============================================================

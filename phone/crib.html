@@ -1,0 +1,491 @@
+<title>The Newborn's Crib</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column, a nursery at night. Its eyes first, then its senses, then what it is learning. */
+:root {
+  --bg: #eef0f6; --panel: #ffffff; --ink: #1c2136; --soft: #5c6280; --line: #d6d9e6;
+  --lamp: #b8761a; --seen: #1f8f83; --surprise: #d0503f; --cool: #4a63c9;
+  --display: "Fredoka", "Trebuchet MS", system-ui, sans-serif;
+  --body: "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #121729; --panel: #1b2138; --ink: #e9e7f2; --soft: #9da2bd; --line: #2c3352;
+  --lamp: #f0b54c; --seen: #6fd1c4; --surprise: #ff806f; --cool: #8ea2ff; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #121729; --panel: #1b2138; --ink: #e9e7f2; --soft: #9da2bd; --line: #2c3352;
+  --lamp: #f0b54c; --seen: #6fd1c4; --surprise: #ff806f; --cool: #8ea2ff; color-scheme: dark }
+html, body { background: var(--bg); color: var(--ink); }
+body { font: 15px/1.5 var(--body); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 40px; }
+main { max-width: 760px; margin: 0 auto; display: grid; gap: 18px; }
+h1 { font: 600 30px/1.1 var(--display); margin: 0; text-wrap: balance; }
+h2 { font: 600 17px/1.2 var(--display); margin: 0 0 8px; }
+p { margin: 0; max-width: 65ch; }
+.lede { color: var(--soft); }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px; min-width: 0; }
+.eyes { position: relative; border-radius: 12px; overflow: hidden; background: #000; touch-action: none; user-select: none; -webkit-user-select: none; }
+.eyes canvas { display: block; width: 100%; height: auto; }
+#overlay { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hint { font-size: 13px; color: var(--soft); margin-top: 8px; }
+.row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+button, .file { font: 700 14px/1 var(--body); border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); padding: 10px 14px; cursor: pointer; }
+button:focus-visible, .file:focus-within { outline: 2px solid var(--lamp); outline-offset: 2px; }
+button.primary { background: var(--lamp); color: #1c1606; border-color: transparent; }
+button[aria-pressed="true"] { background: var(--seen); color: #08201d; border-color: transparent; }
+.file input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.retinas { display: flex; gap: 12px; flex-wrap: wrap; }
+.retinas figure { margin: 0; display: grid; gap: 4px; }
+.retinas canvas { width: 96px; height: 96px; image-rendering: pixelated; border-radius: 8px; border: 1px solid var(--line); }
+figcaption, .label { font-size: 12px; color: var(--soft); letter-spacing: .02em; }
+.bars { display: grid; gap: 7px; }
+.bar { display: grid; grid-template-columns: 8.5em 1fr 3.2em; gap: 8px; align-items: center; font-size: 13px; }
+.track { height: 9px; background: var(--bg); border-radius: 6px; overflow: hidden; border: 1px solid var(--line); }
+.fill { height: 100%; width: 0; background: var(--surprise); transition: width .12s linear; }
+.fill.want { background: var(--lamp); }
+.num { font: 12px var(--mono); font-variant-numeric: tabular-nums; text-align: right; color: var(--soft); }
+.map { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; max-width: 260px; }
+.map div { aspect-ratio: 4 / 3; border-radius: 6px; border: 1px solid var(--line); display: grid; place-items: center; font: 11px var(--mono); color: var(--soft); }
+.map div.here { outline: 2px solid var(--lamp); outline-offset: 1px; }
+#log { font: 13px/1.6 var(--mono); color: var(--soft); min-height: 7.5em; margin: 0; padding: 0; list-style: none; }
+#log li:first-child { color: var(--ink); }
+.stats { display: flex; flex-wrap: wrap; gap: 18px; }
+.stat b { display: block; font: 500 20px var(--mono); font-variant-numeric: tabular-nums; }
+.note { font-size: 13px; color: var(--soft); }
+.note strong { color: var(--ink); }
+#status { font-size: 13px; color: var(--surprise); }
+@media (prefers-reduced-motion: reduce) { .fill { transition: none; } }
+</style>
+
+<main>
+  <header style="display:grid;gap:6px">
+    <h1>The newborn, awake</h1>
+    <p class="lede">It moves its own eyes, makes its own sounds and jerks on its own. Nothing on this page tells it what to do. It does what its curiosity leads it to: whatever it is getting better at predicting.</p>
+  </header>
+
+  <section class="panel" aria-labelledby="h-eyes">
+    <h2 id="h-eyes">What it sees</h2>
+    <div class="eyes" id="eyes">
+      <canvas id="view" width="96" height="72" aria-label="Its world, with a square where its eyes are pointing"></canvas>
+      <canvas id="overlay" width="480" height="360" aria-hidden="true"></canvas>
+    </div>
+    <p class="hint">The square is where it is looking. Touch the picture to touch it. Drag across it to rock it. Hold <b>Talk to it</b> to speak to it, and answer when it makes a sound.</p>
+    <div class="row" style="margin-top:10px">
+      <button id="talk" class="primary" aria-pressed="false">Talk to it</button>
+      <button id="sound" aria-pressed="false">Let it make sounds</button>
+      <label class="file">Show it a photo or video<input id="media" type="file" accept="image/*,video/*" capture="environment"></label>
+      <button id="crib">Back to the crib</button>
+      <button id="live">Use live camera and mic</button>
+    </div>
+    <p id="status" role="status"></p>
+  </section>
+
+  <section class="grid2">
+    <div class="panel">
+      <h2>Its eyes, close up</h2>
+      <div class="retinas">
+        <figure><canvas id="retina" width="8" height="8"></canvas><figcaption>what came</figcaption></figure>
+        <figure><canvas id="expect" width="8" height="8"></canvas><figcaption>what it expected</figcaption></figure>
+        <figure><canvas id="surp" width="8" height="8"></canvas><figcaption>what surprised it</figcaption></figure>
+      </div>
+      <p class="hint">Its retina is 8 by 8. Its cerebellum predicts each next view from this one and from copies of its own commands.</p>
+    </div>
+    <div class="panel">
+      <h2>What still surprises it</h2>
+      <div class="bars" id="surprises"></div>
+      <h2 style="margin-top:14px">What it wants to do now</h2>
+      <div class="bars" id="urges"></div>
+    </div>
+  </section>
+
+  <section class="grid2">
+    <div class="panel">
+      <h2>Where it is learning</h2>
+      <div class="map" id="map" aria-label="Its learning progress at each place it can look"></div>
+      <p class="hint">Each square is a place it can look at. Warm means its predictions there are getting better, which is what draws it. Blue means they are getting worse. The number is how many moments it has spent there.</p>
+    </div>
+    <div class="panel">
+      <h2>What it did</h2>
+      <ul id="log" aria-live="off"></ul>
+      <div class="stats" style="margin-top:10px">
+        <div class="stat"><span class="label">moments lived</span><b id="moments">0</b></div>
+        <div class="stat"><span class="label">acting, last minute</span><b id="busy">0%</b></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel note" aria-labelledby="h-about">
+    <h2 id="h-about">About it</h2>
+    <p>Its brain is the being's own C code (<code>brain/ob_life.c</code>), compiled to run here unchanged. Its brainstem is restless of itself and fires when its own activity crosses threshold. Its basal ganglia lean on that, learning from dopamine that is its <strong>learning progress</strong>, not surprise. Plain surprise would trap it in front of anything random; progress lets it get bored and move on.</p>
+    <p style="margin-top:8px"><strong>Everything stays on this phone.</strong> Pictures, sounds and touches go only into its brain, here in the page. Nothing is uploaded. It remembers you between visits on this device only. <button id="forget" style="margin-left:6px;padding:6px 10px">Start it over</button></p>
+    <p style="margin-top:8px">Inside Claude, pages may not use the live camera or microphone. The upload button opens your phone's camera instead. To give it live senses, open this same page from its own web address (<code>phone/index.html</code> in the repository, served over https).</p>
+  </section>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var VIS = 64, EAR = 8, SKIN = 8, MOVE = 3, SENSE = VIS + EAR + SKIN + MOVE, INPUT = SENSE + 2, MOTORS = 6;
+  var ACT = ["looked left", "looked right", "looked up", "looked down", "made a sound", "jerked"];
+  var SENSES = ["seeing", "hearing", "being touched", "being moved"];
+  var FW = 96, FH = 72, SIDE = 36, STEP = 1 / 12, TICK = 80;
+  var WASM = "__LIFE_WASM__";
+
+  var $ = function (id) { return document.getElementById(id); };
+  var view = $("view"), vctx = view.getContext("2d", { willReadFrequently: true });
+  var over = $("overlay"), octx = over.getContext("2d");
+  var eye = document.createElement("canvas"); eye.width = eye.height = 8;
+  var ectx = eye.getContext("2d", { willReadFrequently: true });
+  var rctx = $("retina").getContext("2d"), xctx = $("expect").getContext("2d"), sctx = $("surp").getContext("2d");
+  var statusEl = $("status");
+
+  var life = null, mem = null, input = null;
+  var gx = 0.5, gy = 0.5, jerk = 0, heardSelf = 0, shake = 0;
+  var swing = 0, swingV = 0;
+  var touchAt = -1, rockX = 0, rockY = 0, lastPt = null;
+  var talking = false, soundOn = false, audio = null;
+  var source = "crib", mediaEl = null, photo = null, mediaAnalyser = null, micAnalyser = null, camera = null;
+  var motion = [0, 0, 0], gravity = null;
+  var history = [], logLines = [];
+
+  function say(msg) { statusEl.textContent = msg || ""; }
+
+  /* ---- its world, when it has nothing else to look at: the crib ---- */
+  var wall = vctx.createImageData(FW, FH);
+  (function () {
+    for (var y = 0; y < FH; y++) for (var x = 0; x < FW; x++) {
+      var v = 0.42 + 0.18 * Math.sin(x * 0.23) * Math.cos(y * 0.15) + 0.08 * Math.sin((x + y) * 0.1);
+      var i = (y * FW + x) * 4;
+      wall.data[i] = 120 + 120 * v; wall.data[i + 1] = 110 + 110 * v; wall.data[i + 2] = 150 + 90 * v; wall.data[i + 3] = 255;
+    }
+  })();
+
+  function drawCrib(t) {
+    vctx.putImageData(wall, 0, 0);
+    /* its mother's face, to the left; her mouth moves when you talk to it */
+    vctx.fillStyle = "#f1d2b8"; vctx.beginPath(); vctx.ellipse(16, 40, 11, 14, 0, 0, Math.PI * 2); vctx.fill();
+    vctx.fillStyle = "#2b2230"; vctx.fillRect(11, 35, 3, 3); vctx.fillRect(19, 35, 3, 3);
+    vctx.fillStyle = "#8a3b3b";
+    var open = talking && (t & 1) ? 4 : 1;
+    vctx.fillRect(12, 46, 9, open);
+    /* the mobile, tied to the crib: its jerks make it swing */
+    var cx = 52, top = 0, a = swing * 0.5;
+    vctx.strokeStyle = "#d8d4e6"; vctx.lineWidth = 1;
+    var bx = cx + Math.sin(a) * 16, by = top + Math.cos(a) * 16;
+    vctx.beginPath(); vctx.moveTo(cx, top); vctx.lineTo(bx, by); vctx.stroke();
+    var cols = ["#ffd166", "#ef476f", "#06d6a0"];
+    for (var k = -1; k <= 1; k++) {
+      var hx = bx + k * 10, hy = by + 6 + Math.abs(k) * 2;
+      vctx.beginPath(); vctx.moveTo(bx, by); vctx.lineTo(hx, hy); vctx.stroke();
+      vctx.fillStyle = cols[k + 1]; vctx.beginPath(); vctx.arc(hx, hy + 3, 3.2, 0, Math.PI * 2); vctx.fill();
+    }
+  }
+
+  function drawFrame(t) {
+    var dx = shake ? (shake & 1 ? 3 : -3) : 0;
+    if (source === "crib") { drawCrib(t); }
+    else {
+      var src = source === "photo" ? photo : (source === "video" ? mediaEl : camera);
+      vctx.fillStyle = "#000"; vctx.fillRect(0, 0, FW, FH);
+      if (src) {
+        var w = src.videoWidth || src.naturalWidth || src.width, h = src.videoHeight || src.naturalHeight || src.height;
+        if (w && h) {
+          var s = Math.max(FW / w, FH / h), dw = w * s, dh = h * s;
+          vctx.drawImage(src, (FW - dw) / 2 + dx, (FH - dh) / 2, dw, dh);
+        }
+      }
+    }
+    if (shake) shake--;
+  }
+
+  /* ---- its senses ---- */
+  function bandsFrom(an, out, gain) {
+    if (!an) return;
+    var buf = new Float32Array(an.frequencyBinCount);
+    an.getFloatFrequencyData(buf);
+    var n = buf.length, lo = 2;
+    for (var b = 0; b < EAR; b++) {
+      var a = Math.floor(lo * Math.pow(n / lo, b / EAR)), z = Math.max(a + 1, Math.floor(lo * Math.pow(n / lo, (b + 1) / EAR)));
+      var sum = 0;
+      for (var i = a; i < z; i++) sum += buf[i];
+      var db = sum / (z - a);
+      out[b] = Math.max(out[b], Math.min(1, Math.max(0, (db + 95) / 60)) * gain);
+    }
+  }
+
+  function sense(t) {
+    drawFrame(t);
+    var sx = gx * (FW - SIDE), sy = gy * (FH - SIDE);
+    ectx.imageSmoothingEnabled = true; ectx.imageSmoothingQuality = "high";
+    ectx.drawImage(view, sx, sy, SIDE, SIDE, 0, 0, 8, 8);
+    var px = ectx.getImageData(0, 0, 8, 8).data;
+    for (var i = 0; i < VIS; i++) input[i] = (0.299 * px[i * 4] + 0.587 * px[i * 4 + 1] + 0.114 * px[i * 4 + 2]) / 255;
+    /* hearing */
+    var ear = [0.06 + 0.03 * Math.random(), 0, 0, 0, 0, 0, 0, 0];
+    if (micAnalyser) bandsFrom(micAnalyser, ear, 1);
+    else if (heardSelf) { ear[2] = ear[3] = 0.8; }
+    if (mediaAnalyser && mediaEl && !mediaEl.paused) bandsFrom(mediaAnalyser, ear, 1);
+    if (talking) for (var b = 4; b <= 6; b++) ear[b] = Math.max(ear[b], 0.5 + 0.3 * Math.random());
+    heardSelf = 0;
+    for (b = 0; b < EAR; b++) input[VIS + b] = ear[b];
+    /* skin */
+    for (i = 0; i < SKIN; i++) input[VIS + EAR + i] = i === touchAt ? 1 : 0;
+    /* inner ear: its own jerks, your rocking, the phone moving */
+    var m = [rockX, rockY, 0];
+    if (jerk) m[2] += jerk === 2 ? 0.9 : 0.4;
+    for (i = 0; i < MOVE; i++) input[VIS + EAR + SKIN + i] = Math.min(1, m[i] + motion[i]);
+    rockX *= 0.5; rockY *= 0.5; motion = [0, 0, 0];
+    input[SENSE] = gx; input[SENSE + 1] = gy;
+  }
+
+  /* ---- its acts ---- */
+  function voice() {
+    if (!soundOn || !audio) return;
+    var o = audio.createOscillator(), g = audio.createGain(), now = audio.currentTime;
+    o.type = "triangle"; o.frequency.setValueAtTime(330 + 60 * Math.random(), now);
+    o.frequency.linearRampToValueAtTime(420 + 80 * Math.random(), now + 0.18);
+    g.gain.setValueAtTime(0, now); g.gain.linearRampToValueAtTime(0.18, now + 0.03); g.gain.linearRampToValueAtTime(0, now + 0.22);
+    o.connect(g); g.connect(audio.destination); o.start(now); o.stop(now + 0.25);
+  }
+
+  function act(bits, t) {
+    if (bits & 1) gx -= STEP;
+    if (bits & 2) gx += STEP;
+    if (bits & 4) gy -= STEP;
+    if (bits & 8) gy += STEP;
+    gx = Math.min(1, Math.max(0, gx)); gy = Math.min(1, Math.max(0, gy));
+    if (jerk) jerk--;
+    if (bits & 16) { heardSelf = 1; voice(); }
+    if (bits & 32) {
+      jerk = 2; swingV += 0.6;
+      if (source !== "crib") shake = 2;
+      if (camera && navigator.vibrate) { try { navigator.vibrate(70); } catch (e) {} }
+    }
+    swingV -= 0.15 * swing; swingV *= 0.9; swing = Math.max(-1.5, Math.min(1.5, swing + swingV));
+    history.push(bits); if (history.length > 750) history.shift();
+    for (var m = 0; m < MOTORS; m++) if (bits >> m & 1) {
+      logLines.unshift((t / 1000).toFixed(1).padStart(7) + "s  " + ACT[m]);
+      if (logLines.length > 6) logLines.pop();
+    }
+  }
+
+  /* ---- watching it ---- */
+  function paint8(ctx, get) {
+    var img = ctx.createImageData(8, 8);
+    for (var i = 0; i < 64; i++) {
+      var c = get(i);
+      img.data[i * 4] = c[0]; img.data[i * 4 + 1] = c[1]; img.data[i * 4 + 2] = c[2]; img.data[i * 4 + 3] = 255;
+    }
+    ctx.putImageData(img, 0, 0);
+  }
+
+  var surpRows = [], urgeRows = [], mapCells = [];
+  function makeBars(el, names, cls, rows) {
+    names.forEach(function (n) {
+      var r = document.createElement("div"); r.className = "bar";
+      r.innerHTML = '<span></span><span class="track"><span class="fill ' + cls + '"></span></span><span class="num"></span>';
+      r.firstChild.textContent = n; el.appendChild(r);
+      rows.push({ fill: r.querySelector(".fill"), num: r.querySelector(".num") });
+    });
+  }
+  makeBars($("surprises"), SENSES, "", surpRows);
+  makeBars($("urges"), ["look left", "look right", "look up", "look down", "make a sound", "jerk"], "want", urgeRows);
+  for (var c = 0; c < 16; c++) { var d = document.createElement("div"); $("map").appendChild(d); mapCells.push(d); }
+
+  function cssVar(n) { return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
+
+  function watch() {
+    var e = life;
+    var err = new Float32Array(mem.buffer, e.ol_err(), 4);
+    var urge = new Float32Array(mem.buffer, e.ol_urge(), MOTORS);
+    var exp = new Float32Array(mem.buffer, e.ol_expect(), SENSE);
+    var sur = new Float32Array(mem.buffer, e.ol_surprise(), SENSE);
+    paint8(rctx, function (i) { var v = input[i] * 255; return [v, v, v]; });
+    paint8(xctx, function (i) { var v = Math.max(0, Math.min(1, exp[i])) * 255; return [v, v, v]; });
+    paint8(sctx, function (i) { var s = sur[i]; return s > 0 ? [Math.min(255, s * 600), 40, 40] : [40, 40, Math.min(255, -s * 600)]; });
+    for (var g = 0; g < 4; g++) {
+      var v = Math.sqrt(Math.max(0, err[g]));
+      surpRows[g].fill.style.width = Math.min(100, v * 200) + "%";
+      surpRows[g].num.textContent = v.toFixed(2);
+    }
+    for (var m = 0; m < MOTORS; m++) {
+      var p = 1 / (1 + Math.exp(-1.7 * (urge[m] - 1.65)));
+      urgeRows[m].fill.style.width = Math.min(100, p * 100 / 0.5) + "%";
+      urgeRows[m].num.textContent = (p * 100).toFixed(0) + "%";
+    }
+    var warm = cssVar("--lamp"), cool = cssVar("--cool");
+    var here = Math.min(3, Math.floor(gy * 4)) * 4 + Math.min(3, Math.floor(gx * 4));
+    for (var b = 0; b < 16; b++) {
+      var lp = Math.max(e.ol_curious(0, b * 2), e.ol_curious(0, b * 2 + 1)), visits = e.ol_visits(0, b * 2) + e.ol_visits(0, b * 2 + 1);
+      var a = Math.min(1, Math.abs(lp) * 6);
+      mapCells[b].style.background = "color-mix(in srgb, " + (lp >= 0 ? warm : cool) + " " + Math.round(a * 85) + "%, transparent)";
+      mapCells[b].textContent = visits > 999 ? (visits / 1000).toFixed(1) + "k" : String(visits);
+      mapCells[b].className = b === here ? "here" : "";
+    }
+    $("log").innerHTML = "";
+    logLines.forEach(function (l) { var li = document.createElement("li"); li.textContent = l; $("log").appendChild(li); });
+    $("moments").textContent = Math.round(e.ol_moments()).toLocaleString();
+    var busy = 0; history.forEach(function (h) { if (h) busy++; });
+    $("busy").textContent = history.length ? Math.round(100 * busy / history.length) + "%" : "0%";
+    /* its gaze, drawn over its world */
+    octx.clearRect(0, 0, over.width, over.height);
+    var k = over.width / FW;
+    octx.strokeStyle = warm; octx.lineWidth = 4;
+    octx.strokeRect(gx * (FW - SIDE) * k, gy * (FH - SIDE) * k, SIDE * k, SIDE * k);
+  }
+
+  /* ---- its memory, on this phone only ---- */
+  var KEY = "newborn.self.v1";
+  function save() {
+    if (!life) return;
+    try {
+      var bytes = new Uint8Array(mem.buffer, life.ol_self(), life.ol_self_size()), s = "";
+      for (var i = 0; i < bytes.length; i += 8192) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 8192));
+      localStorage.setItem(KEY, btoa(s));
+    } catch (e) { /* no room, or no storage here: it lives on without remembering */ }
+  }
+  function restore() {
+    try {
+      var s = localStorage.getItem(KEY);
+      if (!s) return false;
+      var raw = atob(s), n = life.ol_self_size();
+      if (raw.length !== n) return false;
+      var bytes = new Uint8Array(mem.buffer, life.ol_self(), n);
+      for (var i = 0; i < n; i++) bytes[i] = raw.charCodeAt(i);
+      return true;
+    } catch (e) { return false; }
+  }
+
+  /* ---- living ---- */
+  var t0 = performance.now(), last = 0, running = true;
+  function frame(now) {
+    if (!running) return;
+    if (now - last >= TICK) {
+      last = now;
+      var t = now - t0;
+      sense(Math.floor(t / TICK));
+      var bits = life.ol_step();
+      act(bits, t);
+      watch();
+    }
+    requestAnimationFrame(frame);
+  }
+
+  function begin(exports) {
+    life = exports; mem = exports.memory;
+    input = new Float32Array(mem.buffer, life.ol_input(), INPUT);
+    life.ol_begin((Date.now() & 0x7fffffff) >>> 0);
+    if (restore()) logLines.unshift("   it remembers its life so far");
+    else logLines.unshift("   it has just been born");
+    requestAnimationFrame(frame);
+    setInterval(save, 30000);
+  }
+
+  try {
+    var bin = atob(WASM), bytes = new Uint8Array(bin.length);
+    for (var i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    WebAssembly.instantiate(bytes, {}).then(function (r) { begin(r.instance.exports); }, function (e) {
+      say("This browser would not run its brain (" + e.message + ").");
+    });
+  } catch (e) { say("This browser would not run its brain (" + e.message + ")."); }
+
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) { save(); running = false; }
+    else if (!running && life) { running = true; requestAnimationFrame(frame); }
+  });
+
+  /* ---- you ---- */
+  var eyes = $("eyes");
+  function zoneOf(ev) {
+    var r = eyes.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width, y = (ev.clientY - r.top) / r.height;
+    return Math.min(3, Math.max(0, Math.floor(x * 4))) + 4 * Math.min(1, Math.max(0, Math.floor(y * 2)));
+  }
+  eyes.addEventListener("pointerdown", function (ev) { touchAt = zoneOf(ev); lastPt = [ev.clientX, ev.clientY]; eyes.setPointerCapture(ev.pointerId); });
+  eyes.addEventListener("pointermove", function (ev) {
+    if (!lastPt) return;
+    var dx = ev.clientX - lastPt[0], dy = ev.clientY - lastPt[1];
+    lastPt = [ev.clientX, ev.clientY];
+    rockX = Math.min(1, rockX + Math.abs(dx) / 60); rockY = Math.min(1, rockY + Math.abs(dy) / 60);
+    if (Math.abs(dx) + Math.abs(dy) > 6) touchAt = -1;
+  });
+  function release() { touchAt = -1; lastPt = null; }
+  eyes.addEventListener("pointerup", release); eyes.addEventListener("pointercancel", release);
+
+  var talk = $("talk");
+  function talkOn(ev) { ev.preventDefault(); talking = true; talk.setAttribute("aria-pressed", "true"); }
+  function talkOff() { talking = false; talk.setAttribute("aria-pressed", "false"); }
+  talk.addEventListener("pointerdown", talkOn); talk.addEventListener("pointerup", talkOff);
+  talk.addEventListener("pointerleave", talkOff); talk.addEventListener("pointercancel", talkOff);
+  talk.addEventListener("keydown", function (ev) { if (ev.key === " " || ev.key === "Enter") talkOn(ev); });
+  talk.addEventListener("keyup", talkOff);
+
+  function ensureAudio() {
+    if (!audio) { try { audio = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) { audio = null; } }
+    if (audio && audio.state === "suspended") audio.resume();
+    return audio;
+  }
+  $("sound").addEventListener("click", function () {
+    soundOn = !soundOn;
+    if (soundOn && !ensureAudio()) { soundOn = false; say("This browser would not play sound."); }
+    $("sound").setAttribute("aria-pressed", String(soundOn));
+  });
+
+  $("media").addEventListener("change", function () {
+    var f = this.files && this.files[0];
+    if (!f) return;
+    var url = URL.createObjectURL(f);
+    if (f.type.indexOf("video") === 0) {
+      var v = document.createElement("video");
+      v.src = url; v.loop = true; v.muted = false; v.playsInline = true;
+      var ac = ensureAudio();
+      if (ac) { try { var src = ac.createMediaElementSource(v), an = ac.createAnalyser(); an.fftSize = 256; src.connect(an); an.connect(ac.destination); mediaAnalyser = an; } catch (e) { mediaAnalyser = null; } }
+      v.play().catch(function () { v.muted = true; v.play().catch(function () {}); });
+      mediaEl = v; source = "video"; say("");
+    } else {
+      var im = new Image();
+      im.onload = function () { photo = im; source = "photo"; say(""); };
+      im.onerror = function () { say("That picture would not open. Try a JPEG or PNG."); };
+      im.src = url;
+    }
+  });
+  $("crib").addEventListener("click", function () { source = "crib"; if (mediaEl) mediaEl.pause(); });
+
+  $("live").addEventListener("click", function () {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      say("This page can't reach a camera here. Show it a photo or video instead.");
+      return;
+    }
+    if (window.DeviceMotionEvent && DeviceMotionEvent.requestPermission) DeviceMotionEvent.requestPermission().catch(function () {});
+    navigator.mediaDevices.getUserMedia({ video: { facingMode: "user", width: 320, height: 240 }, audio: true }).then(function (stream) {
+      var v = document.createElement("video");
+      v.srcObject = stream; v.muted = true; v.playsInline = true; v.play();
+      camera = v; source = "camera";
+      var ac = ensureAudio();
+      if (ac && stream.getAudioTracks().length) { var an = ac.createAnalyser(); an.fftSize = 256; ac.createMediaStreamSource(stream).connect(an); micAnalyser = an; }
+      say("");
+    }, function () {
+      say("The camera isn't available here. Inside Claude, pages aren't allowed to use it. Use “Show it a photo or video”, which opens your phone's camera, or open this page from its own web address.");
+    });
+  });
+  window.addEventListener("devicemotion", function (ev) {
+    var a = ev.accelerationIncludingGravity;
+    if (!a || a.x === null) return;
+    var now = [a.x || 0, a.y || 0, a.z || 0];
+    if (!gravity) gravity = now.slice();
+    for (var i = 0; i < 3; i++) {
+      gravity[i] += 0.1 * (now[i] - gravity[i]);
+      motion[i] = Math.max(motion[i], Math.min(1, Math.abs(now[i] - gravity[i]) / 4));
+    }
+  });
+
+  var forget = $("forget"), armed = false;
+  forget.addEventListener("click", function () {
+    if (!armed) { armed = true; forget.textContent = "Tap again to start it over"; setTimeout(function () { armed = false; forget.textContent = "Start it over"; }, 4000); return; }
+    armed = false; forget.textContent = "Start it over";
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    if (life) { life.ol_begin((Date.now() & 0x7fffffff) >>> 0); history = []; logLines = ["   it has just been born"]; gx = gy = 0.5; }
+  });
+})();
+</script>

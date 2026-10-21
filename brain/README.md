@@ -117,9 +117,14 @@ like any other connection.
 | **Smell** (an olfactory bulb at the front of the brain, straight to the amygdala) | Which smells are good or bad for it, from taste's innate value: the amygdala's approach and avoid neurons (Namburi et al. 2015), three-factor learning | The mother's smell and the anise of her meals come to mean approach, her stress avoid; smells that came with no taste stay exactly neutral (newborns of anise-eating mothers prefer anise: Schaal et al. 2000) |
 | **Hearing** (two cochleas; the tectum; the thalamus's hearing nucleus) | When the next heartbeat comes, from a travelling wave across the cerebellum that holds how long ago a sound came (the notes' "rippling"; Keller and Welling) | The heartbeat comes to be expected (about 41% still heard), the irregular voice does not (about 98%); a missed beat leaves a signal of absence as strong as a beat, silence none |
 | **Vision in the dark** (the eyes' first connections land broadly: the gene `sense_spread`) | Retinal waves sweep the eyes; inputs that fire with their neuron strengthen, each neuron's total is held fixed so they compete, the weak are pruned | Receptive fields narrow by about a third, about half the first connections are pruned; noise of the same amount barely refines them |
-| **The reflex loop** | Hand to mouth, lips and mouth muscles active together: Hebb | The lips-to-mouth reflex grows about fivefold; a reflex never paired stays as grown |
+| **The reflex loop** | Its own twitches: an arm that moves brushes the face, a muscle that contracts presses the womb wall; skin and muscle active together: Hebb | The lips-to-mouth reflex grows about fourfold; with its arms bound, far less; every place its twitches press grows its reflex too, as twitches tune the spinal reflexes (Blumberg) |
 
-`test_womb.c` checks all of it (17 checks).
+Nothing in the womb moves it. Its twitches come from its brainstem's own
+neurons: each one's activity wanders of itself, and when one crosses threshold
+its burst spreads to its neighbours. Where and when it twitches is wherever
+its own neurons take it. The mother, the heartbeat and the light are the world.
+
+`test_womb.c` checks all of it (21 checks).
 
 ## Infancy: serve and return
 
@@ -130,10 +135,53 @@ basal ganglia's new connections to the brainstem's kick centre (they start at
 nothing). The dopamine signal is what the moment brought, against how good the
 place is anyway (a critic) and what this choice adds (one value for kicking,
 one for holding still); the basal ganglia can hold a movement back as well as
-let it go. It kicks about ten times more than at first; a yoked twin, answered
+let it go. Its kicks come from the kick centre's own restless activity, crossing
+threshold, with what the basal ganglia add or take away. It kicks over twenty times more than at first; a yoked twin, answered
 at the same moments but not by its own kicks, stays at its baseline; when the
 answers stop, kicking falls back. It can tell the world answering it from the
 world simply doing things.
+
+## A life of its own: curiosity
+
+`ob_life.c`. After the mobile it lives on its own, and nothing chooses what it
+does. Its brainstem's motor centres (four for its eyes, one for its voice, one
+for a jerk of its whole body) are restless of themselves and fire when their
+own activity crosses threshold. Copies of each command ripple through its
+cerebellum (eight moments of how long ago), which learns to predict what each
+sense will bring next: its 8-by-8 retina, its cochlea's 8 bands, its skin, its
+inner ear. Its tegmentum's dopamine is its **learning progress**: in each place
+(where it looks; what it last did), how much its errors fell over the last
+span of visits against the span before (Oudeyer and Kaplan 2007). Its basal
+ganglia learn from that dopamine (a critic and urges for each act in each
+place) and lean on the brainstem, never silencing it, and what they learned
+fades unless it stays worth it. So it gets bored.
+
+It lives in `ob_crib.c`, a world with physics and people and no plan for it: a
+wall it looks over, a mobile that swings when it jerks, a television showing
+snow, a mother who talks, answers its voice, touches and rocks it.
+`test_life.c` (12 checks) lives three twins there: the being; a twin whose
+dopamine is plain surprise; a twin with none.
+
+| | the being | seeks surprise | no dopamine |
+|---|---|---|---|
+| eyes on the television's snow / on each other corner | 0.18 / 0.12 | 0.28 / 0.09 | 0.04 / 0.06 |
+| still surprised by: its own voice / its mother talking | 0.03 / 0.45 | 0.08 / 0.50 | 0.01 / 0.50 |
+| its own jerks / being rocked | 0.02 / 0.42 | 0.03 / 0.33 | 0.01 / 0.41 |
+| her answering its voice | 0.11 | 0.21 | 0.09 |
+| the wall as its eyes move | 0.06 | 0.12 | 0.06 |
+
+The twin that seeks surprise is caught by the snow, which never stops
+surprising it, and learns its world worse; the being treats it like any other
+corner. Both curious twins and the one with no dopamine come to tell their own
+voice and jerks from their mother's talk and rocking, never told which was
+which, and half expect her answers. What curiosity does not yet show here:
+that it learns its world faster than the twin with none. The crib is small
+enough that restless movement alone covers it. A richer world should show the
+difference, or not; that is the next thing to measure.
+
+The same code, unchanged, is the brain of the phone page (`phone/`), compiled
+to WebAssembly: `build_c.sh` checks that it lives exactly the same life there,
+act for act.
 
 ## The newborn
 
@@ -142,8 +190,8 @@ cc -std=c99 -O2 ob_grow.c ob_view.c ob_womb.c being.c -o being -lm
 ./being genome.txt ../newborn
 ```
 
-Grows the newborn from its genome and lives the womb, on its own, in about
-five seconds, and writes [`newborn/diary.txt`](../newborn/diary.txt) (its life
+Grows the newborn from its genome, lives the womb, its first months under the
+mobile and in the crib, on its own, in about ten seconds, and writes [`newborn/diary.txt`](../newborn/diary.txt) (its life
 week by week, in its own words, every number measured), its brain map, its
 pictures, and `brain.bin`: its whole brain, saved, so its life can go on after
 birth from exactly where it was born.
@@ -155,6 +203,8 @@ and 385,000 connections, a scaffold built on biology's principles, simplified.
 The regions and wiring rules are a plausible plan, written down so they can be
 argued with and changed. Activity is a rate between 0 and 1, not spikes. Each
 sense's learning is its own rule, written where it can be read, not one rule
-for everything; some of the womb's events (when the mouth moves with the hand,
-what the mother eats) are scripted, not caused by the being. Its life after
-birth is the next stage.
+for everything. Its own movements are its own; the world's events (what the
+mother eats, when she talks) are the world's. Its life of its own
+(`ob_life.c`) runs on a compact version of the same regions (a few hundred
+units, not the grown brain's thirteen thousand neurons); joining the two is
+still to do.

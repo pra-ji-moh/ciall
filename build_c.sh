@@ -189,7 +189,21 @@ echo "brain/"
 build test_brain brain ob_grow.c ob_view.c test_brain.c && run_test test_brain brain
 build test_womb brain ob_grow.c ob_view.c ob_womb.c test_womb.c && run_test test_womb brain
 build grow_brain brain ob_grow.c ob_view.c ob_womb.c grow_brain.c
-build being brain ob_grow.c ob_view.c ob_womb.c being.c
+build test_life brain ob_life.c ob_crib.c test_life.c && run_test test_life brain
+build being brain ob_grow.c ob_view.c ob_womb.c ob_life.c ob_crib.c being.c
+echo
+echo "phone/"
+if build ol_same brain ob_life.c ol_same.c; then
+  if command -v clang >/dev/null && command -v node >/dev/null && sh phone/build_phone.sh >"$OUT/phone.log" 2>&1; then
+    if node phone/check_phone.mjs "$("$OUT/ol_same.exe")" >"$OUT/phone.out" 2>&1; then
+      ok "phone brain  ($(cat "$OUT/phone.out"))"
+    else
+      bad "phone brain"; sed 's/^/        /' "$OUT/phone.out"
+    fi
+  else
+    echo "  skip  phone brain (needs clang with wasm32, and node)"
+  fi
+fi
 echo
 echo "native/"
 N=native

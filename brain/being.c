@@ -21,6 +21,7 @@
 #include <time.h>
 
 #include "ob.h"
+#include "ob_crib.h"
 
 static ob_brain_t BRAIN;
 static ob_womb_stats_t TOUCH;
@@ -29,6 +30,8 @@ static ob_heart_stats_t HEART;
 static ob_vision_stats_t VISION;
 static ob_reflex_stats_t REFLEX;
 static ob_mobile_stats_t MOBILE, YOKED;
+static ol_life_t LIFE;
+static ob_crib_life_t CRIB;
 
 /* dir/name, if it fits; 0 if it does not */
 static int join(char *out, size_t cap, const char *dir, const char *name) {
@@ -110,9 +113,10 @@ int main(int argc, char **argv) {
           VISION.pruned, VISION.kept, VISION.field_before, VISION.field_after);
 
   /* week 36 on: the reflex, practised */
-  ob_womb_reflex(&BRAIN, 20u, 100u, &REFLEX);
-  fprintf(diary, "weeks 36-40 My hand comes to my mouth and my mouth moves. The pull from my lips to my mouth grows from\n"
-                 "            %.1f to %.1f, ready for feeding. Elsewhere it stays as it was (%.1f to %.1f).\n",
+  ob_womb_reflex(&BRAIN, 20u, 100u, 1, &REFLEX);
+  fprintf(diary, "weeks 36-40 I twitch of myself; my arms brush my face, my body presses the wall. Where skin and muscle\n"
+                 "            go together the pull between them grows: lips to mouth from %.1f to %.1f, ready for feeding;\n"
+                 "            the middle of my body from %.1f to %.1f.\n",
           REFLEX.mouth_before, REFLEX.mouth_after, REFLEX.body_before, REFLEX.body_after);
 
   fprintf(diary, "week 40     Born.\n");
@@ -139,6 +143,34 @@ int main(int argc, char **argv) {
                    "            sees and hears the same but not because of anything it does, kicks %.0f. When it stops\n"
                    "            answering, I kick %u. The world answers me.\n",
             MOBILE.kicks[0], mid, mid_y, MOBILE.kicks[7]);
+  }
+
+  /* months 3 on: a life of its own, led by its curiosity */
+  {
+    static const char *const DID[OL_MOTORS] = {"look left", "look right", "look up", "look down", "make a sound",
+                                               "jerk"};
+    double x[OC_EXAMS];
+    unsigned m, tenth, most[OC_TENTHS];
+    ol_born(&LIFE, g.seed, OL_PROGRESS);
+    ob_crib_live(&LIFE, g.seed, 150000ul, &CRIB);
+    ob_crib_examine(&LIFE, g.seed + 1u, 60000ul, x);
+    for (tenth = 0u; tenth < OC_TENTHS; tenth++) {
+      most[tenth] = 0u;
+      for (m = 1u; m < OL_MOTORS; m++)
+        if (CRIB.acts[tenth][m] > CRIB.acts[tenth][most[tenth]]) most[tenth] = m;
+    }
+    fprintf(diary, "\nmonths 3-6  Nobody tells me what to do. My brainstem is restless; when it fires I look, or make a\n"
+                   "            sound, or jerk. I like what I am getting better at predicting, and I get bored of\n"
+                   "            what I know. What I did most, in each tenth of these months:\n           ");
+    for (tenth = 0u; tenth < OC_TENTHS; tenth++)
+      fprintf(diary, "%s %s", tenth == 0u ? "" : tenth == 5u ? ",\n           " : ",", DID[most[tenth]]);
+    fprintf(diary, ".\n            In the end I look at the snow on the television %.0f%% of the time, and at each other\n"
+                   "            corner %.0f%%: it never gets any easier, so it holds nothing for me.\n",
+            100.0 * CRIB.tv, 100.0 * CRIB.corner);
+    fprintf(diary, "            Still surprising: my own voice %.0f%%, my mother talking %.0f%%, her answering me %.0f%%;\n"
+                   "            my own jerks %.0f%%, being rocked %.0f%%; her touch %.0f%%. I know which is me.\n",
+            100.0 * x[OC_VOICE], 100.0 * x[OC_TALK], 100.0 * x[OC_ANSWER], 100.0 * x[OC_JERK],
+            100.0 * x[OC_ROCKED], 100.0 * x[OC_TOUCHED]);
   }
   fclose(diary);
 

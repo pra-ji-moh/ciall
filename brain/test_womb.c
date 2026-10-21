@@ -20,8 +20,11 @@
  *   vision        retinal waves in the dark narrow the visual thalamus's
  *                 receptive fields and prune the eyes' first connections;
  *                 noise of the same amount does far less
- *   the reflex    practised hand to mouth, the lips' reflex to the mouth
- *                 strengthens; a reflex never paired does not
+ *   the reflex    its own twitches bring hand to mouth, and the lips' reflex
+ *                 to the mouth strengthens; with its arms bound it does far
+ *                 less; and wherever its twitches press the womb wall,
+ *                 that place's reflex grows too, as twitches tune the
+ *                 spinal reflexes (Blumberg)
  *   infancy       serve and return: when its kicks move the mobile it kicks
  *                 more; a yoked twin answered as often, not by its kicks, does
  *                 not; when the answers stop, kicking falls back
@@ -106,14 +109,21 @@ int main(void) {
           vn.field_after > vw.field_after + 0.5);
   }
   {
-    ob_reflex_stats_t rf;
-    ob_womb_reflex(&A, 12u, 100u, &rf);
-    printf("        (reflex: mouth %.2f -> %.2f; middle of the body %.2f -> %.2f)\n", rf.mouth_before,
-           rf.mouth_after, rf.body_before, rf.body_after);
-    check("the reflex loop: practised hand to mouth, the lips' reflex to the mouth is ready, at least doubled",
-          rf.mouth_after > 2.0 * rf.mouth_before);
-    check("and a reflex in the middle of the body, never paired, stays much as it was grown",
-          rf.body_after < 1.3 * rf.body_before);
+    /* its own twitches practise it; a twin whose arms are bound (they twitch,
+       but cannot reach its face) shows what its hands did */
+    static ob_brain_t bound;
+    ob_reflex_stats_t rf, rb;
+    memcpy(&bound, &A, sizeof bound);
+    ob_womb_reflex(&A, 12u, 100u, 1, &rf);
+    ob_womb_reflex(&bound, 12u, 100u, 0, &rb);
+    printf("        (reflex: mouth %.2f -> %.2f, arms bound %.2f; middle of the body %.2f -> %.2f)\n", rf.mouth_before,
+           rf.mouth_after, rb.mouth_after, rf.body_before, rf.body_after);
+    check("the reflex loop: its own twitches bring hand to mouth, and the lips' reflex to the mouth grows (at least 1.5x)",
+          rf.mouth_after > 1.5 * rf.mouth_before);
+    check("its hands did it: with its arms bound, the lips' reflex grows far less",
+          rb.mouth_after - rb.mouth_before < 0.5 * (rf.mouth_after - rf.mouth_before));
+    check("everywhere its twitches press the womb wall, the reflex there grows too (twitches tune the reflexes)",
+          rf.body_after > 1.5 * rf.body_before);
   }
   {
     static unsigned char sched[200u * 8u / 8u + 8u];

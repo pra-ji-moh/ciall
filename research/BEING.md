@@ -65,9 +65,16 @@ map already in order on the visual cortex.
    pruned. Receptive fields narrow by about a third and about half the first
    connections are pruned; noise of the same amount, with no neighbour firing
    with its neighbour, barely refines them.
-5. The reflex loop: done. Hand to mouth, lips and mouth muscles active
-   together: the lips-to-mouth reflex grows about fivefold; a reflex in the
-   middle of the body, never paired, stays as grown.
+5. The reflex loop: done. Its own twitches bring its hand to its mouth and
+   press its body against the womb wall; where skin and muscle are active
+   together the reflex grows: lips to mouth about fourfold (with its arms
+   bound, far less), and everywhere its twitches press, as twitches tune the
+   spinal reflexes.
+
+Nothing in the womb is done to it on its behalf: its twitches come from its
+brainstem's own restless neurons, wherever they cross threshold. (An earlier
+version chose where it twitched and when its hand went to its mouth; that is
+gone.)
 
 All of it runs on its own: `brain/being.c` grows the newborn from its genome
 and lives the womb, the senses coming online in a fetus's order (touch from
@@ -84,7 +91,7 @@ caregiver; overgrowth then pruning; myelination; ripples and replay in sleep.
   tegmentum's dopamine teaches the basal ganglia's connections to the kick
   centre (learned from nothing: a critic for how good the place is, what each
   choice adds, and a drive that can hold movement back as well as let it go).
-  It kicks about ten times more; a yoked twin, answered as often but not by its
+  It kicks over twenty times more; a yoked twin, answered as often but not by its
   own kicks, stays at its baseline; when the answers stop, kicking falls back.
   The world answers it, and it can tell.
   Three simpler rules were tried first and failed, and are worth knowing: a
@@ -92,6 +99,20 @@ caregiver; overgrowth then pruning; myelination; ripples and replay in sleep.
   comparing each choice with its usual rate (an actor-critic) fixed the twin but
   never extinguished; a value per choice without a critic, and a drive that
   could not go below zero, let the twin drift up again.
+
+- A life of its own: started (`brain/ob_life.c`). Its eyes, voice and body
+  move when its own brainstem fires; its dopamine is learning progress, so it
+  is drawn to what it is getting better at and bored by what it knows or can
+  never know. In the crib it treats a television's snow like any other corner,
+  while a twin that seeks surprise is caught by it; it tells its own voice and
+  jerks from its mother's talk and rocking, and half expects her answers.
+  Not shown yet: that curiosity makes it learn faster than restlessness alone.
+- On a phone: the same brain, compiled to WebAssembly (`phone/`), its senses
+  the phone's camera, microphone, screen and motion sensors, its acts its gaze
+  over the picture, a sound, a buzz. Everything stays on the phone. Inside
+  Claude the page may not use the live camera, so it takes photos and videos
+  from the phone's camera app instead; from its own web address it can use
+  everything live.
 
 **Stage 3, childhood**: the mind rebuilt on the brain's maps; the parietal
 lobe's numbers and symbols; the two hemispheres (exact and associative) and

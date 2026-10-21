@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
   ob_womb_smell(&BRAIN, 20u, 50u, &SMELL);
   ob_womb_heartbeat(&BRAIN, 20u, 400u, &HEART);
   ob_womb_vision(&BRAIN, 20u, 200u, 1, &VISION);
-  ob_womb_reflex(&BRAIN, 20u, 100u, &REFLEX);
+  ob_womb_reflex(&BRAIN, 20u, 100u, 1, &REFLEX);
   sprintf(path, "%s/brain_map.txt", dir);
   f = fopen(path, "w");
   if (f == 0) {
