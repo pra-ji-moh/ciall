@@ -38,6 +38,8 @@
 #include "ob.h"
 #include "ob_life.h"
 
+#define OB_HIP_BYTES 32            /* the hippocampus's neurons, a bit each (up to 256) */
+
 typedef struct {
   ob_brain_t brain;                   /* its brain: anatomy, and every weight */
   unsigned curiosity;                 /* OL_PROGRESS, OL_ERROR or OL_NONE */
@@ -82,6 +84,13 @@ typedef struct {
   long recalled_moment[OL_GROUPS];
   float memdrive[OB_MAX_NEURONS];     /* what a recalled moment drives into each relay */
   unsigned long recalls[OL_GROUPS];
+  /* and the hippocampus's own: whole moments filed under which of its own
+     neurons fired (an episode), recalled from the nearest pattern */
+  unsigned episodes;                  /* 1: it recalls episodes (0: a twin without) */
+  int via[OL_GROUPS];                 /* how each sense's expectation was recalled: 0 none, 1 as a thing, 2 as an episode */
+  float episode_trust[OL_GROUPS];     /* how much better episodes have predicted, on average */
+  unsigned long episode_recalls[OL_GROUPS];
+  unsigned char pattern[OL_MEMORY][OB_HIP_BYTES];
   ol_hippocampus_t hip;               /* last: it is much of its size */
 } ob_one_t;
 

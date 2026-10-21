@@ -22,6 +22,7 @@ static unsigned ACTION_SYN[OB_MAX_SYN], N_ACTION;            /* the basal gangli
 static unsigned BG[OB_MAX_NEURONS], N_BG;                    /* the basal ganglia's neurons */
 static unsigned THAL[OB_MAX_NEURONS], N_THAL;                /* the thalamic neurons that relay a sense */
 static unsigned STEM[OB_MAX_NEURONS], N_STEM;                /* the brainstem's neurons */
+static unsigned HIP[OB_HIP_BYTES * 8], N_HIP;                /* the hippocampus's neurons */
 static float DRIVE[OB_MAX_NEURONS], PRED[OB_MAX_NEURONS], INPUT[OB_MAX_NEURONS], PRED_CB[OB_MAX_NEURONS];
 static float NEXT[OB_MAX_NEURONS];
 static float RAW[OB_MAX_NEURONS];                 /* each neuron's drive before clipping: what ranks it */
@@ -124,12 +125,13 @@ static void read_anatomy(const ob_brain_t *b) {
   }
   for (k = 0u; k < OL_MOTORS; k++)
     THETA[k] = ZONE_N[k] ? (float)normal_above(1.0 - pow(1.0 - BASE_RATE, 1.0 / ZONE_N[k])) : 1e30f;
-  N_ACTION = N_BG = N_THAL = N_STEM = N_CB = 0u;
+  N_ACTION = N_BG = N_THAL = N_STEM = N_CB = N_HIP = 0u;
   for (i = 0u; i < b->n_neurons; i++) {
     const ob_neuron_t *n = &b->neuron[i];
     if (n->region == OB_BASAL_GANGLIA) BG[N_BG++] = i;
     if (n->region == OB_BRAINSTEM) STEM[N_STEM++] = i;
     if (n->region == OB_CEREBELLUM) CB_INDEX[i] = N_CB < 4096u ? N_CB++ : 4095u;
+    if (n->region == OB_HIPPOCAMPUS && N_HIP < OB_HIP_BYTES * 8u) HIP[N_HIP++] = i;
     if (GROUP[i] < OL_GROUPS) THAL[N_THAL++] = i;
     if (ZONE[i] >= OL_MOTORS) continue;
     for (s = n->syn_first; s < n->syn_first + n->syn_n; s++) {
@@ -228,6 +230,58 @@ static void reinstate(ob_one_t *O, const unsigned char *remembered, unsigned gro
       if (SCLASS[s] == C_SENSE) x += O->w[s] * SCRATCH[FROM[s]];
     O->memdrive[THAL[k]] = x;
   }
+}
+
+/* ---- episodes: the hippocampus's own patterns ---- */
+
+static unsigned ones(unsigned char x) {
+  unsigned n = 0u;
+  while (x) {
+    n += x & 1u;
+    x >>= 1;
+  }
+  return n;
+}
+
+static void hip_bits(const ob_one_t *O, unsigned char *bits) {
+  unsigned k;
+  memset(bits, 0, OB_HIP_BYTES);
+  for (k = 0u; k < N_HIP; k++) {
+    if (O->act[HIP[k]] > 0.0f) bits[k / 8u] |= (unsigned char)(1u << (k % 8u));
+  }
+}
+
+#define EPISODE_REACH 20000u   /* how far back it looks for an episode like now */
+#define EPISODE_NEAR 0.5f      /* how alike (shared over all fired) to be "this again" */
+
+/* the lived moment whose hippocampal pattern is most like now's, if alike enough */
+static long episode_like(const ob_one_t *O, const unsigned char *now) {
+  static unsigned char ONES[256];
+  unsigned long m, from;
+  unsigned k, a = 0u;
+  long best = -1;
+  float best_j = EPISODE_NEAR;
+  if (ONES[255] == 0u)
+    for (k = 0u; k < 256u; k++) ONES[k] = (unsigned char)ones((unsigned char)k);
+  for (k = 0u; k < OB_HIP_BYTES; k++) a += ONES[now[k]];
+  if (a == 0u || O->moments < 4u) return -1;
+  from = O->moments > EPISODE_REACH ? O->moments - EPISODE_REACH : 0u;
+  for (m = from; m + 3u < O->moments; m++) {
+    const unsigned char *p = O->pattern[m % OL_MEMORY];
+    unsigned both = 0u, b = 0u;
+    float j;
+    if (!ol_hip_held(&O->hip, m) || !ol_hip_held(&O->hip, m + 1u)) continue;
+    for (k = 0u; k < OB_HIP_BYTES; k++) {
+      both += ONES[p[k] & now[k]];
+      b += ONES[p[k]];
+    }
+    j = (float)both / (float)(a + b - both);
+    if (j > best_j) {
+      best_j = j;
+      best = (long)m;
+    }
+  }
+  return best;
 }
 
 int ob_one_light(const ob_one_t *O, unsigned long moment, float *out) {
@@ -410,6 +464,7 @@ void ob_one_born(ob_one_t *O, const ob_brain_t *grown, unsigned seed, unsigned c
   O->curiosity = curiosity;
   O->learning = 1u;
   O->remembers = 1u;
+  O->episodes = 1u;
   O->cortex_learns = 1u;
   O->trace_rule = 0u;   /* Foldiak's trace rule: tried, and it did not help here (see test_cortex.c) */
   for (i = 0u; i < OL_GROUPS; i++) {
@@ -492,10 +547,10 @@ unsigned ob_one_live(ob_one_t *O, const float *in) {
          signal, the womb's signal of absence). Expected by the cerebellum and
          the cortex, or, where it follows memory, by what came next last time */
       cb = SENT(DRIVE[i]) + PRED[i];
-      if (O->recalled[g] >= 0) mem = SENT(DRIVE[i]) - SENT(O->memdrive[i]);
+      if (O->via[g]) mem = SENT(DRIVE[i]) - SENT(O->memdrive[i]);
       by_cb[g] += cb * cb;
       by_mem[g] += mem * mem;
-      left = O->recalled[g] >= 0 && O->trusted[g] ? mem : cb;
+      left = O->via[g] && O->trusted[g] ? mem : cb;
       if (left < 0.0f) left = 0.0f;
       err[g] += left * left;
       energy[g] += SENT(DRIVE[i]) * SENT(DRIVE[i]);
@@ -506,8 +561,8 @@ unsigned ob_one_live(ob_one_t *O, const float *in) {
     if (O->learning) {
       for (g = 0u; g < OL_GROUPS; g++) {
         float *t;
-        if (n_err[g] == 0u || O->recalled[g] < 0) continue;
-        t = &O->hip.trust[g][O->recalled[g]];
+        if (n_err[g] == 0u || O->via[g] == 0) continue;
+        t = O->via[g] == 2 ? &O->episode_trust[g] : &O->hip.trust[g][O->recalled[g]];
         *t += 0.2f * ((by_cb[g] - by_mem[g]) / (float)n_err[g] - *t);
         if (*t == 0.0f) *t = by_cb[g] >= by_mem[g] ? 1e-9f : -1e-9f;
       }
@@ -683,11 +738,18 @@ unsigned ob_one_live(ob_one_t *O, const float *in) {
     for (m = 0u; m < OL_MOTORS; m++) {
       if (O->ago[m] < 3u) lately |= 1u << (3u * m + O->ago[m]);
     }
+    unsigned char now[OB_HIP_BYTES];
+    long episode = -1;
+    hip_bits(O, now);
+    if (O->episodes) episode = episode_like(O, now);
     for (g = 0u; g < OL_GROUPS; g++) {
       long then = -1;
       float near = 1.0f;
       O->recalled[g] = -1;
       O->recalled_moment[g] = -1;
+      O->via[g] = 0;
+      O->trusted[g] = 0;
+      /* as a thing: this sense's pattern, lived before (the perirhinal way) */
       if (O->remembers) then = ol_hip_recall(&O->hip, in, g, lately, &near);
       if (then >= 0 && ol_hip_held(&O->hip, (unsigned long)then + 1u)) {
         unsigned key = ol_hip_key(in, g, lately);
@@ -695,11 +757,23 @@ unsigned ob_one_live(ob_one_t *O, const float *in) {
         reinstate(O, O->hip.senses[((unsigned long)then + 1u) % OL_MEMORY], g);
         O->recalled[g] = (int)key;
         O->recalled_moment[g] = then;
+        O->via[g] = 1;
         O->trusted[g] = t > 0.0f || (t == 0.0f && near < OL_EXACT);
         if (O->trusted[g]) O->recalls[g]++;
       }
+      /* or as an episode: the whole moment its hippocampus is reminded of */
+      if (!O->trusted[g] && episode >= 0) {
+        reinstate(O, O->hip.senses[((unsigned long)episode + 1u) % OL_MEMORY], g);
+        O->recalled_moment[g] = episode;
+        O->via[g] = 2;
+        O->trusted[g] = O->episode_trust[g] >= 0.0f;
+        if (O->trusted[g]) O->episode_recalls[g]++;
+      }
     }
-    if (O->remembers) ol_hip_keep(&O->hip, O->moments, in, lately);
+    if (O->remembers || O->episodes) {
+      ol_hip_keep(&O->hip, O->moments, in, lately);
+      memcpy(O->pattern[O->moments % OL_MEMORY], now, OB_HIP_BYTES);
+    }
   }
   O->moments++;
   return bits;
