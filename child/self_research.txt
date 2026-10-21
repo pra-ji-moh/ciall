@@ -648,3 +648,8 @@
   from version 69 (one of 11 still standing) it made version 87: SELF_OFF_THEORY 1->0; SELF_OFF_PANELS 0->1; SELF_FEW_SITUATIONS 32u->64u
   development games, two seeds averaged: 0.0 levels, 0.000% (its parent: 14.5, 0.715%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-10-21 14:50  (building itself: one generation)
+  from version 72 (one of 11 still standing) it made version 88: SELF_TIE_MODE 1u->2u
+  development games, two seeds averaged: 3.5 levels, 0.002% (its parent: 14.5, 0.715%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
