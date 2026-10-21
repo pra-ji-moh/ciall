@@ -1,7 +1,8 @@
 ciall-explorer-mind 1
-runs 208
+runs 209
 best 0
 mask 15 15 0
+mask 30 0 1
 mask 63 0 0
 mask 63 1 0
 mask 63 2 0
@@ -66,36 +67,36 @@ mask 63 60 0
 mask 63 61 0
 mask 63 62 0
 mask 63 63 0
-colour 0 30922 0 0
-shift 1 0 -3 0 9025
-shift 2 0 3 0 6550
-shift 3 0 0 -3 5469
-shift 4 0 0 3 5090
-shift 5 0 -18 -15 1
+colour 0 33028 0 0
+shift 1 0 -3 0 9443
+shift 2 0 3 0 6963
+shift 3 0 0 -3 5922
+shift 4 0 0 3 5537
+shift 5 0 45 36 1
 colour 1 0 0 0
 colour 2 0 0 0
 colour 3 0 0 0
 colour 4 1 4 0
 shift 1 4 25 18 1
-colour 5 192236 361 0
-shift 1 5 135 0 1
-shift 2 5 -135 0 4
-shift 3 5 0 156 1
+colour 5 193089 361 0
+shift 1 5 135 0 2
+shift 2 5 -135 0 2
+shift 3 5 0 135 1
 shift 4 5 0 -153 2
 colour 6 0 0 0
 colour 7 0 0 0
 colour 8 0 0 0
-colour 9 91169 5011 0
-shift 1 9 -156 0 8
-shift 2 9 156 0 5
-shift 3 9 0 -156 1
+colour 9 91803 5011 0
+shift 1 9 -156 0 38
+shift 2 9 156 0 28
+shift 3 9 0 -150 1
 shift 4 9 0 150 2
 colour 10 0 0 0
-colour 11 107754 4284 0
-shift 1 11 -132 0 1
-shift 2 11 132 0 4
-shift 3 11 0 3 1
-shift 4 11 0 132 12
+colour 11 108274 4284 0
+shift 1 11 -132 0 3
+shift 2 11 132 0 3
+shift 3 11 0 -132 4
+shift 4 11 0 132 2
 colour 12 0 0 0
 colour 13 0 0 0
 colour 14 0 0 0
