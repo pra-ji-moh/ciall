@@ -88,7 +88,8 @@ typedef struct {
      neurons fired (an episode), recalled from the nearest pattern */
   unsigned episodes;                  /* 1: it recalls episodes (0: a twin without) */
   int via[OL_GROUPS];                 /* how each sense's expectation was recalled: 0 none, 1 as a thing, 2 as an episode */
-  float episode_trust[OL_GROUPS];     /* how much better episodes have predicted, on average */
+  float episode_trust[OL_GROUPS][1u << OL_INDEX_BITS];   /* how much better episodes have predicted, in each situation */
+  unsigned episode_key[OL_GROUPS];    /* the situation the last episode was recalled in */
   unsigned long episode_recalls[OL_GROUPS];
   unsigned char pattern[OL_MEMORY][OB_HIP_BYTES];
   ol_hippocampus_t hip;               /* last: it is much of its size */

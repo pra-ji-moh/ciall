@@ -562,7 +562,7 @@ unsigned ob_one_live(ob_one_t *O, const float *in) {
       for (g = 0u; g < OL_GROUPS; g++) {
         float *t;
         if (n_err[g] == 0u || O->via[g] == 0) continue;
-        t = O->via[g] == 2 ? &O->episode_trust[g] : &O->hip.trust[g][O->recalled[g]];
+        t = O->via[g] == 2 ? &O->episode_trust[g][O->episode_key[g]] : &O->hip.trust[g][O->recalled[g]];
         *t += 0.2f * ((by_cb[g] - by_mem[g]) / (float)n_err[g] - *t);
         if (*t == 0.0f) *t = by_cb[g] >= by_mem[g] ? 1e-9f : -1e-9f;
       }
@@ -763,10 +763,14 @@ unsigned ob_one_live(ob_one_t *O, const float *in) {
       }
       /* or as an episode: the whole moment its hippocampus is reminded of */
       if (!O->trusted[g] && episode >= 0) {
+        /* trust in episodes is earned, in each situation (what this sense
+           brings and what it did lately), never given */
+        unsigned key = ol_hip_key(in, g, lately);
         reinstate(O, O->hip.senses[((unsigned long)episode + 1u) % OL_MEMORY], g);
         O->recalled_moment[g] = episode;
         O->via[g] = 2;
-        O->trusted[g] = O->episode_trust[g] >= 0.0f;
+        O->episode_key[g] = key;
+        O->trusted[g] = O->episode_trust[g][key] > 0.0f;
         if (O->trusted[g]) O->episode_recalls[g]++;
       }
     }
