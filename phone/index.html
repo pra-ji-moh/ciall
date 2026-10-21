@@ -72,7 +72,7 @@ figcaption, .label { font-size: 12px; color: var(--soft); letter-spacing: .02em;
       <canvas id="view" width="96" height="72" aria-label="Its world, with a square where its eyes are pointing"></canvas>
       <canvas id="overlay" width="480" height="360" aria-hidden="true"></canvas>
     </div>
-    <p class="hint">The square is where it is looking. Touch the picture to touch it. Drag across it to rock it. Hold <b>Talk to it</b> to speak to it, and answer when it makes a sound.</p>
+    <p class="hint">The square is where it is looking. The picture is its skin, in eight places: touch it, press harder or softer, stroke it slowly, use more than one finger. A fast swipe rocks it. Hold <b>Talk to it</b> to speak to it, and answer when it makes a sound.</p>
     <div class="row" style="margin-top:10px">
       <button id="talk" class="primary" aria-pressed="false">Talk to it</button>
       <button id="sound" aria-pressed="false">Let it make sounds</button>
@@ -163,7 +163,7 @@ figcaption, .label { font-size: 12px; color: var(--soft); letter-spacing: .02em;
   var life = null, mem = null, input = null;
   var gx = 0.5, gy = 0.5, jerk = 0, heardSelf = 0, shake = 0;
   var swing = 0, swingV = 0;
-  var touchAt = -1, rockX = 0, rockY = 0, lastPt = null;
+  var fingers = {}, felt = [0, 0, 0, 0, 0, 0, 0, 0], rockX = 0, rockY = 0;
   var talking = false, soundOn = false, audio = null;
   var source = "crib", mediaEl = null, photo = null, mediaAnalyser = null, micAnalyser = null, camera = null;
   var motion = [0, 0, 0], gravity = null;
@@ -250,7 +250,11 @@ figcaption, .label { font-size: 12px; color: var(--soft); letter-spacing: .02em;
     heardSelf = 0;
     for (b = 0; b < EAR; b++) input[VIS + b] = ear[b];
     /* skin */
-    for (i = 0; i < SKIN; i++) input[VIS + EAR + i] = i === touchAt ? 1 : 0;
+    /* its skin: every finger on it, each place as firmly as it is pressed;
+       a stroke lingers a moment where it passed */
+    var skin = [0, 0, 0, 0, 0, 0, 0, 0];
+    Object.keys(fingers).forEach(function (id) { var f = fingers[id]; skin[f.zone] = Math.max(skin[f.zone], f.firm); });
+    for (i = 0; i < SKIN; i++) { felt[i] = Math.max(skin[i], felt[i] * 0.4); input[VIS + EAR + i] = felt[i] < 0.02 ? 0 : felt[i]; }
     /* inner ear: its own jerks, your rocking, the phone moving */
     var m = [rockX, rockY, 0];
     if (jerk) m[2] += jerk === 2 ? 0.9 : 0.4;
@@ -367,6 +371,13 @@ figcaption, .label { font-size: 12px; color: var(--soft); letter-spacing: .02em;
     var k = over.width / FW;
     octx.strokeStyle = warm; octx.lineWidth = 4;
     octx.strokeRect(gx * (FW - SIDE) * k, gy * (FH - SIDE) * k, SIDE * k, SIDE * k);
+    /* where it feels you: its eight places of skin, lit as firmly as they are touched */
+    var zw = over.width / 4, zh = over.height / 2;
+    for (var z = 0; z < SKIN; z++) {
+      if (felt[z] < 0.02) continue;
+      octx.fillStyle = "rgba(255, 128, 111, " + (0.15 + 0.35 * felt[z]).toFixed(2) + ")";
+      octx.fillRect((z % 4) * zw + 3, Math.floor(z / 4) * zh + 3, zw - 6, zh - 6);
+    }
   }
 
   /* ---- its memory, on this phone only (the browser's own database) ---- */
@@ -451,15 +462,27 @@ figcaption, .label { font-size: 12px; color: var(--soft); letter-spacing: .02em;
     var r = eyes.getBoundingClientRect(), x = (ev.clientX - r.left) / r.width, y = (ev.clientY - r.top) / r.height;
     return Math.min(3, Math.max(0, Math.floor(x * 4))) + 4 * Math.min(1, Math.max(0, Math.floor(y * 2)));
   }
-  eyes.addEventListener("pointerdown", function (ev) { touchAt = zoneOf(ev); lastPt = [ev.clientX, ev.clientY]; eyes.setPointerCapture(ev.pointerId); });
-  eyes.addEventListener("pointermove", function (ev) {
-    if (!lastPt) return;
-    var dx = ev.clientX - lastPt[0], dy = ev.clientY - lastPt[1];
-    lastPt = [ev.clientX, ev.clientY];
-    rockX = Math.min(1, rockX + Math.abs(dx) / 60); rockY = Math.min(1, rockY + Math.abs(dy) / 60);
-    if (Math.abs(dx) + Math.abs(dy) > 6) touchAt = -1;
+  /* how firmly: the screen's pressure where it reports one, else how much of
+     the fingertip touches it, else a light touch */
+  function firmness(ev) {
+    if (ev.pointerType !== "mouse" && ev.pressure > 0 && ev.pressure !== 0.5) return Math.min(1, 0.25 + ev.pressure);
+    var area = (ev.width || 0) * (ev.height || 0);
+    if (area > 4) return Math.min(1, 0.35 + area / 1600);
+    return 0.6;
+  }
+  eyes.addEventListener("pointerdown", function (ev) {
+    fingers[ev.pointerId] = { zone: zoneOf(ev), firm: firmness(ev), x: ev.clientX, y: ev.clientY };
+    try { eyes.setPointerCapture(ev.pointerId); } catch (e) {}
   });
-  function release() { touchAt = -1; lastPt = null; }
+  eyes.addEventListener("pointermove", function (ev) {
+    var f = fingers[ev.pointerId];
+    if (!f) return;
+    var dx = ev.clientX - f.x, dy = ev.clientY - f.y, speed = Math.abs(dx) + Math.abs(dy);
+    f.x = ev.clientX; f.y = ev.clientY; f.zone = zoneOf(ev); f.firm = firmness(ev);
+    /* a slow stroke is touch; a fast swipe moves the whole of it: rocking */
+    if (speed > 18) { rockX = Math.min(1, rockX + Math.abs(dx) / 80); rockY = Math.min(1, rockY + Math.abs(dy) / 80); }
+  });
+  function release(ev) { delete fingers[ev.pointerId]; }
   eyes.addEventListener("pointerup", release); eyes.addEventListener("pointercancel", release);
 
   var talk = $("talk");
