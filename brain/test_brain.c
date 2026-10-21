@@ -99,14 +99,16 @@ int main(void) {
   ob_grow(&A, &g);
 
   for (r = 1u; r < OB_REGIONS; r++) {
-    if (r == OB_RETINA_L || r == OB_COCHLEA_L) all &= A.count[r][OB_LEFT] > 0u;
-    else if (r == OB_RETINA_R || r == OB_COCHLEA_R) all &= A.count[r][OB_RIGHT] > 0u;
+    if (r == OB_RETINA_L || r == OB_COCHLEA_L || r == OB_VESTIBULE_L) all &= A.count[r][OB_LEFT] > 0u;
+    else if (r == OB_RETINA_R || r == OB_COCHLEA_R || r == OB_VESTIBULE_R) all &= A.count[r][OB_RIGHT] > 0u;
     else all &= A.count[r][OB_LEFT] > 0u && A.count[r][OB_RIGHT] > 0u;
   }
   check("every region forms, on both sides, from the gradients alone", all && A.dropped == 0u);
 
   for (r = 1u; r < OB_REGIONS; r++) {
-    if (r == OB_RETINA_L || r == OB_RETINA_R || r == OB_COCHLEA_L || r == OB_COCHLEA_R) continue;
+    if (r == OB_RETINA_L || r == OB_RETINA_R || r == OB_COCHLEA_L || r == OB_COCHLEA_R || r == OB_VESTIBULE_L ||
+        r == OB_VESTIBULE_R)
+      continue;
     unsigned l = A.count[r][OB_LEFT], rr = A.count[r][OB_RIGHT];
     if ((l > rr ? l - rr : rr - l) * 10u > (l + rr)) sym = 0;
   }

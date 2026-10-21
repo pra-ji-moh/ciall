@@ -35,6 +35,7 @@ void ob_genome_default(ob_genome_t *g) {
   g->cerebellum_neurons = 12u;
   g->interneuron_fraction = 0.2;
   g->synapses_in = 40u;
+  g->prediction_inputs = 160u;
   g->spread = 0.08;
   g->sense_spread = 0.2;
   g->callosum = 0.15;
@@ -55,7 +56,7 @@ static const ob_gene_t GENES[] = {
     OB_GD(rho_end),       OB_GD(cerebellum_end), OB_GD(frontal_end),       OB_GD(parietal_end),
     OB_GD(temporal_end),  OB_GD(hippocampus_edge), OB_GD(amygdala_band),   OB_GU(cortex_neurons),
     OB_GU(other_neurons), OB_GU(cerebellum_neurons), OB_GD(interneuron_fraction),
-    OB_GU(synapses_in),   OB_GD(spread),         OB_GD(sense_spread),      OB_GD(callosum),
+    OB_GU(synapses_in),   OB_GU(prediction_inputs), OB_GD(spread),         OB_GD(sense_spread),      OB_GD(callosum),
 };
 
 int ob_genome_load(ob_genome_t *g, const char *path) {
@@ -110,7 +111,8 @@ const char *ob_region_name(unsigned r) {
       "none",          "frontal cortex", "parietal cortex", "temporal cortex", "occipital cortex",
       "hippocampus",   "amygdala",       "basal ganglia",   "thalamus",        "hypothalamus",
       "tectum",        "tegmentum",      "cerebellum",      "brainstem",       "spinal cord (sensory)",
-      "spinal cord (motor)", "left retina", "right retina", "olfactory bulb", "left cochlea", "right cochlea"};
+      "spinal cord (motor)", "left retina", "right retina", "olfactory bulb", "left cochlea", "right cochlea",
+      "left vestibule", "right vestibule", "inferior colliculus"};
   return r < OB_REGIONS ? N[r] : "?";
 }
 
@@ -262,6 +264,21 @@ void ob_stage_neurons(ob_brain_t *b) {
       }
     }
   }
+  /* the tectum's two halves: the front (the superior colliculus) maps what
+     the eyes see, the back (the inferior colliculus) what the ears hear; each
+     keeps its own map, head to tail */
+  for (i = 0u; i < b->n_neurons; i++) {
+    ob_neuron_t *nn = &b->neuron[i];
+    if (nn->region != OB_TECTUM) continue;
+    if (nn->sx >= 0.5f) {
+      nn->region = OB_COLLICULUS_INF;
+      nn->sx = (nn->sx - 0.5f) * 2.0f;
+      b->count[OB_TECTUM][nn->side]--;
+      b->count[OB_COLLICULUS_INF][nn->side]++;
+    } else {
+      nn->sx *= 2.0f;
+    }
+  }
   /* inhibitory neurons: born in the ganglionic eminences (here, the basal
      ganglia's progenitors), they migrate sideways into the cortex of their side */
   RNG = g->seed * 2654435761u + 7u;
@@ -319,6 +336,23 @@ void ob_stage_neurons(ob_brain_t *b) {
       b->count[r][s]++;
     }
   }
+  /* and beside each cochlea, the vestibule: hair cells that feel the head
+     move, four for each of three axes */
+  for (s = 0u; s < 2u; s++) {
+    unsigned r = s == OB_LEFT ? OB_VESTIBULE_L : OB_VESTIBULE_R;
+    for (x = 0u; x < OB_VESTIBULE; x++) {
+      ob_neuron_t *nn = new_neuron(b);
+      if (nn == 0) break;
+      nn->region = (unsigned char)r;
+      nn->side = (unsigned char)s;
+      nn->birth = (unsigned short)x;
+      nn->px = (unsigned short)(g->mes_end * (p->w - 1u));
+      nn->py = (unsigned short)(s == OB_LEFT ? 0u : p->h - 1u);
+      nn->sx = (float)((x + 0.5) / OB_VESTIBULE);
+      nn->sy = 0.5f;
+      b->count[r][s]++;
+    }
+  }
   /* the eyes: two optic vesicles grow out of the diencephalon's sides */
   for (s = 0u; s < 2u; s++) {
     unsigned r = s == OB_LEFT ? OB_RETINA_L : OB_RETINA_R, ox = 0u, oy = 0u, best = 0u;
@@ -360,7 +394,7 @@ void ob_stage_neurons(ob_brain_t *b) {
  * back: frontal, parietal, temporal, occipital), the way its nuclei are.
  */
 enum { OB_SAME = 0xF0, OB_ANY_CORTEX = 0xF1, OB_AREA_OF_BAND = 0xF2, OB_BAND_OF_AREA = 0xF3 };
-enum { MAP_TOPO = 0, MAP_WIDE = 1 };
+enum { MAP_TOPO = 0, MAP_WIDE = 1, MAP_ROW = 2 };   /* MAP_ROW: by position along the source's one row (a cochlea's pitch) */
 enum { SIDE_SAME = 0, SIDE_OTHER = 1 };
 
 #define L6 (1u << 0)
@@ -438,16 +472,18 @@ static const ob_rule_t RULES[] = {
     /* hearing: each cochlea reaches the midbrain (the inferior colliculus, in the
        tectum) on both sides, and from there the thalamus's hearing nucleus, which
        relays to the temporal cortex. Pitch keeps its order all the way */
-    {"hearing: cochlea to tectum", OB_TECTUM, OB_COCHLEA_L, ANY, ANY, -1, SIDE_OTHER, MAP_TOPO, 3.0},
-    {"hearing: cochlea to tectum", OB_TECTUM, OB_COCHLEA_R, ANY, ANY, -1, SIDE_OTHER, MAP_TOPO, 3.0},
-    {"hearing: cochlea to tectum", OB_TECTUM, OB_COCHLEA_L, ANY, ANY, -1, SIDE_SAME, MAP_TOPO, 1.5},
-    {"hearing: cochlea to tectum", OB_TECTUM, OB_COCHLEA_R, ANY, ANY, -1, SIDE_SAME, MAP_TOPO, 1.5},
-    {"hearing: tectum to thalamus (hearing nucleus)", OB_THALAMUS, OB_TECTUM, ANY, ANY, 2, SIDE_SAME, MAP_TOPO, 6.0},
+    {"hearing: cochlea to inferior colliculus", OB_COLLICULUS_INF, OB_COCHLEA_L, ANY, ANY, -1, SIDE_OTHER, MAP_ROW, 3.0},
+    {"hearing: cochlea to inferior colliculus", OB_COLLICULUS_INF, OB_COCHLEA_R, ANY, ANY, -1, SIDE_OTHER, MAP_ROW, 3.0},
+    {"hearing: cochlea to inferior colliculus", OB_COLLICULUS_INF, OB_COCHLEA_L, ANY, ANY, -1, SIDE_SAME, MAP_ROW, 1.5},
+    {"hearing: cochlea to inferior colliculus", OB_COLLICULUS_INF, OB_COCHLEA_R, ANY, ANY, -1, SIDE_SAME, MAP_ROW, 1.5},
+    {"hearing: inferior colliculus to thalamus (hearing nucleus)", OB_THALAMUS, OB_COLLICULUS_INF, ANY, ANY, 2, SIDE_SAME,
+     MAP_TOPO, 6.0},
     /* timing: a sound's echo crosses the cerebellum as a travelling wave, one
        step further each moment, so its cells hold how long ago a sound came; from
        them the cerebellum learns when the next sound will come, and cancels it.
        Like the touch prediction, these connections start at nothing */
-    {"hearing: tectum to cerebellum", OB_CEREBELLUM, OB_TECTUM, ANY, ANY, -1, SIDE_SAME, MAP_WIDE, 1.0},
+    {"hearing: inferior colliculus to cerebellum", OB_CEREBELLUM, OB_COLLICULUS_INF, ANY, ANY, -1, SIDE_SAME, MAP_WIDE,
+     1.0},
     {"timing: cerebellum to thalamus (hearing nucleus)", OB_THALAMUS, OB_CEREBELLUM, ANY, ANY, 2, SIDE_SAME, MAP_WIDE,
      4.0},
     /* the midbrain */
@@ -466,12 +502,28 @@ static const ob_rule_t RULES[] = {
     {"prediction: cerebellum to thalamus (touch nucleus)", OB_THALAMUS, OB_CEREBELLUM, ANY, ANY, 1, SIDE_OTHER, MAP_TOPO,
      4.0},
     {"spinal reflex: sensory to motor", OB_SPINAL_MOTOR, OB_SPINAL_SENSORY, ANY, ANY, -1, SIDE_SAME, MAP_TOPO, 2.0},
+    /* balance: the vestibule reaches the cerebellum directly (the oldest part of
+       it), and the thalamus with touch; the cerebellum learns to cancel the
+       motion its own movements bring (as Cullen found in the vestibular nuclei) */
+    {"balance: vestibule to cerebellum", OB_CEREBELLUM, OB_VESTIBULE_L, ANY, ANY, -1, SIDE_SAME, MAP_WIDE, 1.0},
+    {"balance: vestibule to cerebellum", OB_CEREBELLUM, OB_VESTIBULE_R, ANY, ANY, -1, SIDE_SAME, MAP_WIDE, 1.0},
+    {"balance: vestibule to thalamus (touch nucleus)", OB_THALAMUS, OB_VESTIBULE_L, ANY, ANY, 1, SIDE_SAME, MAP_WIDE,
+     3.0},
+    {"balance: vestibule to thalamus (touch nucleus)", OB_THALAMUS, OB_VESTIBULE_R, ANY, ANY, 1, SIDE_SAME, MAP_WIDE,
+     3.0},
+    /* the cerebellum predicts what the eyes will see, too: learned from nothing */
+    {"prediction: cerebellum to thalamus (visual nucleus)", OB_THALAMUS, OB_CEREBELLUM, ANY, ANY, 3, SIDE_OTHER,
+     MAP_WIDE, 4.0},
 };
 
 #define N_RULES (sizeof RULES / sizeof RULES[0])
 typedef char ob_rules_fit[(N_RULES <= 64u) ? 1 : -1];   /* rule_count has room for every rule */
 
 const char *ob_rule_name(unsigned rule) { return rule < N_RULES ? RULES[rule].name : "?"; }
+
+static int is_learned_prediction(const char *name) {
+  return strncmp(name, "prediction:", 11) == 0 || strncmp(name, "timing:", 7) == 0;
+}
 
 
 /* Sources, grouped by region, side and layer, and by an 8x8 grid of their sheet. */
@@ -612,7 +664,8 @@ void ob_stage_wiring(ob_brain_t *b) {
         if (rule->src == OB_BAND_OF_AREA) layers = 1u << (n->region - OB_FRONTAL);
         /* the eyes' first connections land broadly: waves before birth refine them */
         double spread = (src_of[chosen] == OB_RETINA_L || src_of[chosen] == OB_RETINA_R) ? g->sense_spread : g->spread;
-        if (!pick_source(src_of[chosen], side, layers, n->sx, n->sy, spread, rule->map == MAP_WIDE, &from))
+        if (!pick_source(src_of[chosen], side, layers, n->sx, rule->map == MAP_ROW ? 0.5 : n->sy, spread,
+                         rule->map == MAP_WIDE, &from))
           continue;
       }
       if (from == i) continue;
@@ -627,6 +680,29 @@ void ob_stage_wiring(ob_brain_t *b) {
       if (strncmp(rule->name, "prediction:", 11) == 0 || strncmp(rule->name, "timing:", 7) == 0 ||
           strncmp(rule->name, "action:", 7) == 0)
         b->syn[b->n_syn].weight = 0;   /* learned, from nothing */
+      b->n_syn++;
+      b->rule_count[chosen]++;
+      made++;
+    }
+    /* the cerebellum's reach: a neuron it predicts gets that many more inputs
+       from it (a Purkinje cell hears tens of thousands of granule cells) */
+    for (k = 0u; k < g->prediction_inputs; k++) {
+      unsigned chosen = N_RULES, from, side, cands = 0u;
+      for (r = 0u; r < N_RULES; r++) {
+        if (share[r] > 0.0 && is_learned_prediction(RULES[r].name) && rnd() % (++cands) == 0u) chosen = r;
+      }
+      if (chosen == N_RULES) break;
+      side = RULES[chosen].side == SIDE_OTHER ? 1u - n->side : n->side;
+      if (!pick_source(src_of[chosen], side, RULES[chosen].src_layers, n->sx, n->sy, g->spread,
+                       RULES[chosen].map == MAP_WIDE, &from))
+        continue;
+      if (b->n_syn >= OB_MAX_SYN) {
+        b->dropped++;
+        break;
+      }
+      b->syn[b->n_syn].from = from;
+      b->syn[b->n_syn].rule = (unsigned char)chosen;
+      b->syn[b->n_syn].weight = 0;   /* learned, from nothing */
       b->n_syn++;
       b->rule_count[chosen]++;
       made++;

@@ -66,6 +66,7 @@
 #define OB_MAX_SYN 2400000
 #define OB_RETINA 24          /* each retina is OB_RETINA x OB_RETINA */
 #define OB_COCHLEA 32         /* each cochlea: hair cells from low pitch to high */
+#define OB_VESTIBULE 12       /* each vestibule: hair cells for being moved, four for each axis */
 #define OB_LAYERS 5           /* cortex layers 6, 5, 4, 3, 2, deepest first */
 
 typedef enum {
@@ -86,6 +87,8 @@ typedef enum {
   /* added for the womb's senses */
   OB_OLFACTORY,             /* the olfactory bulb, at the very front of the forebrain */
   OB_COCHLEA_L, OB_COCHLEA_R,   /* the ears, outside the tube like the retinas */
+  OB_VESTIBULE_L, OB_VESTIBULE_R, /* the inner ears' sense of being moved, beside the cochleas */
+  OB_COLLICULUS_INF,            /* the tectum's back half, for hearing (its front half, OB_TECTUM, sees) */
   OB_REGIONS
 } ob_region_t;
 
@@ -109,6 +112,7 @@ typedef struct {
   unsigned cerebellum_neurons;    /* granule cells are the most numerous in any brain */
   double interneuron_fraction;    /* of cortical neurons, inhibitory, migrating in from below */
   unsigned synapses_in;           /* inputs grown per neuron, before pruning */
+  unsigned prediction_inputs;     /* and, for a neuron the cerebellum predicts, that many more from it */
   double spread;                  /* how widely a projection lands, as a fraction of its target sheet */
   double sense_spread;            /* how widely the eyes' first connections land: broad, before experience refines them */
   double callosum;                /* fraction of upper-layer cortical outputs that cross to the other side */

@@ -191,7 +191,14 @@ build test_womb brain ob_grow.c ob_view.c ob_womb.c test_womb.c && run_test test
 build grow_brain brain ob_grow.c ob_view.c ob_womb.c grow_brain.c
 build test_life brain ob_life.c ob_crib.c test_life.c && run_test test_life brain
 build test_memory brain ob_life.c ob_crib.c test_memory.c && run_test test_memory brain
-build being brain ob_grow.c ob_view.c ob_womb.c ob_life.c ob_crib.c being.c
+build being brain ob_grow.c ob_view.c ob_womb.c ob_life.c ob_crib.c ob_one.c being.c
+if build test_one brain ob_grow.c ob_life.c ob_crib.c ob_one.c test_one.c; then
+  if [ "${1:-}" = "--slow" ]; then
+    run_test test_one brain
+  else
+    echo "  skip  test_one: the grown brain living (about ten minutes; run with --slow)"
+  fi
+fi
 echo
 echo "phone/"
 if build ol_same brain ob_life.c ol_same.c; then

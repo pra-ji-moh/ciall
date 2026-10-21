@@ -46,7 +46,7 @@ map already in order on the visual cortex.
 **Stage 1, the womb**, in the order a fetus's senses come:
 1. Touch: done (`brain/ob_womb.c`). Twitches from the brainstem move the body;
    the cerebellum, from copies of its own commands, learns to cancel the touch
-   they bring. After twenty days it feels about 65% of its own touch and all of
+   they bring. After twenty days it feels about 57% of its own touch and all of
    the mother's: "me" and "not me", never told which was which.
 2. Chemical senses: done. An olfactory bulb at the front of the brain; the
    amygdala's approach and avoid neurons learn from taste's innate value. The
@@ -56,8 +56,8 @@ map already in order on the visual cortex.
 3. Hearing: done. Two cochleas; each low sound starts a travelling wave across
    the cerebellum (the "rippling": a memory of how long ago), from which it
    learns when the next beat comes and cancels it. The mother's heartbeat comes
-   to be expected (about 41% still heard); her irregular voice does not (about
-   98%); a missed beat leaves a signal of absence as strong as a beat, plain
+   to be expected (about 2% still heard); her irregular voice does not (about
+   83%); a missed beat leaves a signal of absence as strong as a beat, plain
    silence none.
 4. Vision in the dark: done. The eyes' first connections land broadly; waves
    of spontaneous activity sweep the retina; inputs that fire with their neuron
@@ -115,7 +115,11 @@ caregiver; overgrowth then pruning; myelination; ripples and replay in sleep.
   a song heard once. For us, coded optogenetics: any moment's memory can be
   lit and read back exactly, without it knowing. (Learning for a lifetime
   without forgetting was dropped as a goal: the memories are simply kept.)
-- On a phone: the same brain, compiled to WebAssembly (`phone/`), its senses
+- One brain (`brain/ob_one.c`, [ONE_BRAIN.md](ONE_BRAIN.md)): the newborn's own
+  grown brain, the one the womb and the mobile shaped, now lives on in the crib,
+  its own neurons acting, predicting and learning. It shows the sketch's
+  effects, weaker; the sketch is kept to compare against.
+- On a phone: the sketch, compiled to WebAssembly (`phone/`), its senses
   the phone's camera, microphone, screen and motion sensors, its acts its gaze
   over the picture, a sound, a buzz. Everything stays on the phone. Inside
   Claude the page may not use the live camera, so it takes photos and videos

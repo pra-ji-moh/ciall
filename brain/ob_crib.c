@@ -164,7 +164,10 @@ static int in_corner(const ob_crib_t *c, int right, int bottom) {
   return (right ? ox >= hi : ox <= lo) && (bottom ? oy >= hi : oy <= lo);
 }
 
-void ob_crib_live(ol_life_t *L, unsigned seed, unsigned long moments, ob_crib_life_t *out) {
+/* any brain that lives a moment at a time: the sketch (ol_life) or the one
+   brain (ob_one); `err` and `energy` are where it keeps its senses' error and
+   energy for the moment just lived */
+void ob_crib_live_any(ob_crib_being_t *b, unsigned seed, unsigned long moments, ob_crib_life_t *out) {
   static ob_crib_t c;
   float in[OL_INPUT];
   unsigned long t, half = moments / 2u;
@@ -173,7 +176,7 @@ void ob_crib_live(ol_life_t *L, unsigned seed, unsigned long moments, ob_crib_li
   for (t = 0u; t < moments; t++) {
     unsigned bits, m;
     ob_crib_sense(&c, in);
-    bits = ol_live(L, in);
+    bits = b->live(b->self, in);
     for (m = 0u; m < OL_MOTORS; m++) out->acts[t * OC_TENTHS / moments][m] += bits >> m & 1u;
     if (t >= half) {
       out->tv += ob_crib_on_tv(&c);
@@ -197,22 +200,20 @@ const char *const OC_EXAM_NAME[OC_EXAMS] = {
   "the wall, as its eyes move", "its own voice", "its own jerks", "being rocked",
   "its mother answering it", "its mother talking of herself", "the mobile swinging", "its mother's touch"};
 
-void ob_crib_examine(const ol_life_t *L, unsigned seed, unsigned long moments, double out[OC_EXAMS]) {
-  static ol_life_t me;
+void ob_crib_examine_any(ob_crib_being_t *b, unsigned seed, unsigned long moments, double out[OC_EXAMS]) {
   static ob_crib_t c;
   double err[OC_EXAMS], came[OC_EXAMS];
   float in[OL_INPUT];
   unsigned long t;
   unsigned k, last = 0u;
-  memcpy(&me, L, sizeof me);
-  me.learning = 0u;
   memset(err, 0, sizeof err);
   memset(came, 0, sizeof came);
   ob_crib_make(&c, seed);
   for (t = 0u; t < moments; t++) {
+    unsigned before = last;
     ob_crib_sense(&c, in);
-    last = ol_live(&me, in);
-#define SEEN(k, g) do { err[k] += me.err[g]; came[k] += me.energy[g]; } while (0)
+    last = b->live(b->self, in);
+#define SEEN(k, g) do { err[k] += b->err[g]; came[k] += b->energy[g]; } while (0)
     if (c.self_heard && !c.mother_heard) SEEN(OC_VOICE, OL_HEAR);
     if (c.answer_heard && !c.self_heard) SEEN(OC_ANSWER, OL_HEAR);
     if (c.mother_heard && !c.answer_heard && !c.self_heard) SEEN(OC_TALK, OL_HEAR);
@@ -220,12 +221,32 @@ void ob_crib_examine(const ol_life_t *L, unsigned seed, unsigned long moments, d
     if (c.mother_moved && !c.self_moved) SEEN(OC_ROCKED, OL_MOVED);
     if (c.touched) SEEN(OC_TOUCHED, OL_FEEL);
     if (ob_crib_on_mobile(&c) && fabsf(c.swing) > 0.2f) SEEN(OC_MOBILE, OL_SEE);
-    if (me.moments > 1u && (me.eff[OL_LOOK_LEFT * OL_WAVE + 1u] + me.eff[OL_LOOK_RIGHT * OL_WAVE + 1u] +
-                            me.eff[OL_LOOK_UP * OL_WAVE + 1u] + me.eff[OL_LOOK_DOWN * OL_WAVE + 1u]) > 0.0f &&
-        !ob_crib_on_tv(&c))
-      SEEN(OC_EYES, OL_SEE);
+    if ((before & 15u) && !ob_crib_on_tv(&c)) SEEN(OC_EYES, OL_SEE);
 #undef SEEN
     ob_crib_act(&c, last);
   }
   for (k = 0u; k < OC_EXAMS; k++) out[k] = came[k] > 0.0 ? err[k] / came[k] : -1.0;
+}
+
+static unsigned live_sketch(void *self, const float *in) { return ol_live((ol_life_t *)self, in); }
+
+void ob_crib_live(ol_life_t *L, unsigned seed, unsigned long moments, ob_crib_life_t *out) {
+  ob_crib_being_t b;
+  b.self = L;
+  b.live = live_sketch;
+  b.err = L->err;
+  b.energy = L->energy;
+  ob_crib_live_any(&b, seed, moments, out);
+}
+
+void ob_crib_examine(const ol_life_t *L, unsigned seed, unsigned long moments, double out[OC_EXAMS]) {
+  static ol_life_t me;
+  ob_crib_being_t b;
+  memcpy(&me, L, sizeof me);
+  me.learning = 0u;
+  b.self = &me;
+  b.live = live_sketch;
+  b.err = me.err;
+  b.energy = me.energy;
+  ob_crib_examine_any(&b, seed, moments, out);
 }

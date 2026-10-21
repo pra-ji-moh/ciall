@@ -22,6 +22,7 @@
 
 #include "ob.h"
 #include "ob_crib.h"
+#include "ob_one.h"
 
 static ob_brain_t BRAIN;
 static ob_womb_stats_t TOUCH;
@@ -30,8 +31,10 @@ static ob_heart_stats_t HEART;
 static ob_vision_stats_t VISION;
 static ob_reflex_stats_t REFLEX;
 static ob_mobile_stats_t MOBILE, YOKED;
-static ol_life_t LIFE;
+static ob_one_t ONE;
 static ob_crib_life_t CRIB;
+
+static unsigned live_one(void *self, const float *in) { return ob_one_live((ob_one_t *)self, in); }
 
 /* dir/name, if it fits; 0 if it does not */
 static int join(char *out, size_t cap, const char *dir, const char *name) {
@@ -145,15 +148,29 @@ int main(int argc, char **argv) {
             MOBILE.kicks[0], mid, mid_y, MOBILE.kicks[7]);
   }
 
-  /* months 3 on: a life of its own, led by its curiosity */
+  /* months 3 on: a life of its own, led by its curiosity: its own brain, the
+     one the womb and the mobile shaped, goes on living (ob_one.c) */
   {
     static const char *const DID[OL_MOTORS] = {"look left", "look right", "look up", "look down", "make a sound",
                                                "jerk"};
+    static ob_one_t frozen;
+    ob_crib_being_t being;
     double x[OC_EXAMS];
     unsigned m, tenth, most[OC_TENTHS];
-    ol_born(&LIFE, g.seed, OL_PROGRESS);
-    ob_crib_live(&LIFE, g.seed, 150000ul, &CRIB);
-    ob_crib_examine(&LIFE, g.seed + 1u, 60000ul, x);
+    ob_one_born(&ONE, &BRAIN, g.seed, OL_PROGRESS);
+    being.self = &ONE;
+    being.live = live_one;
+    being.err = ONE.err;
+    being.energy = ONE.energy;
+    ob_crib_live_any(&being, g.seed, 40000ul, &CRIB);
+    memcpy(&frozen, &ONE, sizeof frozen);
+    frozen.learning = 0u;
+    being.self = &frozen;
+    being.err = frozen.err;
+    being.energy = frozen.energy;
+    ob_crib_examine_any(&being, g.seed + 1u, 20000ul, x);
+    ob_one_settle(&ONE);
+    memcpy(&BRAIN, &ONE.brain, sizeof BRAIN);   /* what it lived, kept in its brain */
     for (tenth = 0u; tenth < OC_TENTHS; tenth++) {
       most[tenth] = 0u;
       for (m = 1u; m < OL_MOTORS; m++)
@@ -165,16 +182,20 @@ int main(int argc, char **argv) {
     for (tenth = 0u; tenth < OC_TENTHS; tenth++)
       fprintf(diary, "%s %s", tenth == 0u ? "" : tenth == 5u ? ",\n           " : ",", DID[most[tenth]]);
     fprintf(diary, ".\n            In the end I look at the snow on the television %.0f%% of the time, and at each other\n"
-                   "            corner %.0f%%: it never gets any easier, so it holds nothing for me.\n",
-            100.0 * CRIB.tv, 100.0 * CRIB.corner);
+                   "            corner %.0f%%: %s\n",
+            100.0 * CRIB.tv, 100.0 * CRIB.corner,
+            CRIB.tv <= 1.3 * CRIB.corner ? "it never gets any easier, so it holds nothing for me."
+                                         : "it never gets any easier, and still it draws me.");
     fprintf(diary, "            Still surprising: my own voice %.0f%%, my mother talking %.0f%%, her answering me %.0f%%;\n"
-                   "            my own jerks %.0f%%, being rocked %.0f%%; her touch %.0f%%. I know which is me.\n",
+                   "            my own jerks %.0f%%, being rocked %.0f%%; her touch %.0f%%.\n",
             100.0 * x[OC_VOICE], 100.0 * x[OC_TALK], 100.0 * x[OC_ANSWER], 100.0 * x[OC_JERK],
             100.0 * x[OC_ROCKED], 100.0 * x[OC_TOUCHED]);
-    fprintf(diary, "            I keep every moment as it came. When now is a moment I have lived, I expect what came\n"
-                   "            next then: %.0f%% of what I see, %.0f%% of what I hear. Not where the world is random:\n"
-                   "            there, what came last time is no guide, and I have learned not to trust it.\n",
-            100.0 * LIFE.recalls[OL_SEE] / CRIB.moments, 100.0 * LIFE.recalls[OL_HEAR] / CRIB.moments);
+    fprintf(diary, "            %s %s\n",
+            x[OC_VOICE] < 0.8 * x[OC_TALK] ? "I know my own voice from hers." : "I cannot yet tell my voice from hers.",
+            x[OC_JERK] < 0.8 * x[OC_ROCKED] ? "I know my own jerks from her rocking."
+                                             : "I cannot yet tell my jerks from her rocking.");
+    fprintf(diary, "            All of it in my own brain: my cerebellum's synapses to my thalamus learned what to\n"
+                   "            expect, my basal ganglia's synapses to my brainstem what to want.\n");
   }
   fclose(diary);
 

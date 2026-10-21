@@ -84,7 +84,7 @@ static void prepare(const ob_brain_t *b) {
   unsigned i, s, k;
   memset(OUT_FIRST, 0, sizeof OUT_FIRST);
   for (k = 0u; k < 64u; k++) {
-    if (strncmp(ob_rule_name(k), "prediction:", 11) == 0) PRED_RULE = k;
+    if (strcmp(ob_rule_name(k), "prediction: cerebellum to thalamus (touch nucleus)") == 0) PRED_RULE = k;
     if (strncmp(ob_rule_name(k), "timing:", 7) == 0) TIMING_RULE = k;
   }
   for (i = 0u; i < b->n_neurons; i++) {
@@ -402,10 +402,10 @@ static void hear(ob_brain_t *b, unsigned heard, const unsigned char *ages, int l
       if ((heard & 2u) && n->sx > 0.35f && n->sx < 0.65f) ACT0[i] = 1.0f;
     }
   }
-  /* the cochlea reaches the tectum; then the tectum, the thalamus. The wave is
+  /* the cochlea reaches the inferior colliculus; then it, the thalamus. The wave is
      on the cerebellum throughout: granule cell k of each column fires k moments
      after a low sound (a column's cells are its birth order: one per moment) */
-  DRIVE_REGION = OB_TECTUM;
+  DRIVE_REGION = OB_COLLICULUS_INF;
   step(b, ACT0, ACT1);
   for (i = 0u; i < b->n_neurons; i++) {
     const ob_neuron_t *n = &b->neuron[i];
@@ -417,7 +417,7 @@ static void hear(ob_brain_t *b, unsigned heard, const unsigned char *ages, int l
     double sent, l;
     if (!hearing_thalamus(n)) continue;
     sent = DRIVE[i] > 1.0f ? 1.0 : DRIVE[i];
-    l = DRIVE[i] + PRED[i];
+    l = sent + PRED[i];   /* against the neuron's ceiling: it cannot fire more than fully */
     if (l < -1.0) l = -1.0;
     if (l < 0.0) *unmet += -l;
     *left += l < 0.0 ? 0.0 : l > 1.0 ? 1.0 : l;
@@ -433,8 +433,7 @@ static void hear(ob_brain_t *b, unsigned heard, const unsigned char *ages, int l
         if (b->syn[s].rule == TIMING_RULE && a > 0.0f) norm += (double)a * a;
       }
       if (norm <= 0.01) continue;
-      err = (double)DRIVE[i] + (double)PRED[i];
-      if (err > 1.0) err = 1.0;   /* a sound's drive counts up to its ceiling */
+      err = (DRIVE[i] > 1.0f ? 1.0 : (double)DRIVE[i]) + (double)PRED[i];   /* a sound counts up to its ceiling */
       for (s = n->syn_first; s < n->syn_first + n->syn_n; s++) {
         float a = ACT1[b->syn[s].from];
         if (b->syn[s].rule != TIMING_RULE || a <= 0.0f) continue;

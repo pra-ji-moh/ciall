@@ -59,11 +59,21 @@ typedef struct {
 
 void ob_crib_live(ol_life_t *L, unsigned seed, unsigned long moments, ob_crib_life_t *out);
 
+/* the same, for any brain that lives a moment at a time (the one brain too) */
+typedef struct {
+  void *self;
+  unsigned (*live)(void *self, const float *in);   /* one moment: what it does */
+  const float *err, *energy;                         /* its senses' error and energy, just now (OL_GROUPS) */
+} ob_crib_being_t;
+void ob_crib_live_any(ob_crib_being_t *b, unsigned seed, unsigned long moments, ob_crib_life_t *out);
+
 /* what it has come to expect: afterwards, learning stopped, how much of what
    its senses bring still surprises it, by what caused it (error against what
    came: 0 all expected, 1 nothing expected) */
 enum { OC_EYES, OC_VOICE, OC_JERK, OC_ROCKED, OC_ANSWER, OC_TALK, OC_MOBILE, OC_TOUCHED, OC_EXAMS };
 extern const char *const OC_EXAM_NAME[OC_EXAMS];
 void ob_crib_examine(const ol_life_t *L, unsigned seed, unsigned long moments, double out[OC_EXAMS]);
+/* for any brain: the caller freezes it (stops its learning) first */
+void ob_crib_examine_any(ob_crib_being_t *b, unsigned seed, unsigned long moments, double out[OC_EXAMS]);
 
 #endif

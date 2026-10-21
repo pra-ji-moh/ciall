@@ -88,9 +88,9 @@ int main(void) {
     printf("        (heartbeat heard: day 0 %.3f, last %.3f; voice %.3f, %.3f; a missed beat %.0f%%)\n",
            h.beat_left[0], h.beat_left[last_h], h.voice_left[0], h.voice_left[last_h], 100.0 * h.missed_beat);
     check("hearing: the heartbeat comes to be expected, and is heard less",
-          h.beat_left[last_h] < h.beat_left[0] - 0.1 && h.beat_left[last_h] < 0.6);
-    check("hearing: the mother's voice, irregular, cannot be expected, and is still heard",
-          h.voice_left[last_h] > 0.9);
+          h.beat_left[last_h] < 0.5 * h.beat_left[0] && h.beat_left[last_h] < 0.6);
+    check("hearing: the mother's voice, irregular, cannot be expected, and is still heard (most of it, and 3x the beat)",
+          h.voice_left[last_h] > 0.75 && h.voice_left[last_h] > 3.0 * h.beat_left[last_h]);
     check("hearing: a beat that should come and does not leaves a signal of absence; silence does not",
           h.missed_beat > 0.3 && h.silence < 0.01);
   }

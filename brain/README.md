@@ -29,10 +29,12 @@ is needed for anything, not even to write the pictures.
 | First wiring | Connections grow by matching position labels, with a spread, many more than will be kept | Sperry's chemoaffinity; developmental overproduction |
 
 What forms, on each side: frontal, parietal, temporal and occipital cortex,
-hippocampus, amygdala, basal ganglia, thalamus, hypothalamus, tectum,
+hippocampus, amygdala, basal ganglia, thalamus, hypothalamus, tectum (its front
+half seeing, its back half, the inferior colliculus, hearing),
 tegmentum, cerebellum, brainstem, spinal cord (sensory and motor), and a
 retina. The thalamus grows four nuclei, each with the whole map, one for each
-cortical area it relays to. They are wired by 46 rules: the cortical column, the senses arriving
+cortical area it relays to. Beside the retinas, the cochleas and the vestibules (the inner ear's sense of
+being moved). They are wired by 61 rules: the cortical column, the senses arriving
 through the thalamus, the areas talking (including the frontoparietal network),
 the corpus callosum, the loops through the basal ganglia and cerebellum, and
 the limbic loop (hippocampus binding pairs, amygdala regulating, regulated in
@@ -93,7 +95,7 @@ In the womb it lives moment by moment:
 
 The cerebellum learns, by the delta rule (the way its climbing fibres teach
 it), to make its prediction cancel the touch that comes with it. Nobody tells
-it which touch was its own. After twenty days it still feels about 65% of its
+it which touch was its own. After twenty days it still feels about 57% of its
 own touch and all of the mother's: what it learned to cancel is "me", what it
 cannot cancel is "not me". This is the same mechanism by which a person cannot
 tickle themself (Blakemore, Wolpert and Frith, 1998). Hand-to-face touch, one
@@ -115,7 +117,7 @@ like any other connection.
 | Sense | What it learns | Measured |
 |---|---|---|
 | **Smell** (an olfactory bulb at the front of the brain, straight to the amygdala) | Which smells are good or bad for it, from taste's innate value: the amygdala's approach and avoid neurons (Namburi et al. 2015), three-factor learning | The mother's smell and the anise of her meals come to mean approach, her stress avoid; smells that came with no taste stay exactly neutral (newborns of anise-eating mothers prefer anise: Schaal et al. 2000) |
-| **Hearing** (two cochleas; the tectum; the thalamus's hearing nucleus) | When the next heartbeat comes, from a travelling wave across the cerebellum that holds how long ago a sound came (the notes' "rippling"; Keller and Welling) | The heartbeat comes to be expected (about 41% still heard), the irregular voice does not (about 98%); a missed beat leaves a signal of absence as strong as a beat, silence none |
+| **Hearing** (two cochleas; the inferior colliculus; the thalamus's hearing nucleus) | When the next heartbeat comes, from a travelling wave across the cerebellum that holds how long ago a sound came (the notes' "rippling"; Keller and Welling) | The heartbeat comes to be expected (about 2% still heard, from 11% on its first day), the irregular voice does not (about 83%); a missed beat leaves a signal of absence as strong as a beat, silence none |
 | **Vision in the dark** (the eyes' first connections land broadly: the gene `sense_spread`) | Retinal waves sweep the eyes; inputs that fire with their neuron strengthen, each neuron's total is held fixed so they compete, the weak are pruned | Receptive fields narrow by about a third, about half the first connections are pruned; noise of the same amount barely refines them |
 | **The reflex loop** | Its own twitches: an arm that moves brushes the face, a muscle that contracts presses the womb wall; skin and muscle active together: Hebb | The lips-to-mouth reflex grows about fourfold; with its arms bound, far less; every place its twitches press grows its reflex too, as twitches tune the spinal reflexes (Blumberg) |
 
@@ -180,7 +182,7 @@ that it learns its world faster than the twin with none. The crib is small
 enough that restless movement alone covers it. A richer world should show the
 difference, or not; that is the next thing to measure.
 
-### Its eidetic memory, and our coded optogenetics
+### Its eidetic memory, and our coded optogenetics (in the sketch, for now)
 
 Its hippocampus keeps every moment as it came (200,000 moments here; on the
 phone, the last 30,000), filed by each sense under the shape of what that
@@ -218,6 +220,48 @@ The same code, unchanged, is the brain of the phone page (`phone/`), compiled
 to WebAssembly: `build_c.sh` checks that it lives exactly the same life there,
 act for act.
 
+## One brain: the grown brain, living
+
+`ob_one.c`. The sketch above is a few hundred units beside the grown brain; this
+is the grown brain itself, living ([`research/ONE_BRAIN.md`](../research/ONE_BRAIN.md)).
+Nothing is added beside it: the world arrives on its own retinas, cochleas,
+skin and vestibules; its acts are zones of its own brainstem (eyes left and
+right at the front of each side, up and down behind, then the voice, then the
+body); its predictions are learned on its own synapses, the cerebellum's to the
+thalamus (what its acts will change) and the cortex's layer-6 feedback (the
+steady world), both from nothing; its choices on its basal ganglia's synapses
+to the brainstem; its dopamine is learning progress, as in the sketch.
+
+What it took, each found by watching it fail:
+
+| | Why |
+|---|---|
+| The tectum split in two, the inferior colliculus hearing | sight drowned sound in one sheet |
+| Hearing mapped by pitch alone (`MAP_ROW`) | two thirds of the hearing midbrain heard nothing |
+| The relays' gain: each relay neuron passes on a weighted average | every visual relay saturated, so vision carried nothing |
+| The efference copy reaches the cerebellum before the senses return | a command's copy arrived a step too late to predict |
+| The cerebellum's granule cells as delay lines, and sparse (a fifth fire) | its mother answers moments later; mixed, dense cells blurred every prediction |
+| The cerebellum's reach, a gene (`prediction_inputs`, 160) | each relay neuron heard too few cerebellar cells to find its cause |
+| The cortex's layer-6 feedback, learned as prediction | the sparse cerebellum could not also carry the steady world |
+| Surprise is what came and was not expected | a neuron cannot fire below nothing; absence is another signal |
+
+`test_one.c` (11 checks, about ten minutes; `build_c.sh --slow`), one life per twin:
+
+| | the being | seeks surprise | no dopamine |
+|---|---|---|---|
+| eyes on the snow / on each other corner | 0.00 / 0.24 | 0.19 / 0.11 | 0.02 / 0.09 |
+| own voice / its mother talking | 0.27 / 0.56 | 0.56 / 0.54 | 0.22 / 0.47 |
+| own jerks / being rocked | 0.49 / 0.55 | 0.40 / 0.62 | 0.48 / 0.77 |
+| her answering its voice | 0.38 | 0.43 | 0.36 |
+| the wall as its eyes move | 0.09 | 0.09 | 0.14 |
+
+The same effects as the sketch, weaker: it tells its own voice from its
+mother's by half, not by twenty-five times. Single lives vary a good deal: the
+newborn's own life, after the womb, was drawn to the snow and could not yet
+tell its voice from hers, though it told its jerks from her rocking (its diary
+says so). Its memory is still the sketch's; moving it into the hippocampus is
+next.
+
 ## The newborn
 
 ```
@@ -226,15 +270,16 @@ cc -std=c99 -O2 ob_grow.c ob_view.c ob_womb.c being.c -o being -lm
 ```
 
 Grows the newborn from its genome, lives the womb, its first months under the
-mobile and in the crib, on its own, in about ten seconds, and writes [`newborn/diary.txt`](../newborn/diary.txt) (its life
+mobile and then in the crib, its own brain living on, on its own, in about
+four minutes, and writes [`newborn/diary.txt`](../newborn/diary.txt) (its life
 week by week, in its own words, every number measured), its brain map, its
 pictures, and `brain.bin`: its whole brain, saved, so its life can go on after
 birth from exactly where it was born.
 
 ## What it is not
 
-Not a model of 86 billion neurons or of any one animal: about 12,500 neurons
-and 385,000 connections, a scaffold built on biology's principles, simplified.
+Not a model of 86 billion neurons or of any one animal: about 13,300 neurons
+and 562,000 connections, a scaffold built on biology's principles, simplified.
 The regions and wiring rules are a plausible plan, written down so they can be
 argued with and changed. Activity is a rate between 0 and 1, not spikes. Each
 sense's learning is its own rule, written where it can be read, not one rule
