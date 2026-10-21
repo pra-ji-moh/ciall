@@ -47,6 +47,27 @@ enum { OL_LOOK_LEFT, OL_LOOK_RIGHT, OL_LOOK_UP, OL_LOOK_DOWN, OL_VOICE, OL_BUZZ,
 #define OL_PLACES (2 * OL_GAZE_BINS)  /* the most places any sense has: for seeing, where it looks, eyes still or moving */
 #define OL_SPAN 64                    /* learning progress: its errors over one span of visits against the span before */
 
+/* its hippocampus: every moment, verbatim, as long as there is room (the
+   oldest give way once it is full) */
+#ifndef OL_MEMORY
+#define OL_MEMORY 200000u
+
+#endif
+#define OL_INDEX_BITS 16
+#define OL_NEAR 0.04f                 /* a memory this close to now (mean difference, 0..1) is "this again" */
+#define OL_EXACT 0.006f               /* and this close, exactly this again */
+
+typedef struct {
+  unsigned char senses[OL_MEMORY][OL_SENSE];   /* what each moment brought, 0..255 */
+  unsigned acts[OL_MEMORY];                    /* and what it had done lately (the last three moments) */
+  unsigned stamp[OL_MEMORY];                   /* which moment each place holds (moment + 1; 0 none) */
+  unsigned next[OL_GROUPS][OL_MEMORY];         /* each sense's index: the moment before with the same key */
+  unsigned head[OL_GROUPS][1u << OL_INDEX_BITS];
+  /* where memory can be trusted: for each sense and key, how much better what
+     came next last time has predicted than the cerebellum, on average (0: never tried) */
+  float trust[OL_GROUPS][1u << OL_INDEX_BITS];
+} ol_hippocampus_t;
+
 /* what drives its dopamine */
 enum {
   OL_PROGRESS,   /* learning progress: the being */
@@ -77,7 +98,9 @@ typedef struct {
   /* cerebellum */
   ol_cerebellum_t cb;
   float x[OL_SENSE + OL_EFF + 1];     /* what the last prediction was made from */
-  float expect[OL_SENSE];             /* what it expects the senses to bring next */
+  float cb_expect[OL_SENSE];          /* what the cerebellum alone expects (what it learns from) */
+  float expect[OL_SENSE];             /* what it expects the senses to bring next: the cerebellum's
+                                         guess, or, where now is a moment it has lived, what came next then */
   unsigned gaze_move;                 /* which eye-movement predictor made it */
   float surprise[OL_SENSE];           /* what came, minus what it expected: what it notices */
   float err[OL_GROUPS];               /* each sense's error this moment */
@@ -98,8 +121,16 @@ typedef struct {
   float act[OL_MOTORS][OL_CTX], trace[OL_MOTORS][OL_CTX];
   float value[OL_CTX], vtrace[OL_CTX];
 
+  /* hippocampus */
+  unsigned remembers;                 /* 1: it keeps every moment (0: a twin without, for comparison) */
+  unsigned long recalls[OL_GROUPS];   /* moments each sense was predicted from memory */
+  float remembered[OL_SENSE];         /* what came next, the last time it lived this */
+  int recalled[OL_GROUPS];            /* the key it was recalled under (-1: nothing recalled) */
+
   /* what it has done, for the diary */
   unsigned long acts[OL_MOTORS];
+
+  ol_hippocampus_t hip;               /* last: it is most of its size */
 } ol_life_t;
 
 /* a newborn: knows nothing, predicts nothing, wants nothing in particular */
@@ -114,5 +145,19 @@ unsigned ol_live(ol_life_t *L, const float *in);
 
 /* where in each sense it is learning fastest now (its curiosity, as it stands) */
 float ol_progress(const ol_life_t *L, unsigned group, unsigned place);
+
+/*
+ * Coded optogenetics: for us, not for it. Its memories are tagged by the
+ * moment that made them, the way active neurons are tagged with a
+ * light-sensitive channel (Liu, Ramirez & Tonegawa 2012). Shining light on
+ * one brings back exactly what that moment brought. It changes nothing in it,
+ * and it never knows.
+ */
+/* what moment `moment` brought it (OL_SENSE floats); 0 if it no longer holds it */
+int ol_light(const ol_life_t *L, unsigned long moment, float *senses);
+/* which moment a glimpse (OL_SENSE floats; only its seeing is used) brings back
+   to it, its acts lately as `acts` says (bit 3m + age: act m, age moments
+   ago, for the last three); -1 if none */
+long ol_complete(const ol_life_t *L, const float *cue, unsigned acts);
 
 #endif

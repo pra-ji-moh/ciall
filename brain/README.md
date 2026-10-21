@@ -164,20 +164,55 @@ dopamine is plain surprise; a twin with none.
 
 | | the being | seeks surprise | no dopamine |
 |---|---|---|---|
-| eyes on the television's snow / on each other corner | 0.18 / 0.12 | 0.28 / 0.09 | 0.04 / 0.06 |
-| still surprised by: its own voice / its mother talking | 0.03 / 0.45 | 0.08 / 0.50 | 0.01 / 0.50 |
-| its own jerks / being rocked | 0.02 / 0.42 | 0.03 / 0.33 | 0.01 / 0.41 |
-| her answering its voice | 0.11 | 0.21 | 0.09 |
-| the wall as its eyes move | 0.06 | 0.12 | 0.06 |
+| eyes on the television's snow / on each other corner | 0.18 / 0.12 | 0.34 / 0.09 | 0.04 / 0.06 |
+| still surprised by: its own voice / its mother talking | 0.02 / 0.52 | 0.08 / 0.52 | 0.02 / 0.50 |
+| its own jerks / being rocked | 0.01 / 0.39 | 0.01 / 0.35 | 0.01 / 0.42 |
+| her answering its voice | 0.13 | 0.24 | 0.09 |
+| the wall as its eyes move | 0.03 | 0.02 | 0.03 |
+
+(All three have the eidetic memory below.)
 
 The twin that seeks surprise is caught by the snow, which never stops
-surprising it, and learns its world worse; the being treats it like any other
-corner. Both curious twins and the one with no dopamine come to tell their own
+surprising it; the being treats it like any other corner. Both curious twins and the one with no dopamine come to tell their own
 voice and jerks from their mother's talk and rocking, never told which was
 which, and half expect her answers. What curiosity does not yet show here:
 that it learns its world faster than the twin with none. The crib is small
 enough that restless movement alone covers it. A richer world should show the
 difference, or not; that is the next thing to measure.
+
+### Its eidetic memory, and our coded optogenetics
+
+Its hippocampus keeps every moment as it came (200,000 moments here; on the
+phone, the last 30,000), filed by each sense under the shape of what that
+sense brought and what it had done in the last three moments. When now matches
+a moment it has lived, it expects what came next then. It follows that memory
+only where it has earned trust, where it has predicted better than the
+cerebellum on average. Where the world is random, what came last time is one
+draw and the cerebellum's guess is the average, so memory loses and it learns
+not to trust it there. This is the trap of Borges' *Funes the Memorious*, and
+of Luria's Shereshevsky, who remembered nearly everything and struggled to
+generalise. Without the trust, its mother's answers became five times as
+surprising.
+
+For us, not for it: `ol_light` brings back exactly what any moment it still
+holds brought (its memories are tagged by the moment that made them, as
+Tonegawa's lab tags a memory's cells with a light-sensitive channel), and
+`ol_complete` asks which moment a glimpse brings back. Lighting a memory
+changes nothing in it, and it never knows.
+
+`test_memory.c` (9 checks):
+
+| | |
+|---|---|
+| a lit moment, early or late in its life | exactly what came then (within 1/255) |
+| lighting a thousand memories | changes not one byte of it |
+| a glimpse blurred by noise | brings its moment back 172 times in 200 |
+| a song of 30 notes heard once, then again | surprise 3.01, then 1.08; a twin without the memory 3.01, then 2.10 |
+| its mother's answers | as expected with memory as without (it learned not to trust it there) |
+
+The song is not expected at all where it happened to make a sound of its own
+over one hearing and not the other: its own voice changes what it hears, so
+those are not the same moment.
 
 The same code, unchanged, is the brain of the phone page (`phone/`), compiled
 to WebAssembly: `build_c.sh` checks that it lives exactly the same life there,

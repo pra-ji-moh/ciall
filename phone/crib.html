@@ -38,7 +38,7 @@ button[aria-pressed="true"] { background: var(--seen); color: #08201d; border-co
 .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
 .retinas { display: flex; gap: 12px; flex-wrap: wrap; }
 .retinas figure { margin: 0; display: grid; gap: 4px; }
-.retinas canvas { width: 96px; height: 96px; image-rendering: pixelated; border-radius: 8px; border: 1px solid var(--line); }
+.retinas canvas, #litEye, #litEar { width: 96px; height: 96px; image-rendering: pixelated; border-radius: 8px; border: 1px solid var(--line); }
 figcaption, .label { font-size: 12px; color: var(--soft); letter-spacing: .02em; }
 .bars { display: grid; gap: 7px; }
 .bar { display: grid; grid-template-columns: 8.5em 1fr 3.2em; gap: 8px; align-items: center; font-size: 13px; }
@@ -116,10 +116,27 @@ figcaption, .label { font-size: 12px; color: var(--soft); letter-spacing: .02em;
     </div>
   </section>
 
+  <section class="panel" aria-labelledby="h-mem">
+    <h2 id="h-mem">Its memory</h2>
+    <p class="hint" style="margin-top:0">It keeps every moment as it came: here, the last 30,000, about forty minutes of its life. When now matches a moment it has lived, it expects what came next then, but only where that has proved better than its cerebellum's guess.</p>
+    <div class="stats" style="margin:10px 0 14px">
+      <div class="stat"><span class="label">moments held</span><b id="held">0</b></div>
+      <div class="stat"><span class="label">seen from memory</span><b id="recSee">0</b></div>
+      <div class="stat"><span class="label">heard from memory</span><b id="recHear">0</b></div>
+    </div>
+    <label class="label" for="lightAt">Light a memory: pick a moment of its life</label>
+    <input id="lightAt" type="range" min="0" max="1000" value="500" style="width:100%">
+    <div class="retinas" style="margin-top:8px;align-items:end">
+      <figure><canvas id="litEye" width="8" height="8"></canvas><figcaption id="litWhen">what it saw then</figcaption></figure>
+      <figure><canvas id="litEar" width="8" height="8"></canvas><figcaption>what it heard then</figcaption></figure>
+    </div>
+    <p class="hint">This is our switch, not its. Lighting a memory shows us exactly what that moment brought, the way neuroscientists light up a memory's cells (Liu, Ramirez &amp; Tonegawa, 2012). It changes nothing in it, and it never knows.</p>
+  </section>
+
   <section class="panel note" aria-labelledby="h-about">
     <h2 id="h-about">About it</h2>
-    <p>Its brain is the being's own C code (<code>brain/ob_life.c</code>), compiled to run here unchanged. Its brainstem is restless of itself and fires when its own activity crosses threshold. Its basal ganglia lean on that, learning from dopamine that is its <strong>learning progress</strong>, not surprise. Plain surprise would trap it in front of anything random; progress lets it get bored and move on.</p>
-    <p style="margin-top:8px"><strong>Everything stays on this phone.</strong> Pictures, sounds and touches go only into its brain, here in the page. Nothing is uploaded. It remembers you between visits on this device only. <button id="forget" style="margin-left:6px;padding:6px 10px">Start it over</button></p>
+    <p>Its brain is the being's own C code (<code>brain/ob_life.c</code>), compiled to run here unchanged, with a smaller memory. Its brainstem is restless of itself and fires when its own activity crosses threshold. Its basal ganglia lean on that, learning from dopamine that is its <strong>learning progress</strong>, not surprise. Plain surprise would trap it in front of anything random; progress lets it get bored and move on.</p>
+    <p style="margin-top:8px"><strong>Everything stays on this phone.</strong> Pictures, sounds and touches go only into its brain, here in the page. Nothing is uploaded. It remembers you between visits, in this browser on this device only. <button id="forget" style="margin-left:6px;padding:6px 10px">Start it over</button></p>
     <p style="margin-top:8px">Inside Claude, pages may not use the live camera or microphone. The upload button opens your phone's camera instead. To give it live senses, open this same page from its own web address (<code>phone/index.html</code> in the repository, served over https).</p>
   </section>
 </main>
@@ -139,6 +156,7 @@ figcaption, .label { font-size: 12px; color: var(--soft); letter-spacing: .02em;
   var eye = document.createElement("canvas"); eye.width = eye.height = 8;
   var ectx = eye.getContext("2d", { willReadFrequently: true });
   var rctx = $("retina").getContext("2d"), xctx = $("expect").getContext("2d"), sctx = $("surp").getContext("2d");
+  var litEye = $("litEye").getContext("2d"), litEar = $("litEar").getContext("2d");
   var statusEl = $("status");
 
   var life = null, mem = null, input = null;
@@ -329,6 +347,20 @@ figcaption, .label { font-size: 12px; color: var(--soft); letter-spacing: .02em;
     $("moments").textContent = Math.round(e.ol_moments()).toLocaleString();
     var busy = 0; history.forEach(function (h) { if (h) busy++; });
     $("busy").textContent = history.length ? Math.round(100 * busy / history.length) + "%" : "0%";
+    /* its memory */
+    var lived = e.ol_moments(), cap = e.ol_capacity(), oldest = Math.max(0, lived - cap);
+    $("held").textContent = Math.round(lived - oldest).toLocaleString();
+    $("recSee").textContent = Math.round(e.ol_recalls(0)).toLocaleString();
+    $("recHear").textContent = Math.round(e.ol_recalls(1)).toLocaleString();
+    if (lived > 1) {
+      var at = Math.floor(oldest + (lived - 1 - oldest) * Number($("lightAt").value) / 1000);
+      if (e.ol_light_moment(at)) {
+        var lit = new Float32Array(mem.buffer, e.ol_lit(), SENSE);
+        paint8(litEye, function (i) { var v = lit[i] * 255; return [v, v, v]; });
+        paint8(litEar, function (i) { var band = i % 8, row = 7 - Math.floor(i / 8), on = lit[VIS + band] * 8 > row; return on ? [240, 181, 76] : [30, 34, 56]; });
+        $("litWhen").textContent = "moment " + at.toLocaleString() + ", " + Math.round((lived - at) * TICK / 1000) + "s ago";
+      }
+    }
     /* its gaze, drawn over its world */
     octx.clearRect(0, 0, over.width, over.height);
     var k = over.width / FW;
@@ -336,26 +368,41 @@ figcaption, .label { font-size: 12px; color: var(--soft); letter-spacing: .02em;
     octx.strokeRect(gx * (FW - SIDE) * k, gy * (FH - SIDE) * k, SIDE * k, SIDE * k);
   }
 
-  /* ---- its memory, on this phone only ---- */
-  var KEY = "newborn.self.v1";
+  /* ---- its memory, on this phone only (the browser's own database) ---- */
+  var KEY = "newborn.self.v2";
+  function store(cb) {
+    try {
+      var r = indexedDB.open("newborn", 1);
+      r.onupgradeneeded = function () { r.result.createObjectStore("self"); };
+      r.onsuccess = function () { cb(r.result); };
+      r.onerror = function () { cb(null); };
+    } catch (e) { cb(null); }
+  }
   function save() {
     if (!life) return;
-    try {
-      var bytes = new Uint8Array(mem.buffer, life.ol_self(), life.ol_self_size()), s = "";
-      for (var i = 0; i < bytes.length; i += 8192) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 8192));
-      localStorage.setItem(KEY, btoa(s));
-    } catch (e) { /* no room, or no storage here: it lives on without remembering */ }
+    var copy = new Uint8Array(mem.buffer, life.ol_self(), life.ol_self_size()).slice();
+    store(function (d) {
+      if (!d) return;
+      try { d.transaction("self", "readwrite").objectStore("self").put(copy, KEY); } catch (e) { /* it lives on without keeping */ }
+    });
   }
-  function restore() {
-    try {
-      var s = localStorage.getItem(KEY);
-      if (!s) return false;
-      var raw = atob(s), n = life.ol_self_size();
-      if (raw.length !== n) return false;
-      var bytes = new Uint8Array(mem.buffer, life.ol_self(), n);
-      for (var i = 0; i < n; i++) bytes[i] = raw.charCodeAt(i);
-      return true;
-    } catch (e) { return false; }
+  function restore(done) {
+    store(function (d) {
+      if (!d) return done(false);
+      try {
+        var q = d.transaction("self").objectStore("self").get(KEY);
+        q.onsuccess = function () {
+          var v = q.result;
+          if (!v || v.length !== life.ol_self_size()) return done(false);
+          new Uint8Array(mem.buffer, life.ol_self(), v.length).set(v);
+          done(true);
+        };
+        q.onerror = function () { done(false); };
+      } catch (e) { done(false); }
+    });
+  }
+  function forgetAll() {
+    store(function (d) { if (d) { try { d.transaction("self", "readwrite").objectStore("self").delete(KEY); } catch (e) {} } });
   }
 
   /* ---- living ---- */
@@ -377,10 +424,11 @@ figcaption, .label { font-size: 12px; color: var(--soft); letter-spacing: .02em;
     life = exports; mem = exports.memory;
     input = new Float32Array(mem.buffer, life.ol_input(), INPUT);
     life.ol_begin((Date.now() & 0x7fffffff) >>> 0);
-    if (restore()) logLines.unshift("   it remembers its life so far");
-    else logLines.unshift("   it has just been born");
-    requestAnimationFrame(frame);
-    setInterval(save, 30000);
+    restore(function (kept) {
+      logLines.unshift(kept ? "   it remembers its life so far" : "   it has just been born");
+      requestAnimationFrame(frame);
+      setInterval(save, 30000);
+    });
   }
 
   try {
@@ -484,7 +532,7 @@ figcaption, .label { font-size: 12px; color: var(--soft); letter-spacing: .02em;
   forget.addEventListener("click", function () {
     if (!armed) { armed = true; forget.textContent = "Tap again to start it over"; setTimeout(function () { armed = false; forget.textContent = "Start it over"; }, 4000); return; }
     armed = false; forget.textContent = "Start it over";
-    try { localStorage.removeItem(KEY); } catch (e) {}
+    forgetAll();
     if (life) { life.ol_begin((Date.now() & 0x7fffffff) >>> 0); history = []; logLines = ["   it has just been born"]; gx = gy = 0.5; }
   });
 })();

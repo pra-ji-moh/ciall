@@ -171,6 +171,10 @@ int main(int argc, char **argv) {
                    "            my own jerks %.0f%%, being rocked %.0f%%; her touch %.0f%%. I know which is me.\n",
             100.0 * x[OC_VOICE], 100.0 * x[OC_TALK], 100.0 * x[OC_ANSWER], 100.0 * x[OC_JERK],
             100.0 * x[OC_ROCKED], 100.0 * x[OC_TOUCHED]);
+    fprintf(diary, "            I keep every moment as it came. When now is a moment I have lived, I expect what came\n"
+                   "            next then: %.0f%% of what I see, %.0f%% of what I hear. Not where the world is random:\n"
+                   "            there, what came last time is no guide, and I have learned not to trust it.\n",
+            100.0 * LIFE.recalls[OL_SEE] / CRIB.moments, 100.0 * LIFE.recalls[OL_HEAR] / CRIB.moments);
   }
   fclose(diary);
 

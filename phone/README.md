@@ -13,8 +13,12 @@ WebAssembly, about 8 KB) in a page that gives it a phone's senses:
 What it does is its own: it looks left, right, up or down, makes a sound, or
 jerks (the phone buzzes where it can). Nothing on the page chooses for it.
 
-Everything stays on the phone. Nothing is uploaded. It remembers its life in
-the browser's storage, on that device only.
+Its memory keeps the last 30,000 moments (about forty minutes of its life)
+exactly as they came. *Light a memory* is our switch, not its: it shows what
+any moment it still holds brought, and changes nothing in it.
+
+Everything stays on the phone. Nothing is uploaded. It keeps its life in the
+browser's own database, on that device only.
 
 Inside Claude (the published artifact), pages may not use the live camera,
 microphone or motion sensors; there, *Show it a photo or video* opens the

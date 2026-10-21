@@ -190,6 +190,7 @@ build test_brain brain ob_grow.c ob_view.c test_brain.c && run_test test_brain b
 build test_womb brain ob_grow.c ob_view.c ob_womb.c test_womb.c && run_test test_womb brain
 build grow_brain brain ob_grow.c ob_view.c ob_womb.c grow_brain.c
 build test_life brain ob_life.c ob_crib.c test_life.c && run_test test_life brain
+build test_memory brain ob_life.c ob_crib.c test_memory.c && run_test test_memory brain
 build being brain ob_grow.c ob_view.c ob_womb.c ob_life.c ob_crib.c being.c
 echo
 echo "phone/"

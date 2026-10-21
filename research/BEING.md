@@ -107,6 +107,14 @@ caregiver; overgrowth then pruning; myelination; ripples and replay in sleep.
   while a twin that seeks surprise is caught by it; it tells its own voice and
   jerks from its mother's talk and rocking, and half expects her answers.
   Not shown yet: that curiosity makes it learn faster than restlessness alone.
+- Eidetic memory: started (`brain/ob_life.c`). Its hippocampus keeps every
+  moment verbatim and expects what came next when now repeats a moment it has
+  lived, but only where that memory has earned trust over the cerebellum's
+  average guess: it learns that where the world is random, memory is no guide
+  (Funes's trap, which it fell into before trust was added). It expects much of
+  a song heard once. For us, coded optogenetics: any moment's memory can be
+  lit and read back exactly, without it knowing. (Learning for a lifetime
+  without forgetting was dropped as a goal: the memories are simply kept.)
 - On a phone: the same brain, compiled to WebAssembly (`phone/`), its senses
   the phone's camera, microphone, screen and motion sensors, its acts its gaze
   over the picture, a sound, a buzz. Everything stays on the phone. Inside

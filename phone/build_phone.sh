@@ -7,7 +7,7 @@ here=$(cd "$(dirname "$0")" && pwd)
 brain="$here/../brain"
 out=$(mktemp -d)
 trap 'rm -rf "$out"' EXIT
-clang --target=wasm32 -std=c99 -Wall -Wextra -pedantic -Werror -O2 -nostdlib \
+clang --target=wasm32 -std=c99 -Wall -Wextra -pedantic -Werror -O2 -nostdlib -DOL_MEMORY=30000u \
   -Wl,--no-entry -Wl,--export-dynamic -Wl,--strip-all \
   -o "$out/life.wasm" "$brain/ob_life.c" "$brain/ol_wasm.c"
 base64 -w0 "$out/life.wasm" > "$out/life.b64"

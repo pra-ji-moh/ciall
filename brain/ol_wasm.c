@@ -4,8 +4,11 @@
  * the microphone, the screen and the motion sensors bring into `ol_input`, and
  * acts out what `ol_step` returns.
  *
- *   clang --target=wasm32 -std=c99 -O2 -nostdlib -Wl,--no-entry \
- *         -Wl,--export-dynamic -o life.wasm ob_life.c ol_wasm.c
+ *   clang --target=wasm32 -std=c99 -O2 -nostdlib -DOL_MEMORY=30000u \
+ *         -Wl,--no-entry -Wl,--export-dynamic -o life.wasm ob_life.c ol_wasm.c
+ *
+ * On the phone its memory holds the last 30000 moments (about forty minutes
+ * of its life), so that it fits in the browser's storage.
  */
 
 #include "ob_life.h"
@@ -46,6 +49,12 @@ EXPORT float ol_dopamine(void) { return LIFE.dopamine; }
 EXPORT double ol_moments(void) { return (double)LIFE.moments; }
 EXPORT double ol_acts(unsigned m) { return m < OL_MOTORS ? (double)LIFE.acts[m] : 0.0; }
 EXPORT float ol_curious(unsigned g, unsigned k) { return ol_progress(&LIFE, g, k); }
+/* coded optogenetics: light the memory of one moment; what it brought is then in ol_lit() */
+static float LIT[OL_SENSE];
+EXPORT int ol_light_moment(double moment) { return moment >= 0.0 && ol_light(&LIFE, (unsigned long)moment, LIT); }
+EXPORT const float *ol_lit(void) { return LIT; }
+EXPORT double ol_recalls(unsigned g) { return g < OL_GROUPS ? (double)LIFE.recalls[g] : 0.0; }
+EXPORT double ol_capacity(void) { return (double)OL_MEMORY; }
 EXPORT unsigned ol_visits(unsigned g, unsigned k) {
   return g < OL_GROUPS && k < OL_PLACES ? LIFE.visits[g][k] : 0u;
 }
