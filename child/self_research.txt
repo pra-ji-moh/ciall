@@ -661,3 +661,8 @@
   from version 72 (one of 11 still standing) it made version 89: SELF_BODY_VOTES 3u->2u
   development games, two seeds averaged: 1.5 levels, 0.013% (its parent: 14.5, 0.715%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-10-22 02:58  (building itself: one generation)
+  from version 73 (one of 11 still standing) it made version 90: combined 73 and 84
+  development games, two seeds averaged: 3.5 levels, 0.145% (its parent: 13.5, 0.717%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
