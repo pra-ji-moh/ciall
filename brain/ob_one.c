@@ -628,6 +628,9 @@ unsigned ob_one_live(ob_one_t *O, const float *in) {
       if (O->curiosity == OL_PROGRESS) reward += O->progress[g][k];
       else if (O->curiosity == OL_ERROR) reward += O->fast[g][k] / (O->fast[g][k] + O->usual[g] + 1e-6f);
     }
+    /* and what the world gives (a light, a voice answering), when it does */
+    reward += O->reward_now;
+    O->reward_now = 0.0f;
     O->dopamine = reward;
     for (i = 0u; i < b->n_neurons; i++) {
       if (b->neuron[i].region == OB_TEGMENTUM) O->act[i] = reward < 0.0f ? 0.0f : reward > 1.0f ? 1.0f : reward;
@@ -687,6 +690,14 @@ unsigned ob_one_live(ob_one_t *O, const float *in) {
       }
     }
     for (m = OL_LOOK_LEFT; m <= OL_LOOK_DOWN; m++) O->fired[m] = (int)m == best;
+    /* deliberate acts: when the frontal cortex has an intention, its layer 5
+       drives those zones and holds the restless others back */
+    if (O->intent_on) {
+      for (m = 0u; m < OL_MOTORS; m++) O->fired[m] = O->intent >> m & 1u;
+      best = -1;
+      for (m = OL_LOOK_LEFT; m <= OL_LOOK_DOWN; m++)
+        if (O->fired[m]) best = (int)m;
+    }
     O->gaze_move = best < 0 ? 0u : (unsigned)best + 1u;
     for (m = 0u; m < OL_MOTORS; m++) {
       O->rate[m] += 0.002f * ((float)O->fired[m] - O->rate[m]);

@@ -314,6 +314,49 @@ against 1.94 with no memory; her answers 0.10 against 0.15); the memory of
 things does most (the song 1.99 to 0.03). Its hippocampal patterns mean
 something now, but not yet precisely enough to bring back an exact moment.
 
+## Its frontal cortex reasons: evidence decides, experience guides
+
+`ob_frontal.c`. The frontal lobe is patterned into areas by position, as the
+cortex is into lobes: the orbitofrontal cortex at the front and floor, the
+anterior cingulate (ACC) behind it, the frontal eye fields (FEF) by the motor
+strip, the dorsolateral prefrontal cortex (DLPFC) over the rest. Together they
+are the Hartley approach, as a circuit:
+
+| Area | Does |
+|---|---|
+| DLPFC | Holds the hypotheses still standing, a set, never one best guess. Each is held by its own group of six neurons; how many it can hold is its groups times its prefrontal myelination (the last to myelinate: 5 at three months, 41 at three years, 65 grown) |
+| IPS | Counts, for each test it could make, how many of those held say yes: the even split teaches most |
+| OFC | Experience: orders tests that split equally. It never decides |
+| FEF | Carries the test out through its own body: eyes to the place, then the acts, restless impulses held back |
+| ACC | Strikes out, for good, every hypothesis held that the outcome contradicts |
+
+**The blicket box** (`test_frontal.c`, after Gopnik). A box chimes when it does
+the right acts with its eyes on the right quarter of the wall: one rule hidden
+among 144 (one act, both of two, either of two, times four quarters; log2 is
+7.2). It hears the chime on its own cochlea. Ten boxes:
+
+| | Found | Tries |
+|---|---|---|
+| Three years | 10/10 | 10.8 |
+| Three months | 10/10 | 66.1 |
+| No ACC | 0/10 | (300, nothing struck) |
+| No DLPFC | 0/10 | (300: 122 of 143 struck, then stuck) |
+| Its twin by reward alone (dopamine at the chime) | the box chimes on 1% of its acts after 20,000 moments |
+
+Two things it found that were not planned. The box first had a light, and
+where the wall was already white the light added nothing its retina could see:
+one misread in ten, and pure elimination struck the true rule out on one
+misread. And without the DLPFC it was predicted to find the rule slowly; it
+never did. With one idea in mind there is nothing to split, so it tests the
+idea by what it predicts; when that confirms it, the rivals the same act would
+confirm are never ruled out. It perseverates, as patients with DLPFC damage do
+on the Wisconsin card sort.
+
+Still to do: elimination that survives a misread (a hypothesis struck only
+after two contradictions, or by the hemisphere that weighs evidence); the
+hypotheses themselves coming from what its cortex has learned rather than
+listed by us; the myelination wave switching the rest of its stages on.
+
 ## The newborn
 
 ```

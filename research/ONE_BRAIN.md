@@ -54,8 +54,15 @@ too (the mind's object map needs the same).
 **Phase 2, step 1, done:** its cortex learns what it sees (`test_cortex.c`); the
 entorhinal cortex is grown as the hippocampus's gateway; its hippocampus has
 patterns of its own, and it recalls episodes through them (a little help, so
-far; the per-sense memory still does most). Next: the frontal areas, from the
-user's research, and the mind's parts on them.
+far; the per-sense memory still does most). 
+
+**Phase 2, step 2, done:** the frontal cortex reasons by elimination (Hartley):
+its DLPFC holds hypotheses, its IPS picks the test that splits them, its ACC
+strikes out what the outcome contradicts, its FEF carries tests out through its
+own eyes and acts. Its capacity follows prefrontal myelination. It finds a
+blicket box's hidden rule (of 144) in about 11 tries at three years, 66 at
+three months, and its twin learning by reward alone barely does
+(`test_frontal.c`; `brain/README.md`).
 
 The life brain (`ob_life.c`) stays as the sketch it was: smaller, faster, and
 the thing to compare the one brain against. Where the one brain does worse

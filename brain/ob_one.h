@@ -73,6 +73,8 @@ typedef struct {
   unsigned visits[OL_GROUPS][OL_PLACES];
   unsigned place[OL_GROUPS];
   float dopamine, before;             /* this moment's, and the critic's last estimate */
+  float reward_now;                   /* what the world gives this moment (set by the world) */
+  unsigned intent_on, intent;         /* the frontal cortex's intention: which acts to do, deliberately */
   unsigned long acts[OL_MOTORS];
 
   /* hippocampus: the sketch's (ob_life.c), the same code; each sense files
