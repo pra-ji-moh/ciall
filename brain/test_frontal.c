@@ -1,49 +1,47 @@
 /*
- * test_frontal.c -- the blicket box (after Gopnik): does its frontal cortex
- * reason, and does it do better than learning by reward?
+ * test_frontal.c -- one life, from its genes to three years old: does
+ * reasoning switch on as its frontal cortex myelinates, and does it then do
+ * better than learning by reward?
  *
- * A box in the crib chimes when the being does the right thing with its
- * eyes on the right part of the wall. The rule is hidden, one of 144: one act
- * of its six, or both of two, or either of two (15 pairs each), times which
- * quarter of the wall its eyes must be on. log2(144) is about 7.2: an ideal
- * eliminator needs about seven or eight tries.
+ * One being, never restarted: its brain grows from the genome; in the womb it
+ * learns touch, smell, its mother's heartbeat, its eyes' maps, its reflexes;
+ * it is born; it lives in the crib, of itself, curious, as its brain ages and
+ * the myelination wave goes through it (ob_one_age), a thousand moments a
+ * month. At 3, 9, 12, 24 and 36 months a blicket box is put in its crib, a
+ * new hidden rule each time (one of 144: log2 is 7.2), for 1500 moments. If
+ * its DLPFC can hold anything, it reasons (ob_frontal.c: hypotheses held by
+ * groups of DLPFC neurons that keep themselves firing; the ACC darkening what
+ * an outcome contradicts); if not, it lives as it would, and the chime's
+ * dopamine teaches its basal ganglia, as the mobile did.
  *
- * Each try is carried out by its own body: its frontal eye fields move its eyes
- * (through its brainstem's zones) to the quarter, then it does the acts. The
- * box's chime reaches its cochlea, and it reads the outcome from there, not
- * from the box.
+ * At three years, copies of it, with the same life behind them, meet the same
+ * boxes with a lesion: no ACC; one DLPFC group; no frontal reasoning at all.
  *
  * Checked (each could fail):
- *   finds        a three-year-old's frontal cortex finds the rule, in every box
- *   quickly      in about log2(144) tries (no more than twice it)
- *   uses it      having found it, its next ten tries through its body sound
- *                the box at least eight times in ten
+ *   room         what its DLPFC can hold, measured from its neurons, is
+ *                nothing at 3 months and grows with age after
+ *   onset        reasoning begins between 6 and 12 months (infants first
+ *                plan, and pass A-not-B, around 8 to 12 months)
+ *   infant       at 3 months it finds no rule, and sounds the box rarely
+ *   three years  it finds every rule, in about log2(144) tries (at most twice)
+ *   age          tries fall: a one-year-old needs more than a three-year-old
+ *   uses it      knowing the rule, it sounds the box at least five times as
+ *                often as the 3-month-old did
+ *   reward       its twin at three years without frontal reasoning, the same
+ *                life behind it, sounds the box far less often
  *   reads        what it hears is what the box did (95%)
- *   reward       its twin learning by reward alone (dopamine when the box
- *                chimes, as it learned the mobile) sounds it far less often,
- *                after more moments than the reasoner took
- *   age          a three-month-old (a mind of little room: the prefrontal
- *                cortex has barely begun to myelinate) needs more tries
- *   ACC          without its anterior cingulate it never finds the rule
- *   DLPFC        without its dorsolateral prefrontal cortex (one hypothesis
- *                in mind at a time) it strikes most of them out but never
- *                finds the rule: it perseverates. With one idea in mind there
- *                is nothing to split, so it tests the idea by what it predicts,
- *                and the test that worked best before; when that confirms it,
- *                the rivals the same act would confirm are never ruled out.
- *                (Predicted first: that it would find it, three times slower.
- *                It did not, in any box. Patients with DLPFC damage
- *                perseverate on the Wisconsin card sort; it does too)
- *   distinct     without the ACC nothing is struck at all
+ *   ACC          without its ACC it never finds a rule; nothing is ruled out
+ *   DLPFC        with one DLPFC group it never finds one, but rules much out:
+ *                it perseverates (as found before, and as patients do on the
+ *                Wisconsin card sort)
  */
 
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
 
-#include "ob_crib.h"
-#include "ob_frontal.h"
-#include "ob_one.h"
+#include "ob.h"
+#include "ob_box.h"
 
 static unsigned n_checks = 0u, n_fail = 0u;
 
@@ -53,206 +51,124 @@ static void check(const char *name, int ok) {
   printf("  %s  %s\n", ok ? "pass" : "FAIL", name);
 }
 
-static ob_brain_t GROWN;
-static ob_one_t ONE;
+static ob_brain_t BRAIN;
+static ob_one_t ONE, SAVED;
+static ob_world_t WORLD, WORLD_SAVED;
+static ob_womb_stats_t TOUCH;
+static ob_smell_stats_t SMELL;
+static ob_heart_stats_t HEART;
+static ob_vision_stats_t VISION;
+static ob_reflex_stats_t REFLEX;
 
-#define FORMS 36                      /* 6 single acts, 15 pairs needing both, 15 either */
-#define N_HYP (FORMS * 4)
-#define BOXES 10
-#define MAX_TRIES 300
+#define PER_MONTH 1000ul
+#define BOXES 3
+#define WITH_BOX 1500ul
+#define N_AGES 5
 
-static unsigned PAIR_A[15], PAIR_B[15];
-
-/* the acts a form needs: returns 1 if `acts` satisfies form f */
-static int form_holds(unsigned f, unsigned acts) {
-  if (f < 6u) return acts >> f & 1u;
-  if (f < 21u) return (acts >> PAIR_A[f - 6u] & 1u) && (acts >> PAIR_B[f - 6u] & 1u);
-  return (acts >> PAIR_A[f - 21u] & 1u) || (acts >> PAIR_B[f - 21u] & 1u);
-}
-
-/* hypothesis h: form h / 4, with its eyes on quarter h % 4 */
-static int says(unsigned h, const of_test_t *t) { return t->place == h % 4u && form_holds(h / 4u, t->acts); }
-
-static unsigned quarter(const ob_crib_t *c) { return (c->gx >= 0.5f) + 2u * (c->gy >= 0.5f); }
-
-/* the box chimes, high: its cochlea's top band. (It first had a light: where
-   the wall was already white, a light added nothing its retina could see, and
-   one misread in ten struck out the true rule. It reads the moment just after
-   its act: the chime lasts a moment, so one its eyes set off on the way there
-   has passed) */
-#define CHIME (OL_VIS + OL_EAR - 1)
-
-/* the world: the crib, and the box; `flash` its chime reaching its ear now */
-typedef struct {
-  ob_crib_t crib;
-  unsigned rule;
-  int flash;
-  unsigned long moments, lights, acted;
-} box_t;
-
-/* one moment: it lives (deliberately if `intent_on`), the world answers.
-   Returns what its ear hears there now */
-static float moment(box_t *x, ob_one_t *O, unsigned intent_on, unsigned intent, int reward) {
-  float in[OL_INPUT];
-  unsigned bits, lit;
-  ob_crib_sense(&x->crib, in);
-  if (x->flash) in[CHIME] = 1.0f;
-  O->reward_now = reward && x->flash ? 1.0f : 0.0f;
-  O->intent_on = intent_on;
-  O->intent = intent;
-  bits = ob_one_live(O, in);
-  /* the box judges what it did, where its eyes were */
-  lit = bits != 0u && says(x->rule, &(of_test_t){bits, quarter(&x->crib)});
-  x->flash = (int)lit;
-  x->lights += lit;
-  x->acted += bits != 0u;
-  ob_crib_act(&x->crib, bits);
-  x->moments++;
-  return in[CHIME];
-}
-
-/* its frontal eye fields: move its eyes into quarter q, clear of the middle */
-static void look_to(box_t *x, ob_one_t *O, unsigned q) {
-  unsigned k;
-  float tx = q & 1u ? 0.75f : 0.25f, ty = q & 2u ? 0.75f : 0.25f;
-  for (k = 0u; k < 24u; k++) {
-    unsigned want = 0u;
-    if (x->crib.gx > tx + 0.06f) want |= 1u << OL_LOOK_LEFT;
-    if (x->crib.gx < tx - 0.06f) want |= 1u << OL_LOOK_RIGHT;
-    if (x->crib.gy > ty + 0.06f) want |= 1u << OL_LOOK_UP;
-    if (x->crib.gy < ty - 0.06f) want |= 1u << OL_LOOK_DOWN;
-    if (!want) return;
-    moment(x, O, 1u, want, 0);
-  }
-}
-
-/* one try, through its body: eyes to the place, the acts, then still while it
-   sees. Returns what it read (1: the box lit); *truth what the box did */
-static int try_it(box_t *x, ob_one_t *O, const of_test_t *t, int *truth) {
-  unsigned long before;
-  float heard;
-  look_to(x, O, t->place);
-  before = x->lights;
-  moment(x, O, 1u, t->acts, 0);
-  *truth = x->lights > before;
-  heard = moment(x, O, 1u, 0u, 0);
-  return heard > 0.5f;
-}
+static const double AGE[N_AGES] = {3.0, 9.0, 12.0, 24.0, 36.0};
 
 typedef struct {
-  double tries, found, after_ok, reads_ok, reads, moments, struck, left;
-} result_t;
+  double room, found, tries, rate, struck, reads, reads_ok;
+} at_t;
 
-static of_test_t TESTS[63 * 4];
+static unsigned rule_of(unsigned age, unsigned box) { return ((age * 7u + box + 1u) * 2654435761u >> 9) % OB_BOX_RULES; }
 
-static void reason(unsigned box, double months, unsigned no_acc, unsigned no_dlpfc, result_t *r) {
-  static of_rules_t R;
-  box_t x;
-  unsigned k, which, tries = 0u, ok = 0u;
-  int truth;
-  memset(&x, 0, sizeof(x));
-  ob_crib_make(&x.crib, 100u + box);
-  x.rule = (box * 2654435761u >> 7) % N_HYP;
-  ob_one_born(&ONE, &GROWN, 1u + box, OL_PROGRESS);
-  of_begin(&R, N_HYP, says, of_capacity(&GROWN, months), box);
-  R.no_acc = no_acc;
-  R.no_dlpfc = no_dlpfc;
-  while (!of_known(&R, &which) && tries < MAX_TRIES) {
-    of_test_t t = of_choose(&R, TESTS, 63u * 4u);
-    int seen = try_it(&x, &ONE, &t, &truth);
-    unsigned struck = of_learn(&R, &t, seen);
-    of_show(&R, &ONE, struck);
-    r->reads += 1.0;
-    r->reads_ok += seen == truth;
-    tries++;
-  }
-  r->tries += tries;
-  r->struck += R.struck;
-  for (k = 0u; k < N_HYP; k++) r->left += R.standing[k];
-  r->moments += (double)x.moments;
-  if (of_known(&R, &which) && which == x.rule) {
-    r->found += 1.0;
-    /* and now it uses what it knows: the simplest acts its rule needs */
-    for (k = 0u; k < 10u; k++) {
-      of_test_t t = {0u, which % 4u};
-      unsigned a;
-      for (a = 1u; a < 64u && !t.acts; a++)
-        if (form_holds(which / 4u, a)) t.acts = a;
-      try_it(&x, &ONE, &t, &truth);
-      ok += truth;
-    }
-    r->after_ok += ok / 10.0;
+static void meet(ob_world_t *W, ob_one_t *O, unsigned age, unsigned lesions, at_t *a) {
+  unsigned b;
+  memset(a, 0, sizeof(*a));
+  for (b = 0u; b < BOXES; b++) {
+    ob_box_meeting_t m;
+    ob_box_meet(W, O, rule_of(age, b), WITH_BOX, lesions, &m);
+    a->room += m.room / (double)BOXES;
+    a->found += m.found;
+    a->tries += m.found ? m.tries / (double)BOXES : 0.0;
+    a->rate += m.chime_rate / BOXES;
+    a->struck += m.struck / (double)BOXES;
+    a->reads += m.reads;
+    a->reads_ok += m.reads_ok;
+    ob_grow_up(W, O, O->months + 0.1, PER_MONTH);   /* a little while between */
   }
 }
 
-/* the twin: no frontal reasoning; dopamine when the box chimes */
-static double by_reward(unsigned box, unsigned long moments) {
-  box_t x;
-  unsigned long t, lit0 = 0u, act0 = 0u;
-  memset(&x, 0, sizeof(x));
-  ob_crib_make(&x.crib, 100u + box);
-  x.rule = (box * 2654435761u >> 7) % N_HYP;
-  ob_one_born(&ONE, &GROWN, 1u + box, OL_PROGRESS);
-  for (t = 0u; t < moments; t++) {
-    if (t == moments - 2000u) {
-      lit0 = x.lights;
-      act0 = x.acted;
-    }
-    moment(&x, &ONE, 0u, 0u, 1);
-  }
-  /* in its last 2000 moments: of the moments it acted, how many sounded the box */
-  return x.acted > act0 ? (double)(x.lights - lit0) / (double)(x.acted - act0) : 0.0;
+static void row(const char *name, const at_t *a) {
+  printf("  %-26s %6.1f %5.0f/%u %7.1f %8.3f %8.1f\n", name, a->room, a->found, BOXES,
+         a->found > 0 ? a->tries * BOXES / a->found : 0.0, a->rate, a->struck);
 }
 
 int main(void) {
   ob_genome_t g;
-  unsigned i, j, n = 0u, b;
-  result_t adult = {0}, young = {0}, no_acc = {0}, no_dl = {0};
-  double reward = 0.0;
-  for (i = 0u; i < 6u; i++)
-    for (j = i + 1u; j < 6u; j++) {
-      PAIR_A[n] = i;
-      PAIR_B[n] = j;
-      n++;
-    }
-  for (i = 0u; i < 63u; i++)
-    for (j = 0u; j < 4u; j++) TESTS[i * 4u + j] = (of_test_t){i + 1u, j};
-  printf("THE BLICKET BOX: THE FRONTAL CORTEX REASONS\n\n");
+  at_t at[N_AGES], no_acc, no_dl, no_fr;
+  unsigned k;
+  int onset = -1;
+  printf("ONE LIFE: FROM ITS GENES TO THREE YEARS OLD\n\n");
   ob_genome_default(&g);
-  ob_grow(&GROWN, &g);
-  printf("  its DLPFC can hold %u hypotheses at 3 months, %u at 3 years (of %u)\n\n",
-         of_capacity(&GROWN, 3.0), of_capacity(&GROWN, 36.0), N_HYP);
-
-  for (b = 0u; b < BOXES; b++) {
-    reason(b, 36.0, 0u, 0u, &adult);
-    reason(b, 3.0, 0u, 0u, &young);
-    reason(b, 36.0, 1u, 0u, &no_acc);
-    reason(b, 36.0, 0u, 1u, &no_dl);
+  ob_grow(&BRAIN, &g);
+  ob_womb_touch(&BRAIN, 20u, 300u, &TOUCH);
+  ob_womb_smell(&BRAIN, 20u, 50u, &SMELL);
+  ob_womb_heartbeat(&BRAIN, 20u, 400u, &HEART);
+  ob_womb_vision(&BRAIN, 20u, 200u, 1, &VISION);
+  ob_womb_reflex(&BRAIN, 20u, 100u, 1, &REFLEX);
+  printf("  grown from its genes and the womb: %u neurons, %u connections; born\n", BRAIN.n_neurons, BRAIN.n_syn);
+  printf("  the myelination wave (months after birth at which each is half myelinated):\n");
+  {
+    static const unsigned R[] = {OB_BRAINSTEM, OB_THALAMUS, OB_OCCIPITAL, OB_CEREBELLUM, OB_BASAL_GANGLIA,
+                                 OB_PARIETAL, OB_TEMPORAL, OB_FRONTAL};
+    static const char *const NAME[] = {"brainstem", "thalamus", "visual cortex", "cerebellum", "basal ganglia",
+                                       "parietal", "temporal", "frontal"};
+    for (k = 0u; k < sizeof R / sizeof R[0]; k++) {
+      double m = -6.0;
+      while (ob_myelin_at(R[k], m) < 0.5f) m += 0.5;
+      printf("    %-14s %5.1f\n", NAME[k], m);
+    }
   }
-  printf("  %-24s %8s %8s %8s %8s %8s\n", "", "found", "tries", "moments", "struck", "left");
-#define ROW(name, r) printf("  %-24s %5.0f/%-2u %8.1f %8.0f %8.1f %8.1f\n", name, r.found, BOXES, r.tries / BOXES, \
-                            r.moments / BOXES, r.struck / BOXES, r.left / BOXES)
-  ROW("three years", adult);
-  ROW("three months", young);
-  ROW("three years, no ACC", no_acc);
-  ROW("three years, no DLPFC", no_dl);
-  printf("  after finding it, its tries sound the box: %.2f\n", adult.found > 0 ? adult.after_ok / adult.found : 0.0);
-  printf("  heard correctly: %.3f\n", adult.reads_ok / adult.reads);
+  ob_one_born(&ONE, &BRAIN, g.seed, OL_PROGRESS);
+  ob_one_age(&ONE, 0.0);
+  ob_world_make(&WORLD, g.seed);
 
-  for (b = 0u; b < 3u; b++) reward += by_reward(b, 20000u) / 3.0;
-  printf("  its twin by reward alone, 20000 moments: the box chimes on %.3f of its acts\n\n", reward);
+  printf("\n  %-26s %6s %7s %7s %8s %8s\n", "", "room", "found", "tries", "chimes", "struck");
+  for (k = 0u; k < N_AGES; k++) {
+    char name[64];
+    ob_grow_up(&WORLD, &ONE, AGE[k], PER_MONTH);
+    meet(&WORLD, &ONE, k, 0u, &at[k]);
+    snprintf(name, sizeof name, "%.0f months", AGE[k]);
+    row(name, &at[k]);
+    fflush(stdout);
+    if (onset < 0 && at[k].room >= 1.0) onset = (int)k;
+    if (k + 1u == N_AGES) {
+      /* at three years: copies of it, the same life behind them, lesioned */
+      memcpy(&SAVED, &ONE, sizeof SAVED);
+      memcpy(&WORLD_SAVED, &WORLD, sizeof WORLD_SAVED);
+#define LESIONED(flag, out, name)                         \
+  do {                                                    \
+    memcpy(&ONE, &SAVED, sizeof ONE);                     \
+    memcpy(&WORLD, &WORLD_SAVED, sizeof WORLD);           \
+    ONE.months = AGE[k];                                  \
+    meet(&WORLD, &ONE, k, flag, &out);                    \
+    row(name, &out);                                      \
+    fflush(stdout);                                       \
+  } while (0)
+      LESIONED(OB_LESION_FRONTAL, no_fr, "36, no frontal reasoning");
+      LESIONED(OB_LESION_ACC, no_acc, "36, no ACC");
+      LESIONED(OB_LESION_DLPFC, no_dl, "36, one DLPFC group");
+    }
+  }
+  printf("  (room: hypotheses its DLPFC holds; tries: to know the rule, where found;\n"
+         "   chimes: per moment, in the last 300 moments with the box)\n\n");
 
-  check("finds: a three-year-old finds the rule in every box", adult.found == BOXES);
-  check("quickly: in no more than twice log2(144) tries", adult.tries / BOXES <= 2.0 * log2((double)N_HYP));
-  check("uses it: its next tries sound the box (>= 0.8)", adult.found > 0 && adult.after_ok / adult.found >= 0.8);
-  check("reads: what it hears is what the box did (>= 0.95)", adult.reads_ok / adult.reads >= 0.95);
-  check("reward: its twin sounds it far less (< 0.8, after more moments)",
-        reward < 0.8 && 20000.0 > adult.moments / BOXES);
-  check("age: a three-month-old needs more tries", young.tries > adult.tries);
-  check("ACC: without it, it never finds the rule", no_acc.found == 0.0);
-  check("DLPFC: without it, it strikes much out, but perseverates (never finds it)",
-        no_dl.found == 0.0 && no_dl.struck / BOXES >= 0.8 * (N_HYP - 1) && no_dl.left > no_dl.found);
-  check("the two lesions differ: without the ACC nothing at all is struck", no_acc.struck == 0.0);
+  check("room: nothing at 3 months, growing with age after",
+        at[0].room == 0.0 && at[2].room < at[3].room && at[3].room < at[4].room);
+  check("onset: reasoning begins between 6 and 12 months", onset == 1 || onset == 2);
+  check("infant: at 3 months no rule found, the box rarely sounded", at[0].found == 0.0 && at[0].rate < 0.1);
+  check("three years: every rule found, in at most twice log2(144) tries",
+        at[4].found == BOXES && at[4].tries <= 2.0 * log2((double)OB_BOX_RULES));
+  check("age: a one-year-old needs more tries than a three-year-old",
+        at[2].found > 0 && at[2].tries * BOXES / at[2].found > at[4].tries);
+  check("uses it: knowing, it sounds the box 5x as often as at 3 months",
+        at[4].rate >= 5.0 * at[0].rate && at[4].rate > 0.1);
+  check("reward: without frontal reasoning, the same life, far fewer chimes", no_fr.rate < 0.2 * at[4].rate);
+  check("reads: what it hears is what the box did (>= 0.95)", at[4].reads > 0 && at[4].reads_ok / at[4].reads >= 0.95);
+  check("ACC: without it, no rule found and nothing ruled out", no_acc.found == 0.0 && no_acc.struck == 0.0);
+  check("DLPFC: with one group, it rules much out but perseverates", no_dl.found == 0.0 && no_dl.struck >= 50.0);
   printf("\n%u checks, %u failed\n", n_checks, n_fail);
   return n_fail != 0u;
 }

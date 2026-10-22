@@ -314,48 +314,74 @@ against 1.94 with no memory; her answers 0.10 against 0.15); the memory of
 things does most (the song 1.99 to 0.03). Its hippocampal patterns mean
 something now, but not yet precisely enough to bring back an exact moment.
 
-## Its frontal cortex reasons: evidence decides, experience guides
+## Growing up: the myelination wave, and reasoning switching on
 
-`ob_frontal.c`. The frontal lobe is patterned into areas by position, as the
-cortex is into lobes: the orbitofrontal cortex at the front and floor, the
-anterior cingulate (ACC) behind it, the frontal eye fields (FEF) by the motor
-strip, the dorsolateral prefrontal cortex (DLPFC) over the rest. Together they
-are the Hartley approach, as a circuit:
+`ob_one_age` gives the one brain an age. Each region's axons myelinate on a
+schedule (Flechsig; Yakovlev and Lecours; Deoni), and an unmyelinated axon
+delivers half its signal:
+
+| Half myelinated at (months after birth) | |
+|---|---|
+| brainstem, spinal cord, tegmentum | before birth |
+| thalamus, tectum, visual cortex | 1 to 3 |
+| cerebellum, basal ganglia | 6 |
+| parietal, temporal, entorhinal, hippocampus | 12 |
+| frontal | 30, still going into adulthood |
+
+**Its frontal cortex reasons** (`ob_frontal.c`): the Hartley approach as a
+circuit. The frontal lobe is patterned into areas by position: orbitofrontal
+(front and floor), anterior cingulate (floor, behind), frontal eye fields (by
+the motor strip), dorsolateral prefrontal (the rest).
 
 | Area | Does |
 |---|---|
-| DLPFC | Holds the hypotheses still standing, a set, never one best guess. Each is held by its own group of six neurons; how many it can hold is its groups times its prefrontal myelination (the last to myelinate: 5 at three months, 41 at three years, 65 grown) |
-| IPS | Counts, for each test it could make, how many of those held say yes: the even split teaches most |
+| DLPFC | Holds the hypotheses still standing, a set, never one best guess. Each is held by a group of six DLPFC neurons that keeps itself firing: self-excitation through axons as strong as their myelin, against one pool of inhibition all groups share. How many it can hold is not set anywhere: it is what that balance allows |
+| IPS | Counts, for each test, how many lit hypotheses say yes: the even split teaches most |
 | OFC | Experience: orders tests that split equally. It never decides |
 | FEF | Carries the test out through its own body: eyes to the place, then the acts, restless impulses held back |
-| ACC | Strikes out, for good, every hypothesis held that the outcome contradicts |
+| ACC | Inhibits every lit group whose hypothesis the outcome contradicts, until it goes dark: ruled out |
 
-**The blicket box** (`test_frontal.c`, after Gopnik). A box chimes when it does
-the right acts with its eyes on the right quarter of the wall: one rule hidden
-among 144 (one act, both of two, either of two, times four quarters; log2 is
-7.2). It hears the chime on its own cochlea. Ten boxes:
+Measured from those neurons, what its DLPFC can hold: nothing until 8 months,
+then 2 at 9 months, 4 at a year, 19 at two, 39 at three, 63 at five.
 
-| | Found | Tries |
-|---|---|---|
-| Three years | 10/10 | 10.8 |
-| Three months | 10/10 | 66.1 |
-| No ACC | 0/10 | (300, nothing struck) |
-| No DLPFC | 0/10 | (300: 122 of 143 struck, then stuck) |
-| Its twin by reward alone (dopamine at the chime) | the box chimes on 1% of its acts after 20,000 moments |
+**One life** (`test_frontal.c`, `--slow`). One being, never restarted: grown
+from its genes, the womb, born, the crib, aging a thousand moments a month. At
+3, 9, 12, 24 and 36 months a blicket box (after Gopnik) is put in its crib: it
+chimes when it does the right acts with its eyes on the right quarter of the
+wall, one rule of 144 (log2 is 7.2). It hears the chime on its own cochlea.
+Three boxes at each age:
 
-Two things it found that were not planned. The box first had a light, and
-where the wall was already white the light added nothing its retina could see:
-one misread in ten, and pure elimination struck the true rule out on one
-misread. And without the DLPFC it was predicted to find the rule slowly; it
-never did. With one idea in mind there is nothing to split, so it tests the
-idea by what it predicts; when that confirms it, the rivals the same act would
-confirm are never ruled out. It perseverates, as patients with DLPFC damage do
-on the Wisconsin card sort.
+| | Room | Found | Tries | Chimes per moment |
+|---|---|---|---|---|
+| 3 months | 0 | 0/3 | | 0.009 |
+| 9 months | 2 | 3/3 | 143 | 0.39 |
+| 12 months | 4 | 3/3 | 73 | 0.39 |
+| 24 months | 20 | 3/3 | 18 | 0.33 |
+| 36 months | 39 | 3/3 | 12 | 0.33 |
+| 36, no frontal reasoning (same life) | 0 | 0/3 | | 0.001 |
+| 36, no ACC | 39 | 0/3 | (nothing ruled out) | 0.08 |
+| 36, one DLPFC group | 1 | 0/3 | (125 ruled out, then stuck) | 0.37 |
 
-Still to do: elimination that survives a misread (a hypothesis struck only
-after two contradictions, or by the hemisphere that weighs evidence); the
-hypotheses themselves coming from what its cortex has learned rather than
-listed by us; the myelination wave switching the rest of its stages on.
+What it found that was not planned:
+
+- The box first had a light. Where the wall was already white, the light added
+  nothing its retina could see, and pure elimination struck out the true rule on
+  one misread in ten. It chimes now.
+- With one DLPFC group it was predicted to find the rule slowly. It never does:
+  with one idea in mind there is nothing to split, so it tests the idea by what
+  it predicts, and the rivals the same act would confirm are never ruled out. It
+  perseverates, as patients with DLPFC damage do on the Wisconsin card sort. And
+  it still makes the box chime as often as the three-year-old: it found an act
+  that works without knowing why. Knowing how, not knowing that.
+- At first the ACC's inhibition was fixed. Once the frontal cortex was well
+  myelinated, a group with few rivals left excited itself more than the ACC
+  could inhibit, and contradicted hypotheses stayed in mind: the three-year-old
+  failed where the two-year-old succeeded. The brake has to outgrow the engine.
+
+What is still not in neurons: the long memory of what has been ruled out (a
+list, the hippocampus's part); which test splits best (counted in code over the
+lit groups). And the hypotheses are listed by us: the next step is the being
+proposing them from what its cortex has learned.
 
 ## The newborn
 

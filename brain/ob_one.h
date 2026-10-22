@@ -75,6 +75,13 @@ typedef struct {
   float dopamine, before;             /* this moment's, and the critic's last estimate */
   float reward_now;                   /* what the world gives this moment (set by the world) */
   unsigned intent_on, intent;         /* the frontal cortex's intention: which acts to do, deliberately */
+
+  /* growing up: its age, and how far each region's axons are myelinated
+     (1 everywhere unless ob_one_age is called: a brain of no particular age) */
+  double months;                      /* after birth */
+  float myelin[OB_REGIONS];
+  float gain[OB_MAX_NEURONS];         /* what each neuron's axon delivers: half, unmyelinated; all of it, myelinated */
+  unsigned char external[OB_MAX_NEURONS];   /* held by a circuit outside ob_one's step (the frontal cortex's working memory) */
   unsigned long acts[OL_MOTORS];
 
   /* hippocampus: the sketch's (ob_life.c), the same code; each sense files
@@ -96,6 +103,19 @@ typedef struct {
   unsigned char pattern[OL_MEMORY][OB_HIP_BYTES];
   ol_hippocampus_t hip;               /* last: it is much of its size */
 } ob_one_t;
+
+/*
+ * Its age: sets `months` and the myelination wave (Flechsig; Yakovlev and
+ * Lecours; Deoni): the brainstem around birth, the sensory pathways in the
+ * first months, the motor loops (basal ganglia, cerebellum) through the first
+ * year, the association cortex (parietal, temporal, the hippocampus's
+ * gateway) in the second, and the frontal cortex last: begun in the first
+ * year, half way at two and a half, still going in adulthood. Each region's
+ * axons carry half their signal unmyelinated, all of it myelinated.
+ */
+void ob_one_age(ob_one_t *O, double months);
+/* how far region r is myelinated at `months` after birth (0..1) */
+float ob_myelin_at(unsigned region, double months);
 
 /* Its life begins from a grown brain (copied in, with whatever the womb taught it). */
 void ob_one_born(ob_one_t *O, const ob_brain_t *grown, unsigned seed, unsigned curiosity);

@@ -307,6 +307,7 @@ static int by_value(const void *a, const void *b) {
   float x = *(const float *)a, y = *(const float *)b;
   return x < y ? 1 : x > y ? -1 : 0;
 }
+static const unsigned char *EXTERNAL_NOW;   /* neurons held outside the step: sparse leaves them be */
 static void sparse(const ob_brain_t *b, unsigned region, float share) {
   static float vals[OB_MAX_NEURONS];
   unsigned side, i, n;
@@ -314,13 +315,14 @@ static void sparse(const ob_brain_t *b, unsigned region, float share) {
     float cut;
     n = 0u;
     for (i = 0u; i < b->n_neurons; i++) {
-      if (b->neuron[i].region == region && b->neuron[i].side == side) vals[n++] = RAW[i];
+      if (b->neuron[i].region == region && b->neuron[i].side == side && !EXTERNAL_NOW[i]) vals[n++] = RAW[i];
     }
     if (n == 0u) continue;
     qsort(vals, n, sizeof(float), by_value);
     cut = vals[(unsigned)(share * n)];
     for (i = 0u; i < b->n_neurons; i++) {
-      if (b->neuron[i].region == region && b->neuron[i].side == side && (RAW[i] <= cut || RAW[i] <= 0.0f))
+      if (b->neuron[i].region == region && b->neuron[i].side == side && !EXTERNAL_NOW[i] &&
+          (RAW[i] <= cut || RAW[i] <= 0.0f))
         NEXT[i] = 0.0f;
     }
   }
@@ -338,15 +340,16 @@ static void step_only(ob_one_t *O, float gx, float gy, int only) {
   unsigned i, r, side;
   double sum[OB_REGIONS][2];
   unsigned cnt[OB_REGIONS][2];
+  EXTERNAL_NOW = O->external;
   /* each neuron gathers what its inputs carry (its inputs lie together) */
   for (i = 0u; i < b->n_neurons; i++) {
     const ob_neuron_t *n = &b->neuron[i];
     float acc[5] = {0.0f, 0.0f, 0.0f, 0.0f, 0.0f};   /* by class: other, sense, prediction, action, learned */
     unsigned s, end = n->syn_first + n->syn_n;
-    if (FIXED[i] || (only >= 0 && n->region != (unsigned)only) || (only < 0 && n->region == OB_CEREBELLUM)) continue;
+    if (FIXED[i] || O->external[i] || (only >= 0 && n->region != (unsigned)only) || (only < 0 && n->region == OB_CEREBELLUM)) continue;
     for (s = n->syn_first; s < end; s++) {
       if (n->region == OB_HIPPOCAMPUS && O->brain.neuron[FROM[s]].region == OB_HIPPOCAMPUS) continue;
-      acc[SCLASS[s]] += O->w[s] * O->act[FROM[s]];
+      acc[SCLASS[s]] += O->w[s] * O->act[FROM[s]] * O->gain[FROM[s]];
     }
     if (n->region == OB_THALAMUS) {
       float cb = 0.0f;
@@ -364,7 +367,7 @@ static void step_only(ob_one_t *O, float gx, float gy, int only) {
   for (i = 0u; i < b->n_neurons; i++) {
     const ob_neuron_t *n = &b->neuron[i];
     float x;
-    if (FIXED[i] || (only >= 0 && n->region != (unsigned)only) || (only < 0 && n->region == OB_CEREBELLUM)) {
+    if (FIXED[i] || O->external[i] || (only >= 0 && n->region != (unsigned)only) || (only < 0 && n->region == OB_CEREBELLUM)) {
       NEXT[i] = O->act[i];
       continue;
     }
@@ -404,7 +407,7 @@ static void step_only(ob_one_t *O, float gx, float gy, int only) {
   }
   for (i = 0u; i < b->n_neurons; i++) {
     const ob_neuron_t *n = &b->neuron[i];
-    if (FIXED[i] || (only >= 0 && n->region != (unsigned)only) || (only < 0 && n->region == OB_CEREBELLUM)) continue;
+    if (FIXED[i] || O->external[i] || (only >= 0 && n->region != (unsigned)only) || (only < 0 && n->region == OB_CEREBELLUM)) continue;
     sum[n->region][n->side] += NEXT[i];
     cnt[n->region][n->side]++;
   }
@@ -417,7 +420,7 @@ static void step_only(ob_one_t *O, float gx, float gy, int only) {
   }
   for (i = 0u; i < b->n_neurons; i++) {
     const ob_neuron_t *n = &b->neuron[i];
-    if (!FIXED[i] && !RELAY[n->region] && (only < 0 ? n->region != OB_CEREBELLUM : n->region == (unsigned)only))
+    if (!FIXED[i] && !O->external[i] && !RELAY[n->region] && (only < 0 ? n->region != OB_CEREBELLUM : n->region == (unsigned)only))
       NEXT[i] *= (float)sum[n->region][n->side];
     if (NEXT[i] < 0.05f) NEXT[i] = 0.0f;   /* too weak to fire */
   }
@@ -426,6 +429,32 @@ static void step_only(ob_one_t *O, float gx, float gy, int only) {
 }
 
 /* ---- being born ------------------------------------------------------------------- */
+
+/* ---- growing up: the myelination wave ----------------------------------------------
+ * When each region is half myelinated (months after birth) and over how long
+ * (the logistic's width). The senses' own cells are not axons: always 1. */
+static const struct {
+  float half, width;
+} WAVE[OB_REGIONS] = {
+    [OB_BRAINSTEM] = {-2.0f, 2.0f},   [OB_SPINAL_SENSORY] = {-2.0f, 2.0f}, [OB_SPINAL_MOTOR] = {-1.0f, 2.0f},
+    [OB_TEGMENTUM] = {-1.0f, 2.0f},   [OB_HYPOTHALAMUS] = {0.0f, 3.0f},    [OB_AMYGDALA] = {2.0f, 3.0f},
+    [OB_THALAMUS] = {2.0f, 2.0f},     [OB_TECTUM] = {1.0f, 2.0f},          [OB_COLLICULUS_INF] = {1.0f, 2.0f},
+    [OB_OCCIPITAL] = {3.0f, 2.0f},    [OB_CEREBELLUM] = {6.0f, 3.0f},      [OB_BASAL_GANGLIA] = {6.0f, 3.0f},
+    [OB_PARIETAL] = {12.0f, 6.0f},    [OB_TEMPORAL] = {12.0f, 6.0f},       [OB_ENTORHINAL] = {12.0f, 6.0f},
+    [OB_HIPPOCAMPUS] = {12.0f, 6.0f}, [OB_FRONTAL] = {30.0f, 12.0f},
+};
+
+float ob_myelin_at(unsigned region, double months) {
+  if (region >= OB_REGIONS || WAVE[region].width <= 0.0f) return 1.0f;
+  return (float)(1.0 / (1.0 + exp(-(months - WAVE[region].half) / WAVE[region].width)));
+}
+
+void ob_one_age(ob_one_t *O, double months) {
+  unsigned r, i;
+  O->months = months;
+  for (r = 0u; r < OB_REGIONS; r++) O->myelin[r] = ob_myelin_at(r, months);
+  for (i = 0u; i < O->brain.n_neurons; i++) O->gain[i] = 0.5f + 0.5f * O->myelin[O->brain.neuron[i].region];
+}
 
 void ob_one_born(ob_one_t *O, const ob_brain_t *grown, unsigned seed, unsigned curiosity) {
   unsigned s, i;
@@ -466,6 +495,8 @@ void ob_one_born(ob_one_t *O, const ob_brain_t *grown, unsigned seed, unsigned c
   O->remembers = 1u;
   O->episodes = 1u;
   O->cortex_learns = 1u;
+  for (i = 0u; i < OB_REGIONS; i++) O->myelin[i] = 1.0f;
+  for (i = 0u; i < O->brain.n_neurons; i++) O->gain[i] = 1.0f;
   O->trace_rule = 0u;   /* Foldiak's trace rule: tried, and it did not help here (see test_cortex.c) */
   for (i = 0u; i < OL_GROUPS; i++) {
     O->recalled[i] = -1;

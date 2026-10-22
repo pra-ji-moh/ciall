@@ -56,13 +56,18 @@ entorhinal cortex is grown as the hippocampus's gateway; its hippocampus has
 patterns of its own, and it recalls episodes through them (a little help, so
 far; the per-sense memory still does most). 
 
-**Phase 2, step 2, done:** the frontal cortex reasons by elimination (Hartley):
-its DLPFC holds hypotheses, its IPS picks the test that splits them, its ACC
-strikes out what the outcome contradicts, its FEF carries tests out through its
-own eyes and acts. Its capacity follows prefrontal myelination. It finds a
-blicket box's hidden rule (of 144) in about 11 tries at three years, 66 at
-three months, and its twin learning by reward alone barely does
-(`test_frontal.c`; `brain/README.md`).
+**Phase 2, step 2, done:** the frontal cortex reasons by elimination (Hartley),
+and it grows into it. The brain ages (`ob_one_age`), and the myelination wave
+goes through it, the frontal cortex last. Its DLPFC holds hypotheses as groups
+of neurons that keep themselves firing, as many as their myelin lets them
+against shared inhibition: none before 8 months, 39 at three years. Its ACC
+darkens what an outcome contradicts. In one unbroken life, from genes through
+the womb to three years, it meets a blicket box (a rule of 144) and needs 143
+tries at 9 months, 73 at a year, 18 at two, 12 at three; the same life without
+frontal reasoning barely makes it chime (`test_frontal.c`; `brain/README.md`).
+
+**Next:** the being proposes its own hypotheses, from what its cortex has
+learned, instead of being handed a list.
 
 The life brain (`ob_life.c`) stays as the sketch it was: smaller, faster, and
 the thing to compare the one brain against. Where the one brain does worse

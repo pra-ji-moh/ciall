@@ -23,6 +23,7 @@
 #include "ob.h"
 #include "ob_crib.h"
 #include "ob_one.h"
+#include "ob_box.h"
 
 static ob_brain_t BRAIN;
 static ob_womb_stats_t TOUCH;
@@ -33,6 +34,7 @@ static ob_reflex_stats_t REFLEX;
 static ob_mobile_stats_t MOBILE, YOKED;
 static ob_one_t ONE;
 static ob_crib_life_t CRIB;
+static ob_world_t WORLD;
 
 static unsigned live_one(void *self, const float *in) { return ob_one_live((ob_one_t *)self, in); }
 
@@ -158,6 +160,7 @@ int main(int argc, char **argv) {
     double x[OC_EXAMS];
     unsigned m, tenth, most[OC_TENTHS];
     ob_one_born(&ONE, &BRAIN, g.seed, OL_PROGRESS);
+    ob_one_age(&ONE, 3.0);
     being.self = &ONE;
     being.live = live_one;
     being.err = ONE.err;
@@ -199,6 +202,34 @@ int main(int argc, char **argv) {
                    "            moment: when now is one I have lived, I expect what came next then (%lu times, in\n"
                    "            what I heard).\n",
             ONE.recalls[OL_HEAR]);
+  }
+  /* months 6 to 36: it grows up; the myelination wave reaches its frontal
+     cortex last, and a box comes now and then (ob_box.c) */
+  {
+    static const double AT[] = {9.0, 12.0, 24.0, 36.0};
+    unsigned k;
+    ob_one_age(&ONE, 6.0);
+    ob_world_make(&WORLD, g.seed + 7u);
+    fprintf(diary, "\nmonths 6-36 My brain goes on wrapping its axons in myelin: my senses' paths were done in the\n"
+                   "            first months, my cerebellum and basal ganglia by about six; my parietal and temporal\n"
+                   "            lobes are half way at a year; my frontal lobe is last, half way at two and a half.\n");
+    for (k = 0u; k < sizeof AT / sizeof AT[0]; k++) {
+      ob_box_meeting_t m;
+      ob_grow_up(&WORLD, &ONE, AT[k], 1000ul);
+      ob_box_meet(&WORLD, &ONE, (k * 2654435761u >> 9) % OB_BOX_RULES, 1500ul, 0u, &m);
+      fprintf(diary, "month %-5.0f A box that chimes when I do the right thing, looking at the right place: one rule\n"
+                     "            of %u. ", AT[k], OB_BOX_RULES);
+      if (m.room == 0u)
+        fprintf(diary, "I cannot hold an idea in mind yet. I do what I do, and it chimes %.1f times\n"
+                       "            in a hundred moments.\n", 100.0 * m.chime_rate);
+      else if (m.found)
+        fprintf(diary, "I can hold %u ideas of it in mind at once. I try what splits them, and\n"
+                       "            rule out what the chime says is wrong: I know it after %u tries, and make it chime\n"
+                       "            %.0f times in a hundred moments.\n", m.room, m.tries, 100.0 * m.chime_rate);
+      else
+        fprintf(diary, "I can hold %u ideas of it in mind at once; I rule out %u, and do not find it.\n",
+                m.room, m.struck);
+    }
   }
   fclose(diary);
 
