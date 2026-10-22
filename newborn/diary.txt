@@ -29,14 +29,34 @@ month 3     A mobile hangs over me; a ribbon ties it to my leg. At first I kick 
 months 3-6  Nobody tells me what to do. My brainstem is restless; when it fires I look, or make a
             sound, or jerk. I like what I am getting better at predicting, and I get bored of
             what I know. What I did most, in each tenth of these months:
-            look up, look up, make a sound, make a sound, make a sound,
-            make a sound, make a sound, jerk, make a sound, make a sound.
-            In the end I look at the snow on the television 8% of the time, and at each other
+            make a sound, jerk, jerk, look right, look right,
+            look left, look right, look down, look left, look left.
+            In the end I look at the snow on the television 7% of the time, and at each other
             corner 14%: it never gets any easier, so it holds nothing for me.
-            Still surprising: my own voice 1%, my mother talking 54%, her answering me 17%;
-            my own jerks 3%, being rocked 65%; her touch 94%.
-            I know my own voice from hers. I know my own jerks from her rocking.
+            Still surprising: my own voice 47%, my mother talking 57%, her answering me 38%;
+            my own jerks 10%, being rocked 44%; her touch 89%.
+            I cannot yet tell my voice from hers. I know my own jerks from her rocking.
             All of it in my own brain: my cerebellum's synapses to my thalamus learned what to
             expect, my basal ganglia's synapses to my brainstem what to want. And I keep every
-            moment: when now is one I have lived, I expect what came next then (28256 times, in
+            moment: when now is one I have lived, I expect what came next then (8623 times, in
             what I heard).
+
+months 6-36 My brain goes on wrapping its axons in myelin: my senses' paths were done in the
+            first months, my cerebellum and basal ganglia by about six; my parietal and temporal
+            lobes are half way at a year; my frontal lobe is last, half way at two and a half.
+month 9     A box that chimes when I do the right thing, looking at the right place: one rule
+            of 144. I can hold 2 ideas of it in mind at once. I try what splits them, and
+            rule out what the chime says is wrong: I know it after 143 tries, and make it chime
+            33 times in a hundred moments.
+month 12    A box that chimes when I do the right thing, looking at the right place: one rule
+            of 144. I can hold 4 ideas of it in mind at once. I try what splits them, and
+            rule out what the chime says is wrong: I know it after 74 tries, and make it chime
+            33 times in a hundred moments.
+month 24    A box that chimes when I do the right thing, looking at the right place: one rule
+            of 144. I can hold 19 ideas of it in mind at once. I try what splits them, and
+            rule out what the chime says is wrong: I know it after 17 tries, and make it chime
+            33 times in a hundred moments.
+month 36    A box that chimes when I do the right thing, looking at the right place: one rule
+            of 144. I can hold 39 ideas of it in mind at once. I try what splits them, and
+            rule out what the chime says is wrong: I know it after 12 tries, and make it chime
+            33 times in a hundred moments.
