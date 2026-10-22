@@ -3317,3 +3317,235 @@ when	game	colour	cells	act	family	arg	sightings	if_so	if_not	suggested_by
 2026-10-22 08:14	wa30	9	4	4	touch	4	48	do any of 25 things	stay where it is	library
 2026-10-22 08:14	wa30	9	28	1	ahead	30	48	change size	do any of 61 things	library
 2026-10-22 08:14	wa30	2	14	4	many	232	14	change size	do any of 4 things	its own study
+2026-10-22 14:15	ar25	10	81	1	size	117	15	do any of 123 things	do any of 2 things	its own study
+2026-10-22 14:15	ar25	4	36	4	near	83	24	go	do any of 2 things	library
+2026-10-22 14:15	ar25	4	36	4	near	84	24	go	do any of 2 things	library
+2026-10-22 14:15	ar25	4	36	4	size	36	24	do any of 2 things	go	its own study
+2026-10-22 14:15	ar25	4	45	1	nth	138	48	do any of 4 things	stay where it is	library
+2026-10-22 14:15	ar25	4	45	1	cycle	66	48	move -3 down and 0 across unless something is in the way	stay where it is	library
+2026-10-22 14:15	ar25	11	45	1	nth	115	48	do any of 2 things	do any of 209 things	library
+2026-10-22 14:15	bp35	3	1	22	touch	14	48	do any of 7 things	do any of 41 things	library
+2026-10-22 14:15	bp35	3	1	22	nth	202	48	move 4 down and 6 across unless something is in the way	do any of 94 things	library
+2026-10-22 14:15	bp35	3	1	22	nth	203	48	do any of 3 things	do any of 80 things	library
+2026-10-22 14:15	bp35	3	1	4	nth	520	48	do any of 2 things	move 6 down and 0 across unless something is in the way	library
+2026-10-22 14:15	bp35	3	1	4	nth	521	48	do any of 7 things	move 6 down and 0 across unless something is in the way	library
+2026-10-22 14:15	bp35	3	1	4	nth	522	48	do any of 20 things	move 6 down and 0 across unless something is in the way	library
+2026-10-22 14:15	bp35	10	1277	22	near	51	7	change size	do any of 256 things	library
+2026-10-22 14:15	bp35	10	1277	22	near	52	7	change size	do any of 256 things	library
+2026-10-22 14:15	bp35	10	1277	22	near	82	7	change size	do any of 256 things	library
+2026-10-22 14:15	bp35	5	612	3	near	162	7	change size	change colour	library
+2026-10-22 14:15	bp35	5	612	3	near	163	7	change size	change colour	library
+2026-10-22 14:15	bp35	5	612	3	line	10	7	change size	change colour	library
+2026-10-22 14:15	bp35	10	1462	11	many	56	48	change size	stay where it is	its own study
+2026-10-22 14:15	bp35	14	21	6	near	148	45	stay where it is	do any of 2 things	library
+2026-10-22 14:15	bp35	14	21	11	nth	1311	48	do any of 6 things	stay where it is	library
+2026-10-22 14:15	bp35	5	4	3	many	162	10	go	do any of 186 things	its own study
+2026-10-22 14:15	bp35	5	4	3	many	164	10	do any of 43 things	do any of 46 things	its own study
+2026-10-22 14:15	bp35	5	2	3	many	162	10	go	do any of 241 things	its own study
+2026-10-22 14:15	bp35	5	2	3	many	164	10	go	do any of 72 things	its own study
+2026-10-22 14:15	bp35	3	1	7	touch	14	48	do any of 2 things	do any of 3 things	library
+2026-10-22 14:15	bp35	3	1	7	ahead	21	48	do any of 3 things	do any of 2 things	library
+2026-10-22 14:15	bp35	3	1	7	ahead	30	48	do any of 2 things	do any of 3 things	library
+2026-10-22 14:15	bp35	0	18	11	nth	71	48	do any of 2 things	do any of 209 things	library
+2026-10-22 14:15	cd82	4	44	5	size	60	8	do any of 289 things	do any of 2 things	its own study
+2026-10-22 14:15	cd82	0	5	20	near	194	6	do any of 202 things	do any of 2 things	library
+2026-10-22 14:15	cd82	0	5	20	near	195	6	do any of 202 things	do any of 2 things	library
+2026-10-22 14:15	cd82	0	5	20	near	196	6	do any of 202 things	do any of 2 things	library
+2026-10-22 14:15	cd82	0	5	8	many	194	8	do any of 2 things	do any of 202 things	its own study
+2026-10-22 14:15	cd82	0	5	8	many	244	8	do any of 2 things	do any of 202 things	its own study
+2026-10-22 14:15	cd82	2	30	3	near	82	8	do any of 289 things	change size	library
+2026-10-22 14:15	cd82	15	84	3	many	2	14	do any of 278 things	change size	its own study
+2026-10-22 14:15	cd82	4	13	8	size	22	41	do any of 2 things	do any of 205 things	its own study
+2026-10-22 14:15	cd82	4	12	1	size	21	25	do any of 2 things	do any of 205 things	its own study
+2026-10-22 14:15	cd82	0	5	23	near	242	9	do any of 222 things	do any of 2 things	library
+2026-10-22 14:15	cd82	0	5	23	near	243	9	do any of 222 things	do any of 2 things	library
+2026-10-22 14:15	cd82	0	5	23	near	244	9	do any of 222 things	do any of 2 things	library
+2026-10-22 14:15	cd82	12	85	20	near	35	48	change size	stay where it is	library
+2026-10-22 14:15	cd82	12	85	20	size	85	48	change size	stay where it is	its own study
+2026-10-22 14:15	cd82	4	17	11	size	22	21	do any of 2 things	do any of 49 things	its own study
+2026-10-22 14:15	cd82	4	13	10	size	23	21	do any of 2 things	do any of 49 things	its own study
+2026-10-22 14:15	cd82	4	4	12	touch	0	48	do any of 289 things	do any of 2 things	library
+2026-10-22 14:15	cd82	4	4	12	touch	4	48	do any of 289 things	do any of 2 things	library
+2026-10-22 14:15	cd82	4	4	12	touch	5	48	do any of 2 things	do any of 289 things	library
+2026-10-22 14:15	cd82	4	63	11	size	63	12	do any of 193 things	do any of 2 things	its own study
+2026-10-22 14:15	cd82	0	35	5	many	208	7	change size	stay where it is	its own study
+2026-10-22 14:15	cd82	0	35	5	many	256	7	stay where it is	change size	its own study
+2026-10-22 14:15	cd82	12	55	1	touch	15	48	stay where it is	change size	library
+2026-10-22 14:15	cd82	12	55	1	ahead	16	48	change size	stay where it is	library
+2026-10-22 14:15	cd82	12	55	1	ahead	47	48	stay where it is	change size	library
+2026-10-22 14:15	cd82	12	55	8	touch	15	48	stay where it is	change size	library
+2026-10-22 14:15	cd82	12	55	8	ahead	16	48	change size	stay where it is	library
+2026-10-22 14:15	cd82	12	55	8	ahead	47	48	stay where it is	change size	library
+2026-10-22 14:15	cd82	12	55	12	touch	15	48	stay where it is	change size	library
+2026-10-22 14:15	cd82	12	55	12	ahead	16	48	change size	stay where it is	library
+2026-10-22 14:15	cd82	12	55	12	ahead	47	48	stay where it is	change size	library
+2026-10-22 14:15	cd82	0	84	11	near	35	15	change size	stay where it is	library
+2026-10-22 14:15	cd82	0	84	6	near	35	16	change size	stay where it is	library
+2026-10-22 14:15	cd82	0	84	10	near	35	15	change size	stay where it is	library
+2026-10-22 14:15	cd82	0	10	5	nth	78	48	move 5 down and 5 across unless something is in the way	stay where it is	library
+2026-10-22 14:15	cd82	0	10	5	nth	79	48	move 5 down and 5 across unless something is in the way	stay where it is	library
+2026-10-22 14:15	cd82	0	10	5	nth	80	48	move 5 down and 5 across unless something is in the way	stay where it is	library
+2026-10-22 14:15	cd82	4	4	1	touch	0	48	do any of 289 things	do any of 2 things	library
+2026-10-22 14:15	cd82	4	4	1	touch	4	48	do any of 289 things	do any of 2 things	library
+2026-10-22 14:15	cd82	4	4	1	touch	5	48	do any of 2 things	do any of 289 things	library
+2026-10-22 14:15	cd82	4	4	2	touch	0	48	do any of 289 things	do any of 2 things	library
+2026-10-22 14:15	cd82	4	4	2	touch	4	48	do any of 289 things	do any of 2 things	library
+2026-10-22 14:15	cd82	4	4	2	touch	5	48	do any of 2 things	do any of 289 things	library
+2026-10-22 14:15	cd82	4	4	5	nth	150	48	do any of 2 things	do any of 209 things	library
+2026-10-22 14:15	g50t	0	2649	5	near	148	5	do any of 289 things	change size	library
+2026-10-22 14:15	g50t	0	2649	5	size	331	5	change size	do any of 289 things	its own study
+2026-10-22 14:15	g50t	0	2649	5	many	146	5	do any of 289 things	change size	its own study
+2026-10-22 14:15	g50t	0	2649	1	near	148	5	do any of 289 things	change size	library
+2026-10-22 14:15	g50t	0	2649	1	size	331	5	change size	do any of 289 things	its own study
+2026-10-22 14:15	g50t	0	2649	1	many	146	5	do any of 289 things	change size	its own study
+2026-10-22 14:15	g50t	0	2649	4	near	148	5	stay where it is	change size	library
+2026-10-22 14:15	g50t	0	2649	4	size	331	5	change size	stay where it is	its own study
+2026-10-22 14:15	g50t	0	2649	4	many	146	5	stay where it is	change size	its own study
+2026-10-22 14:15	g50t	0	2649	3	near	148	5	do any of 278 things	change size	library
+2026-10-22 14:15	g50t	0	2649	3	size	331	5	change size	do any of 278 things	its own study
+2026-10-22 14:15	g50t	0	2649	3	many	146	5	do any of 278 things	change size	its own study
+2026-10-22 14:15	g50t	0	2649	2	near	148	5	stay where it is	change size	library
+2026-10-22 14:15	g50t	0	2649	2	line	9	5	stay where it is	change size	library
+2026-10-22 14:15	g50t	0	2649	2	size	331	5	change size	stay where it is	its own study
+2026-10-22 14:15	g50t	9	8	5	near	19	9	move 0 down and 4 across unless something is in the way	move 0 down and -4 across unless something is in the way	library
+2026-10-22 14:15	g50t	9	8	5	near	20	9	move 0 down and 4 across unless something is in the way	move 0 down and -4 across unless something is in the way	library
+2026-10-22 14:15	g50t	9	8	5	near	35	9	move 0 down and -4 across unless something is in the way	move 0 down and 4 across unless something is in the way	library
+2026-10-22 14:15	g50t	9	3	5	near	19	9	do any of 3 things	do any of 2 things	library
+2026-10-22 14:15	g50t	9	3	5	near	20	9	do any of 3 things	do any of 2 things	library
+2026-10-22 14:15	g50t	9	3	5	near	35	9	do any of 2 things	do any of 3 things	library
+2026-10-22 14:15	g50t	9	6	1	size	7	37	do any of 87 things	do any of 2 things	its own study
+2026-10-22 14:15	g50t	9	4	3	touch	1	48	do any of 2 things	do any of 98 things	library
+2026-10-22 14:15	g50t	9	4	3	nth	65	48	do any of 2 things	do any of 98 things	library
+2026-10-22 14:15	g50t	9	4	3	ahead	16	48	do any of 98 things	do any of 2 things	library
+2026-10-22 14:15	g50t	9	1	4	nth	194	48	do any of 2 things	do any of 13 things	library
+2026-10-22 14:15	g50t	8	66	5	size	82	48	stay where it is	change size	its own study
+2026-10-22 14:15	g50t	9	1	5	touch	0	48	do any of 2 things	do any of 39 things	library
+2026-10-22 14:15	g50t	9	1	5	touch	1	48	do any of 2 things	do any of 39 things	library
+2026-10-22 14:15	g50t	9	1	5	touch	5	48	do any of 39 things	do any of 2 things	library
+2026-10-22 14:15	g50t	9	4	4	nth	314	48	do any of 2 things	do any of 67 things	library
+2026-10-22 14:15	ls20	1	1	1	near	195	48	do any of 2 things	do any of 29 things	library
+2026-10-22 14:15	ls20	1	1	1	line	9	48	do any of 2 things	do any of 29 things	library
+2026-10-22 14:15	ls20	1	1	1	line	12	48	do any of 2 things	do any of 29 things	library
+2026-10-22 14:15	ls20	1	1	4	near	147	48	do any of 2 things	do any of 29 things	library
+2026-10-22 14:15	ls20	1	1	4	near	148	48	do any of 2 things	do any of 29 things	library
+2026-10-22 14:15	ls20	1	1	4	many	152	48	do any of 2 things	do any of 29 things	its own study
+2026-10-22 14:15	ls20	1	1	3	line	9	48	do any of 2 things	do any of 29 things	library
+2026-10-22 14:15	ls20	0	3	3	near	195	32	go	do any of 82 things	library
+2026-10-22 14:15	ls20	0	3	3	line	12	32	go	do any of 82 things	library
+2026-10-22 14:15	ls20	0	3	1	nth	81	48	go	do any of 82 things	library
+2026-10-22 14:15	ls20	0	3	1	line	12	48	go	do any of 82 things	library
+2026-10-22 14:15	ls20	0	3	1	many	200	48	go	do any of 82 things	its own study
+2026-10-22 14:15	ls20	5	76	1	nth	81	48	change colour	do any of 289 things	library
+2026-10-22 14:15	ls20	12	10	1	nth	93	48	do any of 2 things	move -5 down and 0 across unless something is in the way	library
+2026-10-22 14:15	ls20	12	10	1	nth	94	48	do any of 2 things	move -5 down and 0 across unless something is in the way	library
+2026-10-22 14:15	ls20	12	10	1	nth	95	48	do any of 2 things	move -5 down and 0 across unless something is in the way	library
+2026-10-22 14:15	ls20	12	10	4	nth	105	48	do any of 227 things	move 0 down and 5 across unless something is in the way	library
+2026-10-22 14:15	ls20	9	15	4	nth	105	48	do any of 241 things	move 0 down and 5 across unless something is in the way	library
+2026-10-22 14:15	re86	11	45	5	line	5	14	stay where it is	change colour	library
+2026-10-22 14:15	re86	11	45	5	size	45	14	change colour	stay where it is	its own study
+2026-10-22 14:15	re86	9	53	5	line	5	25	stay where it is	do any of 2 things	library
+2026-10-22 14:15	re86	9	53	5	size	53	25	do any of 2 things	stay where it is	its own study
+2026-10-22 14:15	re86	9	53	5	many	160	25	do any of 2 things	stay where it is	its own study
+2026-10-22 14:15	re86	11	11	3	nth	54	48	move 0 down and -3 across unless something is in the way	do any of 2 things	library
+2026-10-22 14:15	re86	11	11	3	nth	55	48	move 0 down and -3 across unless something is in the way	do any of 2 things	library
+2026-10-22 14:15	re86	11	11	3	nth	56	48	move 0 down and -3 across unless something is in the way	do any of 2 things	library
+2026-10-22 14:15	re86	15	14	1	touch	1	48	do any of 2 things	stay where it is	library
+2026-10-22 14:15	re86	15	14	1	nth	143	48	do any of 2 things	stay where it is	library
+2026-10-22 14:15	re86	15	14	1	ahead	21	48	stay where it is	do any of 2 things	library
+2026-10-22 14:15	re86	4	8	1	nth	147	48	do any of 2 things	stay where it is	library
+2026-10-22 14:15	re86	5	3851	5	size	3862	19	do any of 288 things	change size	its own study
+2026-10-22 14:15	re86	11	45	3	line	5	12	do any of 137 things	change size	library
+2026-10-22 14:15	re86	11	45	3	size	43	12	change size	do any of 137 things	its own study
+2026-10-22 14:15	re86	4	3	2	near	2	12	do any of 2 things	stay where it is	library
+2026-10-22 14:15	re86	4	3	2	near	3	12	do any of 2 things	stay where it is	library
+2026-10-22 14:15	re86	4	3	2	near	4	12	do any of 2 things	stay where it is	library
+2026-10-22 14:15	re86	9	1	1	near	179	48	do any of 4 things	stay where it is	library
+2026-10-22 14:15	re86	9	1	1	near	180	48	do any of 4 things	stay where it is	library
+2026-10-22 14:15	re86	9	1	1	line	11	48	do any of 4 things	stay where it is	library
+2026-10-22 14:15	re86	4	8	2	nth	303	48	do any of 2 things	stay where it is	library
+2026-10-22 14:15	re86	4	3	1	near	3	25	do any of 2 things	stay where it is	library
+2026-10-22 14:15	re86	4	3	1	near	4	25	do any of 2 things	stay where it is	library
+2026-10-22 14:15	re86	5	3875	3	nth	119	48	do any of 289 things	change colour	library
+2026-10-22 14:15	re86	15	58	3	many	146	5	do any of 2 things	do any of 233 things	its own study
+2026-10-22 14:15	re86	9	1	4	cycle	64	48	do any of 2 things	stay where it is	library
+2026-10-22 14:15	re86	9	1	4	near	178	48	do any of 2 things	stay where it is	library
+2026-10-22 14:15	re86	9	1	4	near	179	48	do any of 2 things	stay where it is	library
+2026-10-22 14:15	re86	11	5	1	many	152	12	do any of 6 things	stay where it is	its own study
+2026-10-22 14:15	re86	11	8	3	many	66	10	do any of 2 things	do any of 3 things	its own study
+2026-10-22 14:15	re86	9	1	2	nth	858	48	do any of 4 things	stay where it is	library
+2026-10-22 14:15	re86	9	1	2	cycle	66	48	do any of 2 things	stay where it is	library
+2026-10-22 14:15	re86	9	1	2	near	179	48	do any of 2 things	stay where it is	library
+2026-10-22 14:15	re86	11	11	1	nth	204	48	stay where it is	do any of 2 things	library
+2026-10-22 14:15	re86	11	11	2	nth	180	48	stay where it is	change size	library
+2026-10-22 14:15	re86	11	1	3	touch	0	48	do any of 66 things	stay where it is	library
+2026-10-22 14:15	re86	11	1	3	touch	4	48	stay where it is	do any of 66 things	library
+2026-10-22 14:15	re86	11	1	3	touch	5	48	do any of 66 things	stay where it is	library
+2026-10-22 14:15	tr87	7	5	2	line	3	8	do any of 2 things	do any of 3 things	library
+2026-10-22 14:15	tr87	7	5	2	size	6	8	do any of 222 things	change size	its own study
+2026-10-22 14:15	tr87	7	5	2	many	168	8	do any of 3 things	do any of 2 things	its own study
+2026-10-22 14:15	tr87	7	5	3	line	3	8	do any of 2 things	do any of 3 things	library
+2026-10-22 14:15	tr87	7	5	3	size	6	8	do any of 222 things	change size	its own study
+2026-10-22 14:15	tr87	7	5	3	many	168	8	do any of 3 things	do any of 2 things	its own study
+2026-10-22 14:15	tr87	7	5	1	line	3	8	do any of 2 things	do any of 3 things	library
+2026-10-22 14:15	tr87	7	5	1	size	6	8	do any of 222 things	change size	its own study
+2026-10-22 14:15	tr87	7	5	1	many	168	8	do any of 3 things	do any of 2 things	its own study
+2026-10-22 14:15	tr87	5	15	2	many	8	48	do any of 2 things	do any of 181 things	its own study
+2026-10-22 14:15	tr87	5	14	1	near	4	7	do any of 2 things	do any of 213 things	library
+2026-10-22 14:15	tr87	5	14	1	line	0	7	do any of 2 things	do any of 213 things	library
+2026-10-22 14:15	tr87	5	14	1	many	4	7	do any of 2 things	do any of 213 things	its own study
+2026-10-22 14:15	tr87	5	14	2	line	0	22	do any of 2 things	do any of 213 things	library
+2026-10-22 14:15	tr87	7	5	4	size	6	10	do any of 250 things	change size	its own study
+2026-10-22 14:15	tr87	5	19	2	line	0	18	do any of 2 things	do any of 213 things	library
+2026-10-22 14:15	tr87	5	19	2	many	2	18	do any of 2 things	do any of 213 things	its own study
+2026-10-22 14:15	tr87	5	19	2	many	4	18	do any of 2 things	do any of 213 things	its own study
+2026-10-22 14:15	tr87	5	15	1	many	8	48	do any of 2 things	do any of 141 things	its own study
+2026-10-22 14:15	tr87	5	17	2	line	0	23	do any of 2 things	do any of 255 things	library
+2026-10-22 14:15	tr87	7	1	2	nth	107	48	do any of 3 things	do any of 291 things	library
+2026-10-22 14:15	tr87	7	1	2	nth	108	48	do any of 3 things	do any of 111 things	library
+2026-10-22 14:15	tr87	7	1	2	nth	109	48	do any of 3 things	do any of 75 things	library
+2026-10-22 14:15	tr87	5	19	1	line	0	25	do any of 2 things	do any of 93 things	library
+2026-10-22 14:15	tr87	7	4	2	line	0	32	do any of 2 things	do any of 18 things	library
+2026-10-22 14:15	tr87	5	16	2	line	0	24	do any of 2 things	do any of 70 things	library
+2026-10-22 14:15	tr87	5	16	2	many	8	24	do any of 2 things	do any of 70 things	its own study
+2026-10-22 14:15	tr87	5	17	1	line	0	17	do any of 2 things	do any of 69 things	library
+2026-10-22 14:15	tr87	7	1	1	nth	130	48	stay where it is	do any of 291 things	library
+2026-10-22 14:15	tr87	7	1	1	nth	131	48	stay where it is	do any of 96 things	library
+2026-10-22 14:15	tr87	7	1	1	nth	132	48	stay where it is	do any of 76 things	library
+2026-10-22 14:15	tr87	5	16	1	line	0	35	do any of 2 things	do any of 62 things	library
+2026-10-22 14:15	tr87	5	16	1	many	8	35	do any of 2 things	do any of 62 things	its own study
+2026-10-22 14:15	tr87	7	7	1	line	0	35	do any of 4 things	do any of 28 things	library
+2026-10-22 14:15	tr87	7	7	1	many	8	35	do any of 4 things	do any of 28 things	its own study
+2026-10-22 14:15	tr87	7	6	1	line	0	5	do any of 2 things	do any of 73 things	library
+2026-10-22 14:15	tr87	7	6	1	many	4	5	do any of 2 things	do any of 73 things	its own study
+2026-10-22 14:15	tr87	7	6	2	near	51	8	do any of 73 things	do any of 14 things	library
+2026-10-22 14:15	tr87	7	6	2	line	0	8	do any of 14 things	do any of 73 things	library
+2026-10-22 14:15	tr87	7	6	2	many	4	8	do any of 14 things	do any of 73 things	its own study
+2026-10-22 14:15	tr87	7	7	2	line	0	44	do any of 4 things	do any of 27 things	library
+2026-10-22 14:15	tr87	7	7	2	many	4	44	do any of 2 things	do any of 28 things	its own study
+2026-10-22 14:15	tr87	7	7	2	many	8	44	do any of 4 things	do any of 27 things	its own study
+2026-10-22 14:15	tr87	7	3	1	nth	110	48	do any of 2 things	do any of 2 things	library
+2026-10-22 14:15	tr87	7	3	1	nth	111	48	do any of 3 things	do any of 2 things	library
+2026-10-22 14:15	tr87	7	3	1	nth	112	48	do any of 3 things	do any of 2 things	library
+2026-10-22 14:15	tr87	7	4	1	nth	62	48	do any of 6 things	do any of 242 things	library
+2026-10-22 14:15	tr87	7	4	1	nth	63	48	do any of 6 things	do any of 242 things	library
+2026-10-22 14:15	tr87	7	4	1	nth	64	48	do any of 6 things	do any of 242 things	library
+2026-10-22 14:15	tr87	1	64	2	touch	5	48	do any of 112 things	do any of 2 things	library
+2026-10-22 14:15	tr87	1	64	2	nth	93	48	do any of 2 things	do any of 112 things	library
+2026-10-22 14:15	tr87	1	64	2	ahead	5	48	do any of 112 things	do any of 2 things	library
+2026-10-22 14:15	tr87	7	3	2	near	4	48	do any of 2 things	stay where it is	library
+2026-10-22 14:15	tr87	7	3	2	line	0	48	do any of 2 things	stay where it is	library
+2026-10-22 14:15	tr87	7	3	2	many	4	48	do any of 2 things	stay where it is	its own study
+2026-10-22 14:15	tr87	1	64	4	touch	5	48	do any of 112 things	do any of 283 things	library
+2026-10-22 14:15	tr87	1	64	4	nth	34	48	do any of 110 things	do any of 133 things	library
+2026-10-22 14:15	tr87	1	64	4	nth	35	48	do any of 110 things	do any of 112 things	library
+2026-10-22 14:15	tr87	1	43	2	near	3	5	do any of 235 things	do any of 2 things	library
+2026-10-22 14:15	tr87	1	43	2	near	4	5	do any of 235 things	do any of 2 things	library
+2026-10-22 14:15	tr87	1	43	2	many	2	5	do any of 235 things	do any of 2 things	its own study
+2026-10-22 14:15	tr87	1	64	1	touch	5	48	do any of 112 things	do any of 2 things	library
+2026-10-22 14:15	tr87	1	64	1	nth	263	48	do any of 2 things	do any of 112 things	library
+2026-10-22 14:15	tr87	1	64	1	ahead	5	48	do any of 112 things	do any of 2 things	library
+2026-10-22 14:15	tr87	1	62	3	near	4	5	do any of 2 things	do any of 271 things	library
+2026-10-22 14:15	tr87	1	62	3	many	2	5	do any of 2 things	do any of 271 things	its own study
+2026-10-22 14:15	tr87	1	62	3	many	4	5	do any of 2 things	do any of 271 things	its own study
+2026-10-22 14:15	tr87	3	1352	3	nth	116	48	do any of 289 things	change colour	library
+2026-10-22 14:15	tr87	3	1352	4	nth	108	48	do any of 289 things	change colour	library
