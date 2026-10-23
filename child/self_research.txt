@@ -697,3 +697,7 @@
   from version 81 (one of 11 still standing) it made version 96: SELF_WATCH 0u->96u; SELF_RESTLESS_WINDOW 24u->12u
   development games, two seeds averaged: 2.0 levels, 0.349% (its parent: 11.0, 0.786%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-10-23 22:40  (building itself: one generation)
+  from version 69 (one of 11 still standing) it made version 97: SELF_WATCH 0u->96u; SELF_OFF_CLOCK 0->1
+  it does not pass its own checks (60 passed, 1 failed): kept on the record as a dead end
