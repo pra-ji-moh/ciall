@@ -689,3 +689,6 @@
   from version 76 (one of 11 still standing) it made version 95: combined 76 and 73
   development games, two seeds averaged: 3.0 levels, 0.243% (its parent: 11.0, 0.786%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-10-23 13:57  (building itself: one generation)
+  from version 84 it made a version it had already made (combined 84 and 61); it tries again next time

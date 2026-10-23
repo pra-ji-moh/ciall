@@ -150,3 +150,4 @@
 2026-10-22T22:41   likeness on read 68288 stories: 18457 words, 863402 places words stood in, 522783 word pairs read  SHOWN BOTH, picked the real one: 71.4% picked the swapped one: 0.6% could not tell: 28.0%
 2026-10-23T01:58   likeness on read 68788 stories: 18500 words, 867066 places words stood in, 524932 word pairs read  SHOWN BOTH, picked the real one: 72.9% picked the swapped one: 0.9% could not tell: 26.1%
 2026-10-23T08:05   likeness on read 69288 stories: 18528 words, 870100 places words stood in, 526661 word pairs read  SHOWN BOTH, picked the real one: 67.9% picked the swapped one: 0.4% could not tell: 31.7%
+2026-10-23T13:57   likeness on read 69788 stories: 18585 words, 873784 places words stood in, 528759 word pairs read  SHOWN BOTH, picked the real one: 79.4% picked the swapped one: 0.3% could not tell: 20.3%
