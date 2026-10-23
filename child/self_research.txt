@@ -684,3 +684,8 @@
 2026-10-23 01:59  (building itself: one generation)
   from version 80 (one of 11 still standing) it made version 94: SELF_FRESH_STARTS 1u->6u; SELF_OFF_CLOCK 0->1; SELF_WATCH 0u->48u
   it does not pass its own checks (60 passed, 1 failed): kept on the record as a dead end
+
+2026-10-23 09:07  (building itself: one generation)
+  from version 76 (one of 11 still standing) it made version 95: combined 76 and 73
+  development games, two seeds averaged: 3.0 levels, 0.243% (its parent: 11.0, 0.786%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
