@@ -721,3 +721,8 @@
   from version 69 (one of 11 still standing) it made version 101: SELF_BOLD 1->0; SELF_OFF_SKIP 0->1
   development games, two seeds averaged: 2.5 levels, 0.179% (its parent: 14.5, 0.715%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-10-24 23:32  (building itself: one generation)
+  from version 73 (one of 11 still standing) it made version 102: combined 73 and 80
+  development games, two seeds averaged: 3.0 levels, 0.122% (its parent: 13.5, 0.717%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
