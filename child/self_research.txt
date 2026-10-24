@@ -711,3 +711,8 @@
   from version 81 (one of 11 still standing) it made version 99: SELF_TICK_MAX 16u->8u
   development games, two seeds averaged: 3.0 levels, 0.145% (its parent: 11.0, 0.786%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-10-24 17:37  (building itself: one generation)
+  from version 69 (one of 11 still standing) it made version 100: SELF_OFF_REPLAY 1->0; SELF_OFF_RESTLESS 1->0
+  development games, two seeds averaged: 2.0 levels, 0.014% (its parent: 14.5, 0.715%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
