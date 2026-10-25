@@ -737,3 +737,8 @@
 
 2026-10-25 12:50  (building itself: one generation)
   from version 69 it made a version it had already made (combined 69 and 71); it tries again next time
+
+2026-10-25 20:45  (building itself: one generation)
+  from version 80 (one of 11 still standing) it made version 104: SELF_OFF_THEORY 1->0
+  development games, two seeds averaged: 2.0 levels, 0.007% (its parent: 13.5, 0.717%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
