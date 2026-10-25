@@ -734,3 +734,6 @@
 
 2026-10-25 06:31  (building itself: one generation)
   from version 71 it made a version it had already made (SELF_OFF_CLOCK 0->1); it tries again next time
+
+2026-10-25 12:50  (building itself: one generation)
+  from version 69 it made a version it had already made (combined 69 and 71); it tries again next time
