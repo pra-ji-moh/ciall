@@ -742,3 +742,8 @@
   from version 80 (one of 11 still standing) it made version 104: SELF_OFF_THEORY 1->0
   development games, two seeds averaged: 2.0 levels, 0.007% (its parent: 13.5, 0.717%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-10-25 23:20  (building itself: one generation)
+  from version 69 (one of 11 still standing) it made version 105: SELF_OFF_STOOD 0->1; SELF_OFF_PLAN 0->1; SELF_MATCH_WEIGHT 4.0->8.0
+  development games, two seeds averaged: 2.0 levels, 0.640% (its parent: 14.5, 0.715%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is

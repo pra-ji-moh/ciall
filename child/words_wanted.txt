@@ -1,25 +1,25 @@
-# the edge of the child's language, 2026-10-25 20:04
+# the edge of the child's language, 2026-10-25 22:45
 # by kind of sense (cases accounted for, words wanted, cases nothing reaches):
-#   space           66 | near | 234
-#   number          96 | size, many | 0
+#   space           36 | near | 150
+#   number          60 | size, many | 0
 #   body            0 | - | 0
-#   time            44 | - | 0
-#   pattern         56 | line | 0
-#   others          10 | follow, appears | 23
-#   transformation  0 | becomes-size, merge-split | 203
+#   time            29 | - | 0
+#   pattern         35 | line | 0
+#   others          6 | follow, appears | 9
+#   transformation  0 | becomes-size, merge-split | 128
 # words it wants: what study could use but play cannot, and what was suggested it cannot test
 appears	suggested 2 times (library); I have no word to test it with
 becomes-size	suggested 6 times (library); I have no word to test it with
-follow	suggested 30 times (library); I have no word to test it with
-line	accounts for 56 cases in study, but cannot be held in play yet
-many	accounts for 61 cases in study, but cannot be held in play yet
-merge-split	suggested 2 times (library); I have no word to test it with
-near	accounts for 54 cases in study, but cannot be held in play yet
-size	accounts for 35 cases in study, but cannot be held in play yet
+follow	suggested 29 times (library); I have no word to test it with
+line	accounts for 35 cases in study, but cannot be held in play yet
+many	accounts for 41 cases in study, but cannot be held in play yet
+merge-split	suggested 1 times (library); I have no word to test it with
+near	accounts for 30 cases in study, but cannot be held in play yet
+size	accounts for 19 cases in study, but cannot be held in play yet
 # cases no family reaches at all, by what happened in the last sighting
-unreached:stayed	202 cases
-unreached:size	191 cases
-unreached:moved	32 cases
-unreached:gone	23 cases
-unreached:other	7 cases
-unreached:colour	5 cases
+unreached:stayed	125 cases
+unreached:size	118 cases
+unreached:moved	25 cases
+unreached:gone	9 cases
+unreached:colour	7 cases
+unreached:other	3 cases
