@@ -1,30 +1,18 @@
 ciall-explorer-mind 1
-runs 202
+runs 203
 best 0
 mask 24 44 0
 mask 24 45 0
 mask 24 46 0
 mask 24 47 0
-mask 24 48 0
-mask 24 49 0
-mask 24 50 0
-mask 24 51 0
 mask 25 44 0
 mask 25 47 0
-mask 25 48 0
-mask 25 51 0
 mask 26 44 0
 mask 26 47 0
-mask 26 48 0
-mask 26 51 0
 mask 27 44 0
 mask 27 45 0
 mask 27 46 0
 mask 27 47 0
-mask 27 48 0
-mask 27 49 0
-mask 27 50 0
-mask 27 51 0
 mask 28 16 0
 mask 28 17 0
 mask 28 18 0
@@ -37,6 +25,34 @@ mask 31 16 0
 mask 31 17 0
 mask 31 18 0
 mask 31 19 0
+mask 32 32 0
+mask 32 33 0
+mask 32 34 0
+mask 32 35 0
+mask 32 48 0
+mask 32 49 0
+mask 32 50 0
+mask 32 51 0
+mask 33 32 0
+mask 33 33 0
+mask 33 34 0
+mask 33 35 0
+mask 33 48 0
+mask 33 51 0
+mask 33 53 0
+mask 33 54 0
+mask 34 32 0
+mask 34 33 0
+mask 34 34 0
+mask 34 35 0
+mask 34 48 0
+mask 34 51 0
+mask 34 53 0
+mask 34 54 0
+mask 35 48 0
+mask 35 49 0
+mask 35 50 0
+mask 35 51 0
 mask 36 32 0
 mask 36 33 0
 mask 36 34 0
@@ -113,17 +129,17 @@ mask 63 60 0
 mask 63 61 0
 mask 63 62 0
 mask 63 63 0
-colour 0 82652 6159 0
+colour 0 83924 6262 0
 shift 1 0 -22 6 1
-shift 2 0 22 -6 1
-shift 3 0 6 -22 1
+shift 2 0 28 0 2
+shift 3 0 -6 -22 3
 shift 4 0 6 22 1
-colour 1 82774 56195 0
-shift 1 1 64 0 152
-shift 2 1 -64 0 136
-shift 3 1 0 64 21
-shift 4 1 0 -64 27
-colour 2 2 614 0
+colour 1 84058 56884 0
+shift 1 1 64 0 43
+shift 2 1 -64 0 40
+shift 3 1 0 64 11
+shift 4 1 0 -64 11
+colour 2 2 623 0
 shift 4 2 0 -42 2
 colour 3 7 0 0
 shift 1 3 -96 -48 1
@@ -137,22 +153,22 @@ colour 5 0 0 0
 colour 6 0 0 0
 colour 7 0 0 0
 colour 8 0 0 0
-colour 9 9105 2503 0
-shift 1 9 -16 0 2032
-shift 2 9 16 0 2586
-shift 3 9 0 -16 3661
-shift 4 9 0 16 28
+colour 9 9162 2527 0
+shift 1 9 -16 0 2045
+shift 2 9 16 0 2602
+shift 3 9 0 -16 3674
+shift 4 9 0 16 43
 colour 10 0 0 0
 colour 11 0 0 0
 colour 12 0 0 0
 colour 13 0 0 0
-colour 14 89370 0 0
+colour 14 90752 0 0
 shift 1 14 -42 -6 1
-shift 2 14 42 6 1
-shift 3 14 -6 -42 1
+shift 2 14 36 0 2
+shift 3 14 6 -42 3
 shift 4 14 -6 42 1
 colour 15 0 0 0
-onto 58702 0 3
+onto 59415 0 3
 kind 536870917 1 1
 kind 536870914 1 1
 kind 536870916 1 1
