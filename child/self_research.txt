@@ -731,3 +731,6 @@
   from version 69 (one of 11 still standing) it made version 103: SELF_OFF_RESTLESS 1->0; SELF_DEATH_RETRIES 10u->3u
   development games, two seeds averaged: 2.0 levels, 0.009% (its parent: 14.5, 0.715%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-10-25 06:31  (building itself: one generation)
+  from version 71 it made a version it had already made (SELF_OFF_CLOCK 0->1); it tries again next time
