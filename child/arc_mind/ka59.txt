@@ -1,90 +1,29 @@
 ciall-explorer-mind 1
-runs 200
+runs 201
 best 0
+mask 26 21 0
+mask 26 22 0
+mask 26 23 0
 mask 30 26 0
 mask 31 26 0
 mask 32 26 0
-mask 63 0 0
-mask 63 1 0
-mask 63 2 0
-mask 63 3 0
-mask 63 4 0
-mask 63 5 0
-mask 63 6 0
-mask 63 7 0
-mask 63 8 0
-mask 63 9 0
-mask 63 10 0
-mask 63 11 0
-mask 63 12 0
-mask 63 13 0
-mask 63 14 0
-mask 63 15 0
-mask 63 16 0
-mask 63 17 0
-mask 63 18 0
-mask 63 19 0
-mask 63 20 0
-mask 63 21 0
-mask 63 22 0
-mask 63 23 0
-mask 63 24 0
-mask 63 25 0
-mask 63 26 0
-mask 63 27 0
-mask 63 28 0
-mask 63 29 0
-mask 63 30 0
-mask 63 31 0
-mask 63 32 0
-mask 63 33 0
-mask 63 34 0
-mask 63 35 0
-mask 63 36 0
-mask 63 37 0
-mask 63 38 0
-mask 63 39 0
-mask 63 40 0
-mask 63 41 0
-mask 63 42 0
-mask 63 43 0
-mask 63 44 0
-mask 63 45 0
-mask 63 46 0
-mask 63 47 0
-mask 63 48 0
-mask 63 49 0
-mask 63 50 0
-mask 63 51 0
-mask 63 52 0
-mask 63 53 0
-mask 63 54 0
-mask 63 55 0
-mask 63 56 0
-mask 63 57 0
-mask 63 58 0
-mask 63 59 0
-mask 63 60 0
-mask 63 61 0
-mask 63 62 0
-mask 63 63 0
-colour 0 3028 0 0
-shift 1 0 -3 0 817
-shift 2 0 3 0 723
-shift 3 0 0 -3 807
-shift 4 0 0 3 681
-colour 1 3782 964 0
-shift 1 1 27 0 149
-shift 2 1 -27 0 99
-shift 3 1 0 27 63
-shift 4 1 0 -27 52
+colour 0 3131 0 0
+shift 1 0 -3 0 838
+shift 2 0 3 0 745
+shift 3 0 0 -3 837
+shift 4 0 0 3 711
+colour 1 3986 964 0
+shift 1 1 27 0 187
+shift 2 1 -27 0 141
+shift 3 1 0 27 123
+shift 4 1 0 -27 116
 colour 2 0 0 0
 colour 3 0 0 0
-colour 4 21 0 0
-shift 1 4 -31 2 1
-shift 2 4 -27 0 1
+colour 4 31 0 0
+shift 1 4 -31 -16 1
+shift 2 4 -33 4 1
 shift 3 4 -37 40 1
-shift 4 4 -31 -26 1
+shift 4 4 -31 -45 1
 colour 5 5 0 0
 shift 4 5 0 15 5
 colour 6 0 0 0
@@ -95,11 +34,11 @@ colour 10 0 0 0
 colour 11 0 0 0
 colour 12 0 0 0
 colour 13 0 0 0
-colour 14 6285 0 0
-shift 1 14 -24 0 1344
-shift 2 14 24 0 135
-shift 3 14 0 -24 91
-shift 4 14 0 24 61
+colour 14 6548 0 0
+shift 1 14 -24 0 1392
+shift 2 14 24 0 195
+shift 3 14 0 -24 4
+shift 4 14 0 24 135
 colour 15 0 0 0
 onto 964 0 1
 kind 5 1 1
@@ -117,13 +56,15 @@ kind 17730 1 1
 kind 7202 1 0
 kind 536870916 1 1
 kind 47 1 0
-kind 63493 1 0
+kind 63493 1 1
 kind 2053 1 0
+kind 51205 1 0
 kind 14658 1 1
 kind 8226 1 0
 kind 536870913 1 1
 kind 1 1 1
 kind 61441 1 0
+kind 12289 1 0
 kind 6 1 1
 kind 1071 1 0
 kind 5456 1 1
