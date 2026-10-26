@@ -1,25 +1,25 @@
-# the edge of the child's language, 2026-10-26 14:50
+# the edge of the child's language, 2026-10-26 20:57
 # by kind of sense (cases accounted for, words wanted, cases nothing reaches):
-#   space           58 | near | 383
-#   number          89 | size, many | 0
+#   space           48 | near | 246
+#   number          85 | size, many | 0
 #   body            0 | - | 0
-#   time            42 | - | 0
-#   pattern         45 | line | 0
-#   others          7 | follow, appears | 25
-#   transformation  0 | becomes-size, merge-split | 317
+#   time            28 | - | 0
+#   pattern         41 | line | 0
+#   others          5 | follow, appears | 37
+#   transformation  0 | becomes-size, merge-split | 200
 # words it wants: what study could use but play cannot, and what was suggested it cannot test
 appears	suggested 2 times (library); I have no word to test it with
 becomes-size	suggested 6 times (library); I have no word to test it with
-follow	suggested 29 times (library); I have no word to test it with
-line	accounts for 45 cases in study, but cannot be held in play yet
-many	accounts for 61 cases in study, but cannot be held in play yet
+follow	suggested 30 times (library); I have no word to test it with
+line	accounts for 41 cases in study, but cannot be held in play yet
+many	accounts for 51 cases in study, but cannot be held in play yet
 merge-split	suggested 2 times (library); I have no word to test it with
-near	accounts for 51 cases in study, but cannot be held in play yet
-size	accounts for 28 cases in study, but cannot be held in play yet
+near	accounts for 40 cases in study, but cannot be held in play yet
+size	accounts for 34 cases in study, but cannot be held in play yet
 # cases no family reaches at all, by what happened in the last sighting
-unreached:stayed	334 cases
-unreached:size	306 cases
-unreached:moved	49 cases
-unreached:gone	25 cases
-unreached:colour	6 cases
-unreached:other	5 cases
+unreached:stayed	205 cases
+unreached:size	190 cases
+unreached:moved	41 cases
+unreached:gone	37 cases
+unreached:colour	7 cases
+unreached:other	3 cases

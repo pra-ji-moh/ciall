@@ -762,3 +762,8 @@
   from version 84 (one of 11 still standing) it made version 108: SELF_RESTLESS_WINDOW 24u->12u
   development games, two seeds averaged: 1.5 levels, 0.007% (its parent: 2.5, 0.804%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-10-26 21:52  (building itself: one generation)
+  from version 76 (one of 11 still standing) it made version 109: SELF_OFF_PLAN 0->1
+  development games, two seeds averaged: 2.0 levels, 0.004% (its parent: 11.0, 0.786%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
