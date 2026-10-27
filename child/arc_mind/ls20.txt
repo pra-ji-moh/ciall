@@ -1,5 +1,5 @@
 ciall-explorer-mind 1
-runs 214
+runs 215
 best 1
 mask 61 13 0
 mask 61 14 0
@@ -43,10 +43,6 @@ mask 61 51 0
 mask 61 52 0
 mask 61 53 0
 mask 61 54 0
-mask 61 59 0
-mask 61 60 0
-mask 61 62 0
-mask 61 63 0
 mask 62 13 0
 mask 62 14 0
 mask 62 15 0
@@ -89,18 +85,14 @@ mask 62 51 0
 mask 62 52 0
 mask 62 53 0
 mask 62 54 0
-mask 62 59 0
-mask 62 60 0
-mask 62 62 0
-mask 62 63 0
 colour 0 0 0 0
 colour 1 0 0 0
 colour 2 0 0 0
-colour 3 514851 769 0
-shift 1 3 125 0 498
+colour 3 514854 769 0
+shift 1 3 125 0 499
 shift 2 3 -125 0 50
-shift 3 3 0 125 40
-shift 4 3 0 -125 74
+shift 3 3 0 125 41
+shift 4 3 0 -125 75
 colour 4 0 1147 0
 colour 5 24886 746 0
 shift 1 5 0 -16 1
@@ -110,24 +102,22 @@ shift 4 5 -16 0 1
 colour 6 0 0 0
 colour 7 0 0 0
 colour 8 0 0 0
-colour 9 560162 0 0
-shift 1 9 -75 0 20
+colour 9 560166 0 0
+shift 1 9 -75 0 21
 shift 2 9 75 0 21
-shift 3 9 0 -75 29
-shift 4 9 0 75 74
+shift 3 9 0 -75 31
+shift 4 9 0 75 75
 colour 10 0 0 0
 colour 11 0 0 0
-colour 12 560152 0 0
-shift 1 12 -50 0 20
+colour 12 560156 0 0
+shift 1 12 -50 0 21
 shift 2 12 50 0 21
-shift 3 12 0 -50 29
-shift 4 12 0 50 74
+shift 3 12 0 -50 31
+shift 4 12 0 50 75
 colour 13 0 0 0
 colour 14 0 0 0
 colour 15 0 0 0
 onto 1147 0 1
-family TOUCH_R+BODYAT 1
-widened 1
 kind 536870914 1 1
 kind 536870916 1 1
 kind 536870913 1 1

@@ -775,3 +775,7 @@
 
 2026-10-27 06:40  (building itself: one generation)
   from version 74 it made a version it had already made (combined 74 and 81); it tries again next time
+
+2026-10-27 13:49  (building itself: one generation)
+  from version 61 (one of 11 still standing) it made version 111: SELF_OFF_CLOCK 0->1
+  it does not pass its own checks (60 passed, 1 failed): kept on the record as a dead end
