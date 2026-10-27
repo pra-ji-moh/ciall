@@ -1,16 +1,18 @@
 ciall-explorer-mind 1
-runs 189
+runs 190
 best 2
 mask 7 32 0
 mask 7 33 0
 mask 7 34 0
 mask 7 35 0
 mask 7 36 0
+mask 7 37 0
 mask 7 38 0
 mask 7 39 0
 mask 7 40 0
 mask 7 41 0
 mask 7 42 0
+mask 7 43 0
 mask 7 44 0
 mask 7 45 0
 mask 7 46 0
