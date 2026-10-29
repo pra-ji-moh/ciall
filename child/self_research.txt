@@ -809,3 +809,8 @@
   from version 78 (one of 11 still standing) it made version 117: SELF_OFF_REDRAW 1->0; SELF_OFF_THEORY 1->0; SELF_FEW_SITUATIONS 32u->128u
   development games, two seeds averaged: 1.5 levels, 0.406% (its parent: 13.5, 0.717%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-10-29 14:33  (building itself: one generation)
+  from version 80 (one of 11 still standing) it made version 118: SELF_WATCH 0u->16u; SELF_TIE_MODE 1u->0u
+  development games, two seeds averaged: 1.5 levels, 0.008% (its parent: 13.5, 0.717%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
