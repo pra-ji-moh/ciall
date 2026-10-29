@@ -799,3 +799,8 @@
   from version 78 (one of 11 still standing) it made version 115: combined 78 and 74
   development games, two seeds averaged: 2.0 levels, 0.550% (its parent: 13.5, 0.717%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-10-29 00:45  (building itself: one generation)
+  from version 72 (one of 11 still standing) it made version 116: SELF_OFF_CURIOUS 1->0
+  development games, two seeds averaged: 3.5 levels, 0.078% (its parent: 14.5, 0.715%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is

@@ -1,25 +1,25 @@
-# the edge of the child's language, 2026-10-28 19:25
+# the edge of the child's language, 2026-10-28 23:36
 # by kind of sense (cases accounted for, words wanted, cases nothing reaches):
-#   space           67 | near | 364
-#   number          95 | size, many | 0
+#   space           49 | near | 266
+#   number          72 | size, many | 0
 #   body            0 | - | 0
-#   time            57 | - | 0
-#   pattern         53 | line | 0
-#   others          15 | follow, appears | 34
-#   transformation  0 | becomes-size, merge-split | 344
+#   time            32 | - | 0
+#   pattern         40 | line | 0
+#   others          10 | follow, appears | 21
+#   transformation  0 | becomes-size, merge-split | 180
 # words it wants: what study could use but play cannot, and what was suggested it cannot test
 appears	suggested 3 times (library); I have no word to test it with
 becomes-size	suggested 6 times (library); I have no word to test it with
 follow	suggested 30 times (library); I have no word to test it with
-line	accounts for 53 cases in study, but cannot be held in play yet
-many	accounts for 69 cases in study, but cannot be held in play yet
+line	accounts for 40 cases in study, but cannot be held in play yet
+many	accounts for 47 cases in study, but cannot be held in play yet
 merge-split	suggested 2 times (library); I have no word to test it with
-near	accounts for 48 cases in study, but cannot be held in play yet
-size	accounts for 26 cases in study, but cannot be held in play yet
+near	accounts for 39 cases in study, but cannot be held in play yet
+size	accounts for 25 cases in study, but cannot be held in play yet
 # cases no family reaches at all, by what happened in the last sighting
-unreached:size	333 cases
-unreached:stayed	331 cases
-unreached:gone	34 cases
-unreached:moved	33 cases
-unreached:colour	7 cases
-unreached:other	4 cases
+unreached:stayed	227 cases
+unreached:size	175 cases
+unreached:moved	39 cases
+unreached:gone	21 cases
+unreached:other	3 cases
+unreached:colour	2 cases
