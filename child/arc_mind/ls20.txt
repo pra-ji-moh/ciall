@@ -1,39 +1,128 @@
 ciall-explorer-mind 1
-runs 222
+runs 223
 best 1
+mask 61 13 0
+mask 61 14 0
+mask 61 15 0
+mask 61 16 0
+mask 61 17 0
+mask 61 18 0
+mask 61 19 0
+mask 61 20 0
+mask 61 21 0
+mask 61 22 0
+mask 61 23 0
+mask 61 24 0
+mask 61 25 0
+mask 61 26 0
+mask 61 27 0
+mask 61 28 0
+mask 61 29 0
+mask 61 30 0
+mask 61 31 0
+mask 61 32 0
+mask 61 33 0
+mask 61 34 0
+mask 61 35 0
+mask 61 36 0
+mask 61 37 0
+mask 61 38 0
+mask 61 39 0
+mask 61 40 0
+mask 61 41 0
+mask 61 42 0
+mask 61 43 0
+mask 61 44 0
+mask 61 45 0
+mask 61 46 0
+mask 61 47 0
+mask 61 48 0
+mask 61 49 0
+mask 61 50 0
+mask 61 51 0
+mask 61 52 0
+mask 61 53 0
+mask 61 54 0
+mask 61 62 0
+mask 61 63 0
+mask 62 13 0
+mask 62 14 0
+mask 62 15 0
+mask 62 16 0
+mask 62 17 0
+mask 62 18 0
+mask 62 19 0
+mask 62 20 0
+mask 62 21 0
+mask 62 22 0
+mask 62 23 0
+mask 62 24 0
+mask 62 25 0
+mask 62 26 0
+mask 62 27 0
+mask 62 28 0
+mask 62 29 0
+mask 62 30 0
+mask 62 31 0
+mask 62 32 0
+mask 62 33 0
+mask 62 34 0
+mask 62 35 0
+mask 62 36 0
+mask 62 37 0
+mask 62 38 0
+mask 62 39 0
+mask 62 40 0
+mask 62 41 0
+mask 62 42 0
+mask 62 43 0
+mask 62 44 0
+mask 62 45 0
+mask 62 46 0
+mask 62 47 0
+mask 62 48 0
+mask 62 49 0
+mask 62 50 0
+mask 62 51 0
+mask 62 52 0
+mask 62 53 0
+mask 62 54 0
+mask 62 62 0
+mask 62 63 0
 colour 0 0 0 0
 colour 1 0 0 0
 colour 2 0 0 0
-colour 3 517245 773 0
-shift 1 3 125 0 87
-shift 2 3 -125 0 32
+colour 3 517408 773 0
+shift 1 3 125 0 180
+shift 2 3 -125 0 39
 shift 3 3 0 125 8
-shift 4 3 0 -125 32
+shift 4 3 0 -125 69
 colour 4 0 1153 0
-colour 5 24948 748 0
-shift 1 5 0 -16 5
+colour 5 24949 748 0
+shift 1 5 0 -16 6
 shift 2 5 0 16 1
 shift 3 5 0 16 1
 shift 4 5 16 0 2
 colour 6 0 0 0
 colour 7 0 0 0
 colour 8 0 0 0
-colour 9 562745 0 0
-shift 1 9 -75 0 11
-shift 2 9 75 0 21
-shift 3 9 0 -75 11
-shift 4 9 0 75 1
+colour 9 562915 0 0
+shift 1 9 -75 0 93
+shift 2 9 75 0 28
+shift 3 9 0 -75 8
+shift 4 9 0 75 31
 colour 10 0 0 0
 colour 11 0 1 0
-colour 12 562735 0 0
-shift 1 12 -50 0 103
-shift 2 12 50 0 37
-shift 3 12 0 -50 11
-shift 4 12 0 50 1
+colour 12 562905 0 0
+shift 1 12 -50 0 198
+shift 2 12 50 0 44
+shift 3 12 0 -50 8
+shift 4 12 0 50 31
 colour 13 0 0 0
 colour 14 0 0 0
 colour 15 0 0 0
 onto 1153 0 1
+family TOUCH_R 1
 kind 536870914 1 1
 kind 536870916 1 1
 kind 536870913 1 1

@@ -4234,3 +4234,76 @@ practice, with what study found against without:
   re86   without: 0 levels, 58 unaccounted, right 863/872  |  with: 0 levels, 43 unaccounted, right 971/978
   tr87   without: 0 levels, 63 unaccounted, right 292/294  |  with: 0 levels, 43 unaccounted, right 281/283
 
+== study, 2026-10-31 02:53: 655 cases it could not account for in play, from 7 games
+
+families of fact, and how many cases each accounts for:
+  touch    12   (usable in play)
+  nth      26   (usable in play)
+  level     0   (usable in play)
+  ahead    12   (usable in play)
+  cycle     8   (usable in play)
+  near     53   (study only: a word it wants)
+  line     45   (study only: a word it wants)
+  size     39   (study only: a word it wants)
+  many     61   (study only: a word it wants)
+accounted for: 99 of 655; still with no account: 556
+
+how hard each game is (bits of evidence it could not account for) and practice given:
+  cd82    659.4 bits, 200 cases, 5 newly playable, 2 practice runs
+  tr87    501.0 bits, 150 cases, 13 newly playable, 2 practice runs
+  re86    459.4 bits, 121 cases, 7 newly playable, 2 practice runs
+  ar25    282.8 bits, 64 cases, 0 newly playable, 0 practice runs
+  bp35    223.4 bits, 56 cases, 3 newly playable, 1 practice runs
+  g50t    153.5 bits, 45 cases, 1 newly playable, 1 practice runs
+  ls20     76.9 bits, 19 cases, 0 newly playable, 0 practice runs
+
+reading: 12 questions
+  60 new sources
+
+what it read and was told, and whether its own sightings bore it out:
+  WANT:follow            cannot test: I do not have a word for it     (30 suggestions, e.g. Lights Out (Lanterns))
+  ahead                  borne out: accounts for 12 cases             (27 suggestions, e.g. Playing a 2D Game Indefinitely using NEA)
+  touch                  borne out: accounts for 12 cases             (10 suggestions, e.g. Ms. Pac-Man)
+  cycle                  borne out: accounts for 8 cases              (9 suggestions, e.g. Lights Out (game))
+  WANT:becomes-size      cannot test: I do not have a word for it     (6 suggestions, e.g. Random Walk Learning and the Pac-Man Att)
+  line                   borne out: accounts for 45 cases             (4 suggestions, e.g. Monge-Ampère of Pac-Man)
+  near                   borne out: accounts for 53 cases             (2 suggestions, e.g. Lights Out (game))
+  WANT:appears           cannot test: I do not have a word for it     (2 suggestions, e.g. Ms. Pac-Man)
+  WANT:merge-split       cannot test: I do not have a word for it     (2 suggestions, e.g. It Takes Two (video game))
+  nth                    borne out: accounts for 26 cases             (1 suggestions, e.g. Random Walk Learning and the Pac-Man Att)
+
+holding in play from now: touch, nth, level, misread, ahead, cycle
+
+by kind of sense: cases its words account for / words it wants / cases nothing reaches:
+  space             65 / near                                   / 295
+  number           100 / size, many                             /   0
+  body               0 / -                                      /   0
+  time              34 / -                                      /   0
+  pattern           45 / line                                   /   0
+  others            12 / follow, appears                        /  33
+  transformation     0 / becomes-size, merge-split              / 228   <- a sense it lacks
+
+why, case by case (the first few):
+  colour 10, act 1, in ar25: it changed size. In play I had no rule that says so. Studying the 24 times, it turns on whether it was at least 108 cells big: if so, it would do any of 145 things; if not, it would do any of 2 things. I hold this because every one of the 24 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 4, act 4, in ar25: it moved 0 down and -3 across. In play I had no rule that says so. Studying the 41 times, it turns on whether colour 5 was within 3 cells of it: if so, it would go; if not, it would do any of 2 things. I hold this because every one of the 41 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 3, act 22, in bp35: it moved -8 down and -8 across. In play I had no rule that says so. Studying the 48 times, it turns on whether it was touching colour 14: if so, it would do any of 7 things; if not, it would do any of 41 things. I hold this because every one of the 48 sightings agrees with it, and the idea was suggested by library (Ms. Pac-Man). The first time that fact holds and it does something else, I drop it.
+  colour 3, act 4, in bp35: it moved -6 down and -6 across. In play I had no rule that says so. Studying the 48 times, it turns on whether this had already happened 520 times: something unseen changed then: if so, it would do any of 2 things; if not, it would move 6 down and 0 across unless something is in the way. I hold this because every one of the 48 sightings agrees with it, and the idea was suggested by library (Random Walk Learning and the Pac-Man Attack). The first time that fact holds and it does something else, I drop it.
+  colour 10, act 22, in bp35: it changed size. In play I had no rule that says so. Studying the 7 times, it turns on whether colour 3 was within 3 cells of it: if so, it would change size; if not, it would do any of 256 things. I hold this because every one of the 7 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 5, act 4, in bp35: it changed colour. In play I had no rule that says so. Studying the 10 times, it turns on whether it was at least 1879 cells big: if so, it would change colour; if not, it would change size. I hold this because every one of the 10 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 0, act 4, in bp35: it changed size. In play I had no rule that says so. Studying the 7 times, it turns on whether it was at least 54 cells big: if so, it would do any of 2 things; if not, it would do any of 217 things. I hold this because every one of the 7 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 11, act 3, in bp35: it moved 0 down and -8 across. In play I had no rule that says so. Studying the 5 times, it turns on whether colour 10 was within 2 cells of it: if so, it would do any of 2 things; if not, it would do any of 9 things. I hold this because every one of the 5 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 9, act 4, in bp35: it turned colour 10. In play I had no rule that says so. Studying the 11 times, it turns on whether colour 14 was within 4 cells of it: if so, it would do any of 9 things; if not, it would do any of 2 things. I hold this because every one of the 11 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 11, act 4, in bp35: it moved 0 down and 8 across. In play I had no rule that says so. Studying the 11 times, it turns on whether colour 14 was within 3 cells of it: if so, it would do any of 9 things; if not, it would do any of 2 things. I hold this because every one of the 11 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 5, act 7, in bp35: it stayed where it was. In play I had no rule that says so. Studying the 10 times, it turns on whether colour 10 was in line with it, the same row or column: if so, it would do any of 2 things; if not, it would do any of 236 things. I hold this because every one of the 10 sightings agrees with it, and the idea was suggested by library (Monge-Ampère of Pac-Man). The first time that fact holds and it does something else, I drop it.
+  colour 0, act 11, in bp35: it changed size. In play I had no rule that says so. Studying the 48 times, it turns on whether this had already happened 64 times: something unseen changed then: if so, it would do any of 2 things; if not, it would do any of 209 things. I hold this because every one of the 48 sightings agrees with it, and the idea was suggested by library (Random Walk Learning and the Pac-Man Attack). The first time that fact holds and it does something else, I drop it.
+  colour 0, act 4, in ar25: it moved -3 down and -3 across, and no fact in any family I have splits the 14 times. I need a word I do not have.
+  colour 0, act 7, in ar25: it stayed where it was, and no fact in any family I have splits the 18 times. I need a word I do not have.
+  colour 10, act 2, in ar25: it changed size, and no fact in any family I have splits the 30 times. I need a word I do not have.
+  colour 10, act 7, in ar25: it changed size, and no fact in any family I have splits the 19 times. I need a word I do not have.
+  colour 0, act 3, in ar25: it stayed where it was, and no fact in any family I have splits the 48 times. I need a word I do not have.
+
+
+practice, with what study found against without:
+  cd82   without: 1 levels, 104 unaccounted, right 102/125  |  with: 1 levels, 90 unaccounted, right 122/137
+  tr87   without: 0 levels, 63 unaccounted, right 292/294  |  with: 0 levels, 43 unaccounted, right 281/283
+
