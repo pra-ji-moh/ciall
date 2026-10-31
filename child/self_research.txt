@@ -847,3 +847,7 @@
   from version 72 (one of 11 still standing) it made version 124: SELF_OFF_REPLAY 1->0
   development games, two seeds averaged: 1.5 levels, 0.628% (its parent: 14.5, 0.715%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-10-31 20:21  (building itself: one generation)
+  from version 69 (one of 11 still standing) it made version 125: SELF_OFF_UNMASK 0->1; SELF_OFF_CLOCK 0->1; SELF_DEATH_RETRIES 10u->20u
+  it does not pass its own checks (60 passed, 1 failed): kept on the record as a dead end
