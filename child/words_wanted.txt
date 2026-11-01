@@ -1,25 +1,25 @@
-# the edge of the child's language, 2026-11-01 14:45
+# the edge of the child's language, 2026-11-01 20:08
 # by kind of sense (cases accounted for, words wanted, cases nothing reaches):
-#   space           91 | near | 322
-#   number          117 | size, many | 0
+#   space           89 | near | 354
+#   number          136 | size, many | 0
 #   body            0 | - | 0
-#   time            40 | - | 0
-#   pattern         61 | line | 0
-#   others          13 | follow, appears | 44
-#   transformation  0 | becomes-size, merge-split | 285
+#   time            46 | - | 0
+#   pattern         70 | line | 0
+#   others          13 | follow, appears | 51
+#   transformation  0 | becomes-size, merge-split | 321
 # words it wants: what study could use but play cannot, and what was suggested it cannot test
 appears	suggested 3 times (library); I have no word to test it with
 becomes-size	suggested 6 times (library); I have no word to test it with
-follow	suggested 29 times (library); I have no word to test it with
-line	accounts for 61 cases in study, but cannot be held in play yet
-many	accounts for 82 cases in study, but cannot be held in play yet
+follow	suggested 30 times (library); I have no word to test it with
+line	accounts for 70 cases in study, but cannot be held in play yet
+many	accounts for 92 cases in study, but cannot be held in play yet
 merge-split	suggested 2 times (library); I have no word to test it with
 near	accounts for 77 cases in study, but cannot be held in play yet
-size	accounts for 35 cases in study, but cannot be held in play yet
+size	accounts for 44 cases in study, but cannot be held in play yet
 # cases no family reaches at all, by what happened in the last sighting
-unreached:stayed	287 cases
-unreached:size	274 cases
-unreached:gone	44 cases
-unreached:moved	35 cases
-unreached:colour	7 cases
-unreached:other	4 cases
+unreached:size	304 cases
+unreached:stayed	302 cases
+unreached:moved	52 cases
+unreached:gone	51 cases
+unreached:colour	10 cases
+unreached:other	7 cases
