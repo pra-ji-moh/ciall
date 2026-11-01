@@ -1,6 +1,70 @@
 ciall-explorer-mind 1
-runs 202
-best 2
+runs 203
+best 3
+mask 20 4 0
+mask 20 5 0
+mask 20 6 0
+mask 20 7 0
+mask 20 8 0
+mask 20 9 0
+mask 20 10 0
+mask 20 11 0
+mask 21 4 0
+mask 21 5 0
+mask 21 6 0
+mask 21 7 0
+mask 21 8 0
+mask 21 9 0
+mask 21 10 0
+mask 21 11 0
+mask 22 4 0
+mask 22 5 0
+mask 22 6 0
+mask 22 7 0
+mask 22 8 0
+mask 22 9 0
+mask 22 10 0
+mask 22 11 0
+mask 23 4 0
+mask 23 5 0
+mask 23 6 0
+mask 23 7 0
+mask 23 8 0
+mask 23 9 0
+mask 23 10 0
+mask 23 11 0
+mask 28 36 0
+mask 28 37 0
+mask 28 38 0
+mask 28 39 0
+mask 28 40 0
+mask 28 41 0
+mask 28 42 0
+mask 28 43 0
+mask 29 36 0
+mask 29 37 0
+mask 29 38 0
+mask 29 39 0
+mask 29 40 0
+mask 29 41 0
+mask 29 42 0
+mask 29 43 0
+mask 30 36 0
+mask 30 37 0
+mask 30 38 0
+mask 30 39 0
+mask 30 40 0
+mask 30 41 0
+mask 30 42 0
+mask 30 43 0
+mask 31 36 0
+mask 31 37 0
+mask 31 38 0
+mask 31 39 0
+mask 31 40 0
+mask 31 41 0
+mask 31 42 0
+mask 31 43 0
 mask 63 0 0
 mask 63 1 0
 mask 63 2 0
@@ -69,33 +133,33 @@ colour 0 0 0 0
 colour 1 0 0 0
 colour 2 0 0 0
 colour 3 0 0 0
-colour 4 0 22 0
+colour 4 0 23 0
 colour 5 0 0 0
-colour 6 0 102 0
+colour 6 0 106 0
 colour 7 0 0 0
-colour 8 7623 4267 0
+colour 8 7663 4311 1
 shift 1 8 128 -512 1
 shift 2 8 -64 -128 1
-shift 3 8 0 256 1
-shift 4 8 0 -256 2
-shift 5 8 -768 -2688 1
-colour 9 147862 0 0
-shift 1 9 -256 0 1
-shift 2 9 256 0 1
+shift 3 8 0 320 1
+shift 4 8 0 -256 4
+shift 5 8 -768 -2304 1
+colour 9 148770 0 0
+shift 1 9 -384 0 5
+shift 2 9 384 0 5
 shift 3 9 0 -384 1
-shift 4 9 0 320 1
-shift 5 9 768 2688 1
+shift 4 9 0 384 1
+shift 5 9 768 2304 1
 colour 10 0 0 0
 colour 11 0 29 0
-colour 12 135480 86718 27
-shift 1 12 256 0 1
-shift 2 12 -256 0 1
+colour 12 136289 87277 27
+shift 1 12 384 0 5
+shift 2 12 -384 0 5
 shift 3 12 0 384 1
-shift 4 12 0 -320 1
+shift 4 12 0 -384 1
 colour 13 0 0 0
 colour 14 0 0 0
 colour 15 0 0 0
-onto 89387 27 4
+onto 89961 28 4
 widened 2
 kind 536870917 1 1
 kind 64562 1 0
@@ -136,3 +200,4 @@ kind 7226 1 1
 kind 23610 1 0
 route 0 4 16384 16384 16384 20480
 route 1 9 25675 16384 16384 16384 20480 16384 16384 25691 20480
+route 2 5 8192 8192 25937 12288 8192
