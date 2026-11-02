@@ -1,5 +1,5 @@
 ciall-explorer-mind 1
-runs 192
+runs 193
 best 2
 mask 7 32 0
 mask 7 33 0
@@ -122,11 +122,13 @@ kind 6335 1 0
 kind 46212 1 0
 kind 536870914 1 1
 kind 3119 1 0
+kind 4240 1 0
 kind 2140 1 0
 kind 5153 1 0
 kind 2112 1 0
 kind 4179 1 0
 kind 3129 1 0
+kind 3200 1 0
 kind 17 1 0
 kind 5168 1 0
 kind 2089 1 1
@@ -170,6 +172,7 @@ kind 4239 1 0
 kind 9281 1 0
 kind 2106 1 0
 kind 4173 1 0
+kind 8269 1 0
 kind 2144 1 0
 kind 2111 1 0
 kind 5162 1 0

@@ -870,3 +870,8 @@
   from version 76 (one of 11 still standing) it made version 129: combined 76 and 78
   development games, two seeds averaged: 3.0 levels, 0.634% (its parent: 11.0, 0.786%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-11-02 07:40  (building itself: one generation)
+  from version 78 (one of 11 still standing) it made version 130: SELF_OFF_DEATHS 0->1; SELF_OFF_PLAN 0->1; SELF_OFF_RESTLESS 1->0
+  development games, two seeds averaged: 2.5 levels, 0.100% (its parent: 13.5, 0.717%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
