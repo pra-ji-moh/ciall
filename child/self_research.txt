@@ -884,3 +884,6 @@
 2026-11-03 00:14  (building itself: one generation)
   from version 72 (one of 11 still standing) it made version 132: SELF_OFF_CLOCK 0->1; SELF_OFF_CURIOUS 1->0
   it does not pass its own checks (60 passed, 1 failed): kept on the record as a dead end
+
+2026-11-03 07:14  (building itself: one generation)
+  from version 74 it made a version it had already made (SELF_OFF_RESTLESS 1->0); it tries again next time
