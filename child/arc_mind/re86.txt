@@ -1,9 +1,6 @@
 ciall-explorer-mind 1
-runs 268
+runs 269
 best 1
-mask 12 21 1
-mask 12 24 1
-mask 18 15 1
 mask 19 38 0
 mask 23 39 0
 mask 23 40 0
@@ -13,10 +10,6 @@ mask 24 41 0
 mask 25 39 0
 mask 25 40 0
 mask 25 41 0
-mask 33 51 1
-mask 33 54 1
-mask 36 51 1
-mask 36 54 1
 mask 63 0 0
 mask 63 1 0
 mask 63 2 0
@@ -81,51 +74,51 @@ mask 63 60 0
 mask 63 61 0
 mask 63 62 0
 mask 63 63 0
-colour 0 133307 0 0
-shift 1 0 -3 0 29448
-shift 2 0 3 0 26682
-shift 3 0 0 -3 25251
-shift 4 0 0 3 25427
-shift 5 0 12 9 1
+colour 0 135467 0 0
+shift 1 0 -3 0 29909
+shift 2 0 3 0 27106
+shift 3 0 0 -3 25675
+shift 4 0 0 3 25834
+shift 5 0 -6 12 1
 colour 1 0 0 0
 colour 2 0 0 0
 colour 3 0 0 0
-colour 4 546 4 0
-shift 1 4 25 0 1
-shift 2 4 -12 6 2
-shift 3 4 6 30 1
-shift 4 4 6 -36 1
-colour 5 220528 361 0
-shift 1 5 153 -3 1
-shift 2 5 -156 0 2
-shift 3 5 -12 143 1
-shift 4 5 12 -143 1
-shift 5 5 -15 -15 1
+colour 4 556 4 0
+shift 1 4 10 -6 1
+shift 2 4 -6 36 1
+shift 3 4 12 16 1
+shift 4 4 -36 -6 1
+colour 5 221038 361 0
+shift 1 5 159 0 4
+shift 2 5 -159 0 2
+shift 3 5 0 135 1
+shift 4 5 0 -135 1
+shift 5 5 6 -12 2
 colour 6 0 0 0
 colour 7 0 0 0
 colour 8 0 0 0
-colour 9 108608 5011 0
-shift 1 9 -129 0 1
-shift 2 9 129 0 1
-shift 3 9 0 -156 1
-shift 4 9 0 156 1
+colour 9 108914 5011 0
+shift 1 9 -156 0 5
+shift 2 9 156 0 7
+shift 3 9 0 -156 9
+shift 4 9 0 156 6
 shift 5 9 6 -21 1
 colour 10 0 0 0
-colour 11 110630 4284 0
-shift 1 11 -132 0 449
-shift 2 11 132 0 169
+colour 11 110641 4284 0
+shift 1 11 -132 0 457
+shift 2 11 132 0 172
 shift 3 11 0 -132 2
 shift 4 11 0 132 1
-colour 12 10410 0 0
-shift 1 12 -126 -9 1
-shift 2 12 126 9 1
-shift 3 12 6 -141 1
-shift 4 12 0 129 2
-colour 13 13173 0 0
-shift 1 13 -108 -3 1
-shift 2 13 108 3 1
-shift 3 13 4 -98 1
-shift 4 13 0 105 2
+colour 12 10608 0 0
+shift 1 12 -132 0 1
+shift 2 12 132 0 19
+shift 3 12 0 -132 10
+shift 4 12 0 132 9
+colour 13 13422 0 0
+shift 1 13 -107 3 1
+shift 2 13 107 -3 1
+shift 3 13 -3 3 3
+shift 4 13 3 -3 1
 colour 14 0 0 0
 colour 15 0 0 0
 onto 9660 0 3
