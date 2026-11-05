@@ -5454,3 +5454,84 @@ practice, with what study found against without:
   ka59   without: 0 levels, 85 unaccounted, right 187/203  |  with: 0 levels, 77 unaccounted, right 228/236
   re86   without: 0 levels, 58 unaccounted, right 863/872  |  with: 0 levels, 43 unaccounted, right 971/978
 
+== study, 2026-11-05 00:02: 385 cases it could not account for in play, from 5 games
+
+families of fact, and how many cases each accounts for:
+  touch     4   (usable in play)
+  nth      27   (usable in play)
+  level     0   (usable in play)
+  ahead    10   (usable in play)
+  cycle    11   (usable in play)
+  near     32   (study only: a word it wants)
+  line     40   (study only: a word it wants)
+  size     22   (study only: a word it wants)
+  many     46   (study only: a word it wants)
+accounted for: 78 of 385; still with no account: 307
+
+how hard each game is (bits of evidence it could not account for) and practice given:
+  tr87    501.6 bits, 151 cases, 10 newly playable, 2 practice runs
+  re86    419.1 bits, 107 cases, 12 newly playable, 2 practice runs
+  ls20    220.6 bits, 51 cases, 8 newly playable, 1 practice runs
+  g50t    187.6 bits, 58 cases, 0 newly playable, 0 practice runs
+  ar25     74.7 bits, 18 cases, 3 newly playable, 1 practice runs
+
+reading: 12 questions
+  could not read arXiv about 'Lights Out (game)': The read operation timed out
+  could not read arXiv about 'Pac-Man': The read operation timed out
+  could not read arXiv about 'Sokoban': The read operation timed out
+  could not read arXiv about 'abstraction and reasoning corpus': The read operation timed out
+  could not read arXiv about 'puzzle video game block pushing': HTTP Error 429: Unknown Error
+  could not read arXiv about 'puzzle video game collectible item': export.arxiv.org refused earlier this run
+  could not read arXiv about 'puzzle video game mechanics': export.arxiv.org refused earlier this run
+  could not read arXiv about 'puzzle video game object grows': export.arxiv.org refused earlier this run
+  could not read arXiv about 'puzzle video game obstacle': export.arxiv.org refused earlier this run
+  could not read arXiv about 'puzzle video game tile colour change': export.arxiv.org refused earlier this run
+  could not read arXiv about 'tile-based video game collision': export.arxiv.org refused earlier this run
+  38 new sources
+
+what it read and was told, and whether its own sightings bore it out:
+  WANT:follow            cannot test: I do not have a word for it     (18 suggestions, e.g. List of Pac-Man video games)
+  ahead                  borne out: accounts for 10 cases             (11 suggestions, e.g. Snake (video game genre))
+  cycle                  borne out: accounts for 11 cases             (10 suggestions, e.g. Lights Out (game))
+  WANT:becomes-size      cannot test: I do not have a word for it     (4 suggestions, e.g. Snake (video game genre))
+  touch                  borne out: accounts for 4 cases              (2 suggestions, e.g. Ms. Pac-Man)
+  WANT:appears           cannot test: I do not have a word for it     (2 suggestions, e.g. Ms. Pac-Man)
+  line                   borne out: accounts for 40 cases             (2 suggestions, e.g. Snake (video game genre))
+  WANT:merge-split       cannot test: I do not have a word for it     (2 suggestions, e.g. It Takes Two (video game))
+  near                   borne out: accounts for 32 cases             (1 suggestions, e.g. Lights Out (game))
+
+holding in play from now: touch, nth, level, misread, ahead, cycle
+
+by kind of sense: cases its words account for / words it wants / cases nothing reaches:
+  space             42 / near                                   / 141
+  number            68 / size, many                             /   0
+  body               0 / -                                      /   0
+  time              38 / -                                      /   0
+  pattern           40 / line                                   /   0
+  others             4 / appears, follow                        /  15
+  transformation     0 / becomes-size, merge-split              / 151   <- a sense it lacks
+
+why, case by case (the first few):
+  colour 10, act 1, in ar25: it changed size. In play I had no rule that says so. Studying the 22 times, it turns on whether it was at least 108 cells big: if so, it would do any of 145 things; if not, it would do any of 2 things. I hold this because every one of the 22 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 4, act 4, in ar25: it moved 0 down and -3 across. In play I had no rule that says so. Studying the 19 times, it turns on whether colour 5 was within 3 cells of it: if so, it would go; if not, it would do any of 2 things. I hold this because every one of the 19 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 5, act 3, in ar25: it changed colour. In play I had no rule that says so. Studying the 48 times, it turns on whether this had already happened 143 times: something unseen changed then: if so, it would change colour; if not, it would move 0 down and -3 across unless something is in the way. I hold this because every one of the 48 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 10, act 2, in ar25: it changed size. In play I had no rule that says so. Studying the 5 times, it turns on whether colour 4 was within 4 cells of it: if so, it would do any of 3 things; if not, it would do any of 2 things. I hold this because every one of the 5 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 5, act 1, in ar25: it changed size. In play I had no rule that says so. Studying the 48 times, it turns on whether it was touching colour 0: if so, it would change size; if not, it would do any of 272 things. I hold this because every one of the 48 sightings agrees with it, and the idea was suggested by library (Ms. Pac-Man). The first time that fact holds and it does something else, I drop it.
+  colour 0, act 2, in ar25: it stayed where it was. In play I had no rule that says so. Studying the 48 times, it turns on whether this had already happened 719 times: something unseen changed then: if so, it would do any of 3 things; if not, it would do any of 2 things. I hold this because every one of the 48 sightings agrees with it. The first time that fact holds and it does something else, I drop it.
+  colour 0, act 5, in g50t: it changed size. In play I had no rule that says so. Studying the 5 times, it turns on whether colour 9 was within 4 cells of it: if so, it would do any of 289 things; if not, it would change size. I hold this because every one of the 5 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 0, act 1, in g50t: it changed size. In play I had no rule that says so. Studying the 5 times, it turns on whether colour 9 was within 4 cells of it: if so, it would do any of 289 things; if not, it would change size. I hold this because every one of the 5 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 0, act 4, in g50t: it changed size. In play I had no rule that says so. Studying the 5 times, it turns on whether colour 9 was within 4 cells of it: if so, it would stay where it is; if not, it would change size. I hold this because every one of the 5 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 0, act 3, in g50t: it changed size. In play I had no rule that says so. Studying the 5 times, it turns on whether colour 9 was within 4 cells of it: if so, it would do any of 278 things; if not, it would change size. I hold this because every one of the 5 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 0, act 2, in g50t: it changed size. In play I had no rule that says so. Studying the 5 times, it turns on whether colour 9 was within 4 cells of it: if so, it would stay where it is; if not, it would change size. I hold this because every one of the 5 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 9, act 5, in g50t: it moved 0 down and 4 across. In play I had no rule that says so. Studying the 9 times, it turns on whether colour 1 was within 3 cells of it: if so, it would move 0 down and 4 across unless something is in the way; if not, it would move 0 down and -4 across unless something is in the way. I hold this because every one of the 9 sightings agrees with it, and the idea was suggested by library (Lights Out (game)). The first time that fact holds and it does something else, I drop it.
+  colour 0, act 4, in ar25: it moved -3 down and -3 across, and no fact in any family I have splits the 14 times. I need a word I do not have.
+  colour 0, act 7, in ar25: it stayed where it was, and no fact in any family I have splits the 18 times. I need a word I do not have.
+  colour 10, act 2, in ar25: it changed size, and no fact in any family I have splits the 25 times. I need a word I do not have.
+  colour 10, act 7, in ar25: it changed size, and no fact in any family I have splits the 15 times. I need a word I do not have.
+  colour 0, act 3, in ar25: it stayed where it was, and no fact in any family I have splits the 48 times. I need a word I do not have.
+
+
+practice, with what study found against without:
+  tr87   without: 0 levels, 63 unaccounted, right 292/294  |  with: 0 levels, 43 unaccounted, right 281/283
+  re86   without: 0 levels, 58 unaccounted, right 863/872  |  with: 0 levels, 43 unaccounted, right 971/978
+
