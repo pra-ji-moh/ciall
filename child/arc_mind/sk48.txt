@@ -1,5 +1,5 @@
 ciall-explorer-mind 1
-runs 209
+runs 210
 best 0
 mask 53 0 0
 mask 53 1 0
@@ -65,61 +65,61 @@ mask 53 60 0
 mask 53 61 0
 mask 53 62 0
 mask 53 63 0
-colour 0 31475 2 0
-shift 1 0 -72 0 16641
-shift 2 0 72 0 11993
-shift 7 0 72 0 1
-colour 1 20910 8 0
-shift 1 1 -150 0 1
-shift 2 1 150 0 1
-shift 7 1 198 0 1
-colour 2 20896 8 0
-shift 1 2 -54 0 1
-shift 2 2 54 0 1
-shift 7 2 78 0 1
-colour 3 16662 30592 0
-shift 1 3 48 0 9176
-shift 2 3 -48 0 6642
+colour 0 31685 2 0
+shift 1 0 -72 0 16736
+shift 2 0 72 0 12069
+shift 7 0 -72 0 1
+colour 1 21120 8 0
+shift 1 1 -18 0 1
+shift 2 1 162 0 1
+shift 7 1 -6 0 1
+colour 2 21105 8 0
+shift 1 2 6 0 1
+shift 2 2 66 0 1
+shift 7 2 18 0 1
+colour 3 16745 30788 0
+shift 1 3 48 0 9214
+shift 2 3 -48 0 6669
 shift 7 3 48 0 1
-colour 4 1625 31234 0
-shift 1 4 216 0 1
-shift 2 4 -216 0 1
+colour 4 1771 31435 0
+shift 1 4 120 0 1
+shift 2 4 -336 0 1
 shift 3 4 0 48 70
 shift 4 4 0 -48 16
-shift 7 4 -288 0 1
-colour 5 16675 31213 0
-shift 1 5 144 0 9189
-shift 2 5 -144 0 6642
+shift 7 4 -168 0 1
+colour 5 16759 31414 0
+shift 1 5 144 0 9228
+shift 2 5 -144 0 6669
 shift 7 5 144 0 1
-colour 6 31475 31214 0
-shift 1 6 -132 0 16641
-shift 2 6 132 0 11993
-shift 7 6 132 0 1
+colour 6 31685 31415 0
+shift 1 6 -132 0 16736
+shift 2 6 132 0 12069
+shift 7 6 -132 0 1
 colour 7 0 0 0
-colour 8 544 4 0
-shift 1 8 -96 0 71
-shift 2 8 96 0 78
-shift 3 8 0 -96 114
-shift 4 8 0 96 99
-shift 7 8 0 -96 1
-colour 9 865 4 0
-shift 1 9 -96 0 49
-shift 2 9 96 0 47
-shift 3 9 0 -96 31
-shift 4 9 0 96 23
-shift 7 9 96 0 1
+colour 8 567 4 0
+shift 1 8 -96 0 76
+shift 2 8 96 0 82
+shift 3 8 0 -96 120
+shift 4 8 0 96 101
+shift 7 8 96 0 1
+colour 9 904 4 0
+shift 1 9 -96 0 58
+shift 2 9 96 0 54
+shift 3 9 0 -96 37
+shift 4 9 0 96 31
+shift 7 9 0 96 1
 colour 10 0 0 0
 colour 11 0 0 0
 colour 12 0 0 0
 colour 13 0 0 0
-colour 14 3133 0 0
-shift 1 14 -96 0 37
-shift 2 14 96 0 32
+colour 14 3135 0 0
+shift 1 14 -96 0 38
+shift 2 14 96 0 33
 shift 3 14 0 -96 21
 shift 4 14 0 96 13
 shift 7 14 96 0 1
 colour 15 0 0 0
-onto 31234 0 3
+onto 31435 0 3
 kind 64661 1 0
 kind 29813 1 0
 kind 1042 1 0
