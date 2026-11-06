@@ -905,3 +905,8 @@
   from version 72 (one of 11 still standing) it made version 135: SELF_TIE_MODE 1u->0u
   development games, two seeds averaged: 2.5 levels, 0.003% (its parent: 14.5, 0.715%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-11-06 12:42  (building itself: one generation)
+  from version 71 (one of 11 still standing) it made version 136: SELF_OFF_REPLAY 1->0; SELF_RESTLESS_WINDOW 24u->8u; SELF_BOLD 1->0
+  development games, two seeds averaged: 2.0 levels, 0.049% (its parent: 14.5, 0.715%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
