@@ -930,3 +930,8 @@
   from version 61 (one of 11 still standing) it made version 140: SELF_OFF_RECALL 0->1; SELF_OFF_REACH 0->1; SELF_OFF_SKIP 0->1
   development games, two seeds averaged: 2.0 levels, 0.235% (its parent: 11.5, 0.730%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-11-07 22:21  (building itself: one generation)
+  from version 61 (one of 11 still standing) it made version 141: combined 61 and 121
+  development games, two seeds averaged: 2.0 levels, 0.002% (its parent: 11.5, 0.730%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
