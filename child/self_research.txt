@@ -915,3 +915,8 @@
   from version 73 (one of 11 still standing) it made version 137: SELF_TIE_MODE 1u->2u; SELF_TICK_MAX 8u->16u
   development games, two seeds averaged: 2.5 levels, 0.020% (its parent: 13.5, 0.717%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-11-07 00:29  (building itself: one generation)
+  from version 74 (one of 11 still standing) it made version 138: SELF_OFF_REDRAW 0->1
+  development games, two seeds averaged: 2.5 levels, 0.214% (its parent: 11.0, 0.786%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
