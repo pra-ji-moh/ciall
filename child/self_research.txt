@@ -945,3 +945,8 @@
   from version 121 (one of 11 still standing) it made version 143: SELF_FEW_SITUATIONS 32u->16u; SELF_OFF_UNMASK 0->1
   development games, two seeds averaged: 1.0 levels, 0.002% (its parent: 3.5, 0.865%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-11-08 16:38  (building itself: one generation)
+  from version 80 (one of 11 still standing) it made version 144: SELF_OFF_PLAN 0->1; SELF_KEEP_ACTS 40u->12u; SELF_OFF_REDRAW 1->0
+  development games, two seeds averaged: 1.0 levels, 0.007% (its parent: 13.5, 0.717%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
