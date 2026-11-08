@@ -950,3 +950,8 @@
   from version 80 (one of 11 still standing) it made version 144: SELF_OFF_PLAN 0->1; SELF_KEEP_ACTS 40u->12u; SELF_OFF_REDRAW 1->0
   development games, two seeds averaged: 1.0 levels, 0.007% (its parent: 13.5, 0.717%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-11-08 20:53  (building itself: one generation)
+  from version 72 (one of 11 still standing) it made version 145: SELF_MATCH_WEIGHT 4.0->16.0
+  development games, two seeds averaged: 0.5 levels, 0.002% (its parent: 14.5, 0.715%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
