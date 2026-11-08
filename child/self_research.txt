@@ -935,3 +935,8 @@
   from version 61 (one of 11 still standing) it made version 141: combined 61 and 121
   development games, two seeds averaged: 2.0 levels, 0.002% (its parent: 11.5, 0.730%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-11-08 01:23  (building itself: one generation)
+  from version 78 (one of 11 still standing) it made version 142: SELF_TICK_MAX 8u->4u
+  development games, two seeds averaged: 2.5 levels, 0.500% (its parent: 13.5, 0.717%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
