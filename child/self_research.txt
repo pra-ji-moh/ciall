@@ -965,3 +965,7 @@
   from version 74 (one of 11 still standing) it made version 147: SELF_DEATH_RETRIES 10u->0u
   development games, two seeds averaged: 2.0 levels, 0.012% (its parent: 11.0, 0.786%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-11-10 10:45  (building itself: one generation)
+  from version 72 (one of 11 still standing) it made version 148: SELF_OFF_CLOCK 0->1; SELF_DEATH_RETRIES 10u->0u; SELF_OFF_RESTLESS 1->0
+  it does not pass its own checks (60 passed, 1 failed): kept on the record as a dead end
