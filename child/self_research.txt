@@ -979,3 +979,8 @@
   from version 71 (one of 11 still standing) it made version 150: SELF_USE_LIVE 0->1; SELF_OFF_CURIOUS 1->0; SELF_BODY_VOTES 3u->2u
   development games, two seeds averaged: 2.0 levels, 0.546% (its parent: 14.5, 0.715%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-11-11 08:25  (building itself: one generation)
+  from version 73 (one of 11 still standing) it made version 151: SELF_OFF_REDRAW 1->0
+  development games, two seeds averaged: 2.0 levels, 0.009% (its parent: 13.5, 0.717%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
