@@ -989,3 +989,8 @@
   from version 81 (one of 11 still standing) it made version 152: combined 81 and 73
   development games, two seeds averaged: 1.5 levels, 0.109% (its parent: 11.0, 0.786%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-11-12 04:47  (building itself: one generation)
+  from version 72 (one of 11 still standing) it made version 153: SELF_TICK_MAX 8u->4u; SELF_DEATH_RETRIES 10u->20u
+  development games, two seeds averaged: 1.5 levels, 0.002% (its parent: 14.5, 0.715%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
