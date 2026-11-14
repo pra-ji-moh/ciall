@@ -1018,3 +1018,6 @@
   from version 81 (one of 11 still standing) it made version 158: SELF_OFF_PLAN 0->1
   development games, two seeds averaged: 1.0 levels, 0.002% (its parent: 11.0, 0.786%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-11-14 06:49  (building itself: one generation)
+  from version 78 it made a version it had already made (combined 78 and 80); it tries again next time
