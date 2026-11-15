@@ -1031,3 +1031,6 @@
   from version 81 (one of 11 still standing) it made version 160: SELF_DEATH_RETRIES 10u->0u
   development games, two seeds averaged: 1.0 levels, 0.002% (its parent: 11.0, 0.786%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-11-15 03:17  (building itself: one generation)
+  from version 71 it made a version it had already made (combined 71 and 74); it tries again next time
