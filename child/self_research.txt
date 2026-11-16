@@ -1044,3 +1044,8 @@
   from version 81 (one of 11 still standing) it made version 162: combined 81 and 73
   development games, two seeds averaged: 2.0 levels, 0.006% (its parent: 11.0, 0.786%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-11-16 12:43  (building itself: one generation)
+  from version 74 (one of 11 still standing) it made version 163: combined 74 and 80
+  development games, two seeds averaged: 2.5 levels, 0.026% (its parent: 11.0, 0.786%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
