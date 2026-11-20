@@ -1072,3 +1072,8 @@
 
 2026-11-19 22:24  (building itself: one generation)
   from version 121 it made a version it had already made (combined 121 and 74); it tries again next time
+
+2026-11-20 05:12  (building itself: one generation)
+  from version 61 (one of 12 still standing) it made version 168: SELF_FEW_SITUATIONS 32u->16u; SELF_TIE_MODE 1u->2u
+  development games, two seeds averaged: 1.5 levels, 0.002% (its parent: 11.5, 0.730%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
