@@ -1,25 +1,25 @@
-# the edge of the child's language, 2026-11-20 13:40
+# the edge of the child's language, 2026-11-20 21:23
 # by kind of sense (cases accounted for, words wanted, cases nothing reaches):
-#   space           67 | near | 403
-#   number          113 | size, many | 0
+#   space           70 | near | 198
+#   number          107 | size, many | 0
 #   body            0 | - | 0
-#   time            39 | - | 0
-#   pattern         54 | line | 0
-#   others          10 | follow, appears | 59
-#   transformation  0 | becomes-size, merge-split | 355
+#   time            30 | - | 0
+#   pattern         56 | line | 0
+#   others          5 | follow, appears | 37
+#   transformation  0 | becomes-size, merge-split | 146
 # words it wants: what study could use but play cannot, and what was suggested it cannot test
 appears	suggested 1 times (library); I have no word to test it with
 becomes-size	suggested 6 times (library); I have no word to test it with
 follow	suggested 31 times (library); I have no word to test it with
-line	accounts for 54 cases in study, but cannot be held in play yet
-many	accounts for 76 cases in study, but cannot be held in play yet
+line	accounts for 56 cases in study, but cannot be held in play yet
+many	accounts for 73 cases in study, but cannot be held in play yet
 merge-split	suggested 1 times (library); I have no word to test it with
-near	accounts for 55 cases in study, but cannot be held in play yet
-size	accounts for 37 cases in study, but cannot be held in play yet
+near	accounts for 63 cases in study, but cannot be held in play yet
+size	accounts for 34 cases in study, but cannot be held in play yet
 # cases no family reaches at all, by what happened in the last sighting
-unreached:stayed	358 cases
-unreached:size	343 cases
-unreached:gone	59 cases
-unreached:moved	45 cases
-unreached:colour	8 cases
-unreached:other	4 cases
+unreached:stayed	158 cases
+unreached:size	139 cases
+unreached:moved	40 cases
+unreached:gone	37 cases
+unreached:colour	6 cases
+unreached:other	1 cases
