@@ -1082,3 +1082,8 @@
   from version 72 (one of 12 still standing) it made version 169: SELF_OFF_DEATHS 0->1; SELF_OFF_RECALL 0->1; SELF_OFF_REDRAW 0->1
   development games, two seeds averaged: 0.5 levels, 0.002% (its parent: 14.5, 0.715%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-11-21 02:55  (building itself: one generation)
+  from version 80 (one of 12 still standing) it made version 170: SELF_WATCH 0u->48u; SELF_OFF_NEAR 0->1; SELF_FEW_SITUATIONS 32u->128u
+  development games, two seeds averaged: 0.5 levels, 0.003% (its parent: 13.5, 0.717%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
