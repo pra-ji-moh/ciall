@@ -1092,3 +1092,6 @@
   from version 72 (one of 12 still standing) it made version 171: SELF_OFF_REACH 0->1
   development games, two seeds averaged: 1.5 levels, 0.086% (its parent: 14.5, 0.715%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-11-21 20:01  (building itself: one generation)
+  from version 76 it made a version it had already made (SELF_OFF_PLAN 0->1); it tries again next time

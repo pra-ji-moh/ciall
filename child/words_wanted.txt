@@ -1,25 +1,25 @@
-# the edge of the child's language, 2026-11-21 11:35
+# the edge of the child's language, 2026-11-21 19:52
 # by kind of sense (cases accounted for, words wanted, cases nothing reaches):
-#   space           44 | near | 235
-#   number          79 | size, many | 0
+#   space           100 | near | 338
+#   number          135 | size, many | 0
 #   body            0 | - | 0
-#   time            29 | - | 0
-#   pattern         40 | line | 0
-#   others          8 | follow, appears | 17
-#   transformation  0 | becomes-size, merge-split | 245
+#   time            45 | - | 0
+#   pattern         66 | line | 0
+#   others          15 | follow, appears | 44
+#   transformation  0 | becomes-size, merge-split | 300
 # words it wants: what study could use but play cannot, and what was suggested it cannot test
 appears	suggested 1 times (library); I have no word to test it with
 becomes-size	suggested 6 times (library); I have no word to test it with
-follow	suggested 34 times (library); I have no word to test it with
-line	accounts for 40 cases in study, but cannot be held in play yet
-many	accounts for 50 cases in study, but cannot be held in play yet
+follow	suggested 32 times (library); I have no word to test it with
+line	accounts for 66 cases in study, but cannot be held in play yet
+many	accounts for 93 cases in study, but cannot be held in play yet
 merge-split	suggested 1 times (library); I have no word to test it with
-near	accounts for 36 cases in study, but cannot be held in play yet
-size	accounts for 29 cases in study, but cannot be held in play yet
+near	accounts for 83 cases in study, but cannot be held in play yet
+size	accounts for 42 cases in study, but cannot be held in play yet
 # cases no family reaches at all, by what happened in the last sighting
-unreached:size	239 cases
-unreached:stayed	203 cases
-unreached:moved	32 cases
-unreached:gone	17 cases
-unreached:colour	5 cases
-unreached:other	1 cases
+unreached:stayed	291 cases
+unreached:size	285 cases
+unreached:moved	47 cases
+unreached:gone	44 cases
+unreached:other	8 cases
+unreached:colour	7 cases
