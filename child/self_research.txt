@@ -1095,3 +1095,8 @@
 
 2026-11-21 20:01  (building itself: one generation)
   from version 76 it made a version it had already made (SELF_OFF_PLAN 0->1); it tries again next time
+
+2026-11-22 01:11  (building itself: one generation)
+  from version 76 (one of 12 still standing) it made version 172: SELF_OFF_UNMASK 0->1; SELF_OFF_STOOD 0->1; SELF_OFF_REPLAY 1->0
+  development games, two seeds averaged: 1.0 levels, 0.001% (its parent: 11.0, 0.786%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
