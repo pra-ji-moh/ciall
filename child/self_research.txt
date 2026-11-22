@@ -1100,3 +1100,8 @@
   from version 76 (one of 12 still standing) it made version 172: SELF_OFF_UNMASK 0->1; SELF_OFF_STOOD 0->1; SELF_OFF_REPLAY 1->0
   development games, two seeds averaged: 1.0 levels, 0.001% (its parent: 11.0, 0.786%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-11-22 23:37  (building itself: one generation)
+  from version 72 (one of 12 still standing) it made version 173: SELF_OFF_STOOD 0->1; SELF_OFF_CURIOUS 1->0; SELF_BODY_VOTES 3u->5u
+  development games, two seeds averaged: 0.0 levels, 0.000% (its parent: 14.5, 0.715%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is
