@@ -1,5 +1,5 @@
 ciall-explorer-mind 1
-runs 225
+runs 226
 best 2
 mask 0 0 0
 mask 0 1 0
@@ -242,21 +242,25 @@ mask 5 12 0
 mask 5 13 0
 mask 5 14 0
 mask 5 15 0
+mask 5 16 0
 mask 5 17 0
 mask 5 18 0
 mask 5 19 0
 mask 5 20 0
 mask 5 21 0
+mask 5 22 0
 mask 5 23 0
 mask 5 24 0
 mask 5 25 0
 mask 5 26 0
 mask 5 27 0
+mask 5 28 0
 mask 5 29 0
 mask 5 30 0
 mask 5 31 0
 mask 5 32 0
 mask 5 33 0
+mask 5 34 0
 mask 5 35 0
 mask 5 36 0
 mask 5 54 0
@@ -337,9 +341,13 @@ mask 7 21 0
 mask 7 22 0
 mask 7 23 0
 mask 7 25 0
+mask 7 26 0
+mask 7 27 0
+mask 7 28 0
 mask 7 29 0
 mask 7 30 0
 mask 7 31 0
+mask 7 32 0
 mask 7 33 0
 mask 7 34 0
 mask 7 35 0
@@ -376,6 +384,9 @@ mask 8 21 0
 mask 8 22 0
 mask 8 23 0
 mask 8 25 0
+mask 8 26 0
+mask 8 27 0
+mask 8 28 0
 mask 8 29 0
 mask 8 30 0
 mask 8 31 0
@@ -418,6 +429,9 @@ mask 9 21 0
 mask 9 22 0
 mask 9 23 0
 mask 9 25 0
+mask 9 26 0
+mask 9 27 0
+mask 9 28 0
 mask 9 29 0
 mask 9 30 0
 mask 9 31 0
@@ -458,6 +472,9 @@ mask 10 21 0
 mask 10 22 0
 mask 10 23 0
 mask 10 25 0
+mask 10 26 0
+mask 10 27 0
+mask 10 28 0
 mask 10 29 0
 mask 10 30 0
 mask 10 32 0
@@ -492,6 +509,9 @@ mask 11 21 0
 mask 11 22 0
 mask 11 23 0
 mask 11 25 0
+mask 11 26 0
+mask 11 27 0
+mask 11 28 0
 mask 11 29 0
 mask 11 30 0
 mask 11 31 0
@@ -566,7 +586,6 @@ mask 13 11 0
 mask 13 12 0
 mask 13 30 0
 mask 13 31 0
-mask 13 32 0
 mask 13 33 0
 mask 13 34 0
 mask 13 35 0
@@ -1964,39 +1983,39 @@ shift 3 3 185 25 1
 shift 4 3 305 25 1
 shift 7 3 -185 -21 1
 colour 4 0 0 0
-colour 5 4662 42 30
-shift 3 5 0 -42 1
-shift 4 5 0 90 139
-shift 7 5 0 90 1
+colour 5 4672 42 31
+shift 3 5 0 -90 4
+shift 4 5 0 90 144
+shift 7 5 0 -90 1
 colour 6 0 0 0
-colour 7 38 0 30
+colour 7 39 0 31
 shift 3 7 90 0 1
-shift 4 7 90 0 36
+shift 4 7 90 0 37
 shift 7 7 -90 0 1
 colour 8 0 0 0
-colour 9 6279 0 0
-shift 3 9 0 4 1
-shift 4 9 0 36 17
-shift 7 9 0 36 1
-colour 10 4662 2887 0
-shift 3 10 0 66 1
-shift 4 10 0 -138 139
-shift 7 10 0 -138 1
-colour 11 6218 0 0
-shift 3 11 0 -4 1
-shift 4 11 0 12 14
-shift 7 11 0 12 1
+colour 9 6298 0 0
+shift 3 9 0 4 2
+shift 4 9 0 -4 1
+shift 7 9 0 -36 1
+colour 10 4672 2896 0
+shift 3 10 0 138 4
+shift 4 10 0 -138 144
+shift 7 10 0 138 1
+colour 11 6237 0 0
+shift 3 11 0 -4 2
+shift 4 11 0 4 1
+shift 7 11 0 -12 1
 colour 12 0 0 0
 colour 13 0 0 0
-colour 14 54 81 0
+colour 14 55 82 0
 shift 3 14 1134 0 1
-shift 4 14 756 0 6
+shift 4 14 756 0 7
 shift 7 14 -1512 0 1
 colour 15 183 0 0
 shift 3 15 216 0 39
 shift 4 15 216 0 26
 shift 7 15 -216 0 34
-onto 2995 30 6
+onto 3005 31 6
 family-here ONTO 1
 family ONTO_R 1
 kind 44006 1 0
