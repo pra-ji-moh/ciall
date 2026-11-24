@@ -1,24 +1,23 @@
-# the edge of the child's language, 2026-11-23 15:24
+# the edge of the child's language, 2026-11-24 02:31
 # by kind of sense (cases accounted for, words wanted, cases nothing reaches):
-#   space           100 | near | 432
-#   number          129 | size, many | 0
+#   space           46 | near | 195
+#   number          70 | size, many | 0
 #   body            0 | - | 0
-#   time            54 | - | 0
-#   pattern         68 | line | 0
-#   others          17 | follow, appears | 54
-#   transformation  0 | becomes-size | 362
+#   time            37 | - | 0
+#   pattern         37 | line | 0
+#   others          9 | follow, appears | 10
+#   transformation  0 | becomes-size | 161
 # words it wants: what study could use but play cannot, and what was suggested it cannot test
 appears	suggested 1 times (library); I have no word to test it with
-becomes-size	suggested 6 times (library); I have no word to test it with
-follow	suggested 33 times (library); I have no word to test it with
-line	accounts for 68 cases in study, but cannot be held in play yet
-many	accounts for 92 cases in study, but cannot be held in play yet
-near	accounts for 83 cases in study, but cannot be held in play yet
-size	accounts for 37 cases in study, but cannot be held in play yet
+becomes-size	suggested 5 times (library); I have no word to test it with
+follow	suggested 31 times (library); I have no word to test it with
+line	accounts for 37 cases in study, but cannot be held in play yet
+many	accounts for 46 cases in study, but cannot be held in play yet
+near	accounts for 37 cases in study, but cannot be held in play yet
+size	accounts for 24 cases in study, but cannot be held in play yet
 # cases no family reaches at all, by what happened in the last sighting
-unreached:stayed	396 cases
-unreached:size	347 cases
-unreached:gone	54 cases
-unreached:moved	36 cases
-unreached:colour	9 cases
-unreached:other	6 cases
+unreached:stayed	157 cases
+unreached:size	157 cases
+unreached:moved	38 cases
+unreached:gone	10 cases
+unreached:colour	4 cases

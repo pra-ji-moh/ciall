@@ -1110,3 +1110,7 @@
   from version 69 (one of 12 still standing) it made version 174: SELF_BODY_VOTES 3u->5u; SELF_OFF_WINDOW 0->1
   development games, two seeds averaged: 0.5 levels, 0.002% (its parent: 14.5, 0.715%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-11-24 02:37  (building itself: one generation)
+  from version 73 (one of 12 still standing) it made version 175: SELF_OFF_CLOCK 0->1
+  it does not pass its own checks (60 passed, 1 failed): kept on the record as a dead end
