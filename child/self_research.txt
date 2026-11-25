@@ -1122,3 +1122,6 @@
   from version 76 (one of 12 still standing) it made version 176: SELF_SHIFT_SURE 2u->1u
   development games, two seeds averaged: 1.0 levels, 0.000% (its parent: 11.0, 0.786%)
   kept in the archive (a dead end, beaten by another); the child in use stays as it is
+
+2026-11-25 20:22  (building itself: one generation)
+  from version 74 it made a version it had already made (SELF_OFF_RESTLESS 1->0); it tries again next time
