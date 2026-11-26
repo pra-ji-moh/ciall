@@ -1,25 +1,25 @@
-# the edge of the child's language, 2026-11-26 03:52
+# the edge of the child's language, 2026-11-26 13:06
 # by kind of sense (cases accounted for, words wanted, cases nothing reaches):
-#   space           135 | near | 574
-#   number          193 | size, many | 0
+#   space           40 | near | 228
+#   number          63 | size, many | 0
 #   body            0 | - | 0
-#   time            78 | - | 0
-#   pattern         104 | line | 0
-#   others          22 | follow, appears | 78
-#   transformation  0 | becomes-size, merge-split | 468
+#   time            34 | - | 0
+#   pattern         33 | line | 0
+#   others          3 | follow, appears | 17
+#   transformation  0 | becomes-size, merge-split, becomes-colour | 209
 # words it wants: what study could use but play cannot, and what was suggested it cannot test
-appears	suggested 2 times (library); I have no word to test it with
-becomes-size	suggested 6 times (library); I have no word to test it with
-follow	suggested 32 times (library); I have no word to test it with
-line	accounts for 104 cases in study, but cannot be held in play yet
-many	accounts for 132 cases in study, but cannot be held in play yet
-merge-split	suggested 3 times (library); I have no word to test it with
-near	accounts for 107 cases in study, but cannot be held in play yet
-size	accounts for 61 cases in study, but cannot be held in play yet
+appears	suggested 1 times (library); I have no word to test it with
+becomes-colour	suggested 1 times (library); I have no word to test it with
+becomes-size	suggested 5 times (library); I have no word to test it with
+follow	suggested 28 times (library); I have no word to test it with
+line	accounts for 33 cases in study, but cannot be held in play yet
+many	accounts for 44 cases in study, but cannot be held in play yet
+merge-split	suggested 2 times (library); I have no word to test it with
+near	accounts for 32 cases in study, but cannot be held in play yet
+size	accounts for 19 cases in study, but cannot be held in play yet
 # cases no family reaches at all, by what happened in the last sighting
-unreached:stayed	507 cases
-unreached:size	442 cases
-unreached:gone	78 cases
-unreached:moved	67 cases
-unreached:other	17 cases
-unreached:colour	9 cases
+unreached:size	208 cases
+unreached:stayed	195 cases
+unreached:moved	33 cases
+unreached:gone	17 cases
+unreached:colour	1 cases

@@ -1125,3 +1125,8 @@
 
 2026-11-25 20:22  (building itself: one generation)
   from version 74 it made a version it had already made (SELF_OFF_RESTLESS 1->0); it tries again next time
+
+2026-11-26 14:36  (building itself: one generation)
+  from version 164 (one of 12 still standing) it made version 177: SELF_RESTLESS_WINDOW 24u->8u
+  development games, two seeds averaged: 1.0 levels, 0.340% (its parent: 3.0, 0.929%)
+  kept in the archive (a dead end, beaten by another); the child in use stays as it is

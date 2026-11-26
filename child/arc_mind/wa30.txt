@@ -1,42 +1,78 @@
 ciall-explorer-mind 1
-runs 236
+runs 237
 best 0
-mask 25 17 0
-mask 25 18 0
-mask 25 21 0
-mask 25 22 0
-mask 25 25 0
-mask 25 26 0
-mask 26 17 0
-mask 26 18 0
-mask 26 21 0
-mask 26 22 0
-mask 26 25 0
-mask 26 26 0
+mask 24 44 0
+mask 24 45 0
+mask 24 46 0
+mask 24 47 0
+mask 25 44 0
+mask 25 47 0
+mask 26 44 0
+mask 26 47 0
+mask 27 44 0
+mask 27 45 0
+mask 27 46 0
+mask 27 47 0
 mask 28 16 0
 mask 28 17 0
 mask 28 18 0
 mask 28 19 0
+mask 29 12 0
+mask 29 13 0
+mask 29 14 0
+mask 29 15 0
 mask 29 16 0
 mask 29 19 0
+mask 30 12 0
+mask 30 13 0
+mask 30 14 0
+mask 30 15 0
 mask 30 16 0
 mask 30 19 0
+mask 31 12 0
+mask 31 13 0
+mask 31 14 0
+mask 31 15 0
 mask 31 16 0
 mask 31 17 0
 mask 31 18 0
 mask 31 19 0
+mask 33 17 0
+mask 33 18 0
+mask 34 17 0
+mask 34 18 0
 mask 36 32 0
 mask 36 33 0
 mask 36 34 0
 mask 36 35 0
+mask 37 21 0
+mask 37 22 0
 mask 37 32 0
+mask 37 33 0
+mask 37 34 0
 mask 37 35 0
+mask 38 21 0
+mask 38 22 0
 mask 38 32 0
+mask 38 33 0
+mask 38 34 0
 mask 38 35 0
 mask 39 32 0
 mask 39 33 0
 mask 39 34 0
 mask 39 35 0
+mask 40 16 0
+mask 40 17 0
+mask 40 18 0
+mask 40 19 0
+mask 41 16 0
+mask 41 19 0
+mask 42 16 0
+mask 42 19 0
+mask 43 16 0
+mask 43 17 0
+mask 43 18 0
+mask 43 19 0
 mask 63 0 0
 mask 63 1 0
 mask 63 2 0
@@ -101,17 +137,17 @@ mask 63 60 0
 mask 63 61 0
 mask 63 62 0
 mask 63 63 0
-colour 0 126175 9350 0
-shift 1 0 -28 0 1
-shift 2 0 22 6 1
-shift 3 0 6 -22 3
-shift 4 0 0 28 1
-colour 1 125448 78204 0
-shift 1 1 64 0 154
-shift 2 1 -64 0 105
-shift 3 1 0 64 31
-shift 4 1 0 -64 25
-colour 2 6 917 0
+colour 0 127669 9458 0
+shift 1 0 -22 6 2
+shift 2 0 28 0 1
+shift 3 0 0 -16 1
+shift 4 0 0 16 1
+colour 1 126872 78942 0
+shift 1 1 64 0 50
+shift 2 1 -64 0 12
+shift 3 1 0 64 21
+shift 4 1 0 -64 19
+colour 2 6 935 0
 shift 3 2 0 42 3
 shift 4 2 0 -42 3
 colour 3 10 0 0
@@ -128,22 +164,22 @@ colour 5 0 0 0
 colour 6 0 0 0
 colour 7 0 0 0
 colour 8 0 0 0
-colour 9 10137 3062 0
-shift 1 9 -16 0 2271
-shift 2 9 16 0 2853
-shift 3 9 0 -16 10
-shift 4 9 0 16 86
+colour 9 10170 3086 0
+shift 1 9 -16 0 2280
+shift 2 9 16 0 2863
+shift 3 9 0 -16 21
+shift 4 9 0 16 89
 colour 10 0 0 0
 colour 11 0 0 0
 colour 12 0 0 0
 colour 13 0 0 0
-colour 14 134966 0 0
-shift 1 14 -36 0 1
-shift 2 14 42 -6 1
-shift 3 14 -6 -42 3
-shift 4 14 0 36 1
+colour 14 136493 0 0
+shift 1 14 -42 -6 2
+shift 2 14 36 0 1
+shift 3 14 0 -48 1
+shift 4 14 0 48 1
 colour 15 0 0 0
-onto 81267 0 3
+onto 82029 0 3
 kind 536870917 1 1
 kind 536870914 1 1
 kind 536870916 1 1
